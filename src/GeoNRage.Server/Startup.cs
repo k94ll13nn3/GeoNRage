@@ -3,6 +3,7 @@ using GeoNRage.Server.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -10,9 +11,16 @@ namespace GeoNRage.Server
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddRazorPages();
 
             services.AddSignalR();
 
@@ -30,17 +38,27 @@ namespace GeoNRage.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebAssemblyDebugging();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseCors(policy =>
-                policy.WithOrigins("http://localhost:5000", "https://localhost:5001")
-                .WithMethods("GET", "POST")
-                .AllowAnyHeader()
-                .AllowCredentials());
-
-            app.UseEndpoints(endpoints => endpoints.MapHub<AppHub>("/apphub"));
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapHub<AppHub>("/apphub");
+            });
         }
     }
 }

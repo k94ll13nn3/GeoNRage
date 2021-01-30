@@ -1,21 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30914.41
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1869080C-97A6-4AF2-8032-260955960968}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoNRage.App", "src\GeoNRage.App\GeoNRage.App.csproj", "{17413FE6-1417-4E3D-B923-A29D732EC21C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoNRage.App", "src\GeoNRage.App\GeoNRage.App.csproj", "{17413FE6-1417-4E3D-B923-A29D732EC21C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C41DBFE0-0451-4EA7-B0FE-446DCF0E797F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.github\workflows\deploy-server.yml = .github\workflows\deploy-server.yml
 		Directory.Build.props = Directory.Build.props
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoNRage.Server", "src\GeoNRage.Server\GeoNRage.Server.csproj", "{7BC5951C-F2D1-42F6-87A0-BF892B6295ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoNRage.Server", "src\GeoNRage.Server\GeoNRage.Server.csproj", "{7BC5951C-F2D1-42F6-87A0-BF892B6295ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoNRage.Models", "src\GeoNRage.Models\GeoNRage.Models.csproj", "{CCBAFACE-C7F7-48E2-B245-49CD557DBEE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoNRage.Models", "src\GeoNRage.Models\GeoNRage.Models.csproj", "{CCBAFACE-C7F7-48E2-B245-49CD557DBEE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,22 +28,7 @@ Global
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Debug|x64.Build.0 = Debug|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Debug|x86.Build.0 = Debug|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Release|x64.ActiveCfg = Release|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Release|x64.Build.0 = Release|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Release|x86.ActiveCfg = Release|Any CPU
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5}.Release|x86.Build.0 = Release|Any CPU
 		{17413FE6-1417-4E3D-B923-A29D732EC21C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17413FE6-1417-4E3D-B923-A29D732EC21C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17413FE6-1417-4E3D-B923-A29D732EC21C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -79,10 +66,15 @@ Global
 		{CCBAFACE-C7F7-48E2-B245-49CD557DBEE1}.Release|x86.ActiveCfg = Release|Any CPU
 		{CCBAFACE-C7F7-48E2-B245-49CD557DBEE1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{86455289-69BE-4EF9-88E7-6D3AE7FCA4B5} = {1869080C-97A6-4AF2-8032-260955960968}
 		{17413FE6-1417-4E3D-B923-A29D732EC21C} = {1869080C-97A6-4AF2-8032-260955960968}
 		{7BC5951C-F2D1-42F6-87A0-BF892B6295ED} = {1869080C-97A6-4AF2-8032-260955960968}
 		{CCBAFACE-C7F7-48E2-B245-49CD557DBEE1} = {1869080C-97A6-4AF2-8032-260955960968}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BF957DF-96BF-4D7C-95BA-916EF6698524}
 	EndGlobalSection
 EndGlobal

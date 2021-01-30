@@ -2,7 +2,7 @@
 
 
 <Container Condition="IsConnected && Game is not null">
-    <a href="/">Games</a>
+    <a href="/">← Games</a>
 
     <Title Value="@($"GeoNRage — #{Game!.Id}")"></Title>
 
@@ -62,5 +62,5 @@
 </Container>
 
 <Container Condition="!IsConnected || Game is null">
-    <p>Loading...</p>
+    <LoadingScreen />
 </Container>

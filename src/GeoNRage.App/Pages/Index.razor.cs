@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GeoNRage.App.Pages
@@ -14,6 +15,9 @@ namespace GeoNRage.App.Pages
 
         public IEnumerable<GameBase> Games { get; set; } = Array.Empty<GameBase>();
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; } = null!;
+
         public async ValueTask DisposeAsync()
         {
             await _hubConnection.DisposeAsync();
@@ -22,7 +26,7 @@ namespace GeoNRage.App.Pages
         protected override async Task OnInitializedAsync()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:5011/apphub")
+                .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
                 .Build();
 
             _hubConnection.On<IEnumerable<GameBase>>("ReceiveGames", games =>

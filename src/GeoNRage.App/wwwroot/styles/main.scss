@@ -1,8 +1,12 @@
 @use 'variables' as v;
 
+@import 'error';
+@import 'loader';
 @import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
 
 body {
     font-family: v.$font-stack;
+    color: v.$shadow-light-blue;
     font-weight: normal;
+    background: v.$dark-blue;
 }

@@ -28,7 +28,7 @@ namespace GeoNRage.App.Pages
         protected override async Task OnInitializedAsync()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:5011/apphub")
+                .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
                 .Build();
 
             _hubConnection.On<Game>("ReceiveGame", HandleReceiveGameAsync);
