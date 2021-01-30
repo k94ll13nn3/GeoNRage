@@ -1,37 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using GeoNRage.Models;
 using Microsoft.AspNetCore.SignalR;
+using Octokit;
 
 namespace GeoNRage.Server.Hubs
 {
     public class AppHub : Hub
     {
-        private static IEnumerable<Game> Games;
+        private readonly GitHubClient _client;
 
-        static AppHub()
+        public AppHub()
         {
-            string[] maps = new[] { "France", "Europe", "Monde" };
-            string[] columns = new[] { "Kévin", "Jean", "Claude" };
-            string[] rows = new[] { "Round 1", "Round 2", "Round 3", "Round 4", "Round 5" };
-            var values = new Dictionary<string, int>();
-
-            foreach (string map in maps)
-            {
-                foreach (string column in columns)
-                {
-                    foreach (string row in rows)
-                    {
-                        values[$"{map}_{column}_{row}"] = 0;
-                    }
-                }
-            }
-
-            Game game1 = new Game(20210130, "Dude n'est toujours pas là", columns, rows, maps, values.ToDictionary(k=>k.Key,v=>v.Value));
-            game1.Values[$"{maps[0]}_{columns[0]}_{rows[0]}"] = 5000;
-            Game game2 = new Game(20210131, "Parties avec les sacs", columns, rows, maps, values.ToDictionary(k => k.Key, v => v.Value));
-            Games = new[] { game1, game2 };
+            _client = new GitHubClient(new ProductHeaderValue("GeoNRage"));
+            _client.Credentials = new Credentials("776885616e24d13df071c235025b49050f595159"); //TODO:delete before release
         }
 
         [HubMethodName("JoinGroup")]
@@ -43,22 +27,42 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("LoadGames")]
         public async Task LoadGamesAsync()
         {
-            await Clients.Caller.SendAsync("ReceiveGames", Games.Cast<GameBase>());
+            var games = new List<Game>();
+            Gist gist = await _client.Gist.Get("55c7c9c88b89b438ae4bd500d0de451e");
+            foreach ((_, GistFile file) in gist.Files)
+            {
+                games.Add(JsonSerializer.Deserialize<Game>(file.Content)!);
+            }
+
+            await Clients.Caller.SendAsync("ReceiveGames", games.Cast<GameBase>());
         }
 
         [HubMethodName("LoadGame")]
         public async Task LoadGameAsync(int id)
         {
-            Game? game = Games.FirstOrDefault(g => g.Id == id);
-            await Clients.Caller.SendAsync("ReceiveGame", game);
+            Gist gist = await _client.Gist.Get("55c7c9c88b89b438ae4bd500d0de451e");
+            if (gist.Files.ContainsKey($"{id}.json"))
+            {
+                Game game = JsonSerializer.Deserialize<Game>(gist.Files[$"{id}.json"].Content)!;
+                await Clients.Caller.SendAsync("ReceiveGame", game);
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("ReceiveGame", null);
+            }
         }
 
         [HubMethodName("SendMessage")]
         public async Task SendMessageAsync(int id, string columnName, int newValue)
         {
-            Games.First(g => g.Id == id).Values[columnName] = newValue;
+            Gist gist = await _client.Gist.Get("55c7c9c88b89b438ae4bd500d0de451e");
+            Game game = JsonSerializer.Deserialize<Game>(gist.Files[$"{id}.json"].Content)!;
+            game.Values[columnName] = newValue;
+            var update = new GistUpdate();
+            update.Files[$"{id}.json"] = new GistFileUpdate() { Content = JsonSerializer.Serialize(game) };
+            await _client.Gist.Edit("55c7c9c88b89b438ae4bd500d0de451e", update);
 
-            await Clients.Group($"group-${id}")/*.AllExcept(new[] { Context.ConnectionId })*/.SendAsync("ReceiveRow", columnName, newValue);
+            await Clients.Group($"group-${id}").SendAsync("ReceiveRow", columnName, newValue);
         }
     }
 }

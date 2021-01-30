@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Models;
 using Microsoft.AspNetCore.Components;
@@ -57,8 +56,6 @@ namespace GeoNRage.App.Pages
             else
             {
                 Game = game;
-                var g = game.Values.Keys.First();
-                var t = game.Values[g];
                 StateHasChanged();
                 await _hubConnection.SendAsync("JoinGroup", Id);
             }

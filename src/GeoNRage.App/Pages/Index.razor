@@ -4,8 +4,12 @@
     <ul>
         <Repeater Items="Games">
             <ItemTemplate Context="game">
-                <li><a href="/@game.Id">@game.Name</a></li>
+                <li><a href="/@game.Id">#@game.Id — @game.Name</a></li>
             </ItemTemplate>
         </Repeater>
     </ul>
+</Container>
+
+<Container Condition="!IsConnected || Games?.Any() != true">
+    <p>Loading...</p>
 </Container>
