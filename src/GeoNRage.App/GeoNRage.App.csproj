@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web.Extensions" Version="5.0.0-preview9.20513.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GeoNRage.Models\GeoNRage.Models.csproj" />
+  </ItemGroup>
+
+  <!-- Launch the debug with "dotnet watch run" to have a light live-reload experience -->
+  <ItemGroup>
+    <Watch Include="**/*/*.scss" />
+    <Watch Include="**/*/*.html" />
+  </ItemGroup>
+
+  <!-- Define scss files for the compilation but do not publish them -->
+  <ItemGroup>
+    <ScssFiles Include="**/*/*.scss" Exclude="**/*/_*.scss" />
+    <Content Update="**/*/*.scss" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+  <Target Name="CompileScss" BeforeTargets="Restore;BeforeBuild">
+    <Message Text="SCSS Files: @(ScssFiles->'%(filename).css')" Importance="high" />
+    <Exec Command="dotnet sass %(ScssFiles.Identity) %(relativedir)%(filename).css --no-source-map --style compressed --load-path=wwwroot/styles" />
+  </Target>
+
+</Project>

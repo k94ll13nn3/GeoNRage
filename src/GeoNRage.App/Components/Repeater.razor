@@ -1,0 +1,17 @@
+﻿@typeparam T
+
+@if (Items?.Any() == true && ItemTemplate is not null)
+{
+    foreach (var item in Items)
+    {
+        @ItemTemplate(item);
+    }
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<T>? Items { get; set; }
+
+    [Parameter]
+    public RenderFragment<T>? ItemTemplate { get; set; }
+}

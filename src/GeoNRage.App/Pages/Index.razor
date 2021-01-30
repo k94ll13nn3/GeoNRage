@@ -1,0 +1,11 @@
+﻿@page "/"
+
+<Container Condition="IsConnected">
+    <ul>
+        <Repeater Items="Games">
+            <ItemTemplate Context="game">
+                <li><a href="/@game.Id">@game.Name</a></li>
+            </ItemTemplate>
+        </Repeater>
+    </ul>
+</Container>
