@@ -61,16 +61,14 @@ namespace GeoNRage.App.Pages
             }
         }
 
-        private void Send(string name, ChangeEventArgs e)
+        private void Send(string name, int value)
         {
-            if (int.TryParse(e.Value?.ToString()?.Replace(",", ".", StringComparison.InvariantCulture) ?? "0", out int value))
+            if (Game is not null)
             {
-                if (Game is not null)
-                {
-                    Game.Values[name] = value;
-                }
-                _hubConnection.SendAsync("SendMessage", Id, name, value);
+                Game.Values[name] = value;
             }
+
+            _hubConnection.SendAsync("SendMessage", Id, name, value);
         }
     }
 }

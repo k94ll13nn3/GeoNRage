@@ -1,0 +1,36 @@
+﻿<input type="number" value="@Value" @onchange="Send" @oninput="OnInput" @onkeydown="@onKeydown" @onkeydown:preventDefault="@isPreventKey" />
+
+@code {
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    private bool isPreventKey { get; set; }
+
+    private void onKeydown(KeyboardEventArgs args)
+    {
+        this.isPreventKey = false;
+        if (args.Code == "Tab" || args.Code == "Backspace" || args.Code == "Enter")
+        {
+            return;
+        }
+
+        if (!int.TryParse(Value.ToString() + args.Key, out var value) || value < 0)
+        {
+            this.isPreventKey = true;
+        }
+    }
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        var newValue = e?.Value?.ToString();
+        Value = int.Parse(string.IsNullOrWhiteSpace(newValue) ? "0" : newValue);
+    }
+
+    private async Task Send()
+    {
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

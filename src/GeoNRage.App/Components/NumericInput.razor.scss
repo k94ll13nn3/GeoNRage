@@ -1,0 +1,24 @@
+﻿@use 'variables' as v;
+
+input {
+    font-family: v.$font-stack;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-color: transparent;
+
+    &:focus {
+        outline: none;
+        border: 0px solid v.$shadow-light-blue;
+        background-color: lightgrey;
+    }
+
+    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[type=number] {
+        -moz-appearance: textfield;
+    }
+}

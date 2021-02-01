@@ -30,7 +30,9 @@
                                         var key = $"{map}_{column}_{row}";
                             var value = Game.Values.ContainsKey(key) ? Game.Values[key] : 0;
                                     }
-                                    <td><input type="number" value="@value" @onchange="@((e) => { Send(key, e);})" /></td>
+                                    <td>
+                                        <NumericInput Value="@value" ValueChanged="@((e) => { Send(key, e);})"></NumericInput>
+                                    </td>
                                 </ItemTemplate>
                             </Repeater>
                         </tr>
@@ -64,3 +66,5 @@
 <Container Condition="!IsConnected || Game is null">
     <LoadingScreen />
 </Container>
+
+
