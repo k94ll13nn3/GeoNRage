@@ -2,10 +2,6 @@
 
 
 <Container Condition="IsConnected && Game is not null">
-    <a href="/">← Games</a>
-
-    <Title Value="@($"GeoNRage — #{Game!.Id}")"></Title>
-
     <h1>#@Game!.Id — @Game!.Name</h1>
 
     <table>
