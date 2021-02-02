@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using GeoNRage.Models;
+using GeoNRage.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -37,7 +38,15 @@ namespace GeoNRage.App.Pages
             {
                 if (Game is not null)
                 {
-                    Game.Values[name] = value;
+                    var v = Game.Values.FirstOrDefault(x => x.Key == name);
+                    if (v is null)
+                    {
+                        Game.Values.Add(new Value { Score = value, Key = name, GameId = Game.Id });
+                    }
+                    else
+                    {
+                        Game.Values.First(x => x.Key == name).Score = value;
+                    }
                 }
 
                 StateHasChanged();
@@ -66,7 +75,15 @@ namespace GeoNRage.App.Pages
             int clampedValue = Math.Clamp(value, 0, 5000);
             if (Game is not null)
             {
-                Game.Values[name] = clampedValue;
+                var v = Game.Values.FirstOrDefault(x => x.Key == name);
+                if (v is null)
+                {
+                    Game.Values.Add(new Value { Score = value, Key = name, GameId = Game.Id });
+                }
+                else
+                {
+                    Game.Values.First(x => x.Key == name).Score = value;
+                }
             }
 
             _hubConnection.SendAsync("SendMessage", Id, name, clampedValue);

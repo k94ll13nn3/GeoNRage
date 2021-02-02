@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using GeoNRage.Models;
+using GeoNRage.Data;
 using Microsoft.AspNetCore.SignalR;
-using Octokit;
+using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Hubs
 {
     public class AppHub : Hub
     {
-        private readonly GitHubClient _client;
+        private GeoNRageDbContext _context;
 
-        public AppHub()
+        public AppHub(GeoNRageDbContext context)
         {
-            _client = new GitHubClient(new ProductHeaderValue("GeoNRage"));
-            _client.Credentials = new Credentials("776885616e24d13df071c235025b49050f595159"); //TODO:delete before release
+            _context = context;
         }
 
         [HubMethodName("JoinGroup")]
@@ -27,23 +25,17 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("LoadGames")]
         public async Task LoadGamesAsync()
         {
-            var games = new List<Game>();
-            Gist gist = await _client.Gist.Get("55c7c9c88b89b438ae4bd500d0de451e");
-            foreach ((_, GistFile file) in gist.Files)
-            {
-                games.Add(JsonSerializer.Deserialize<Game>(file.Content)!);
-            }
+            IEnumerable<GameBase> games = (await _context.Games.ToListAsync()).Cast<GameBase>();
 
-            await Clients.Caller.SendAsync("ReceiveGames", games.Cast<GameBase>());
+            await Clients.Caller.SendAsync("ReceiveGames", games);
         }
 
         [HubMethodName("LoadGame")]
         public async Task LoadGameAsync(int id)
         {
-            Gist gist = await _client.Gist.Get("55c7c9c88b89b438ae4bd500d0de451e");
-            if (gist.Files.ContainsKey($"{id}.json"))
+            Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
+            if (game is not null)
             {
-                Game game = JsonSerializer.Deserialize<Game>(gist.Files[$"{id}.json"].Content)!;
                 await Clients.Caller.SendAsync("ReceiveGame", game);
             }
             else
@@ -55,14 +47,31 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("SendMessage")]
         public async Task SendMessageAsync(int id, string columnName, int newValue)
         {
-            Gist gist = await _client.Gist.Get("55c7c9c88b89b438ae4bd500d0de451e");
-            Game game = JsonSerializer.Deserialize<Game>(gist.Files[$"{id}.json"].Content)!;
-            game.Values[columnName] = newValue;
-            var update = new GistUpdate();
-            update.Files[$"{id}.json"] = new GistFileUpdate() { Content = JsonSerializer.Serialize(game) };
-            await _client.Gist.Edit("55c7c9c88b89b438ae4bd500d0de451e", update);
+            Game? game = await _context.Games.FirstOrDefaultAsync(g => g.Id == id);
 
-            await Clients.Group($"group-${id}").SendAsync("ReceiveRow", columnName, newValue);
+            if (game is not null)
+            {
+                Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == id && x.Key == columnName);
+                if (value is null)
+                {
+                    value = new Value
+                    {
+                        GameId = id,
+                        Key = columnName,
+                        Score = newValue,
+                    };
+                    _context.Values.Add(value);
+                }
+                else
+                {
+                    value.Score = newValue;
+                    _context.Values.Update(value);
+                }
+
+                await _context.SaveChangesAsync();
+
+                await Clients.Group($"group-${id}").SendAsync("ReceiveRow", columnName, newValue);
+            }
         }
     }
 }

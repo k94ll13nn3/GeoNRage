@@ -6,12 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.2" />
-    <PackageReference Include="Octokit" Version="0.48.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GeoNRage.App\GeoNRage.App.csproj" />
-    <ProjectReference Include="..\GeoNRage.Models\GeoNRage.Models.csproj" />
+    <ProjectReference Include="..\GeoNRage.Data\GeoNRage.Data.csproj" />
   </ItemGroup>
 
 </Project>

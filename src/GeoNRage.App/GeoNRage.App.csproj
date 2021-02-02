@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeoNRage.Models\GeoNRage.Models.csproj" />
+    <ProjectReference Include="..\GeoNRage.Data\GeoNRage.Data.csproj" />
   </ItemGroup>
 
   <!-- Launch the debug with "dotnet watch run" to have a light live-reload experience -->
