@@ -63,12 +63,13 @@ namespace GeoNRage.App.Pages
 
         private void Send(string name, int value)
         {
+            int clampedValue = Math.Clamp(value, 0, 5000);
             if (Game is not null)
             {
-                Game.Values[name] = value;
+                Game.Values[name] = clampedValue;
             }
 
-            _hubConnection.SendAsync("SendMessage", Id, name, value);
+            _hubConnection.SendAsync("SendMessage", Id, name, clampedValue);
         }
     }
 }
