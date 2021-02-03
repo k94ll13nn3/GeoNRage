@@ -1,4 +1,4 @@
-﻿<input type="number" value="@Value" @onchange="Send" @oninput="OnInput" @onkeydown="@onKeydown" @onkeydown:preventDefault="@isPreventKey" />
+﻿<input type="number" value="@Value" @onchange="Send" @oninput="OnInput" @onkeydown="@OnKeydown" @onkeydown:preventDefault="@PreventKey" />
 
 @code {
     [Parameter]
@@ -7,11 +7,11 @@
     [Parameter]
     public EventCallback<int> ValueChanged { get; set; }
 
-    private bool isPreventKey { get; set; }
+    private bool PreventKey { get; set; }
 
-    private void onKeydown(KeyboardEventArgs args)
+    private void OnKeydown(KeyboardEventArgs args)
     {
-        this.isPreventKey = false;
+        this.PreventKey = false;
         if (args.Code == "Tab" || args.Code == "Backspace" || args.Code == "Enter")
         {
             return;
@@ -19,7 +19,7 @@
 
         if (!int.TryParse(Value.ToString() + args.Key, out var value) || value < 0)
         {
-            this.isPreventKey = true;
+            this.PreventKey = true;
         }
     }
 

@@ -18,13 +18,13 @@ namespace GeoNRage.Server.Pages
         }
 
         [BindProperty, Required]
-        public string GameName { get; set; }
+        public string GameName { get; set; } = string.Empty;
 
         [BindProperty, Required]
         public string GameMaps { get; set; } = "France_Europe_Monde";
 
         [BindProperty, Required]
-        public string GameColumns { get; set; }
+        public string GameColumns { get; set; } = string.Empty;
 
         [BindProperty, Required]
         public string GameRows { get; set; } = "Round 1_Round 2_Round 3_Round 4_Round 5";
