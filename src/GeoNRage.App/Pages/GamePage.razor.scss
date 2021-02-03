@@ -8,18 +8,18 @@ table {
         text-align: center;
         height: 30px;
         width: 150px;
-        border: 1px solid v.$shadow-light-blue;
+        border: 1px solid v.$foreground;
     }
 
     th {
         height: 30px;
         width: 100px;
-        border: 1px solid v.$shadow-light-blue;
-        background: v.$shadow-dark-blue;
+        border: 1px solid v.$foreground;
+        background: v.$accent;
     }
 
     tr.bordered {
-        border-top: 5px solid v.$shadow-light-blue;
+        border-top: 5px solid v.$foreground;
     }
 }
 

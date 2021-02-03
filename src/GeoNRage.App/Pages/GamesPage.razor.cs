@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class Index : IAsyncDisposable
+    public partial class GamesPage : IAsyncDisposable
     {
         private HubConnection _hubConnection = null!;
 

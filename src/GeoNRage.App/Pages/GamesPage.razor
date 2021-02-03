@@ -1,0 +1,15 @@
+﻿@page "/games"
+
+<Container Condition="IsConnected && Games?.Any() == true">
+    <ul>
+        <Repeater Items="Games">
+            <ItemTemplate Context="game">
+                <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Id — @game.Name</a></li>
+            </ItemTemplate>
+        </Repeater>
+    </ul>
+</Container>
+
+<Container Condition="!IsConnected || Games?.Any() != true">
+    <p>Chargement...</p>
+</Container>

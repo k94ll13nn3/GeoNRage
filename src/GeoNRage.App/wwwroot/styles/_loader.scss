@@ -10,15 +10,25 @@
 }
 
 .logo {
-    font-size: 50px;
+    font-size: 60px;
     font-family: v.$logo-font;
+
+    > .logo-inner {
+        color: v.$accent;
+    }
 }
 
 .svg {
     display: inline-block;
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     animation: svg 5s linear infinite;
+
+    > path {
+        stroke: v.$foreground;
+        fill: v.$accent;
+        stroke-width: 1;
+    }
 }
 
 @keyframes svg {

@@ -9,7 +9,7 @@ input {
 
     &:focus {
         outline: none;
-        border: 0px solid v.$shadow-light-blue;
+        border: 0px solid v.$foreground;
         background-color: lightgrey;
     }
 

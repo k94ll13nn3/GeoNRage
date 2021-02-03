@@ -1,4 +1,4 @@
-﻿@page "/{Id:int}"
+﻿@page "/games/{Id:int}"
 
 
 <Container Condition="IsConnected && Game is not null">
@@ -60,7 +60,7 @@
 </Container>
 
 <Container Condition="!IsConnected || Game is null">
-    <LoadingScreen />
+    <p>Chargement...</p>
 </Container>
 
 
