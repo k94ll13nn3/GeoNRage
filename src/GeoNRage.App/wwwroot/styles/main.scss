@@ -10,6 +10,17 @@ body {
     color: v.$foreground;
     font-weight: normal;
     background: v.$background;
+    height: 100vh;
     padding: 0;
     margin: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover, &:visited, &:active {
+        color: inherit;
+        text-decoration: none;
+    }
 }
