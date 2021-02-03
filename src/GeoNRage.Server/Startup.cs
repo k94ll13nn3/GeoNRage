@@ -31,6 +31,8 @@ namespace GeoNRage.Server
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<GeoNRageDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("GeoNRage.Server")));
+
+            services.AddTransient<GameService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, GeoNRageDbContext context)

@@ -1,0 +1,51 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using GeoNRage.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace GeoNRage.Server.Pages
+{
+    public class AdminModel : PageModel
+    {
+        private readonly GameService _gameService;
+
+        public AdminModel(GameService gameService)
+        {
+            _gameService = gameService;
+        }
+
+        [BindProperty, Required]
+        public string GameName { get; set; }
+
+        [BindProperty, Required]
+        public string GameMaps { get; set; } = "France_Europe_Monde";
+
+        [BindProperty, Required]
+        public string GameColumns { get; set; }
+
+        [BindProperty, Required]
+        public string GameRows { get; set; } = "Round 1_Round 2_Round 3_Round 4_Round 5";
+
+        public IEnumerable<GameBase> Games { get; set; } = Enumerable.Empty<GameBase>();
+
+        public async Task OnGetAsync()
+        {
+            Games = await _gameService.GetAllAsync();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                await _gameService.CreateGameAsync(GameName, GameMaps, GameColumns, GameRows);
+
+                return RedirectToPage("Admin");
+            }
+
+            return Page();
+        }
+    }
+}

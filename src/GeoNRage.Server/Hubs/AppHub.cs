@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Data;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Hubs
 {
     public class AppHub : Hub
     {
-        private GeoNRageDbContext _context;
+        private readonly GameService _gameService;
 
-        public AppHub(GeoNRageDbContext context)
+        public AppHub(GameService gameService)
         {
-            _context = context;
+            _gameService = gameService;
         }
 
         [HubMethodName("JoinGroup")]
@@ -25,7 +23,7 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("LoadGames")]
         public async Task LoadGamesAsync()
         {
-            IEnumerable<GameBase> games = (await _context.Games.ToListAsync()).Cast<GameBase>();
+            IEnumerable<GameBase> games = await _gameService.GetAllAsync();
 
             await Clients.Caller.SendAsync("ReceiveGames", games);
         }
@@ -33,7 +31,7 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("LoadGame")]
         public async Task LoadGameAsync(int id)
         {
-            Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
+            Game? game = await _gameService.GetByIdAsync(id);
             if (game is not null)
             {
                 await Clients.Caller.SendAsync("ReceiveGame", game);
@@ -47,28 +45,11 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("SendMessage")]
         public async Task SendMessageAsync(int id, string columnName, int newValue)
         {
-            Game? game = await _context.Games.FirstOrDefaultAsync(g => g.Id == id);
+            Game? game = await _gameService.GetByIdAsync(id);
 
             if (game is not null)
             {
-                Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == id && x.Key == columnName);
-                if (value is null)
-                {
-                    value = new Value
-                    {
-                        GameId = id,
-                        Key = columnName,
-                        Score = newValue,
-                    };
-                    _context.Values.Add(value);
-                }
-                else
-                {
-                    value.Score = newValue;
-                    _context.Values.Update(value);
-                }
-
-                await _context.SaveChangesAsync();
+                await _gameService.UpdateValueAsync(id, columnName, newValue);
 
                 await Clients.Group($"group-${id}").SendAsync("ReceiveRow", columnName, newValue);
             }
