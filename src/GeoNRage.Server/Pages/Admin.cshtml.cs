@@ -29,7 +29,7 @@ namespace GeoNRage.Server.Pages
         [BindProperty, Required]
         public string GameRows { get; set; } = "Round 1_Round 2_Round 3_Round 4_Round 5";
 
-        public IEnumerable<GameBase> Games { get; set; } = Enumerable.Empty<GameBase>();
+        public IEnumerable<Game> Games { get; set; } = Enumerable.Empty<Game>();
 
         public async Task OnGetAsync()
         {
@@ -46,6 +46,23 @@ namespace GeoNRage.Server.Pages
             }
 
             return Page();
+        }
+        public async Task<IActionResult> OnPostEditAsync(int id, string name, string maps, string columns, string rows)
+        {
+            await _gameService.UpdateGameAsync(id, name, maps, columns, rows);
+            return RedirectToPage("Admin");
+        }
+
+        public async Task<IActionResult> OnPostResetAsync(int id)
+        {
+            await _gameService.ResetGameAsync(id);
+            return RedirectToPage("Admin");
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            await _gameService.DeleteGameAsync(id);
+            return RedirectToPage("Admin");
         }
     }
 }

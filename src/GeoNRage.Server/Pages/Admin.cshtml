@@ -23,7 +23,19 @@
         <ul>
             @foreach (var game in Model.Games)
             {
-                <li>@game.Id - @game.Name</li>
+                <li>
+                    <form a method="post">
+                        @game.Id - @game.Name
+                        <input type="hidden" name="id" value="@game.Id" />
+                        <input type="text" name="name" value="@game.Name" />
+                        <input type="hidden" name="maps" value="@string.Join("_", game.Maps)" />
+                        <input type="text" name="columns" value="@string.Join("_", game.Columns)" />
+                        <input type="hidden" name="rows" value="@string.Join("_", game.Rows)" />
+                        <button type="submit" asp-page-handler="edit">Edit</button>
+                        <button type="submit" asp-page-handler="delete">Supprimer</button>
+                        <button type="submit" asp-page-handler="reset">Vider</button>
+                    </form>
+                </li>
             }
         </ul>
     }

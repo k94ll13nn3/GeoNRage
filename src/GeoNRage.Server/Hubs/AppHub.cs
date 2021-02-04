@@ -23,7 +23,7 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("LoadGames")]
         public async Task LoadGamesAsync()
         {
-            IEnumerable<GameBase> games = await _gameService.GetAllAsync();
+            IEnumerable<GameBase> games = await _gameService.GetAllBaseAsync();
 
             await Clients.Caller.SendAsync("ReceiveGames", games);
         }
