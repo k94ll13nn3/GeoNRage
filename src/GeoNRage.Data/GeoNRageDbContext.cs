@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GeoNRage.Data
@@ -19,12 +22,21 @@ namespace GeoNRage.Data
         {
             _ = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
 
-            var stringCollectionConverter = new ValueConverter<ICollection<string>, string>(v => string.Join("_", v), v => v.Split(new[] { '_' }));
+            // https://docs.microsoft.com/fr-fr/ef/core/modeling/value-conversions?tabs=data-annotations#collections-of-primitives
+            // Keep the cast to ICollection<string>!!
+            var stringCollectionValueConverter = new ValueConverter<ICollection<string>, string>(
+                v => JsonSerializer.Serialize(v, null),
+                v => JsonSerializer.Deserialize<List<string>>(v, null));
+            var stringCollectionValueComparer = new ValueComparer<ICollection<string>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => (ICollection<string>)c.ToList());
 
             modelBuilder.Entity<Game>().HasKey(g => g.Id);
-            modelBuilder.Entity<Game>().Property(g => g.Columns).HasConversion(stringCollectionConverter);
-            modelBuilder.Entity<Game>().Property(g => g.Rows).HasConversion(stringCollectionConverter);
-            modelBuilder.Entity<Game>().Property(g => g.Maps).HasConversion(stringCollectionConverter);
+            modelBuilder.Entity<Game>().Property(g => g.CreationDate).IsRequired();
+            modelBuilder.Entity<Game>().Property(g => g.Columns).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
+            modelBuilder.Entity<Game>().Property(g => g.Rows).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
+            modelBuilder.Entity<Game>().Property(g => g.Maps).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
 
             modelBuilder.Entity<Value>().HasKey(v => v.Id);
             modelBuilder.Entity<Value>().HasOne(v => v.Game).WithMany(g => g.Values).HasForeignKey(v => v.GameId);

@@ -1,6 +1,6 @@
 ﻿@page "/games"
 
-<Container Condition="IsConnected && Games?.Any() == true">
+<Container Condition="IsConnected && Games is not null && Games.Any()">
     <ul>
         <Repeater Items="Games">
             <ItemTemplate Context="game">
@@ -10,6 +10,10 @@
     </ul>
 </Container>
 
-<Container Condition="!IsConnected || Games?.Any() != true">
+<Container Condition="IsConnected && Games is not null && !Games.Any()">
+    <p>Pas de parties trouvées.</p>
+</Container>
+
+<Container Condition="!IsConnected || Games is null">
     <p>Chargement...</p>
 </Container>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GeoNRage.Data
@@ -12,6 +13,8 @@ namespace GeoNRage.Data
             Maps = new HashSet<string>();
             Values = new HashSet<Value>();
         }
+
+        public DateTime CreationDate { get; set; }
 
         public ICollection<string> Columns { get; set; }
 
