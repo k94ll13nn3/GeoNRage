@@ -42,16 +42,16 @@ namespace GeoNRage.Server.Hubs
             }
         }
 
-        [HubMethodName("SendMessage")]
-        public async Task SendMessageAsync(int id, string columnName, int newValue)
+        [HubMethodName("UpdateValue")]
+        public async Task UpdateValueAsync(int id, string key, int score)
         {
             Game? game = await _gameService.GetByIdAsync(id);
 
             if (game is not null)
             {
-                await _gameService.UpdateValueAsync(id, columnName, newValue);
+                await _gameService.UpdateValueAsync(id, key, score);
 
-                await Clients.Group($"group-${id}").SendAsync("ReceiveRow", columnName, newValue);
+                await Clients.OthersInGroup($"group-${id}").SendAsync("ReceiveValue", key, score);
             }
         }
     }

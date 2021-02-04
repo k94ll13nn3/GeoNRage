@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Data;
@@ -21,6 +22,8 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
+        public Dictionary<string, (int total, int position)> Totals { get; set; } = new();
+
         public async ValueTask DisposeAsync()
         {
             await _hubConnection.DisposeAsync();
@@ -34,26 +37,45 @@ namespace GeoNRage.App.Pages
 
             _hubConnection.On<Game>("ReceiveGame", HandleReceiveGameAsync);
 
-            _hubConnection.On<string, int>("ReceiveRow", (name, value) =>
-            {
-                if (Game is not null)
-                {
-                    var v = Game.Values.FirstOrDefault(x => x.Key == name);
-                    if (v is null)
-                    {
-                        Game.Values.Add(new Value { Score = value, Key = name, GameId = Game.Id });
-                    }
-                    else
-                    {
-                        Game.Values.First(x => x.Key == name).Score = value;
-                    }
-                }
-
-                StateHasChanged();
-            });
+            _hubConnection.On<string, int>("ReceiveValue", HandleReceiveValue);
 
             await _hubConnection.StartAsync();
             await _hubConnection.SendAsync("LoadGame", Id);
+        }
+
+        private void ComputeTotals()
+        {
+            foreach (string map in Game.Maps)
+            {
+                var scores = new List<(string key, int score)>();
+                foreach (string column in Game.Columns)
+                {
+                    scores.Add(($"{map}_{column}", Game.Values.Where(x => x.Key.StartsWith($"{map}_{column}_")).Sum(x => x.Score)));
+                }
+
+                foreach (var item in scores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
+                {
+                    Totals[item.key] = (item.score, item.index);
+                }
+            }
+
+            var scores2 = new List<(string key, int score)>();
+            foreach (string column in Game.Columns)
+            {
+                scores2.Add(($"{column}", Game.Values.Where(x => x.Key.Contains($"_{column}_")).Sum(x => x.Score)));
+            }
+
+            foreach (var item in scores2.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
+            {
+                Totals[item.key] = (item.score, item.index);
+            }
+        }
+
+        private void HandleReceiveValue(string key, int score)
+        {
+            Game[key] = score;
+            ComputeTotals();
+            StateHasChanged();
         }
 
         private async Task HandleReceiveGameAsync(Game game)
@@ -65,28 +87,20 @@ namespace GeoNRage.App.Pages
             else
             {
                 Game = game;
-                StateHasChanged();
                 await _hubConnection.SendAsync("JoinGroup", Id);
+
+                ComputeTotals();
+                StateHasChanged();
             }
         }
 
-        private void Send(string name, int value)
+        private void Send(string key, int score)
         {
-            int clampedValue = Math.Clamp(value, 0, 5000);
-            if (Game is not null)
-            {
-                var v = Game.Values.FirstOrDefault(x => x.Key == name);
-                if (v is null)
-                {
-                    Game.Values.Add(new Value { Score = value, Key = name, GameId = Game.Id });
-                }
-                else
-                {
-                    Game.Values.First(x => x.Key == name).Score = value;
-                }
-            }
+            int clampedValue = Math.Clamp(score, 0, 5000);
+            Game[key] = clampedValue;
 
-            _hubConnection.SendAsync("SendMessage", Id, name, clampedValue);
+            _hubConnection.SendAsync("UpdateValue", Id, key, clampedValue);
+            ComputeTotals();
         }
     }
 }
