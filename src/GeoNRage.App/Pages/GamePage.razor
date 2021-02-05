@@ -25,7 +25,7 @@
                                         var key = $"{map}_{column}_{row}";
                                     }
                                     <td>
-                                        <NumericInput Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked"></NumericInput>
+                                        <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
                                     </td>
                                 </ItemTemplate>
                             </Repeater>

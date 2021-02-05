@@ -10,6 +10,8 @@ namespace GeoNRage.App.Pages
 {
     public partial class GamePage : IAsyncDisposable
     {
+        private bool _canRender = true;
+        private bool _nextRender;
         private HubConnection _hubConnection = null!;
 
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
@@ -53,7 +55,7 @@ namespace GeoNRage.App.Pages
                     scores.Add(($"{map}_{column}", Game.Values.Where(x => x.Key.StartsWith($"{map}_{column}_")).Sum(x => x.Score)));
                 }
 
-                foreach (var item in scores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
+                foreach ((string key, int score, int index) item in scores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
                 {
                     Totals[item.key] = (item.score, item.index);
                 }
@@ -65,7 +67,7 @@ namespace GeoNRage.App.Pages
                 scores2.Add(($"{column}", Game.Values.Where(x => x.Key.Contains($"_{column}_")).Sum(x => x.Score)));
             }
 
-            foreach (var item in scores2.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
+            foreach ((string key, int score, int index) item in scores2.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
             {
                 Totals[item.key] = (item.score, item.index);
             }
@@ -75,7 +77,7 @@ namespace GeoNRage.App.Pages
         {
             Game[key] = score;
             ComputeTotals();
-            StateHasChanged();
+            UpdatePage();
         }
 
         private async Task HandleReceiveGameAsync(Game game)
@@ -90,7 +92,7 @@ namespace GeoNRage.App.Pages
                 await _hubConnection.SendAsync("JoinGroup", Id);
 
                 ComputeTotals();
-                StateHasChanged();
+                UpdatePage();
             }
         }
 
@@ -101,6 +103,28 @@ namespace GeoNRage.App.Pages
 
             _hubConnection.SendAsync("UpdateValue", Id, key, clampedValue);
             ComputeTotals();
+        }
+
+        private void InputFocused(bool focused)
+        {
+            _canRender = !focused;
+            if (!focused && _nextRender)
+            {
+                UpdatePage();
+            }
+        }
+
+        private void UpdatePage()
+        {
+            if (_canRender)
+            {
+                StateHasChanged();
+                _nextRender = false;
+            }
+            else
+            {
+                _nextRender = true;
+            }
         }
     }
 }
