@@ -15,7 +15,7 @@
     private void OnKeydown(KeyboardEventArgs args)
     {
         this.PreventKey = false;
-        if (args.Code == "Tab" || args.Code == "Backspace" || args.Code == "Enter")
+        if (args.Key == "Tab" || args.Key == "Backspace" || args.Key == "Enter")
         {
             return;
         }
