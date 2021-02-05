@@ -24,7 +24,7 @@
 
   <!-- MinVer properties -->
   <PropertyGroup>
-    <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
+    <MinVerMinimumMajorMinor>0.2</MinVerMinimumMajorMinor>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <MinVerDefaultPreReleasePhase>dev</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
