@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+        - geonrage
+
+  app:
+    image: geonrage
+    container_name: geonrage-container
+    environment:
+      ConnectionStrings__DefaultConnection: "server=mysql-container; port=3306; database=GeoNRage; user=root; password=root; Persist Security Info=False; Connect Timeout=300"
+    ports:
+      - "8080:80"
+      - "8083:443"
+    networks:
+      - geonrage
+    restart: always
+
+volumes:
+  mysql-data:
+
+networks:
+  geonrage:
+    external: true

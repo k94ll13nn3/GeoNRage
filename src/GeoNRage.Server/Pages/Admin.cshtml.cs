@@ -57,12 +57,6 @@ namespace GeoNRage.Server.Pages
             return RedirectToPage("Admin");
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
-        {
-            await _gameService.DeleteGameAsync(id);
-            return RedirectToPage("Admin");
-        }
-
         public async Task<IActionResult> OnPostLockAsync(int id)
         {
             await _gameService.LockGameAsync(id);
