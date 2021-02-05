@@ -8,17 +8,16 @@ namespace GeoNRage.Data
     {
         public Game()
         {
-            Columns = new HashSet<string>();
-            Rows = new HashSet<string>();
+            Players = new HashSet<string>();
             Maps = new HashSet<string>();
             Values = new HashSet<Value>();
         }
 
         public DateTime CreationDate { get; set; }
 
-        public ICollection<string> Columns { get; set; }
+        public int Rounds { get; set; }
 
-        public ICollection<string> Rows { get; set; }
+        public ICollection<string> Players { get; set; }
 
         public ICollection<string> Maps { get; set; }
 

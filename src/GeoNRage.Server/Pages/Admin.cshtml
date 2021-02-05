@@ -31,8 +31,7 @@
                             <input type="hidden" name="id" value="@game.Id" />
                             <input type="text" name="name" value="@game.Name" />
                             <input type="hidden" name="maps" value="@string.Join("_", game.Maps)" />
-                            <input type="text" name="columns" value="@string.Join("_", game.Columns)" />
-                            <input type="hidden" name="rows" value="@string.Join("_", game.Rows)" />
+                            <input type="text" name="players" value="@string.Join("_", game.Players)" />
                             <button type="submit" asp-page-handler="edit">Edit</button>
                             <button type="submit" asp-page-handler="delete">Supprimer</button>
                             <button type="submit" asp-page-handler="reset">Vider</button>
@@ -69,14 +68,9 @@
             <span asp-validation-for="GameMaps"></span>
         </div>
         <div>
-            <label asp-for="GameColumns"></label>
-            <input asp-for="GameColumns" />
-            <span asp-validation-for="GameColumns"></span>
-        </div>
-        <div>
-            <label asp-for="GameRows"></label>
-            <input asp-for="GameRows" />
-            <span asp-validation-for="GameRows"></span>
+            <label asp-for="GamePlayers"></label>
+            <input asp-for="GamePlayers" />
+            <span asp-validation-for="GamePlayers"></span>
         </div>
 
         <button>Créer</button>

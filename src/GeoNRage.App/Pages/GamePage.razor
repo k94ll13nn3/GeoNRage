@@ -8,21 +8,21 @@
             <ItemTemplate Context="map">
                 <tr>
                     <th>@map</th>
-                    <Repeater Items="Game.Columns">
-                        <ItemTemplate Context="column">
-                            <th>@column</th>
+                    <Repeater Items="Game.Players">
+                        <ItemTemplate Context="player">
+                            <th>@player</th>
                         </ItemTemplate>
                     </Repeater>
                 </tr>
 
-                <Repeater Items="Game.Rows">
-                    <ItemTemplate Context="row">
+                <Repeater Items="Enumerable.Range(1, Game.Rounds)">
+                    <ItemTemplate Context="round">
                         <tr>
-                            <th>@row</th>
-                            <Repeater Items="Game.Columns">
-                                <ItemTemplate Context="column">
+                            <th>Round @round</th>
+                            <Repeater Items="Game.Players">
+                                <ItemTemplate Context="player">
                                     @{
-                                        var key = $"{map}_{column}_{row}";
+                                        var key = $"{map}_{player}_Round {round}";
                                     }
                                     <td>
                                         <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
@@ -35,9 +35,9 @@
 
                 <tr>
                     <th>Total @map</th>
-                    <Repeater Items="Game.Columns">
-                        <ItemTemplate Context="column">
-                            <td>@Totals[$"{map}_{column}"].total (@Totals[$"{map}_{column}"].position)</td>
+                    <Repeater Items="Game.Players">
+                        <ItemTemplate Context="player">
+                            <td>@Totals[$"{map}_{player}"].total (@Totals[$"{map}_{player}"].position)</td>
                         </ItemTemplate>
                     </Repeater>
                 </tr>
@@ -48,9 +48,9 @@
 
         <tr class="bordered">
             <th>Total </th>
-            <Repeater Items="Game.Columns">
-                <ItemTemplate Context="column">
-                    <td>@Totals[$"{column}"].total (@Totals[$"{column}"].position)</td>
+            <Repeater Items="Game.Players">
+                <ItemTemplate Context="player">
+                    <td>@Totals[$"{player}"].total (@Totals[$"{player}"].position)</td>
                 </ItemTemplate>
             </Repeater>
         </tr>

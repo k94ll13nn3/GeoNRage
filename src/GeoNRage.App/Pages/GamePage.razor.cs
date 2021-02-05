@@ -50,9 +50,9 @@ namespace GeoNRage.App.Pages
             foreach (string map in Game.Maps)
             {
                 var scores = new List<(string key, int score)>();
-                foreach (string column in Game.Columns)
+                foreach (string player in Game.Players)
                 {
-                    scores.Add(($"{map}_{column}", Game.Values.Where(x => x.Key.StartsWith($"{map}_{column}_")).Sum(x => x.Score)));
+                    scores.Add(($"{map}_{player}", Game.Values.Where(x => x.GetMap() == map && x.GetPlayer() == player).Sum(x => x.Score)));
                 }
 
                 foreach ((string key, int score, int index) item in scores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
@@ -62,9 +62,9 @@ namespace GeoNRage.App.Pages
             }
 
             var scores2 = new List<(string key, int score)>();
-            foreach (string column in Game.Columns)
+            foreach (string player in Game.Players)
             {
-                scores2.Add(($"{column}", Game.Values.Where(x => x.Key.Contains($"_{column}_")).Sum(x => x.Score)));
+                scores2.Add(($"{player}", Game.Values.Where(x => x.GetPlayer() == player).Sum(x => x.Score)));
             }
 
             foreach ((string key, int score, int index) item in scores2.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))

@@ -26,14 +26,17 @@ namespace GeoNRage.Data
             return (await GetAllAsync()).Cast<GameBase>();
         }
 
-        public async Task<GameBase> CreateGameAsync(string name, string maps, string columns, string rows)
+        public async Task<GameBase> CreateGameAsync(string name, ICollection<string> maps, ICollection<string> players)
         {
+            _ = maps ?? throw new ArgumentNullException(nameof(maps));
+            _ = players ?? throw new ArgumentNullException(nameof(players));
+
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
                 Name = name,
-                Maps = maps.Split('_'),
-                Columns = columns.Split('_'),
-                Rows = rows.Split('_'),
+                Maps = maps,
+                Players = players,
+                Rounds = 5,
                 CreationDate = DateTime.UtcNow,
             });
             await _context.SaveChangesAsync();
@@ -41,8 +44,11 @@ namespace GeoNRage.Data
             return game.Entity;
         }
 
-        public async Task UpdateGameAsync(int id, string name, string maps, string columns, string rows)
+        public async Task UpdateGameAsync(int id, string name, ICollection<string> maps, ICollection<string> players)
         {
+            _ = maps ?? throw new ArgumentNullException(nameof(maps));
+            _ = players ?? throw new ArgumentNullException(nameof(players));
+
             Game? game = await _context.Games.FindAsync(id);
             if (game is not null)
             {
@@ -52,9 +58,8 @@ namespace GeoNRage.Data
                 }
 
                 game.Name = name;
-                game.Maps = maps.Split('_');
-                game.Columns = columns.Split('_');
-                game.Rows = rows.Split('_');
+                game.Maps = maps;
+                game.Players = players;
 
                 _context.Games.Update(game);
                 await _context.SaveChangesAsync();

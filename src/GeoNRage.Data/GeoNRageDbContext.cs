@@ -34,9 +34,9 @@ namespace GeoNRage.Data
 
             modelBuilder.Entity<Game>().HasKey(g => g.Id);
             modelBuilder.Entity<Game>().Property(g => g.CreationDate).IsRequired();
-            modelBuilder.Entity<Game>().Property(g => g.Columns).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
-            modelBuilder.Entity<Game>().Property(g => g.Rows).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
+            modelBuilder.Entity<Game>().Property(g => g.Rounds).IsRequired();
             modelBuilder.Entity<Game>().Property(g => g.Maps).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
+            modelBuilder.Entity<Game>().Property(g => g.Players).IsRequired().HasConversion(stringCollectionValueConverter, stringCollectionValueComparer);
 
             modelBuilder.Entity<Value>().HasKey(v => v.Id);
             modelBuilder.Entity<Value>().HasOne(v => v.Game).WithMany(g => g.Values).HasForeignKey(v => v.GameId);

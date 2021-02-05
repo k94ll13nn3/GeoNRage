@@ -24,10 +24,7 @@ namespace GeoNRage.Server.Pages
         public string GameMaps { get; set; } = "France_Europe_Monde";
 
         [BindProperty, Required]
-        public string GameColumns { get; set; } = string.Empty;
-
-        [BindProperty, Required]
-        public string GameRows { get; set; } = "Round 1_Round 2_Round 3_Round 4_Round 5";
+        public string GamePlayers { get; set; } = string.Empty;
 
         public IEnumerable<Game> Games { get; set; } = Enumerable.Empty<Game>();
 
@@ -40,16 +37,17 @@ namespace GeoNRage.Server.Pages
         {
             if (ModelState.IsValid)
             {
-                await _gameService.CreateGameAsync(GameName, GameMaps, GameColumns, GameRows);
+                await _gameService.CreateGameAsync(GameName, GameMaps.Split('_'), GamePlayers.Split('_'));
 
                 return RedirectToPage("Admin");
             }
 
             return Page();
         }
-        public async Task<IActionResult> OnPostEditAsync(int id, string name, string maps, string columns, string rows)
+
+        public async Task<IActionResult> OnPostEditAsync(int id, string name, string maps, string players)
         {
-            await _gameService.UpdateGameAsync(id, name, maps, columns, rows);
+            await _gameService.UpdateGameAsync(id, name, maps.Split('_'), players.Split('_'));
             return RedirectToPage("Admin");
         }
 
