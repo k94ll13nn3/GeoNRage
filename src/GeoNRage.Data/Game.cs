@@ -16,8 +16,6 @@ namespace GeoNRage.Data
 
         public DateTime CreationDate { get; set; }
 
-        public bool Locked { get; set; }
-
         public ICollection<string> Columns { get; set; }
 
         public ICollection<string> Rows { get; set; }

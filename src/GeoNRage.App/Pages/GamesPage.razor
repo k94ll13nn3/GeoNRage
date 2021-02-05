@@ -4,7 +4,7 @@
     <ul>
         <Repeater Items="Games">
             <ItemTemplate Context="game">
-                <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Id — @game.Name</a></li>
+                <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Id — @game.Name @(game.Locked ? "(terminée)" : "")</a></li>
             </ItemTemplate>
         </Repeater>
     </ul>

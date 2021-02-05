@@ -18,12 +18,12 @@ namespace GeoNRage.Data
 
         public async Task<IEnumerable<Game>> GetAllAsync()
         {
-            return await _context.Games.ToListAsync();
+            return await _context.Games.OrderByDescending(g => g.CreationDate).ToListAsync();
         }
 
         public async Task<IEnumerable<GameBase>> GetAllBaseAsync()
         {
-            return (await _context.Games.ToListAsync()).Cast<GameBase>();
+            return (await GetAllAsync()).Cast<GameBase>();
         }
 
         public async Task<GameBase> CreateGameAsync(string name, string maps, string columns, string rows)
