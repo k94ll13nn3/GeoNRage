@@ -46,6 +46,11 @@ namespace GeoNRage.Data
             Game? game = await _context.Games.FindAsync(id);
             if (game is not null)
             {
+                if (game.Locked)
+                {
+                    throw new InvalidOperationException("Cannot update a locked game.");
+                }
+
                 game.Name = name;
                 game.Maps = maps.Split('_');
                 game.Columns = columns.Split('_');
@@ -66,6 +71,17 @@ namespace GeoNRage.Data
             }
         }
 
+        public async Task LockGameAsync(int id)
+        {
+            Game? game = await _context.Games.FindAsync(id);
+            if (game is not null)
+            {
+                game.Locked = true;
+                _context.Games.Update(game);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task ResetGameAsync(int id)
         {
             List<Value> values = await _context.Values.Where(v => v.GameId == id).ToListAsync();
@@ -80,24 +96,33 @@ namespace GeoNRage.Data
 
         public async Task UpdateValueAsync(int gameId, string key, int newScore)
         {
-            Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == gameId && x.Key == key);
-            if (value is null)
+            Game? game = await _context.Games.FindAsync(gameId);
+            if (game is not null)
             {
-                value = new Value
+                if (game.Locked)
                 {
-                    GameId = gameId,
-                    Key = key,
-                    Score = newScore,
-                };
-                _context.Values.Add(value);
-            }
-            else
-            {
-                value.Score = newScore;
-                _context.Values.Update(value);
-            }
+                    throw new InvalidOperationException("Cannot update a locked game.");
+                }
 
-            await _context.SaveChangesAsync();
+                Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == gameId && x.Key == key);
+                if (value is null)
+                {
+                    value = new Value
+                    {
+                        GameId = gameId,
+                        Key = key,
+                        Score = newScore,
+                    };
+                    _context.Values.Add(value);
+                }
+                else
+                {
+                    value.Score = newScore;
+                    _context.Values.Update(value);
+                }
+
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

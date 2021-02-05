@@ -1,8 +1,11 @@
-﻿<input type="number" value="@Value" @onchange="Send" @oninput="OnInput" @onkeydown="@OnKeydown" @onkeydown:preventDefault="@PreventKey" />
+﻿<input type="number" value="@Value" @onchange="Send" @oninput="OnInput" @onkeydown="@OnKeydown" @onkeydown:preventDefault="@PreventKey" disabled="@Disabled" />
 
 @code {
     [Parameter]
     public int Value { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
 
     [Parameter]
     public EventCallback<int> ValueChanged { get; set; }

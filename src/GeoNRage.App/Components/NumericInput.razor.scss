@@ -13,6 +13,11 @@ input {
         background-color: lightgrey;
     }
 
+    &:disabled, &[disabled] {
+        background-color: v.$background;
+        color: v.$foreground;
+    }
+
     &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
