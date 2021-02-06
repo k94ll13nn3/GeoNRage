@@ -42,7 +42,7 @@ namespace GeoNRage.App.Pages
             _hubConnection.On<string, int>("ReceiveValue", HandleReceiveValue);
 
             await _hubConnection.StartAsync();
-            await _hubConnection.SendAsync("LoadGame", Id);
+            await _hubConnection.InvokeAsync("LoadGame", Id);
         }
 
         private void ComputeTotals()
@@ -89,7 +89,7 @@ namespace GeoNRage.App.Pages
             else
             {
                 Game = game;
-                await _hubConnection.SendAsync("JoinGroup", Id);
+                await _hubConnection.InvokeAsync("JoinGroup", Id);
 
                 ComputeTotals();
                 UpdatePage();
@@ -101,7 +101,7 @@ namespace GeoNRage.App.Pages
             int clampedValue = Math.Clamp(score, 0, 5000);
             Game[key] = clampedValue;
 
-            _hubConnection.SendAsync("UpdateValue", Id, key, clampedValue);
+            _hubConnection.InvokeAsync("UpdateValue", Id, key, clampedValue);
             ComputeTotals();
         }
 

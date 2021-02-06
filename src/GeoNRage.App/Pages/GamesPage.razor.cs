@@ -36,7 +36,7 @@ namespace GeoNRage.App.Pages
             });
 
             await _hubConnection.StartAsync();
-            await _hubConnection.SendAsync("LoadGames");
+            await _hubConnection.InvokeAsync("LoadGames");
         }
     }
 }
