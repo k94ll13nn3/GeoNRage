@@ -41,11 +41,7 @@
                 else
                 {
                     <li>
-                        <form a method="post">
-                            @game.Id - @game.Name
-                            <input type="hidden" name="id" value="@game.Id" />
-                            <button type="submit" asp-page-handler="delete">Supprimer</button>
-                        </form>
+                        @game.Id - @game.Name
                     </li>
                 }
             }
