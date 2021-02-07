@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -23,8 +22,8 @@ namespace GeoNRage.Server.Security
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            string authority = Request.Headers[":authority"];
-            if (authority == Configuration.GetValue<string>("AllowedAuthority"))
+            string host = Request.Headers["Host"];
+            if (host == Configuration.GetValue<string>("AllowedAuthority"))
             {
                 Claim[] claims = new[] { new Claim("GeoNRage", "Ok") };
                 var identity = new ClaimsIdentity(claims, nameof(GeoNRageAuthenticationHandler));
@@ -32,7 +31,7 @@ namespace GeoNRage.Server.Security
                 return Task.FromResult(AuthenticateResult.Success(ticket));
             }
 
-            return Task.FromResult(AuthenticateResult.Fail($"Authority '{authority}' ({Request.Headers["Referer"]}): not allowed."));
+            return Task.FromResult(AuthenticateResult.Fail($"Authority '{host}' ({Request.Headers["Referer"]}) / ({Request.Headers[":authority"]}): not allowed."));
         }
     }
 }
