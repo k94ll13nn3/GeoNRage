@@ -218,7 +218,20 @@ namespace GeoNRage.App.Pages
             {
                 int sum = 0;
                 var scores = new List<int>();
-                foreach (int score in Game.Values.Where(x => x.GetPlayer() == player).OrderBy(x => x.GetRound()).Select(x => x.Score).TakeWhile(x => x > 0))
+
+                var v = new List<int>();
+                foreach (var map in Game.Maps)
+                {
+                    for (int i = 0; i < Game.Rounds; i++)
+                    {
+                        v.Add(Game[$"{map}_{player}_Round {i + 1}"]);
+                    }
+                }
+
+
+                IEnumerable<int> values = v
+                    .TakeWhile(x => x > 0);
+                foreach (int score in values)
                 {
                     sum += score;
                     scores.Add(sum);
