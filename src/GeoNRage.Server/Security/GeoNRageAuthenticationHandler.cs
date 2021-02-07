@@ -32,7 +32,7 @@ namespace GeoNRage.Server.Security
                 return Task.FromResult(AuthenticateResult.Success(ticket));
             }
 
-            return Task.FromResult(AuthenticateResult.Fail($"Authority '{authority}': not allowed."));
+            return Task.FromResult(AuthenticateResult.Fail($"Authority '{authority}' ({Request.Headers["Referer"]}): not allowed."));
         }
     }
 }
