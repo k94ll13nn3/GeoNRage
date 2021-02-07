@@ -17,5 +17,7 @@ namespace GeoNRage.Data
         public string GetMap() => Key.Split('_')[0];
 
         public string GetPlayer() => Key.Split('_')[1];
+
+        public string GetRound() => Key.Split('_')[2];
     }
 }

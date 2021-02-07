@@ -12,6 +12,7 @@ namespace GeoNRage.App.Pages
         private HubConnection _hubConnection = null!;
 
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+        public bool IsLoaded { get; set; }
 
         public IEnumerable<GameBase> Games { get; set; } = Array.Empty<GameBase>();
 
@@ -32,6 +33,7 @@ namespace GeoNRage.App.Pages
             _hubConnection.On<IEnumerable<GameBase>>("ReceiveGames", games =>
             {
                 Games = games;
+                IsLoaded = true;
                 StateHasChanged();
             });
 

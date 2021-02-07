@@ -1,60 +1,68 @@
 ﻿@page "/games/{Id:int}"
 
+@using ChartJs.Blazor;
+
 <Container Condition="IsConnected && Game is not null">
     <h1>#@Game!.Id — @Game!.Name</h1>
 
-    <table>
-        <Repeater Items="Game.Maps">
-            <ItemTemplate Context="map">
-                <tr>
-                    <th>@map</th>
-                    <Repeater Items="Game.Players">
-                        <ItemTemplate Context="player">
-                            <th>@player</th>
+    <div class="container">
+        <table>
+            <Repeater Items="Game.Maps">
+                <ItemTemplate Context="map">
+                    <tr>
+                        <th>@map</th>
+                        <Repeater Items="Game.Players">
+                            <ItemTemplate Context="player">
+                                <th>@player</th>
+                            </ItemTemplate>
+                        </Repeater>
+                    </tr>
+
+                    <Repeater Items="Enumerable.Range(1, Game.Rounds)">
+                        <ItemTemplate Context="round">
+                            <tr>
+                                <th>Round @round</th>
+                                <Repeater Items="Game.Players">
+                                    <ItemTemplate Context="player">
+                                        @{
+                                            var key = $"{map}_{player}_Round {round}";
+                                        }
+                                        <td>
+                                            <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
+                                        </td>
+                                    </ItemTemplate>
+                                </Repeater>
+                            </tr>
                         </ItemTemplate>
                     </Repeater>
-                </tr>
 
-                <Repeater Items="Enumerable.Range(1, Game.Rounds)">
-                    <ItemTemplate Context="round">
-                        <tr>
-                            <th>Round @round</th>
-                            <Repeater Items="Game.Players">
-                                <ItemTemplate Context="player">
-                                    @{
-                                        var key = $"{map}_{player}_Round {round}";
-                                    }
-                                    <td>
-                                        <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
-                                    </td>
-                                </ItemTemplate>
-                            </Repeater>
-                        </tr>
-                    </ItemTemplate>
-                </Repeater>
-
-                <tr>
-                    <th>Total @map</th>
-                    <Repeater Items="Game.Players">
-                        <ItemTemplate Context="player">
-                            <td>@Totals[$"{map}_{player}"].total (@Totals[$"{map}_{player}"].position)</td>
-                        </ItemTemplate>
-                    </Repeater>
-                </tr>
-            </ItemTemplate>
-        </Repeater>
-
-        <tr style="border-bottom: 1px solid #000;"></tr>
-
-        <tr class="bordered">
-            <th>Total </th>
-            <Repeater Items="Game.Players">
-                <ItemTemplate Context="player">
-                    <td>@Totals[$"{player}"].total (@Totals[$"{player}"].position)</td>
+                    <tr>
+                        <th>Total @map</th>
+                        <Repeater Items="Game.Players">
+                            <ItemTemplate Context="player">
+                                <td>@Totals[$"{map}_{player}"].total (@Totals[$"{map}_{player}"].position)</td>
+                            </ItemTemplate>
+                        </Repeater>
+                    </tr>
                 </ItemTemplate>
             </Repeater>
-        </tr>
-    </table>
+
+            <tr style="border-bottom: 1px solid #000;"></tr>
+
+            <tr class="bordered">
+                <th>Total </th>
+                <Repeater Items="Game.Players">
+                    <ItemTemplate Context="player">
+                        <td>@Totals[$"{player}"].total (@Totals[$"{player}"].position)</td>
+                    </ItemTemplate>
+                </Repeater>
+            </tr>
+        </table>
+
+        <div>
+            <Chart Config="PlotConfig" Height="400" Width="500" @ref="Chart"></Chart>
+        </div>
+    </div>
 </Container>
 
 <Container Condition="!IsConnected || Game is null">

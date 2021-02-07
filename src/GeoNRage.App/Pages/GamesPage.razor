@@ -10,10 +10,10 @@
     </ul>
 </Container>
 
-<Container Condition="IsConnected && Games is not null && !Games.Any()">
+<Container Condition="IsConnected && IsLoaded && Games is not null && !Games.Any()">
     <p>Pas de parties trouvées.</p>
 </Container>
 
-<Container Condition="!IsConnected || Games is null">
+<Container Condition="!IsConnected || !IsLoaded || Games is null">
     <p>Chargement...</p>
 </Container>

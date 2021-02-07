@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using ChartJs.Blazor;
+using ChartJs.Blazor.Common;
+using ChartJs.Blazor.Common.Axes;
+using ChartJs.Blazor.Common.Enums;
+using ChartJs.Blazor.LineChart;
+using ChartJs.Blazor.Util;
 using GeoNRage.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -17,6 +24,10 @@ namespace GeoNRage.App.Pages
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
 
         public Game? Game { get; set; }
+
+        public LineConfig PlotConfig { get; set; }
+
+        public Chart Chart { get; set; }
 
         [Parameter]
         public int Id { get; set; }
@@ -77,6 +88,8 @@ namespace GeoNRage.App.Pages
         {
             Game[key] = score;
             ComputeTotals();
+            UpdatePlot();
+            Chart.Update();
             UpdatePage();
         }
 
@@ -90,7 +103,7 @@ namespace GeoNRage.App.Pages
             {
                 Game = game;
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
-
+                CreatePlot();
                 ComputeTotals();
                 UpdatePage();
             }
@@ -103,6 +116,8 @@ namespace GeoNRage.App.Pages
 
             _hubConnection.InvokeAsync("UpdateValue", Id, key, clampedValue);
             ComputeTotals();
+            UpdatePlot();
+            Chart.Update();
         }
 
         private void InputFocused(bool focused)
@@ -124,6 +139,102 @@ namespace GeoNRage.App.Pages
             else
             {
                 _nextRender = true;
+            }
+        }
+
+        private void CreatePlot()
+        {
+            PlotConfig = new LineConfig
+            {
+                Options = new LineOptions
+                {
+                    Responsive = true,
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "Scores"
+                    },
+                    Tooltips = new Tooltips
+                    {
+                        Mode = InteractionMode.Nearest,
+                        Intersect = true
+                    },
+                    Hover = new Hover
+                    {
+                        Mode = InteractionMode.Nearest,
+                        Intersect = true
+                    },
+                    Scales = new Scales
+                    {
+                        XAxes = new List<CartesianAxis>
+                        {
+                            new CategoryAxis
+                            {
+                                ScaleLabel = new ScaleLabel
+                                {
+                                    LabelString = "Round"
+                                }
+                            }
+                        },
+                        YAxes = new List<CartesianAxis>
+                        {
+                            new LinearCartesianAxis
+                            {
+                                ScaleLabel = new ScaleLabel
+                                {
+                                    LabelString = "Score"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            foreach (string item in Game.Maps.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x[0]}_R{y}")))
+            {
+                PlotConfig.Data.Labels.Add(item);
+            }
+
+            UpdatePlot();
+        }
+
+        private void UpdatePlot()
+        {
+            var colors = new List<Color>()
+            {
+                Color.FromArgb(255, 99, 132),
+                Color.FromArgb(255, 159, 64),
+                Color.FromArgb(255, 205, 86),
+                Color.FromArgb(75, 192, 192),
+                Color.FromArgb(54, 162, 235),
+                Color.FromArgb(153, 102, 255),
+                Color.FromArgb(201, 203, 207)
+            };
+
+            PlotConfig.Data.Datasets.Clear();
+
+            int colorIndex = 0;
+            foreach (string player in Game.Players)
+            {
+                int sum = 0;
+                var scores = new List<int>();
+                foreach (int score in Game.Values.Where(x => x.GetPlayer() == player).OrderBy(x => x.GetRound()).Select(x => x.Score).TakeWhile(x => x > 0))
+                {
+                    sum += score;
+                    scores.Add(sum);
+                }
+
+                IDataset<int> dataset = new LineDataset<int>(scores)
+                {
+                    Label = player,
+                    BackgroundColor = ColorUtil.FromDrawingColor(colors[colorIndex % colors.Count]),
+                    BorderColor = ColorUtil.FromDrawingColor(colors[colorIndex % colors.Count]),
+                    Fill = FillingMode.Disabled
+                };
+
+                PlotConfig.Data.Datasets.Add(dataset);
+
+                colorIndex++;
             }
         }
     }

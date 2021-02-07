@@ -1,5 +1,14 @@
 ﻿@use 'variables' as v;
 
+.container {
+    display: flex;
+    flex-direction: row;
+
+    @media (max-width: 1200px) {
+        flex-direction: column;
+    }
+}
+
 table {
     border-spacing: 0;
     border-collapse: collapse;
