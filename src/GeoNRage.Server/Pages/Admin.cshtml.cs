@@ -3,11 +3,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Data;
+using GeoNRage.Server.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace GeoNRage.Server.Pages
 {
+    [Authorize(AuthenticationSchemes = GeoNRageAuthenticationHandler.GeoNRageAuthenticationScheme)]
     public class AdminModel : PageModel
     {
         private readonly GameService _gameService;

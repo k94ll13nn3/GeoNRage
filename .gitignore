@@ -2,6 +2,7 @@
 *.ionide
 *Coverage*
 *.css
+docker-compose.yml
 
 # Created by https://www.gitignore.io/api/fsharp,csharp,visualstudio,visualstudiocode
 

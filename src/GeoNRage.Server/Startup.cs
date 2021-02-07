@@ -1,6 +1,7 @@
 using System.Linq;
 using GeoNRage.Data;
 using GeoNRage.Server.Hubs;
+using GeoNRage.Server.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -13,7 +14,7 @@ namespace GeoNRage.Server
 {
     public class Startup
     {
-        readonly string CorsOrigins = "F1E62903-2100-4DDA-9339-40F7EF61C9CC";
+        private readonly string CorsOrigins = "F1E62903-2100-4DDA-9339-40F7EF61C9CC";
 
         public Startup(IConfiguration configuration)
         {
@@ -24,7 +25,7 @@ namespace GeoNRage.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy(CorsOrigins, builder => builder.WithOrigins(Configuration.GetValue<string>("AllowedHosts"))));
+            services.AddCors(options => options.AddPolicy(CorsOrigins, builder => builder.WithOrigins(Configuration.GetValue<string>("AllowedAuthority"))));
 
             services.AddRazorPages();
 
@@ -35,6 +36,9 @@ namespace GeoNRage.Server
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<GeoNRageDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("GeoNRage.Server")));
+
+            services.AddAuthentication(o => o.DefaultScheme = GeoNRageAuthenticationHandler.GeoNRageAuthenticationScheme)
+                    .AddScheme<GeoNRageAuthenticationOptions, GeoNRageAuthenticationHandler>(GeoNRageAuthenticationHandler.GeoNRageAuthenticationScheme, o => { });
 
             services.AddTransient<GameService>();
         }
@@ -65,10 +69,10 @@ namespace GeoNRage.Server
 
             app.UseRouting();
 
-            if (!env.IsDevelopment())
-            {
-                app.UseCors(CorsOrigins);
-            }
+            app.UseCors(CorsOrigins);
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

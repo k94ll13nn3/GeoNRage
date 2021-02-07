@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Data;
+using GeoNRage.Server.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs
 {
+    [Authorize(AuthenticationSchemes = GeoNRageAuthenticationHandler.GeoNRageAuthenticationScheme)]
     public class AppHub : Hub
     {
         private readonly GameService _gameService;
