@@ -13,6 +13,8 @@ namespace GeoNRage.Server
 {
     public class Startup
     {
+        readonly string CorsOrigins = "F1E62903-2100-4DDA-9339-40F7EF61C9CC";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,6 +24,8 @@ namespace GeoNRage.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy(CorsOrigins, builder => builder.WithOrigins(Configuration.GetValue<string>("AllowedHosts"))));
+
             services.AddRazorPages();
 
             services.AddSignalR();
@@ -60,6 +64,11 @@ namespace GeoNRage.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            if (!env.IsDevelopment())
+            {
+                app.UseCors(CorsOrigins);
+            }
 
             app.UseEndpoints(endpoints =>
             {
