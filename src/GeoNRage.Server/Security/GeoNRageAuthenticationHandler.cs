@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -28,6 +29,7 @@ namespace GeoNRage.Server.Security
                 Claim[] claims = new[] { new Claim("GeoNRage", "Ok") };
                 var identity = new ClaimsIdentity(claims, nameof(GeoNRageAuthenticationHandler));
                 var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
+                Console.WriteLine($"Authority '{host}' ({Request.Headers["Referer"]}) / ({Request.Headers[":authority"]}): not allowed.");
                 return Task.FromResult(AuthenticateResult.Success(ticket));
             }
 
