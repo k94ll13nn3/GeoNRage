@@ -21,9 +21,58 @@ namespace GeoNRage.App.Pages
         private bool _nextRender;
         private HubConnection _hubConnection = null!;
 
+        public GamePage()
+        {
+            PlotConfig = new LineConfig
+            {
+                Options = new LineOptions
+                {
+                    Responsive = true,
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "Scores"
+                    },
+                    Tooltips = new Tooltips
+                    {
+                        Mode = InteractionMode.Nearest,
+                        Intersect = true
+                    },
+                    Hover = new Hover
+                    {
+                        Mode = InteractionMode.Nearest,
+                        Intersect = true
+                    },
+                    Scales = new Scales
+                    {
+                        XAxes = new List<CartesianAxis>
+                        {
+                            new CategoryAxis
+                            {
+                                ScaleLabel = new ScaleLabel
+                                {
+                                    LabelString = "Round"
+                                }
+                            }
+                        },
+                        YAxes = new List<CartesianAxis>
+                        {
+                            new LinearCartesianAxis
+                            {
+                                ScaleLabel = new ScaleLabel
+                                {
+                                    LabelString = "Score"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
         public Game Game { get; set; } = null!;
 
-        public LineConfig PlotConfig { get; set; } = null!;
+        public LineConfig PlotConfig { get; set; }
 
         public Chart Chart { get; set; } = null!;
 
@@ -143,52 +192,6 @@ namespace GeoNRage.App.Pages
 
         private void CreatePlot()
         {
-            PlotConfig = new LineConfig
-            {
-                Options = new LineOptions
-                {
-                    Responsive = true,
-                    Title = new OptionsTitle
-                    {
-                        Display = true,
-                        Text = "Scores"
-                    },
-                    Tooltips = new Tooltips
-                    {
-                        Mode = InteractionMode.Nearest,
-                        Intersect = true
-                    },
-                    Hover = new Hover
-                    {
-                        Mode = InteractionMode.Nearest,
-                        Intersect = true
-                    },
-                    Scales = new Scales
-                    {
-                        XAxes = new List<CartesianAxis>
-                        {
-                            new CategoryAxis
-                            {
-                                ScaleLabel = new ScaleLabel
-                                {
-                                    LabelString = "Round"
-                                }
-                            }
-                        },
-                        YAxes = new List<CartesianAxis>
-                        {
-                            new LinearCartesianAxis
-                            {
-                                ScaleLabel = new ScaleLabel
-                                {
-                                    LabelString = "Score"
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
             foreach (string item in Game.Maps.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x[0]}_R{y}")))
             {
                 PlotConfig.Data.Labels.Add(item);
