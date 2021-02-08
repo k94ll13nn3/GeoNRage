@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace GeoNRage.Data
 {
+    [SuppressMessage("Usage", "CA2227", Justification = "Database entity")]
     public class Game : GameBase
     {
         public Game()

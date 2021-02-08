@@ -26,10 +26,10 @@ namespace GeoNRage.Data
             // Keep the cast to ICollection<string>!!
             var stringCollectionValueConverter = new ValueConverter<ICollection<string>, string>(
                 v => JsonSerializer.Serialize(v, null),
-                v => JsonSerializer.Deserialize<List<string>>(v, null));
+                v => JsonSerializer.Deserialize<List<string>>(v, null)!);
             var stringCollectionValueComparer = new ValueComparer<ICollection<string>>(
                 (c1, c2) => c1.SequenceEqual(c2),
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode(StringComparison.InvariantCulture))),
                 c => (ICollection<string>)c.ToList());
 
             modelBuilder.Entity<Game>().HasKey(g => g.Id);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,6 +48,9 @@ namespace GeoNRage.Server.Pages
 
         public async Task<IActionResult> OnPostEditAsync(int id, string name, string maps, string players)
         {
+            _ = maps ?? throw new ArgumentNullException(nameof(maps));
+            _ = players ?? throw new ArgumentNullException(nameof(players));
+
             await _gameService.UpdateGameAsync(id, name, maps.Split('_'), players.Split('_'));
             return RedirectToPage("Admin");
         }
