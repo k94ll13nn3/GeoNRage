@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Data;
 using Microsoft.AspNetCore.Components;
@@ -7,11 +8,9 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class GamesPage : IAsyncDisposable
+    public partial class Index : IAsyncDisposable
     {
         private HubConnection _hubConnection = null!;
-
-        public ICollection<GameBase> Games { get; } = new List<GameBase>();
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
@@ -29,10 +28,9 @@ namespace GeoNRage.App.Pages
 
             _hubConnection.On<IEnumerable<GameBase>>("ReceiveGames", games =>
             {
-                Games.Clear();
-                foreach (GameBase game in games)
+                if (games.Any())
                 {
-                    Games.Add(game);
+                    NavigationManager.NavigateTo($"/games/{games.First().Id}");
                 }
 
                 StateHasChanged();

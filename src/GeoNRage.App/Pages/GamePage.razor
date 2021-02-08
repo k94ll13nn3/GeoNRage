@@ -7,55 +7,43 @@
 
     <div class="container">
         <table>
-            <Repeater Items="Game.Maps">
-                <ItemTemplate Context="map">
-                    <tr>
-                        <th>@map</th>
-                        <Repeater Items="Game.Players">
-                            <ItemTemplate Context="player">
-                                <th>@player</th>
-                            </ItemTemplate>
-                        </Repeater>
-                    </tr>
+            <Virtualize Items="Game.Maps" Context="map">
+                <tr>
+                    <th>@map</th>
+                    <Virtualize Items="Game.Players" Context="player">
+                        <th>@player</th>
+                    </Virtualize>
+                </tr>
 
-                    <Repeater Items="Enumerable.Range(1, Game.Rounds)">
-                        <ItemTemplate Context="round">
-                            <tr>
-                                <th>Round @round</th>
-                                <Repeater Items="Game.Players">
-                                    <ItemTemplate Context="player">
-                                        @{
-                                            var key = $"{map}_{player}_Round {round}";
-                                        }
-                                        <td>
-                                            <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
-                                        </td>
-                                    </ItemTemplate>
-                                </Repeater>
-                            </tr>
-                        </ItemTemplate>
-                    </Repeater>
-
+                <Virtualize Items="Enumerable.Range(1, Game.Rounds).ToList()" Context="round">
                     <tr>
-                        <th>Total @map</th>
-                        <Repeater Items="Game.Players">
-                            <ItemTemplate Context="player">
-                                <td>@Totals[$"{map}_{player}"].total (@Totals[$"{map}_{player}"].position)</td>
-                            </ItemTemplate>
-                        </Repeater>
+                        <th>Round @round</th>
+                        <Virtualize Items="Game.Players" Context="player">
+                            @{
+                                var key = $"{map}_{player}_Round {round}";
+                            }
+                            <td>
+                                <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
+                            </td>
+                        </Virtualize>
                     </tr>
-                </ItemTemplate>
-            </Repeater>
+                </Virtualize>
+
+                <tr>
+                    <th>Total @map</th>
+                    <Virtualize Items="Game.Players" Context="player">
+                        <td>@Totals[$"{map}_{player}"].total (@Totals[$"{map}_{player}"].position)</td>
+                    </Virtualize>
+                </tr>
+            </Virtualize>
 
             <tr style="border-bottom: 1px solid #000;"></tr>
 
             <tr class="bordered">
                 <th>Total </th>
-                <Repeater Items="Game.Players">
-                    <ItemTemplate Context="player">
-                        <td>@Totals[$"{player}"].total (@Totals[$"{player}"].position)</td>
-                    </ItemTemplate>
-                </Repeater>
+                <Virtualize Items="Game.Players" Context="player">
+                    <td>@Totals[$"{player}"].total (@Totals[$"{player}"].position)</td>
+                </Virtualize>
             </tr>
         </table>
 
@@ -68,5 +56,3 @@
 <Container Condition="!IsConnected || Game is null">
     <p>Chargement...</p>
 </Container>
-
-

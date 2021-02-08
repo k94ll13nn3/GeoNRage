@@ -1,19 +1,13 @@
 ﻿@page "/games"
 
-<Container Condition="IsConnected && Games is not null && Games.Any()">
-    <ul>
-        <Repeater Items="Games">
-            <ItemTemplate Context="game">
-                <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Id — @game.Name @(game.Locked ? "(terminée)" : "")</a></li>
-            </ItemTemplate>
-        </Repeater>
-    </ul>
-</Container>
+<ul>
+    <Virtualize Items="Games" Context="game">
+        <ItemContent>
+            <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Id — @game.Name @(game.Locked ? "(terminée)" : "")</a></li>
+        </ItemContent>
+        <Placeholder>
+            <p>Chargement&hellip;</p>
+        </Placeholder>
+    </Virtualize>
+</ul>
 
-<Container Condition="IsConnected && IsLoaded && Games is not null && !Games.Any()">
-    <p>Pas de parties trouvées.</p>
-</Container>
-
-<Container Condition="!IsConnected || !IsLoaded || Games is null">
-    <p>Chargement...</p>
-</Container>
