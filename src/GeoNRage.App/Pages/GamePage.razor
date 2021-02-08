@@ -32,7 +32,7 @@
                 <tr>
                     <th>Total @map</th>
                     <Virtualize Items="Game.Players" Context="player">
-                        <td>@Totals[$"{map}_{player}"].total (@Totals[$"{map}_{player}"].position)</td>
+                        <td>@Totals.GetValueOrDefault($"{map}_{player}").total (@Totals.GetValueOrDefault($"{map}_{player}").position)</td>
                     </Virtualize>
                 </tr>
             </Virtualize>
@@ -42,7 +42,7 @@
             <tr class="bordered">
                 <th>Total </th>
                 <Virtualize Items="Game.Players" Context="player">
-                    <td>@Totals[$"{player}"].total (@Totals[$"{player}"].position)</td>
+                    <td>@Totals.GetValueOrDefault($"{player}").total (@Totals.GetValueOrDefault($"{player}").position)</td>
                 </Virtualize>
             </tr>
         </table>
