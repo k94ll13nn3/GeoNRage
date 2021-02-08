@@ -21,13 +21,11 @@ namespace GeoNRage.App.Pages
         private bool _nextRender;
         private HubConnection _hubConnection = null!;
 
-        public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+        public Game Game { get; set; } = null!;
 
-        public Game? Game { get; set; }
+        public LineConfig PlotConfig { get; set; } = null!;
 
-        public LineConfig PlotConfig { get; set; }
-
-        public Chart Chart { get; set; }
+        public Chart Chart { get; set; } = null!;
 
         [Parameter]
         public int Id { get; set; }
@@ -35,7 +33,7 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        public Dictionary<string, (int total, int position)> Totals { get; set; } = new();
+        public Dictionary<string, (int total, int position)> Totals { get; } = new();
 
         public async ValueTask DisposeAsync()
         {
@@ -56,41 +54,9 @@ namespace GeoNRage.App.Pages
             await _hubConnection.InvokeAsync("LoadGame", Id);
         }
 
-        private void ComputeTotals()
+        protected override bool ShouldRender()
         {
-            foreach (string map in Game.Maps)
-            {
-                var scores = new List<(string key, int score)>();
-                foreach (string player in Game.Players)
-                {
-                    scores.Add(($"{map}_{player}", Game.Values.Where(x => x.GetMap() == map && x.GetPlayer() == player).Sum(x => x.Score)));
-                }
-
-                foreach ((string key, int score, int index) item in scores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
-                {
-                    Totals[item.key] = (item.score, item.index);
-                }
-            }
-
-            var scores2 = new List<(string key, int score)>();
-            foreach (string player in Game.Players)
-            {
-                scores2.Add(($"{player}", Game.Values.Where(x => x.GetPlayer() == player).Sum(x => x.Score)));
-            }
-
-            foreach ((string key, int score, int index) item in scores2.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
-            {
-                Totals[item.key] = (item.score, item.index);
-            }
-        }
-
-        private void HandleReceiveValue(string key, int score)
-        {
-            Game[key] = score;
-            ComputeTotals();
-            UpdatePlot();
-            Chart.Update();
-            UpdatePage();
+            return _canRender;
         }
 
         private async Task HandleReceiveGameAsync(Game game)
@@ -109,15 +75,20 @@ namespace GeoNRage.App.Pages
             }
         }
 
+        private void HandleReceiveValue(string key, int score)
+        {
+            Game[key] = score;
+            ComputeTotals();
+            UpdatePlot(key.Split('_')[1]);
+            UpdatePage();
+            Chart.Update();
+        }
+
         private void Send(string key, int score)
         {
             int clampedValue = Math.Clamp(score, 0, 5000);
-            Game[key] = clampedValue;
-
             _hubConnection.InvokeAsync("UpdateValue", Id, key, clampedValue);
-            ComputeTotals();
-            UpdatePlot();
-            Chart.Update();
+            HandleReceiveValue(key, clampedValue);
         }
 
         private void InputFocused(bool focused)
@@ -139,6 +110,34 @@ namespace GeoNRage.App.Pages
             else
             {
                 _nextRender = true;
+            }
+        }
+
+        private void ComputeTotals()
+        {
+            foreach (string map in Game.Maps)
+            {
+                var mapScores = new List<(string key, int score)>();
+                foreach (string player in Game.Players)
+                {
+                    mapScores.Add(($"{map}_{player}", Game.Values.Where(x => x.GetMap() == map && x.GetPlayer() == player).Sum(x => x.Score)));
+                }
+
+                foreach ((string key, int score, int index) item in mapScores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
+                {
+                    Totals[item.key] = (item.score, item.index);
+                }
+            }
+
+            var playerScores = new List<(string key, int score)>();
+            foreach (string player in Game.Players)
+            {
+                playerScores.Add(($"{player}", Game.Values.Where(x => x.GetPlayer() == player).Sum(x => x.Score)));
+            }
+
+            foreach ((string key, int score, int index) item in playerScores.OrderByDescending(x => x.score).Select((item, index) => (item.key, item.score, index: index + 1)))
+            {
+                Totals[item.key] = (item.score, item.index);
             }
         }
 
@@ -195,11 +194,6 @@ namespace GeoNRage.App.Pages
                 PlotConfig.Data.Labels.Add(item);
             }
 
-            UpdatePlot();
-        }
-
-        private void UpdatePlot()
-        {
             var colors = new List<Color>()
             {
                 Color.FromArgb(255, 99, 132),
@@ -211,33 +205,10 @@ namespace GeoNRage.App.Pages
                 Color.FromArgb(201, 203, 207)
             };
 
-            PlotConfig.Data.Datasets.Clear();
-
             int colorIndex = 0;
             foreach (string player in Game.Players)
             {
-                int sum = 0;
-                var scores = new List<int>();
-
-                var v = new List<int>();
-                foreach (var map in Game.Maps)
-                {
-                    for (int i = 0; i < Game.Rounds; i++)
-                    {
-                        v.Add(Game[$"{map}_{player}_Round {i + 1}"]);
-                    }
-                }
-
-
-                IEnumerable<int> values = v
-                    .TakeWhile(x => x > 0);
-                foreach (int score in values)
-                {
-                    sum += score;
-                    scores.Add(sum);
-                }
-
-                IDataset<int> dataset = new LineDataset<int>(scores)
+                IDataset<int> dataset = new LineDataset<int>()
                 {
                     Label = player,
                     BackgroundColor = ColorUtil.FromDrawingColor(colors[colorIndex % colors.Count]),
@@ -246,9 +217,33 @@ namespace GeoNRage.App.Pages
                 };
 
                 PlotConfig.Data.Datasets.Add(dataset);
-
                 colorIndex++;
+                UpdatePlot(player);
             }
+        }
+
+        private void UpdatePlot(string player)
+        {
+            int sum = 0;
+            var scores = new List<int>();
+            var values = new List<int>();
+            foreach (string map in Game.Maps)
+            {
+                for (int i = 0; i < Game.Rounds; i++)
+                {
+                    values.Add(Game[$"{map}_{player}_Round {i + 1}"]);
+                }
+            }
+
+            foreach (int score in values.TakeWhile(x => x > 0))
+            {
+                sum += score;
+                scores.Add(sum);
+            }
+
+            Dataset<int> dataset = (PlotConfig.Data.Datasets.First(x => (x as LineDataset<int>)?.Label == player) as Dataset<int>)!;
+            dataset.Clear();
+            dataset.AddRange(scores);
         }
     }
 }

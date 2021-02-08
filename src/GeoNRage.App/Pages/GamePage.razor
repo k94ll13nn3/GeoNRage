@@ -2,7 +2,7 @@
 
 @using ChartJs.Blazor;
 
-<Container Condition="IsConnected && Game is not null">
+<Container Condition="Game is not null">
     <h1>#@Game!.Id — @Game!.Name</h1>
 
     <div class="container">
@@ -53,6 +53,6 @@
     </div>
 </Container>
 
-<Container Condition="!IsConnected || Game is null">
+<Container Condition="Game is null">
     <p>Chargement...</p>
 </Container>
