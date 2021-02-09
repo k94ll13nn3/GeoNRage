@@ -1,0 +1,16 @@
+﻿select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.menu-links {
+    width: 100%;
+
+    .theme-chooser {
+        float: right;
+
+        select {
+            width: 100px;
+        }
+    }
+}

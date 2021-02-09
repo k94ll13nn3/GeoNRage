@@ -1,13 +1,16 @@
 ﻿@inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
 
-<div>
+<div class="menu-links">
     <a href="@NavigationManager.ToAbsoluteUri("/games")">Parties</a>
-    <select @onchange="ChangeTheme">
-        <option value="basic">basic</option>
-        <option value="legacy">legacy</option>
-        <option value="zelda">zelda</option>
-    </select>
+
+    <div class="theme-chooser">
+        <select @onchange="ChangeTheme">
+            <option value="basic">Basic</option>
+            <option value="legacy">Legacy</option>
+            <option value="zelda">Zelda</option>
+        </select>
+    </div>
 </div>
 
 @code{
