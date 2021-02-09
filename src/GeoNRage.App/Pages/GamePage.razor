@@ -7,43 +7,43 @@
 
     <div class="container">
         <table>
-            <Virtualize Items="Game.Maps" Context="map">
+            <Repeater Items="Game.Maps" Context="map">
                 <tr>
                     <th>@map</th>
-                    <Virtualize Items="Game.Players" Context="player">
+                    <Repeater Items="Game.Players" Context="player">
                         <th>@player</th>
-                    </Virtualize>
+                    </Repeater>
                 </tr>
 
-                <Virtualize Items="Enumerable.Range(1, Game.Rounds).ToList()" Context="round">
+                <Repeater Items="Enumerable.Range(1, Game.Rounds)" Context="round">
                     <tr>
                         <th>Round @round</th>
-                        <Virtualize Items="Game.Players" Context="player">
+                        <Repeater Items="Game.Players" Context="player">
                             @{
                                 var key = $"{map}_{player}_Round {round}";
                             }
                             <td>
                                 <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
                             </td>
-                        </Virtualize>
+                        </Repeater>
                     </tr>
-                </Virtualize>
+                </Repeater>
 
                 <tr>
                     <th>Total @map</th>
-                    <Virtualize Items="Game.Players" Context="player">
+                    <Repeater Items="Game.Players" Context="player">
                         <td>@Totals.GetValueOrDefault($"{map}_{player}").total (@Totals.GetValueOrDefault($"{map}_{player}").position)</td>
-                    </Virtualize>
+                    </Repeater>
                 </tr>
-            </Virtualize>
+            </Repeater>
 
             <tr style="border-bottom: 1px solid #000;"></tr>
 
             <tr class="bordered">
                 <th>Total </th>
-                <Virtualize Items="Game.Players" Context="player">
+                <Repeater Items="Game.Players" Context="player">
                     <td>@Totals.GetValueOrDefault($"{player}").total (@Totals.GetValueOrDefault($"{player}").position)</td>
-                </Virtualize>
+                </Repeater>
             </tr>
         </table>
 

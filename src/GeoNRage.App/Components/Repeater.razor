@@ -1,10 +1,10 @@
 ﻿@typeparam T
 
-@if (Items?.Any() == true && ItemTemplate is not null)
+@if (Items?.Any() == true && ChildContent is not null)
 {
     foreach (var item in Items)
     {
-        @ItemTemplate(item);
+        @ChildContent(item);
     }
 }
 
@@ -13,5 +13,5 @@
     public IEnumerable<T>? Items { get; set; }
 
     [Parameter]
-    public RenderFragment<T>? ItemTemplate { get; set; }
+    public RenderFragment<T>? ChildContent { get; set; }
 }
