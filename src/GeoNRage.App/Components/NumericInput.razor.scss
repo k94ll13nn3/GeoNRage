@@ -1,4 +1,5 @@
 ﻿@use 'variables' as v;
+@use 'themes' as t;
 
 input {
     font-family: v.$font-stack;
@@ -9,13 +10,15 @@ input {
 
     &:focus {
         outline: none;
-        border: 0px solid v.$foreground;
+        border: 0px solid;
         background-color: lightgrey;
+
+        @include t.themify(boder-color, foreground);
     }
 
     &:disabled, &[disabled] {
-        background-color: v.$background;
-        color: v.$foreground;
+        @include t.themify(background-color, foreground);
+        @include t.themify(color, accent);
     }
 
     &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {

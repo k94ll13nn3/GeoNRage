@@ -1,4 +1,5 @@
 @use 'variables' as v;
+@use 'themes' as t;
 
 @import 'error';
 @import 'loader';
@@ -7,12 +8,13 @@
 
 body {
     font-family: v.$font-stack;
-    color: v.$foreground;
     font-weight: normal;
-    background: v.$background;
     height: 100vh;
     padding: 0;
     margin: 0;
+
+    @include t.themify(background, background);
+    @include t.themify(color, foreground);
 }
 
 .application-container {

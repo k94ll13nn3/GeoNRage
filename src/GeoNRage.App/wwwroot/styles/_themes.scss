@@ -1,0 +1,43 @@
+﻿/* see https: //fjcalzado.github.io/DemoSeries-SASS-Easy-Theming/ */
+$themeCollection: (
+  basic: (
+    background: #1A1A1D,
+    primary: #1F3044,
+    secondary: #FB9039,
+    accent: #00458B,
+    foreground: #FFFFFF,
+  ),
+  legacy: (
+    background: #1A1A1D,
+    primary: #6F2232,
+    secondary: #C3073F,
+    accent: #950740,
+    foreground: #FFFFFF,
+  ),
+  zelda: (
+    background: #1A1A1D,
+    primary: #568233,
+    secondary: #CC9E48,
+    accent: #613F19,
+    foreground: #FFFFFF,
+  ),
+);
+
+@mixin themify( $properties, $keys, $themes: $themeCollection) {
+    // Iterate over the themes.
+    @each $theme, $themeItem in $themes {
+        // Create a selector CLASS-THEME and also THEME-CLASS.
+        &.theme-#{$theme},
+        .theme-#{$theme} & {
+            // Iterate over each property-key value.
+            @for $i from 1 through length($properties) {
+                $property: nth($properties,$i);
+                $key: nth($keys,$i);
+                #{$property}: map-get($themeItem, $key);
+            }
+            // Finally add transitions over themified properties.
+            transition-property: #{$properties};
+            transition-duration: 1s;
+        }
+    }
+}

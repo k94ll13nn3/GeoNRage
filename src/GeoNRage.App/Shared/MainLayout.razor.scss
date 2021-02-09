@@ -1,4 +1,5 @@
 ﻿@use 'variables' as v;
+@use 'themes' as t;
 
 * {
     box-sizing: border-box;
@@ -29,26 +30,30 @@
 .page-header {
     grid-column: 1 / 2;
     font-family: v.$logo-font;
-    background: v.$secondary;
     font-size: 24px;
     text-align: center;
+
+    @include t.themify(background, accent);
 }
 
 .page-nav {
     grid-column: 2 / 3;
-    background: v.$accent;
     justify-items: center;
     align-items: center;
     display: flex;
+
+    @include t.themify(background, primary);
 }
 
 .page-main {
     grid-column: 1 / 3;
-    background: v.$background;
+
+    @include t.themify(background, background);
 }
 
 .page-footer {
     grid-column: 1 / -1;
-    background: v.$accent;
     text-align: center;
+
+    @include t.themify(background, primary);
 }
