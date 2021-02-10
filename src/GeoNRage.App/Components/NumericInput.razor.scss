@@ -17,8 +17,10 @@ input {
     }
 
     &:disabled, &[disabled] {
-        @include t.themify(background-color, foreground);
-        @include t.themify(color, accent);
+        text-align: center;
+
+        @include t.themify(background-color, background);
+        @include t.themify(color, foreground);
     }
 
     &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
