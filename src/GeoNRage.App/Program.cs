@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using GeoNRage.App.Clients;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 
 namespace GeoNRage.App
 {
@@ -13,7 +14,7 @@ namespace GeoNRage.App
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddHttpClient<GamesHttpClient>(client => client.BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}api/games"));
+            builder.Services.AddRefitClient<IGamesApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             await builder.Build().RunAsync();
         }

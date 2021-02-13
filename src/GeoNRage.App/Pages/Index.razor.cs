@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.App.Clients;
+using GeoNRage.App.Apis;
 using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 
@@ -11,11 +11,11 @@ namespace GeoNRage.App.Pages
         public NavigationManager NavigationManager { get; set; } = null!;
 
         [Inject]
-        public GamesHttpClient HttpClient { get; set; } = null!;
+        public IGamesApi GamesApi { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
-            Game[]? games = await HttpClient.GetAllAsync();
+            Game[]? games = await GamesApi.GetAllAsync();
             if (games?.Length > 0)
             {
                 NavigationManager.NavigateTo($"/games/{games[0].Id}");

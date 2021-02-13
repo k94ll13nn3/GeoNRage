@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GeoNRage.App.Clients;
+using GeoNRage.App.Apis;
 using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -22,7 +22,7 @@ namespace GeoNRage.App.Pages
         public NavigationManager NavigationManager { get; set; } = null!;
 
         [Inject]
-        public GamesHttpClient HttpClient { get; set; } = null!;
+        public IGamesApi GamesApi { get; set; } = null!;
 
         public async ValueTask DisposeAsync()
         {
@@ -39,7 +39,7 @@ namespace GeoNRage.App.Pages
 
             await _hubConnection.StartAsync();
 
-            Game? game = await HttpClient.GetAsync(Id);
+            Game? game = await GamesApi.GetAsync(Id);
             if (game is null)
             {
                 NavigationManager.NavigateTo("/");
