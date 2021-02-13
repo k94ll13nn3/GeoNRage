@@ -1,43 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class Index : IAsyncDisposable
+    public partial class Index
     {
-        private HubConnection _hubConnection = null!;
-
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        public async ValueTask DisposeAsync()
-        {
-            await _hubConnection.DisposeAsync();
-        }
+        [Inject]
+        public HttpClient HttpClient { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
-                .Build();
-
-            _hubConnection.On<IEnumerable<Game>>("ReceiveGames", games =>
+            Game[]? games = await HttpClient.GetFromJsonAsync<Game[]>("games");
+            if (games?.Length > 0)
             {
-                if (games.Any())
-                {
-                    NavigationManager.NavigateTo($"/games/{games.First().Id}");
-                }
+                NavigationManager.NavigateTo($"/games/{games[0].Id}");
+            }
 
-                StateHasChanged();
-            });
-
-            await _hubConnection.StartAsync();
-            await _hubConnection.InvokeAsync("LoadGames");
+            StateHasChanged();
         }
     }
 }

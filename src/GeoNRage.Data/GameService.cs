@@ -17,9 +17,29 @@ namespace GeoNRage.Data
             _context = context;
         }
 
-        public async Task<IEnumerable<Game>> GetAllAsync()
+        public async Task<IEnumerable<Game>> GetAllGamesAsync()
         {
             return await _context.Games.OrderByDescending(g => g.CreationDate).ToListAsync();
+        }
+
+        public async Task<Game?> GetGameAsync(int id)
+        {
+            return await _context
+                .Games
+                .Include(g => g.Values)
+                .Include(g => g.Maps)
+                .Include(g => g.Players)
+                .FirstOrDefaultAsync(g => g.Id == id);
+        }
+
+        public async Task<IEnumerable<Map>> GetAllMapsAsync()
+        {
+            return await _context.Maps.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Player>> GetAllPlayersAsync()
+        {
+            return await _context.Players.ToListAsync();
         }
 
         public async Task<Game> CreateGameAsync(string name, ICollection<Map> maps, ICollection<Player> players)
@@ -88,16 +108,6 @@ namespace GeoNRage.Data
             List<Value> values = await _context.Values.Where(v => v.GameId == id).ToListAsync();
             _context.Values.RemoveRange(values);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<Game?> GetByIdAsync(int id)
-        {
-            return await _context
-                .Games
-                .Include(g => g.Values)
-                .Include(g => g.Maps)
-                .Include(g => g.Players)
-                .FirstOrDefaultAsync(g => g.Id == id);
         }
 
         public async Task UpdateValueAsync(int gameId, int mapId, int playerId, int round, int newScore)

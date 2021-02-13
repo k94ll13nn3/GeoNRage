@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
 namespace GeoNRage.Server
 {
@@ -23,15 +22,16 @@ namespace GeoNRage.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
+            services.AddControllers();
             services.AddRazorPages();
-
-            services.AddSignalR().AddNewtonsoftJsonProtocol(o => o.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-
             services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
 
             string connectionString = Configuration.GetConnectionString("GeoNRageConnection");
-            services.AddDbContextPool<GeoNRageDbContext>(options =>
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("GeoNRage.Server")));
+            services.AddDbContextPool<GeoNRageDbContext>(options => options.UseMySql(
+                connectionString,
+                ServerVersion.AutoDetect(connectionString),
+                b => b.MigrationsAssembly("GeoNRage.Server")));
 
             services.AddTransient<GameService>();
         }
@@ -52,7 +52,6 @@ namespace GeoNRage.Server
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -65,8 +64,9 @@ namespace GeoNRage.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapControllers();
                 endpoints.MapHub<AppHub>("/apphub");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

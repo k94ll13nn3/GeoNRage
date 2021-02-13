@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
@@ -20,6 +22,9 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
+        [Inject]
+        public HttpClient HttpClient { get; set; } = null!;
+
         public async ValueTask DisposeAsync()
         {
             await _hubConnection.DisposeAsync();
@@ -31,21 +36,11 @@ namespace GeoNRage.App.Pages
                 .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
                 .Build();
 
-            _hubConnection.On<Game>("ReceiveGame", HandleReceiveGameAsync);
-
             _hubConnection.On<int, int, int, int>("ReceiveValue", HandleReceiveValue);
 
             await _hubConnection.StartAsync();
-            await _hubConnection.InvokeAsync("LoadGame", Id);
-        }
 
-        protected override bool ShouldRender()
-        {
-            return _canRender;
-        }
-
-        private async Task HandleReceiveGameAsync(Game game)
-        {
+            Game? game = await HttpClient.GetFromJsonAsync<Game>($"games/{Id}");
             if (game is null)
             {
                 NavigationManager.NavigateTo("/");
@@ -56,6 +51,11 @@ namespace GeoNRage.App.Pages
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
                 UpdatePage();
             }
+        }
+
+        protected override bool ShouldRender()
+        {
+            return _canRender;
         }
 
         private void HandleReceiveValue(int mapId, int playerId, int round, int score)
