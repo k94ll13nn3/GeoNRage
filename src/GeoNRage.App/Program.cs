@@ -1,9 +1,8 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
+using GeoNRage.App.Clients;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace GeoNRage.App
 {
@@ -14,8 +13,7 @@ namespace GeoNRage.App
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Logging.SetMinimumLevel(LogLevel.Warning);
-            builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}api/") });
+            builder.Services.AddHttpClient<GamesHttpClient>(client => client.BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}api/games"));
 
             await builder.Build().RunAsync();
         }
