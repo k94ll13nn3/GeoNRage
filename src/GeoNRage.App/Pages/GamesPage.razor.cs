@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GeoNRage.Data;
+using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -11,7 +11,7 @@ namespace GeoNRage.App.Pages
     {
         private HubConnection _hubConnection = null!;
 
-        public ICollection<GameBase> Games { get; } = new List<GameBase>();
+        public ICollection<Game> Games { get; } = new List<Game>();
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
@@ -27,10 +27,10 @@ namespace GeoNRage.App.Pages
                 .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
                 .Build();
 
-            _hubConnection.On<IEnumerable<GameBase>>("ReceiveGames", games =>
+            _hubConnection.On<IEnumerable<Game>>("ReceiveGames", games =>
             {
                 Games.Clear();
-                foreach (GameBase game in games)
+                foreach (Game game in games)
                 {
                     Games.Add(game);
                 }

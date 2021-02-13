@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeoNRage.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -21,12 +22,7 @@ namespace GeoNRage.Data
             return await _context.Games.OrderByDescending(g => g.CreationDate).ToListAsync();
         }
 
-        public async Task<IEnumerable<GameBase>> GetAllBaseAsync()
-        {
-            return (await GetAllAsync()).Cast<GameBase>();
-        }
-
-        public async Task<GameBase> CreateGameAsync(string name, ICollection<string> maps, ICollection<string> players)
+        public async Task<Game> CreateGameAsync(string name, ICollection<Map> maps, ICollection<Player> players)
         {
             _ = maps ?? throw new ArgumentNullException(nameof(maps));
             _ = players ?? throw new ArgumentNullException(nameof(players));
@@ -44,7 +40,7 @@ namespace GeoNRage.Data
             return game.Entity;
         }
 
-        public async Task UpdateGameAsync(int id, string name, ICollection<string> maps, ICollection<string> players)
+        public async Task UpdateGameAsync(int id, string name, ICollection<Map> maps, ICollection<Player> players)
         {
             _ = maps ?? throw new ArgumentNullException(nameof(maps));
             _ = players ?? throw new ArgumentNullException(nameof(players));
@@ -96,10 +92,15 @@ namespace GeoNRage.Data
 
         public async Task<Game?> GetByIdAsync(int id)
         {
-            return await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
+            return await _context
+                .Games
+                .Include(g => g.Values)
+                .Include(g => g.Maps)
+                .Include(g => g.Players)
+                .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task UpdateValueAsync(int gameId, string key, int newScore)
+        public async Task UpdateValueAsync(int gameId, int mapId, int playerId, int round, int newScore)
         {
             Game? game = await _context.Games.FindAsync(gameId);
             if (game is not null)
@@ -109,13 +110,15 @@ namespace GeoNRage.Data
                     throw new InvalidOperationException("Cannot update a locked game.");
                 }
 
-                Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == gameId && x.Key == key);
+                Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == gameId && x.MapId == mapId && x.PlayerId == playerId && x.Round == round);
                 if (value is null)
                 {
                     value = new Value
                     {
                         GameId = gameId,
-                        Key = key,
+                        MapId = mapId,
+                        PlayerId = playerId,
+                        Round = round,
                         Score = newScore,
                     };
                     _context.Values.Add(value);

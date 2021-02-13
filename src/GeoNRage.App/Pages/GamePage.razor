@@ -1,7 +1,5 @@
 ﻿@page "/games/{Id:int}"
 
-@using ChartJs.Blazor;
-
 <Container Condition="Game is not null">
     <h1>#@Game!.Id — @Game!.Name</h1>
 
@@ -9,9 +7,9 @@
         <table>
             <Repeater Items="Game.Maps" Context="map">
                 <tr>
-                    <th>@map</th>
+                    <th>@map.Name</th>
                     <Repeater Items="Game.Players" Context="player">
-                        <th>@player</th>
+                        <th>@player.Name</th>
                     </Repeater>
                 </tr>
 
@@ -20,19 +18,19 @@
                         <th>Round @round</th>
                         <Repeater Items="Game.Players" Context="player">
                             @{
-                                var key = $"{map}_{player}_Round {round}";
+                                var key = $"{map.Id}_{player.Id}_{round}";
                             }
                             <td>
-                                <NumericInput @key="@key" Value="@Game[key]" ValueChanged="@((e) => { Send(key, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
+                                <NumericInput @key="@key" Value="@Game[map.Id, player.Id, round]" ValueChanged="@((e) => { Send(map.Id, player.Id, round, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
                             </td>
                         </Repeater>
                     </tr>
                 </Repeater>
 
                 <tr>
-                    <th>Total @map</th>
+                    <th>Total @map.Name</th>
                     <Repeater Items="Game.Players" Context="player">
-                        <td>@Totals.GetValueOrDefault($"{map}_{player}").total (@Totals.GetValueOrDefault($"{map}_{player}").position)</td>
+                        <td>@Game.Values.Where(v => v.MapId == map.Id && v.PlayerId == player.Id).Sum(v => v.Score)</td>
                     </Repeater>
                 </tr>
             </Repeater>
@@ -42,14 +40,10 @@
             <tr class="bordered">
                 <th>Total </th>
                 <Repeater Items="Game.Players" Context="player">
-                    <td>@Totals.GetValueOrDefault($"{player}").total (@Totals.GetValueOrDefault($"{player}").position)</td>
+                    <td>@Game.Values.Where(v => v.PlayerId == player.Id).Sum(v => v.Score)</td>
                 </Repeater>
             </tr>
         </table>
-
-        <div>
-            <Chart Config="PlotConfig" Height="500" Width="800" @ref="Chart"></Chart>
-        </div>
     </div>
 </Container>
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GeoNRage.Data;
+using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -26,7 +26,7 @@ namespace GeoNRage.App.Pages
                 .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
                 .Build();
 
-            _hubConnection.On<IEnumerable<GameBase>>("ReceiveGames", games =>
+            _hubConnection.On<IEnumerable<Game>>("ReceiveGames", games =>
             {
                 if (games.Any())
                 {

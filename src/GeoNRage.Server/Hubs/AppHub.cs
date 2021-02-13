@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Data;
+using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs
@@ -23,7 +24,7 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("LoadGames")]
         public async Task LoadGamesAsync()
         {
-            IEnumerable<GameBase> games = await _gameService.GetAllBaseAsync();
+            IEnumerable<Game> games = await _gameService.GetAllAsync();
 
             await Clients.Caller.SendAsync("ReceiveGames", games);
         }
@@ -43,15 +44,15 @@ namespace GeoNRage.Server.Hubs
         }
 
         [HubMethodName("UpdateValue")]
-        public async Task UpdateValueAsync(int id, string key, int score)
+        public async Task UpdateValueAsync(int id, int mapId, int playerId, int round, int score)
         {
             Game? game = await _gameService.GetByIdAsync(id);
 
             if (game is not null)
             {
-                await _gameService.UpdateValueAsync(id, key, score);
+                await _gameService.UpdateValueAsync(id, mapId, playerId, round, score);
 
-                await Clients.OthersInGroup($"group-${id}").SendAsync("ReceiveValue", key, score);
+                await Clients.OthersInGroup($"group-${id}").SendAsync("ReceiveValue", mapId, playerId, round, score);
             }
         }
     }
