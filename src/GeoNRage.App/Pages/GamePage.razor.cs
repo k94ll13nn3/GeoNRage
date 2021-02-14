@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components;
 using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -22,6 +23,8 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IGamesApi GamesApi { get; set; } = null!;
 
+        public GameChart Chart { get; set; } = null!;
+
         public async ValueTask DisposeAsync()
         {
             await _hubConnection.DisposeAsync();
@@ -33,7 +36,7 @@ namespace GeoNRage.App.Pages
                 .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
                 .Build();
 
-            _hubConnection.On<int, int, int, int>("ReceiveValue", HandleReceiveValue);
+            _hubConnection.On<int, int, int, int>("ReceiveValue", HandleReceiveValueAsync);
 
             await _hubConnection.StartAsync();
 
@@ -50,17 +53,18 @@ namespace GeoNRage.App.Pages
             }
         }
 
-        private void HandleReceiveValue(int mapId, int playerId, int round, int score)
+        private async Task HandleReceiveValueAsync(int mapId, int playerId, int round, int score)
         {
             Game[mapId, playerId, round] = score;
+            await Chart.UpdateAsync(mapId, playerId, round, score);
             StateHasChanged();
         }
 
-        private void Send(int mapId, int playerId, int round, int score)
+        private async Task SendAsync(int mapId, int playerId, int round, int score)
         {
             int clampedValue = Math.Clamp(score, 0, 5000);
-            _hubConnection.InvokeAsync("UpdateValue", Id, mapId, playerId, round, clampedValue);
-            HandleReceiveValue(mapId, playerId, round, clampedValue);
+            await _hubConnection.InvokeAsync("UpdateValue", Id, mapId, playerId, round, clampedValue);
+            await HandleReceiveValueAsync(mapId, playerId, round, clampedValue);
         }
     }
 }
