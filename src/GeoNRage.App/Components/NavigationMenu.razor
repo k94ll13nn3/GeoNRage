@@ -1,22 +1,11 @@
-﻿@inject NavigationManager NavigationManager
-@inject IJSRuntime JsRuntime
-
-<div class="menu-links">
+﻿<div class="menu-links">
     <a href="@NavigationManager.ToAbsoluteUri("/games")">Parties</a>
 
     <div class="theme-chooser">
-        <select @onchange="ChangeTheme">
+        <select @onchange="ChangeThemeAsync">
             <option value="basic">Basic</option>
             <option value="legacy">Legacy</option>
             <option value="zelda">Zelda</option>
         </select>
     </div>
 </div>
-
-@code{
-    async Task ChangeTheme(ChangeEventArgs e)
-    {
-        var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/utils.js");
-        await module.InvokeVoidAsync("changeTheme", e.Value);
-    }
-}

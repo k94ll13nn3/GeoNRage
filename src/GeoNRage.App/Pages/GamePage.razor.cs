@@ -56,7 +56,7 @@ namespace GeoNRage.App.Pages
         private async Task HandleReceiveValueAsync(int mapId, int playerId, int round, int score)
         {
             Game[mapId, playerId, round] = score;
-            await Chart.UpdateAsync(mapId, playerId, round, score);
+            await Chart.UpdateAsync(playerId);
             StateHasChanged();
         }
 

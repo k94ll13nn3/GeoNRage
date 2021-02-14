@@ -7,11 +7,3 @@
         @ChildContent(item);
     }
 }
-
-@code {
-    [Parameter]
-    public IEnumerable<T>? Items { get; set; }
-
-    [Parameter]
-    public RenderFragment<T>? ChildContent { get; set; }
-}

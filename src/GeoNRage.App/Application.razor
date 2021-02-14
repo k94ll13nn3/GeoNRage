@@ -1,0 +1,11 @@
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LoadingAnimation Animated="false" BigIcon="true">
+            <span class="logo-text">4<span class="logo-text-inner">0</span>4</span>
+            <a href="@NavigationManager.ToAbsoluteUri("/")">Retour</a>
+        </LoadingAnimation>
+    </NotFound>
+</Router>

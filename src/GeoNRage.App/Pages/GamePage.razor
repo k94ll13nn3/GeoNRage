@@ -54,5 +54,7 @@
 </Container>
 
 <Container Condition="Game is null">
-    <Loader Label="@($"Chargement de la partie {Id}...")"></Loader>
+    <LoadingAnimation>
+        Chargement de la partie @(Id)...
+    </LoadingAnimation>
 </Container>
