@@ -9,8 +9,6 @@ namespace GeoNRage.App.Pages
 {
     public partial class GamePage : IAsyncDisposable
     {
-        private bool _canRender = true;
-        private bool _nextRender;
         private HubConnection _hubConnection = null!;
 
         public Game Game { get; set; } = null!;
@@ -48,19 +46,14 @@ namespace GeoNRage.App.Pages
             {
                 Game = game;
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
-                UpdatePage();
+                StateHasChanged();
             }
-        }
-
-        protected override bool ShouldRender()
-        {
-            return _canRender;
         }
 
         private void HandleReceiveValue(int mapId, int playerId, int round, int score)
         {
             Game[mapId, playerId, round] = score;
-            UpdatePage();
+            StateHasChanged();
         }
 
         private void Send(int mapId, int playerId, int round, int score)
@@ -68,28 +61,6 @@ namespace GeoNRage.App.Pages
             int clampedValue = Math.Clamp(score, 0, 5000);
             _hubConnection.InvokeAsync("UpdateValue", Id, mapId, playerId, round, clampedValue);
             HandleReceiveValue(mapId, playerId, round, clampedValue);
-        }
-
-        private void InputFocused(bool focused)
-        {
-            _canRender = !focused;
-            if (!focused && _nextRender)
-            {
-                UpdatePage();
-            }
-        }
-
-        private void UpdatePage()
-        {
-            if (_canRender)
-            {
-                StateHasChanged();
-                _nextRender = false;
-            }
-            else
-            {
-                _nextRender = true;
-            }
         }
     }
 }

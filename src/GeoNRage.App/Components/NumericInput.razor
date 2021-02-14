@@ -1,16 +1,22 @@
 ﻿<input type="number"
-       value="@Value"
-       disabled="@Disabled"
-       @onchange="Send"
-       @oninput="OnInput"
-       @onkeydown="@OnKeydown"
-       @onkeydown:preventDefault="@PreventKey"
-       @onfocus="@((e)=> OnFocus(true))"
-       @onblur="@((e)=> OnFocus(false))" />
+       @bind="@Value"
+       disabled="@Disabled" />
 
 @code {
+    private int _value;
+
+    public int Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            ValueChanged.InvokeAsync(Value);
+        }
+    }
+
     [Parameter]
-    public int Value { get; set; }
+    public int InitialValue { get; set; }
 
     [Parameter]
     public bool Disabled { get; set; }
@@ -18,38 +24,9 @@
     [Parameter]
     public EventCallback<int> ValueChanged { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> FocusChanged { get; set; }
-
-    private bool PreventKey { get; set; }
-
-    private void OnKeydown(KeyboardEventArgs args)
+    protected override void OnParametersSet()
     {
-        this.PreventKey = false;
-        if (args.Key == "Tab" || args.Key == "Backspace" || args.Key == "Enter")
-        {
-            return;
-        }
-
-        if (!int.TryParse(Value.ToString() + args.Key, out var value) || value < 0)
-        {
-            this.PreventKey = true;
-        }
+        _value = InitialValue;
     }
 
-    private void OnInput(ChangeEventArgs e)
-    {
-        var newValue = e?.Value?.ToString();
-        Value = int.Parse(string.IsNullOrWhiteSpace(newValue) ? "0" : newValue);
-    }
-
-    private async Task OnFocus(bool focused)
-    {
-        await FocusChanged.InvokeAsync(focused);
-    }
-
-    private async Task Send()
-    {
-        await ValueChanged.InvokeAsync(Value);
-    }
 }

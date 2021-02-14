@@ -21,7 +21,7 @@
                                 var key = $"{map.Id}_{player.Id}_{round}";
                             }
                             <td>
-                                <NumericInput @key="@key" Value="@Game[map.Id, player.Id, round]" ValueChanged="@((e) => { Send(map.Id, player.Id, round, e);})" Disabled="@Game.Locked" FocusChanged="InputFocused"></NumericInput>
+                                <NumericInput @key="@key" InitialValue="@Game[map.Id, player.Id, round]" ValueChanged="@((e) => { Send(map.Id, player.Id, round, e);})" Disabled="@Game.Locked"></NumericInput>
                             </td>
                         </Repeater>
                     </tr>
