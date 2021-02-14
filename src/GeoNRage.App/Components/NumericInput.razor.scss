@@ -19,7 +19,7 @@ input {
     &:disabled, &[disabled] {
         text-align: center;
 
-        @include t.themify(background-color, background);
+        @include t.themify(background, secondary);
         @include t.themify(color, foreground);
     }
 

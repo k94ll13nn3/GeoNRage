@@ -3,6 +3,7 @@
 
 @import 'error';
 @import 'loader';
+@import 'spacing';
 @import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
@@ -37,4 +38,36 @@ a {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    td {
+        text-align: center;
+        height: 25px;
+        width: 100px;
+        border: 1px solid;
+
+        @include t.themify(border-color, foreground);
+        @include t.themify(background, secondary);
+    }
+
+    th {
+        height: 25px;
+        width: 100px;
+        border: 1px solid;
+        font-weight: normal;
+
+        @include t.themify(border-color, foreground);
+        @include t.themify(background, primary);
+    }
+
+    tr.bordered {
+        border-top: 5px solid;
+
+        @include t.themify(border-color, foreground);
+    }
 }

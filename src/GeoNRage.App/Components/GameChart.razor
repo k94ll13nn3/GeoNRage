@@ -6,8 +6,6 @@
 @using ChartJs.Blazor.LineChart;
 @using ChartJs.Blazor.Util;
 
-@inject GeoNRage.App.Apis.IGamesApi GamesApi
-
 <Chart Config="PlotConfig" Height="500" Width="800" @ref="Chart"></Chart>
 
 @code{
@@ -34,7 +32,7 @@
             Scales = new Scales
             {
                 XAxes = new List<CartesianAxis>
-            {
+    {
                     new CategoryAxis
                     {
                         ScaleLabel = new ScaleLabel
@@ -44,7 +42,7 @@
                     }
                 },
                 YAxes = new List<CartesianAxis>
-            {
+    {
                     new LinearCartesianAxis
                     {
                         ScaleLabel = new ScaleLabel
@@ -57,21 +55,17 @@
         }
     };
 
-    [Parameter]
-    public int GameId { get; set; }
-
     public Chart Chart { get; set; } = null!;
 
+    [Parameter]
     public Game Game { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Game = await GamesApi.GetAsync(GameId);
-
-        await CreatePlotAsync();
+        CreatePlot();
     }
 
-    private async Task CreatePlotAsync()
+    private void CreatePlot()
     {
         foreach (string item in Game.Maps.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.Name[0]}_R{y}")))
         {
@@ -79,7 +73,7 @@
         }
 
         var colors = new List<Color>()
-    {
+{
             Color.FromArgb(255, 99, 132),
             Color.FromArgb(255, 159, 64),
             Color.FromArgb(255, 205, 86),
@@ -102,13 +96,12 @@
 
             PlotConfig.Data.Datasets.Add(dataset);
             colorIndex++;
-            await UpdatePlotAsync(player);
+            UpdatePlot(player);
         }
     }
 
-    private async Task UpdatePlotAsync(Player player)
+    private void UpdatePlot(Player player)
     {
-
         int sum = 0;
         var scores = new List<int>();
         var values = new List<int>();
@@ -129,12 +122,11 @@
         Dataset<int> dataset = (PlotConfig.Data.Datasets.First(x => (x as LineDataset<int>)?.Label == player.Name) as Dataset<int>)!;
         dataset.Clear();
         dataset.AddRange(scores);
-        await Chart.Update();
     }
 
     public async Task UpdateAsync(int mapId, int playerId, int round, int score)
     {
-        Game[mapId, playerId, round] = score;
-        await UpdatePlotAsync(Game.Players.First(x => x.Id == playerId));
+        UpdatePlot(Game.Players.First(x => x.Id == playerId));
+        await Chart.Update();
     }
 }

@@ -1,0 +1,33 @@
+﻿@using Humanizer;
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <Repeater Items="Enumerable.Range(1, Game.Players.Count)" Context="i">
+                <th>@i.Ordinalize()</th>
+            </Repeater>
+        </tr>
+    </thead>
+    <tbody>
+        <Repeater Items="Game.Maps" Context="map">
+            <tr>
+                <th>@map.Name</th>
+                <Repeater Items="Game.Players.Select(p => (name: p.Name, score: Game.Values.Where(v => v.PlayerId == p.Id && v.MapId == map.Id).Sum(v => v.Score))).OrderByDescending(p => p.score)" Context="player">
+                    <td>@player.name (@player.score) </td>
+                </Repeater>
+            </tr>
+        </Repeater>
+        <tr>
+            <th>Général</th>
+            <Repeater Items="Game.Players.Select(p => (name: p.Name, score: Game.Values.Where(v => v.PlayerId == p.Id ).Sum(v => v.Score))).OrderByDescending(p => p.score)" Context="player">
+                <td>@player.name (@player.score) </td>
+            </Repeater>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public Game Game { get; set; } = null!;
+}

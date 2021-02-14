@@ -4,7 +4,7 @@
     <h1>#@Game!.Id — @Game!.Name</h1>
 
     <div class="container">
-        <table>
+        <table class="ma-5">
             <Repeater Items="Game.Maps" Context="map">
                 <tr>
                     <th>@map.Name</th>
@@ -45,8 +45,10 @@
             </tr>
         </table>
 
-        <div>
-            <GameChart GameId="Id" @ref="Chart"></GameChart>
+        <div class="ma-5">
+            <GameRankings Game="@Game"></GameRankings>
+
+            <GameChart Game="@Game" @ref="Chart"></GameChart>
         </div>
     </div>
 </Container>
