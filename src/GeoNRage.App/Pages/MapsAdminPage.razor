@@ -1,0 +1,42 @@
+﻿@page "/admin/maps"
+
+<h2>Cartes</h2>
+
+<Container Condition="Maps?.Any() == true">
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Utilisée</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Repeater Items="Maps" Context="map">
+                <tr>
+                    <td>@map.Id</td>
+                    <td>@map.Name</td>
+                    <td><input type="checkbox" disabled checked="@(map.GameCount > 0)"/></td>
+                    <td>
+                        <button @onclick="(() => EditMap(map.Id))">Editer</button>
+                        <button @onclick="(() => DeleteMapAsync(map.Id))" disabled="@(map.GameCount > 0)">Supprimer</button>
+                    </td>
+                </tr>
+            </Repeater>
+        </tbody>
+    </table>
+</Container>
+
+<button @onclick="ShowMapCreation">Créer</button>
+
+<Container Condition="ShowEditForm">
+    <EditForm Model="Map" OnValidSubmit="CreateOrUpdateMapAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText id="name" @bind-Value="Map.Name" />
+
+        <button type="submit">Valider</button>
+    </EditForm>
+</Container>

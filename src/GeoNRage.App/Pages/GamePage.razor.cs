@@ -5,6 +5,7 @@ using GeoNRage.App.Components;
 using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Refit;
 
 namespace GeoNRage.App.Pages
 {
@@ -40,14 +41,14 @@ namespace GeoNRage.App.Pages
 
             await _hubConnection.StartAsync();
 
-            Game? game = await GamesApi.GetAsync(Id);
-            if (game is null)
+            ApiResponse<Game> response = await GamesApi.GetAsync(Id);
+            if (!response.IsSuccessStatusCode || response.Content is null)
             {
                 NavigationManager.NavigateTo("/");
             }
             else
             {
-                Game = game;
+                Game = response.Content;
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
                 StateHasChanged();
             }

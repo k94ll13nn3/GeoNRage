@@ -27,8 +27,11 @@ a {
     text-decoration: none;
 
     &:hover, &:visited, &:active {
-        color: inherit;
         text-decoration: none;
+    }
+
+    &.active {
+        @include t.themify(color, secondary);
     }
 }
 

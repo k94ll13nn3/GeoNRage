@@ -10,6 +10,6 @@ namespace GeoNRage.App.Apis
         Task<Game[]> GetAllAsync();
 
         [Get("/api/games/{id}")]
-        Task<Game> GetAsync(int id);
+        Task<ApiResponse<Game>> GetAsync(int id);
     }
 }

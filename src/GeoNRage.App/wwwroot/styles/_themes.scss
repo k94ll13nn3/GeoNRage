@@ -35,9 +35,6 @@ $themeCollection: (
                 $key: nth($keys,$i);
                 #{$property}: map-get($themeItem, $key);
             }
-            // Finally add transitions over themified properties.
-            transition-property: #{$properties};
-            transition-duration: 1s;
         }
     }
 }

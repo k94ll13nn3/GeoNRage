@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using GeoNRage.Data;
 using GeoNRage.Data.Entities;
+using GeoNRage.Data.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers
@@ -22,13 +21,13 @@ namespace GeoNRage.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<Game>> GetAllAsync()
         {
-            return await _gameService.GetAllGamesAsync();
+            return await _gameService.GetAllAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetAsync(int id)
         {
-            Game? game = await _gameService.GetGameAsync(id);
+            Game? game = await _gameService.GetAsync(id);
             if (game == null)
             {
                 return NotFound();

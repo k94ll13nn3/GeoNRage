@@ -1,5 +1,6 @@
 using System.Linq;
 using GeoNRage.Data;
+using GeoNRage.Data.Services;
 using GeoNRage.Server.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,10 @@ namespace GeoNRage.Server
                 b => b.MigrationsAssembly("GeoNRage.Server")));
 
             services.AddTransient<GameService>();
+            services.AddTransient<MapService>();
+            services.AddTransient<PlayerService>();
+
+            services.AddAutoMapper(typeof(Startup));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, GeoNRageDbContext context)

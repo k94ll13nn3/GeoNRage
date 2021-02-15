@@ -6,7 +6,7 @@ using GeoNRage.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace GeoNRage.Data
+namespace GeoNRage.Data.Services
 {
     public class GameService
     {
@@ -17,12 +17,12 @@ namespace GeoNRage.Data
             _context = context;
         }
 
-        public async Task<IEnumerable<Game>> GetAllGamesAsync()
+        public async Task<IEnumerable<Game>> GetAllAsync()
         {
             return await _context.Games.OrderByDescending(g => g.CreationDate).ToListAsync();
         }
 
-        public async Task<Game?> GetGameAsync(int id)
+        public async Task<Game?> GetAsync(int id)
         {
             return await _context
                 .Games
@@ -32,17 +32,7 @@ namespace GeoNRage.Data
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<IEnumerable<Map>> GetAllMapsAsync()
-        {
-            return await _context.Maps.ToListAsync();
-        }
-
-        public async Task<IEnumerable<Player>> GetAllPlayersAsync()
-        {
-            return await _context.Players.ToListAsync();
-        }
-
-        public async Task<Game> CreateGameAsync(string name, ICollection<Map> maps, ICollection<Player> players)
+        public async Task<Game> CreateAsync(string name, ICollection<Map> maps, ICollection<Player> players)
         {
             _ = maps ?? throw new ArgumentNullException(nameof(maps));
             _ = players ?? throw new ArgumentNullException(nameof(players));
@@ -60,7 +50,7 @@ namespace GeoNRage.Data
             return game.Entity;
         }
 
-        public async Task UpdateGameAsync(int id, string name, ICollection<Map> maps, ICollection<Player> players)
+        public async Task UpdateAsync(int id, string name, ICollection<Map> maps, ICollection<Player> players)
         {
             _ = maps ?? throw new ArgumentNullException(nameof(maps));
             _ = players ?? throw new ArgumentNullException(nameof(players));
@@ -82,7 +72,7 @@ namespace GeoNRage.Data
             }
         }
 
-        public async Task DeleteGameAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             Game? game = await _context.Games.FindAsync(id);
             if (game is not null)
@@ -92,7 +82,7 @@ namespace GeoNRage.Data
             }
         }
 
-        public async Task LockGameAsync(int id)
+        public async Task LockAsync(int id)
         {
             Game? game = await _context.Games.FindAsync(id);
             if (game is not null)
@@ -103,7 +93,7 @@ namespace GeoNRage.Data
             }
         }
 
-        public async Task ResetGameAsync(int id)
+        public async Task ResetAsync(int id)
         {
             List<Value> values = await _context.Values.Where(v => v.GameId == id).ToListAsync();
             _context.Values.RemoveRange(values);

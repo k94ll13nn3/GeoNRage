@@ -18,14 +18,11 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Game[]? games = await GamesApi.GetAllAsync();
-            if (games is not null)
+            Game[] games = await GamesApi.GetAllAsync();
+            Games.Clear();
+            foreach (Game game in games)
             {
-                Games.Clear();
-                foreach (Game game in games)
-                {
-                    Games.Add(game);
-                }
+                Games.Add(game);
             }
 
             StateHasChanged();
