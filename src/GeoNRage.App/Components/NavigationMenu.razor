@@ -1,7 +1,6 @@
 ﻿<div class="menu-links">
     <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/games")" class="ml-10 mr-10">Parties</NavLink>
-    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/maps")" class="ml-10 mr-10">Gestion des cartes</NavLink>
-    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/players")" class="ml-10 mr-10">Gestion des joueurs</NavLink>
+    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="ml-10 mr-10">Admin</NavLink>
 
     <div class="theme-chooser">
         <select @onchange="ChangeThemeAsync">

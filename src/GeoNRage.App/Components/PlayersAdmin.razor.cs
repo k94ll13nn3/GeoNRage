@@ -6,9 +6,9 @@ using GeoNRage.Data.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace GeoNRage.App.Pages
+namespace GeoNRage.App.Components
 {
-    public partial class PlayersAdminPage
+    public partial class PlayersAdmin
     {
         [Inject]
         public IPlayersApi PlayersApi { get; set; } = null!;

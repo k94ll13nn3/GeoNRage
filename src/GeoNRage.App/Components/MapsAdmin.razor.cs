@@ -6,9 +6,9 @@ using GeoNRage.Data.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace GeoNRage.App.Pages
+namespace GeoNRage.App.Components
 {
-    public partial class MapsAdminPage
+    public partial class MapsAdmin
     {
         [Inject]
         public IMapsApi MapsApi { get; set; } = null!;
