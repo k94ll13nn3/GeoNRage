@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GeoNRage.Data.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace GeoNRage.Data.Services
+namespace GeoNRage.Server.Services
 {
     public class GameService
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Data.Entities;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages
@@ -15,7 +15,7 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Game[] games = await GamesApi.GetAllAsync();
+            GameLightDto[] games = await GamesApi.GetAllAsync();
             if (games.Length > 0)
             {
                 NavigationManager.NavigateTo($"/games/{games[0].Id}");

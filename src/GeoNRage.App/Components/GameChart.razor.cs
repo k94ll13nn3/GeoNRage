@@ -8,7 +8,7 @@ using ChartJs.Blazor.Common.Axes;
 using ChartJs.Blazor.Common.Enums;
 using ChartJs.Blazor.LineChart;
 using ChartJs.Blazor.Util;
-using GeoNRage.Data.Entities;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components
@@ -64,7 +64,7 @@ namespace GeoNRage.App.Components
         public Chart Chart { get; set; } = null!;
 
         [Parameter]
-        public Game Game { get; set; } = null!;
+        public GameDto Game { get; set; } = null!;
 
         public async Task UpdateAsync(int playerId)
         {
@@ -96,7 +96,7 @@ namespace GeoNRage.App.Components
             };
 
             int colorIndex = 0;
-            foreach (Player player in Game.Players)
+            foreach (PlayerDto player in Game.Players)
             {
                 IDataset<int> dataset = new LineDataset<int>()
                 {
@@ -112,12 +112,12 @@ namespace GeoNRage.App.Components
             }
         }
 
-        private void UpdatePlot(Player player)
+        private void UpdatePlot(PlayerDto player)
         {
             int sum = 0;
             var scores = new List<int>();
             var values = new List<int>();
-            foreach (Map map in Game.Maps)
+            foreach (MapDto map in Game.Maps)
             {
                 for (int i = 0; i < Game.Rounds; i++)
                 {

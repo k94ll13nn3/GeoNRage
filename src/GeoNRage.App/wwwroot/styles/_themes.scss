@@ -1,27 +1,5 @@
 ﻿/* see https: //fjcalzado.github.io/DemoSeries-SASS-Easy-Theming/ */
-$themeCollection: (
-  basic: (
-    background: #1A1A1D,
-    primary: #1F3044,
-    secondary: #E07116,
-    accent: #00458B,
-    foreground: #FFFFFF,
-  ),
-  legacy: (
-    background: #1A1A1D,
-    primary: #6F2232,
-    secondary: #C3073F,
-    accent: #950740,
-    foreground: #FFFFFF,
-  ),
-  zelda: (
-    background: #1A1A1D,
-    primary: #568233,
-    secondary: #CC9E48,
-    accent: #613F19,
-    foreground: #FFFFFF,
-  ),
-);
+$themeCollection: ( basic: ( background: #1A1A1D, primary: #1F3044, secondary: #E07116, accent: #00458B, foreground: #FFFFFF, ), legacy: ( background: #1A1A1D, primary: #6F2232, secondary: #C3073F, accent: #950740, foreground: #FFFFFF, ), zelda: ( background: #1A1A1D, primary: #568233, secondary: #CC9E48, accent: #613F19, foreground: #FFFFFF, ), );
 
 @mixin themify( $properties, $keys, $themes: $themeCollection) {
     // Iterate over the themes.

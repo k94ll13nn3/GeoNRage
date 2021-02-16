@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using GeoNRage.Data.Entities;
-using GeoNRage.Data.Services;
+using AutoMapper;
+using GeoNRage.Server.Entities;
+using GeoNRage.Server.Services;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers
@@ -11,21 +12,24 @@ namespace GeoNRage.Server.Controllers
     [Route("api/[controller]")]
     public class GamesController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly GameService _gameService;
 
-        public GamesController(GameService gameService)
+        public GamesController(GameService gameService, IMapper mapper)
         {
             _gameService = gameService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Game>> GetAllAsync()
+        public async Task<IEnumerable<GameLightDto>> GetAllAsync()
         {
-            return await _gameService.GetAllAsync();
+            IEnumerable<Game> games = await _gameService.GetAllAsync();
+            return _mapper.Map<IEnumerable<Game>, IEnumerable<GameLightDto>>(games);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetAsync(int id)
+        public async Task<ActionResult<GameDto>> GetAsync(int id)
         {
             Game? game = await _gameService.GetAsync(id);
             if (game == null)
@@ -33,24 +37,7 @@ namespace GeoNRage.Server.Controllers
                 return NotFound();
             }
 
-            foreach (Map map in game.Maps)
-            {
-                map.Games = Array.Empty<Game>();
-            }
-
-            foreach (Player player in game.Players)
-            {
-                player.Games = Array.Empty<Game>();
-            }
-
-            foreach (Value value in game.Values)
-            {
-                value.Player = null!;
-                value.Map = null!;
-                value.Game = null!;
-            }
-
-            return game;
+            return _mapper.Map<Game, GameDto>(game);
         }
     }
 }

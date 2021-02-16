@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Data.Entities;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages
 {
     public partial class GamesPage
     {
-        public ICollection<Game> Games { get; } = new List<Game>();
+        public ICollection<GameLightDto> Games { get; } = new List<GameLightDto>();
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
@@ -18,9 +18,9 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Game[] games = await GamesApi.GetAllAsync();
+            GameLightDto[] games = await GamesApi.GetAllAsync();
             Games.Clear();
-            foreach (Game game in games)
+            foreach (GameLightDto game in games)
             {
                 Games.Add(game);
             }

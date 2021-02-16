@@ -1,4 +1,4 @@
-﻿using GeoNRage.Data.Entities;
+﻿using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components
@@ -6,6 +6,6 @@ namespace GeoNRage.App.Components
     public partial class GameRankings
     {
         [Parameter]
-        public Game Game { get; set; } = null!;
+        public GameDto Game { get; set; } = null!;
     }
 }

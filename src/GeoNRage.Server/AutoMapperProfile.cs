@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using GeoNRage.Data.Dtos;
-using GeoNRage.Data.Entities;
+using GeoNRage.Server.Entities;
+using GeoNRage.Shared.Dtos;
 
 namespace GeoNRage.Server
 {
@@ -13,6 +13,11 @@ namespace GeoNRage.Server
 
             CreateMap<Player, PlayerDto>()
                 .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.Games.Count));
+
+            CreateMap<Value, ValueDto>();
+
+            CreateMap<Game, GameDto>();
+            CreateMap<Game, GameLightDto>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Data.Entities;
-using GeoNRage.Data.Services;
+using GeoNRage.Server.Entities;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs

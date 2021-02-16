@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GeoNRage.Data.Dtos
+namespace GeoNRage.Shared.Dtos
 {
     public class MapCreateOrEditDto
     {

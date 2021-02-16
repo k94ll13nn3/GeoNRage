@@ -1,7 +1,6 @@
 using System.Linq;
-using GeoNRage.Data;
-using GeoNRage.Data.Services;
 using GeoNRage.Server.Hubs;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;

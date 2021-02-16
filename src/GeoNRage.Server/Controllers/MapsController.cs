@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using GeoNRage.Data.Dtos;
-using GeoNRage.Data.Entities;
-using GeoNRage.Data.Services;
+using GeoNRage.Server.Entities;
+using GeoNRage.Server.Services;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers

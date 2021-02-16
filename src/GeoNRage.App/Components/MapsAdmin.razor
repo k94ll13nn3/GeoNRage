@@ -15,7 +15,7 @@
                 <tr>
                     <td>@map.Id</td>
                     <td>@map.Name</td>
-                    <td><input type="checkbox" disabled checked="@(map.GameCount > 0)"/></td>
+                    <td><input type="checkbox" disabled checked="@(map.GameCount > 0)" /></td>
                     <td>
                         <button @onclick="(() => EditMap(map.Id))">Editer</button>
                         <button @onclick="(() => DeleteMapAsync(map.Id))" disabled="@(map.GameCount > 0)">Supprimer</button>

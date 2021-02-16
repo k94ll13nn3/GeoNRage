@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GeoNRage.Data.Entities
+﻿namespace GeoNRage.Server.Entities
 {
     public class Value
     {

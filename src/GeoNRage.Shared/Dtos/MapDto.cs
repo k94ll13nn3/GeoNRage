@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Data.Dtos
+﻿namespace GeoNRage.Shared.Dtos
 {
     public class MapDto
     {

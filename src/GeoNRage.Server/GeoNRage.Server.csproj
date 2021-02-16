@@ -8,6 +8,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeoNRage.App\GeoNRage.App.csproj" />
-    <ProjectReference Include="..\GeoNRage.Data\GeoNRage.Data.csproj" />
+    <ProjectReference Include="..\GeoNRage.Shared\GeoNRage.Shared.csproj" />
   </ItemGroup>
 
 </Project>

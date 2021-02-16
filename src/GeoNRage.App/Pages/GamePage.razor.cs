@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Components;
-using GeoNRage.Data.Entities;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Refit;
@@ -13,7 +13,7 @@ namespace GeoNRage.App.Pages
     {
         private HubConnection _hubConnection = null!;
 
-        public Game Game { get; set; } = null!;
+        public GameDto Game { get; set; } = null!;
 
         [Parameter]
         public int Id { get; set; }
@@ -41,7 +41,7 @@ namespace GeoNRage.App.Pages
 
             await _hubConnection.StartAsync();
 
-            ApiResponse<Game> response = await GamesApi.GetAsync(Id);
+            ApiResponse<GameDto> response = await GamesApi.GetAsync(Id);
             if (!response.IsSuccessStatusCode || response.Content is null)
             {
                 NavigationManager.NavigateTo("/");

@@ -1,8 +1,8 @@
 ﻿using System;
-using GeoNRage.Data.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeoNRage.Data
+namespace GeoNRage.Server
 {
     public class GeoNRageDbContext : DbContext
     {

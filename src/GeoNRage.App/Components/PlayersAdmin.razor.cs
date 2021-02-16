@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Data.Dtos;
+using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 

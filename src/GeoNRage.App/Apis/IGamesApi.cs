@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Data.Entities;
+using GeoNRage.Shared.Dtos;
 using Refit;
 
 namespace GeoNRage.App.Apis
@@ -7,9 +7,9 @@ namespace GeoNRage.App.Apis
     public interface IGamesApi
     {
         [Get("/api/games")]
-        Task<Game[]> GetAllAsync();
+        Task<GameLightDto[]> GetAllAsync();
 
         [Get("/api/games/{id}")]
-        Task<ApiResponse<Game>> GetAsync(int id);
+        Task<ApiResponse<GameDto>> GetAsync(int id);
     }
 }

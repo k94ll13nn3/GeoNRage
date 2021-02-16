@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Data.Dtos;
+using GeoNRage.Shared.Dtos;
 using Refit;
 
 namespace GeoNRage.App.Apis

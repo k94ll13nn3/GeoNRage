@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeoNRage.Data\GeoNRage.Data.csproj" />
+    <ProjectReference Include="..\GeoNRage.Shared\GeoNRage.Shared.csproj" />
   </ItemGroup>
 
   <!-- Launch the debug with "dotnet watch run" to have a light live-reload experience -->
@@ -28,9 +28,6 @@
   <!-- Define scss files for the compilation but do not publish them -->
   <ItemGroup>
     <ScssFiles Include="**/*/*.scss" Exclude="**/*/_*.scss" />
-    <Content Remove="wwwroot\styles\_spacing.scss" />
-    <Watch Remove="wwwroot\styles\_spacing.scss" />
-    <None Include="wwwroot\styles\_spacing.scss" />
     <Content Update="**/*/*.scss" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
