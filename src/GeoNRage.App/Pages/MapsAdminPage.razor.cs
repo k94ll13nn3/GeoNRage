@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Data.Dtos;
-using GeoNRage.Data.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -17,11 +16,7 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IJSRuntime JSRuntime { get; set; } = null!;
 
-        public IEnumerable<Game> Games { get; set; } = null!;
-
         public IEnumerable<MapDto> Maps { get; set; } = null!;
-
-        public IEnumerable<Player> Players { get; set; } = null!;
 
         public bool ShowEditForm { get; set; }
 

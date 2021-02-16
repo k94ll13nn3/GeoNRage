@@ -10,6 +10,9 @@ namespace GeoNRage.Server
         {
             CreateMap<Map, MapDto>()
                 .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.Games.Count));
+
+            CreateMap<Player, PlayerDto>()
+                .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.Games.Count));
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace GeoNRage.Data.Dtos
 {
-    public class PlayerCreateOrEditDto
+    public class MapCreateOrEditDto
     {
         [Required]
         public string Name { get; set; } = string.Empty;

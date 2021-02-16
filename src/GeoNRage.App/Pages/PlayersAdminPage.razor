@@ -1,0 +1,42 @@
+﻿@page "/admin/players"
+
+<h2>Joueurs</h2>
+
+<Container Condition="Players?.Any() == true">
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Utilisée</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Repeater Items="Players" Context="player">
+                <tr>
+                    <td>@player.Id</td>
+                    <td>@player.Name</td>
+                    <td><input type="checkbox" disabled checked="@(player.GameCount > 0)" /></td>
+                    <td>
+                        <button @onclick="(() => EditPlayer(player.Id))">Editer</button>
+                        <button @onclick="(() => DeletePlayerAsync(player.Id))" disabled="@(player.GameCount > 0)">Supprimer</button>
+                    </td>
+                </tr>
+            </Repeater>
+        </tbody>
+    </table>
+</Container>
+
+<button @onclick="ShowPlayerCreation">Créer</button>
+
+<Container Condition="ShowEditForm">
+    <EditForm Model="Player" OnValidSubmit="CreateOrUpdatePlayerAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText id="name" @bind-Value="Player.Name" />
+
+        <button type="submit">Valider</button>
+    </EditForm>
+</Container>

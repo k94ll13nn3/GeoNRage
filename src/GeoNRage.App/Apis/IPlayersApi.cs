@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Data.Entities;
+using GeoNRage.Data.Dtos;
 using Refit;
 
 namespace GeoNRage.App.Apis
@@ -7,6 +7,15 @@ namespace GeoNRage.App.Apis
     public interface IPlayersApi
     {
         [Get("/api/players")]
-        Task<Player[]> GetAllAsync();
+        Task<PlayerDto[]> GetAllAsync();
+
+        [Post("/api/players")]
+        Task<PlayerDto> CreateAsync([Body] PlayerCreateOrEditDto map);
+
+        [Post("/api/players/{id}")]
+        Task<PlayerDto> UpdateAsync(int id, [Body] PlayerCreateOrEditDto map);
+
+        [Delete("/api/players/{id}")]
+        Task DeleteAsync(int id);
     }
 }
