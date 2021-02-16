@@ -1,10 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GeoNRage.Shared.Dtos
 {
-    public class GameDto : GameLightDto
+    public class GameDto
     {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public bool Locked { get; set; }
+
+        public int Rounds { get; set; }
+
+        public DateTime Date { get; set; }
+
         public ICollection<PlayerDto> Players { get; set; } = new HashSet<PlayerDto>();
 
         public ICollection<MapDto> Maps { get; set; } = new HashSet<MapDto>();

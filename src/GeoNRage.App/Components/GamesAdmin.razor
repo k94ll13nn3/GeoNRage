@@ -1,0 +1,59 @@
+﻿<h2>Parties</h2>
+
+<Container Condition="Games?.Any() == true">
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Date</th>
+                <th>Rounds</th>
+                <th>Cartes</th>
+                <th>Joueurs</th>
+                <th>En cours</th>
+                <th>Verrouillée</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Repeater Items="Games" Context="game">
+                <tr>
+                    <td>@game.Id</td>
+                    <td>@game.Name</td>
+                    <td>@game.Date.ToShortDateString()</td>
+                    <td>@game.Rounds</td>
+                    <td>@(new MarkupString(string.Join("<br />", game.Maps.Select(m => m.Name))))</td>
+                    <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name))))</td>
+                    <td><input type="checkbox" disabled checked="@game.Values.Any(v => v.Score != 0)" /></td>
+                    <td><input type="checkbox" disabled checked="@game.Locked" /></td>
+                    <td>
+                        <button @onclick="(() => EditGame(game.Id))" disabled="@(game.Locked)">Editer</button>
+                        <button @onclick="(() => DeleteGameAsync(game.Id))" disabled="@(game.Locked || game.Values.Any(v => v.Score != 0))">Supprimer</button>
+                        <button @onclick="(() => LockGameAsync(game.Id))" disabled="@(game.Locked)">Verrouiller</button>
+                        <button @onclick="(() => ResetGameAsync(game.Id))" disabled="@(game.Locked  || game.Values.All(v => v.Score == 0))">Réinitialiser</button>
+                    </td>
+                </tr>
+            </Repeater>
+        </tbody>
+    </table>
+</Container>
+
+<button @onclick="ShowGameCreation">Créer</button>
+
+<Container Condition="ShowEditForm">
+    <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText id="name" @bind-Value="Game.Name" />
+        <InputDate id="date" @bind-Value="Game.Date" />
+
+        <hr />
+        <CheckboxList Data="@Maps" LabelSelector="@(m => m.Name)" IdSelector="@(m => m.Id)" SelectedIds="@Game.MapIds" />
+
+        <hr />
+        <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
+
+        <button type="submit">Valider</button>
+    </EditForm>
+</Container>

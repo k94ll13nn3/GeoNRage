@@ -19,7 +19,13 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<Game>> GetAllAsync()
         {
-            return await _context.Games.OrderByDescending(g => g.CreationDate).ToListAsync();
+            return await _context
+                .Games
+                .Include(g => g.Values)
+                .Include(g => g.Maps)
+                .Include(g => g.Players)
+                .OrderByDescending(g => g.CreationDate)
+                .ToListAsync();
         }
 
         public async Task<Game?> GetAsync(int id)
@@ -32,14 +38,18 @@ namespace GeoNRage.Server.Services
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<Game> CreateAsync(string name, ICollection<Map> maps, ICollection<Player> players)
+        public async Task<Game> CreateAsync(string name, DateTime date, ICollection<int> mapIds, ICollection<int> playerIds)
         {
-            _ = maps ?? throw new ArgumentNullException(nameof(maps));
-            _ = players ?? throw new ArgumentNullException(nameof(players));
+            _ = mapIds ?? throw new ArgumentNullException(nameof(mapIds));
+            _ = playerIds ?? throw new ArgumentNullException(nameof(playerIds));
+
+            List<Map> maps = await _context.Maps.Where(m => mapIds.Contains(m.Id)).ToListAsync();
+            List<Player> players = await _context.Players.Where(p => playerIds.Contains(p.Id)).ToListAsync();
 
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
                 Name = name,
+                Date = date,
                 Maps = maps,
                 Players = players,
                 Rounds = 5,
@@ -50,12 +60,12 @@ namespace GeoNRage.Server.Services
             return game.Entity;
         }
 
-        public async Task UpdateAsync(int id, string name, ICollection<Map> maps, ICollection<Player> players)
+        public async Task<Game?> UpdateAsync(int id, string name, DateTime date, ICollection<int> mapIds, ICollection<int> playerIds)
         {
-            _ = maps ?? throw new ArgumentNullException(nameof(maps));
-            _ = players ?? throw new ArgumentNullException(nameof(players));
+            _ = mapIds ?? throw new ArgumentNullException(nameof(mapIds));
+            _ = playerIds ?? throw new ArgumentNullException(nameof(playerIds));
 
-            Game? game = await _context.Games.FindAsync(id);
+            Game? game = await GetAsync(id);
             if (game is not null)
             {
                 if (game.Locked)
@@ -63,20 +73,49 @@ namespace GeoNRage.Server.Services
                     throw new InvalidOperationException("Cannot update a locked game.");
                 }
 
+                if (game.Values.Any(v => v.Score > 0))
+                {
+                    if (game.Players.Select(p => p.Id).Any(id => !playerIds.Contains(id)))
+                    {
+                        throw new InvalidOperationException("Cannot remove a player from an ongoing game.");
+                    }
+
+                    if (game.Maps.Select(m => m.Id).Any(id => !mapIds.Contains(id)))
+                    {
+                        throw new InvalidOperationException("Cannot remove a map from an ongoing game.");
+                    }
+                }
+
+                List<Map> maps = await _context.Maps.Where(m => mapIds.Contains(m.Id)).ToListAsync();
+                List<Player> players = await _context.Players.Where(p => playerIds.Contains(p.Id)).ToListAsync();
+
                 game.Name = name;
+                game.Date = date;
                 game.Maps = maps;
                 game.Players = players;
 
                 _context.Games.Update(game);
                 await _context.SaveChangesAsync();
             }
+
+            return game;
         }
 
         public async Task DeleteAsync(int id)
         {
-            Game? game = await _context.Games.FindAsync(id);
+            Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
             if (game is not null)
             {
+                if (game.Locked)
+                {
+                    throw new InvalidOperationException("Cannot delete a locked game.");
+                }
+
+                if (game.Values.Any(v => v.Score > 0))
+                {
+                    throw new InvalidOperationException("Cannot delete an ongoing game.");
+                }
+
                 _context.Games.Remove(game);
                 await _context.SaveChangesAsync();
             }
@@ -95,9 +134,18 @@ namespace GeoNRage.Server.Services
 
         public async Task ResetAsync(int id)
         {
-            List<Value> values = await _context.Values.Where(v => v.GameId == id).ToListAsync();
-            _context.Values.RemoveRange(values);
-            await _context.SaveChangesAsync();
+            Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
+            if (game is not null)
+            {
+                if (game.Locked)
+                {
+                    throw new InvalidOperationException("Cannot reset a locked game.");
+                }
+
+                List<Value> values = await _context.Values.Where(v => v.GameId == id).ToListAsync();
+                _context.Values.RemoveRange(values);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task UpdateValueAsync(int gameId, int mapId, int playerId, int round, int newScore)
