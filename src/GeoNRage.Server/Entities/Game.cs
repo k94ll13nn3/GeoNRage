@@ -13,6 +13,8 @@ namespace GeoNRage.Server.Entities
 
         public DateTime CreationDate { get; set; }
 
+        public DateTime Date { get; set; }
+
         public int Rounds { get; set; }
 
         public ICollection<Player> Players { get; set; } = new HashSet<Player>();

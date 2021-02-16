@@ -26,6 +26,7 @@ namespace GeoNRage.Server
             modelBuilder.Entity<Game>().Property(g => g.Name).IsRequired();
             modelBuilder.Entity<Game>().Property(g => g.Locked).IsRequired();
             modelBuilder.Entity<Game>().Property(g => g.CreationDate).IsRequired();
+            modelBuilder.Entity<Game>().Property(g => g.Date).IsRequired();
             modelBuilder.Entity<Game>().Property(g => g.Rounds).IsRequired();
 
             modelBuilder.Entity<Player>().HasKey(p => p.Id);

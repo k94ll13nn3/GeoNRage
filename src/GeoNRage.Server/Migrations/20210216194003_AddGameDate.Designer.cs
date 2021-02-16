@@ -3,14 +3,16 @@ using System;
 using GeoNRage.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GeoNRage.Server.Migrations
 {
     [DbContext(typeof(GeoNRageDbContext))]
-    partial class GeoNRageDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210216194003_AddGameDate")]
+    partial class AddGameDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

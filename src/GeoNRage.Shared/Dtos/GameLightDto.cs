@@ -1,4 +1,6 @@
-﻿namespace GeoNRage.Shared.Dtos
+﻿using System;
+
+namespace GeoNRage.Shared.Dtos
 {
     public class GameLightDto
     {
@@ -9,5 +11,7 @@
         public bool Locked { get; set; }
 
         public int Rounds { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }
