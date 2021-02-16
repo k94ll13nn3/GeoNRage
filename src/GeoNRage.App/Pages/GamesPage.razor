@@ -1,12 +1,7 @@
 ﻿@page "/games"
 
 <ul>
-    <Virtualize Items="Games" Context="game">
-        <ItemContent>
-            <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Id — @game.Name @(game.Locked ? "(terminée)" : "")</a></li>
-        </ItemContent>
-        <Placeholder>
-            <p>Chargement&hellip;</p>
-        </Placeholder>
-    </Virtualize>
+    <Repeater Items="Games" Context="game">
+        <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">#@game.Date.ToShortDateString() — @game.Name @(game.Locked ? "(terminée)" : "")</a></li>
+    </Repeater>
 </ul>

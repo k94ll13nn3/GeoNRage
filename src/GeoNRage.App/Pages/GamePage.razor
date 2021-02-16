@@ -1,7 +1,7 @@
 ﻿@page "/games/{Id:int}"
 
 <Container Condition="Game is not null">
-    <h1>#@Game!.Id — @Game!.Name</h1>
+    <h1>#@Game.Date.ToShortDateString() — @Game.Name</h1>
 
     <div class="container">
         <table class="ma-5">
