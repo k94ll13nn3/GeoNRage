@@ -15,7 +15,7 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            GameDto[] games = await GamesApi.GetAllAsync();
+            GameLightDto[] games = await GamesApi.GetAllLightAsync();
             if (games.Length > 0)
             {
                 NavigationManager.NavigateTo($"/games/{games[0].Id}");

@@ -17,15 +17,18 @@ namespace GeoNRage.Server.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Game>> GetAllAsync()
+        public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {
-            return await _context
-                .Games
-                .Include(g => g.Values)
-                .Include(g => g.Maps)
-                .Include(g => g.Players)
-                .OrderByDescending(g => g.CreationDate)
-                .ToListAsync();
+            IQueryable<Game> query = _context.Games.OrderByDescending(g => g.Date);
+            if (includeNavigation)
+            {
+                query = query
+                    .Include(g => g.Values)
+                    .Include(g => g.Maps)
+                    .Include(g => g.Players);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Game?> GetAsync(int id)

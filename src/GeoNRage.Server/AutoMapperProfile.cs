@@ -17,6 +17,7 @@ namespace GeoNRage.Server
             CreateMap<Value, ValueDto>();
 
             CreateMap<Game, GameDto>();
+            CreateMap<Game, GameLightDto>();
         }
     }
 }

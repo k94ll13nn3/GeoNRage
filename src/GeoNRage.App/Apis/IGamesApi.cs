@@ -9,6 +9,9 @@ namespace GeoNRage.App.Apis
         [Get("/api/games")]
         Task<GameDto[]> GetAllAsync();
 
+        [Get("/api/games/light")]
+        Task<GameLightDto[]> GetAllLightAsync();
+
         [Get("/api/games/{id}")]
         Task<ApiResponse<GameDto>> GetAsync(int id);
 

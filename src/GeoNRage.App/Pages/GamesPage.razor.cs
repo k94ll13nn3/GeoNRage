@@ -8,7 +8,7 @@ namespace GeoNRage.App.Pages
 {
     public partial class GamesPage
     {
-        public ICollection<GameDto> Games { get; } = new List<GameDto>();
+        public ICollection<GameLightDto> Games { get; } = new List<GameLightDto>();
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
@@ -18,9 +18,9 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            GameDto[] games = await GamesApi.GetAllAsync();
+            GameLightDto[] games = await GamesApi.GetAllLightAsync();
             Games.Clear();
-            foreach (GameDto game in games)
+            foreach (GameLightDto game in games)
             {
                 Games.Add(game);
             }
