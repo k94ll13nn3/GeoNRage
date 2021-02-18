@@ -1,50 +1,11 @@
-﻿@typeparam TItem
+﻿@typeparam T
 
 <div>
     <Repeater Items="Data" Context="item">
         @{
             var value = IdSelector(item);
-            bool Checked = false;
-            if (SelectedIds.Contains(value))
-            {
-                Checked = true;
-            }
-            <input type="checkbox" checked=@Checked @onchange="eventArgs => { CheckboxClicked(value, eventArgs.Value); }" />
+            <input type="checkbox" checked=@SelectedIds.Contains(value) @onchange="eventArgs => { CheckboxClicked(value, eventArgs.Value); }" />
             @LabelSelector(item) <br />
         }
     </Repeater>
 </div>
-
-@code {
-    [Parameter]
-    public IEnumerable<TItem> Data { get; set; }
-
-    [Parameter]
-    public Func<TItem, string> LabelSelector { get; set; }
-
-    [Parameter]
-    public Func<TItem, int> IdSelector { get; set; }
-
-    [Parameter]
-    public ICollection<int> SelectedIds { get; set; }
-
-    public void CheckboxClicked(int selectedId, object? value)
-    {
-        if ((bool?)value == true)
-        {
-            if (!SelectedIds.Contains(selectedId))
-            {
-                SelectedIds.Add(selectedId);
-            }
-        }
-        else
-        {
-            if (SelectedIds.Contains(selectedId))
-            {
-                SelectedIds.Remove(selectedId);
-            }
-        }
-
-        StateHasChanged();
-    }
-}
