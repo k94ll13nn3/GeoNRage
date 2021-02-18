@@ -50,8 +50,8 @@ table {
 
     td {
         text-align: center;
-        height: 25px;
         width: 100px;
+        max-width: 100px;
         border: 1px solid;
 
         @include t.themify(border-color, foreground);
@@ -59,8 +59,8 @@ table {
     }
 
     th {
-        height: 25px;
         width: 100px;
+        max-width: 100px;
         border: 1px solid;
         font-weight: normal;
 
