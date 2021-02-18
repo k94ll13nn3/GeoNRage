@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components
+namespace GeoNRage.App.Components.Shared
 {
     public partial class NumericInput
     {

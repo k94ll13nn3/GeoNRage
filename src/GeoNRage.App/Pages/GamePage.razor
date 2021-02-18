@@ -1,5 +1,7 @@
 ﻿@page "/games/{Id:int}"
 
+@using GeoNRage.App.Components.Games
+
 <Container Condition="Game is not null">
     <h1>#@Game.Date.ToShortDateString() — @Game.Name</h1>
 

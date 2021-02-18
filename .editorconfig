@@ -177,6 +177,8 @@ dotnet_diagnostic.RCS1090.severity = none
 # Forces an EventArgs derivated class for no reasons...
 dotnet_diagnostic.CA1003.severity = none
 
+dotnet_diagnostic.CA1716.severity = none
+
 [Program.cs]
 dotnet_diagnostic.IDE1006.severity = none
 

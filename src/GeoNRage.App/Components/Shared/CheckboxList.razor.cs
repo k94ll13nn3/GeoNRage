@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components
+namespace GeoNRage.App.Components.Shared
 {
     public partial class CheckboxList<T>
     {

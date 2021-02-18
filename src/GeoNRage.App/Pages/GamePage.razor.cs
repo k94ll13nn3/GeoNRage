@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.App.Components;
+using GeoNRage.App.Components.Games;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
