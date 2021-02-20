@@ -5,10 +5,12 @@ using AutoMapper;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using GeoNRage.Shared.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class GamesController : ControllerBase
@@ -22,6 +24,7 @@ namespace GeoNRage.Server.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<GameDto>> GetAllAsync()
         {
@@ -29,6 +32,7 @@ namespace GeoNRage.Server.Controllers
             return _mapper.Map<IEnumerable<Game>, IEnumerable<GameDto>>(games);
         }
 
+        [AllowAnonymous]
         [HttpGet("light")]
         public async Task<IEnumerable<GameLightDto>> GetAllLightAsync()
         {
@@ -36,6 +40,7 @@ namespace GeoNRage.Server.Controllers
             return _mapper.Map<IEnumerable<Game>, IEnumerable<GameLightDto>>(games);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<GameDto>> GetAsync(int id)
         {

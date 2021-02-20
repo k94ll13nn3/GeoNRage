@@ -5,10 +5,12 @@ using AutoMapper;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using GeoNRage.Shared.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PlayersController : ControllerBase

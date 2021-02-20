@@ -1,8 +1,11 @@
 using System.Linq;
+using System.Threading.Tasks;
+using GeoNRage.Server.Entities;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +34,18 @@ namespace GeoNRage.Server
             services.AddDbContextPool<GeoNRageDbContext>(options => options.UseMySql(
                 connectionString,
                 ServerVersion.AutoDetect(connectionString)));
+
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = false;
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
 
             services.AddTransient<GameService>();
             services.AddTransient<MapService>();
@@ -63,6 +78,9 @@ namespace GeoNRage.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

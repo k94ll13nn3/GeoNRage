@@ -1,8 +1,20 @@
 ﻿<div class="menu-links">
     <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/games")" class="ml-10 mr-10">Parties</NavLink>
-    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="ml-10 mr-10">Admin</NavLink>
+    <AuthorizeView>
+        <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="ml-10 mr-10">Admin</NavLink>
+    </AuthorizeView>
 
     <div class="theme-chooser">
+        <AuthorizeView>
+            <Authorized>
+                @Name
+                <button type="button" @onclick="@LogoutClickAsync">Logout</button>
+            </Authorized>
+            <NotAuthorized>
+                <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/login")" class="ml-10 mr-10">Login</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+
         <select @onchange="ChangeThemeAsync">
             <option value="basic">Basic</option>
             <option value="legacy">Legacy</option>

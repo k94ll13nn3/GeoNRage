@@ -1,5 +1,7 @@
 ﻿@page "/admin"
 
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
 @using GeoNRage.App.Components.Admin
 
 <MapsAdmin></MapsAdmin>
