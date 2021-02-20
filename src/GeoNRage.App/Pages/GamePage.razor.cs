@@ -26,6 +26,10 @@ namespace GeoNRage.App.Pages
 
         public GameChart Chart { get; set; } = null!;
 
+        public bool GameFound { get; set; } = true;
+
+        public bool Loaded { get; set; }
+
         public async ValueTask DisposeAsync()
         {
             await _hubConnection.DisposeAsync();
@@ -44,10 +48,12 @@ namespace GeoNRage.App.Pages
             ApiResponse<GameDto> response = await GamesApi.GetAsync(Id);
             if (!response.IsSuccessStatusCode || response.Content is null)
             {
-                NavigationManager.NavigateTo("/");
+                GameFound = false;
             }
             else
             {
+                Loaded = true;
+                GameFound = true;
                 Game = response.Content;
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
                 StateHasChanged();

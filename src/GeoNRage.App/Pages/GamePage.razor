@@ -2,7 +2,7 @@
 
 @using GeoNRage.App.Components.Games
 
-<Container Condition="Game is not null">
+<Container Condition="Loaded && GameFound">
     <h1>#@Game.Date.ToShortDateString() — @Game.Name</h1>
 
     <div class="container">
@@ -55,8 +55,12 @@
     </div>
 </Container>
 
-<Container Condition="Game is null">
+<Container Condition="!Loaded && GameFound">
     <LoadingAnimation>
         Chargement de la partie @(Id)...
     </LoadingAnimation>
+</Container>
+
+<Container Condition="!GameFound">
+    <PageNotFound />
 </Container>
