@@ -8,10 +8,13 @@
         <AuthorizeView>
             <Authorized>
                 @Name
-                <button type="button" @onclick="@LogoutClickAsync">Logout</button>
+                <button type="button" @onclick="@LogoutClickAsync">Déconnexion</button>
             </Authorized>
+            <Authorizing>
+                <GeoNRage.App.Components.Admin.Login />
+            </Authorizing>
             <NotAuthorized>
-                <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/login")" class="ml-10 mr-10">Login</NavLink>
+                <GeoNRage.App.Components.Admin.Login />
             </NotAuthorized>
         </AuthorizeView>
 

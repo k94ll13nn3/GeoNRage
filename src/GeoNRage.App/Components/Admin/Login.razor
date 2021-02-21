@@ -1,0 +1,10 @@
+﻿<div class="login-form">
+    <EditForm OnValidSubmit="OnSubmitAsync" Model="LoginRequest">
+        <InputText id="inputUsername" @bind-Value="LoginRequest.UserName" placeholder="Username" class="text-box" />
+        <InputText type="password" id="inputPassword" @bind-Value="LoginRequest.Password" class="text-box" placeholder="Password" />
+
+        @*<InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginRequest.RememberMe" />*@
+
+        <button type="submit">Connexion</button>
+    </EditForm>
+</div>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
@@ -32,17 +33,27 @@ namespace GeoNRage.App.Authentication
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
-        public async Task LogoutAsync()
+        public async Task<string> LogoutAsync()
         {
-            await _authApi.Logout();
-            _currentUser = new UserDto { Claims = new(), IsAuthenticated = false, UserName = string.Empty };
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            HttpResponseMessage response = await _authApi.Logout();
+            if (response.IsSuccessStatusCode)
+            {
+                _currentUser = new UserDto { Claims = new(), IsAuthenticated = false, UserName = string.Empty };
+                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            }
+
+            return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task LoginAsync(LoginDto loginParameters)
+        public async Task<string> LoginAsync(LoginDto loginParameters)
         {
-            await _authApi.Login(loginParameters);
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            HttpResponseMessage response = await _authApi.Login(loginParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            }
+
+            return await response.Content.ReadAsStringAsync();
         }
 
         private async Task<UserDto> GetCurrentUserAsync()
