@@ -33,7 +33,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlayerDto>> PostAsync(PlayerCreateOrEditDto player)
+        public async Task<PlayerDto> PostAsync(PlayerCreateOrEditDto player)
         {
             _ = player ?? throw new ArgumentNullException(nameof(player));
             Player createdPlayer = await _playerService.CreateAsync(player.Name);

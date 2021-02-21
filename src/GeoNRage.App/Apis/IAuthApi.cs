@@ -11,7 +11,7 @@ namespace GeoNRage.App.Apis
         Task<HttpResponseMessage> Login(LoginDto loginRequest);
 
         [Post("/api/auth/logout")]
-        Task<HttpResponseMessage> Logout();
+        Task Logout();
 
         [Get("/api/auth/user")]
         Task<UserDto> CurrentUserInfo();

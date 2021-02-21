@@ -54,7 +54,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GameDto>> PostAsync(GameCreateOrEditDto game)
+        public async Task<GameDto> PostAsync(GameCreateOrEditDto game)
         {
             _ = game ?? throw new ArgumentNullException(nameof(game));
             Game createdGame = await _gameService.CreateAsync(game.Name, game.Date, game.MapIds, game.PlayerIds);
@@ -75,15 +75,17 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost("{id}/lock")]
-        public async Task LockAsync(int id)
+        public async Task<IActionResult> LockAsync(int id)
         {
             await _gameService.LockAsync(id);
+            return NoContent();
         }
 
         [HttpPost("{id}/reset")]
-        public async Task ResetAsync(int id)
+        public async Task<IActionResult> ResetAsync(int id)
         {
             await _gameService.ResetAsync(id);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

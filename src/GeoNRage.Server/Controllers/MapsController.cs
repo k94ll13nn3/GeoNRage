@@ -33,7 +33,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MapDto>> PostAsync(MapCreateOrEditDto map)
+        public async Task<MapDto> PostAsync(MapCreateOrEditDto map)
         {
             _ = map ?? throw new ArgumentNullException(nameof(map));
             Map createdMap = await _mapService.CreateAsync(map.Name);

@@ -40,6 +40,7 @@ namespace GeoNRage.Server.Controllers
             }
 
             await _signInManager.SignInAsync(user, request.RememberMe);
+
             return Ok();
         }
 
@@ -48,7 +49,7 @@ namespace GeoNRage.Server.Controllers
         public async Task<IActionResult> LogoutAsync()
         {
             await _signInManager.SignOutAsync();
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("user")]

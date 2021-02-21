@@ -33,19 +33,14 @@ namespace GeoNRage.App.Authentication
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
-        public async Task<string> LogoutAsync()
+        public async Task LogoutAsync()
         {
-            HttpResponseMessage response = await _authApi.Logout();
-            if (response.IsSuccessStatusCode)
-            {
-                _currentUser = new UserDto { Claims = new(), IsAuthenticated = false, UserName = string.Empty };
-                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-            }
-
-            return await response.Content.ReadAsStringAsync();
+            await _authApi.Logout();
+            _currentUser = new UserDto { Claims = new(), IsAuthenticated = false, UserName = string.Empty };
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
-        public async Task<string> LoginAsync(LoginDto loginParameters)
+        public async Task<HttpResponseMessage> LoginAsync(LoginDto loginParameters)
         {
             HttpResponseMessage response = await _authApi.Login(loginParameters);
             if (response.IsSuccessStatusCode)
@@ -53,7 +48,7 @@ namespace GeoNRage.App.Authentication
                 NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             }
 
-            return await response.Content.ReadAsStringAsync();
+            return response;
         }
 
         private async Task<UserDto> GetCurrentUserAsync()
