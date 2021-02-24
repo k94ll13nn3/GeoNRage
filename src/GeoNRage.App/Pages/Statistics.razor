@@ -1,0 +1,8 @@
+﻿@page "/statistics"
+
+<Repeater Items="PlayersWithScores" Context="player">
+    <h3>@player.Key.name</h3>
+
+    <p>Nombre de 5000 :</p>
+    <p>@player.Value.Count(s => s == 5000)</p>
+</Repeater>
