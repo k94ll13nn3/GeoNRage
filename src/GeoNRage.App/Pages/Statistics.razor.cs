@@ -29,7 +29,7 @@ namespace GeoNRage.App.Pages
         {
             Games = await GamesApi.GetAllAsync();
 
-            Players = Games.SelectMany(g => g.Players).Distinct();
+            Players = Games.SelectMany(g => g.Players).GroupBy(p => p.Id).Select(g => g.First());
         }
     }
 }
