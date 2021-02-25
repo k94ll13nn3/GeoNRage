@@ -1,8 +1,20 @@
 ﻿@page "/statistics"
 
-<Repeater Items="PlayersWithScores" Context="player">
-    <h3>@player.Key.name</h3>
-
-    <p>Nombre de 5000 :</p>
-    <p>@player.Value.Count(s => s == 5000)</p>
-</Repeater>
+<table>
+    <thead>
+        <tr>
+            <th>Joueur</th>
+            <th>Nombre de parties</th>
+            <th>Nombre de 5000</th>
+        </tr>
+    </thead>
+    <tbody>
+        <Repeater Items="Players" Context="player">
+            <tr>
+                <th>@player.Name</th>
+                <td>@player.GameCount</td>
+                <td>@GetScores(player.Id).Count(s => s == 5000)</td>
+            </tr>
+        </Repeater>
+    </tbody>
+</table>
