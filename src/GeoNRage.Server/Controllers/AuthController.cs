@@ -6,6 +6,7 @@ using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Controllers
 {
@@ -15,11 +16,17 @@ namespace GeoNRage.Server.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ApplicationOptions _options;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<ApplicationOptions> options)
         {
+            _ = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _ = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _ = options ?? throw new ArgumentNullException(nameof(options));
+
             _userManager = userManager;
             _signInManager = signInManager;
+            _options = options.Value;
         }
 
         [HttpPost("login")]
@@ -50,6 +57,34 @@ namespace GeoNRage.Server.Controllers
         {
             await _signInManager.SignOutAsync();
             return NoContent();
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync(RegisterDto parameters)
+        {
+            _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
+
+            if (!_options.CanRegister)
+            {
+                return BadRequest("Registration not enabled.");
+            }
+
+            var user = new User
+            {
+                UserName = parameters.UserName
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(user, parameters.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Description);
+            }
+
+            return await LoginAsync(new LoginDto
+            {
+                UserName = parameters.UserName,
+                Password = parameters.Password
+            });
         }
 
         [HttpGet("user")]

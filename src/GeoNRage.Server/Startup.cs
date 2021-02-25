@@ -25,6 +25,8 @@ namespace GeoNRage.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApplicationOptions>(Configuration.GetSection(nameof(ApplicationOptions)));
+
             services.AddSignalR();
             services.AddControllers();
             services.AddRazorPages();
