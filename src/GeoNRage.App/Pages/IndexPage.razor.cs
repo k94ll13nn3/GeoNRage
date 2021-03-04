@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
@@ -13,12 +14,14 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IGamesApi GamesApi { get; set; } = null!;
 
+        public Uri Link { get; set; } = null!;
+
         protected override async Task OnInitializedAsync()
         {
             GameLightDto[] games = await GamesApi.GetAllLightAsync();
             if (games.Length > 0)
             {
-                NavigationManager.NavigateTo($"/games/{games[0].Id}");
+                Link = NavigationManager.ToAbsoluteUri($"/games/{games[0].Id}");
             }
 
             StateHasChanged();
