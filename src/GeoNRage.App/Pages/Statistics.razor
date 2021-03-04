@@ -6,6 +6,10 @@
             <th>Joueur</th>
             <th>Nombre de parties</th>
             <th>Nombre de 5000</th>
+            <th>Nombre de 4999 😏</th>
+            <Repeater Items="Maps" Context="map">
+                <th>Meilleure map @map.Name</th>
+            </Repeater>
         </tr>
     </thead>
     <tbody>
@@ -13,7 +17,19 @@
             <tr>
                 <th>@player.Name</th>
                 <td>@player.GameCount</td>
-                <td>@GetScores(player.Id).Count(s => s == 5000)</td>
+                <td>@GetScores(player.Id).Count(s => s.score == 5000)</td>
+                <td>@GetScores(player.Id).Count(s => s.score == 4999)</td>
+                <Repeater Items="Maps" Context="map">
+                    @{
+                        var bestMap = @GetScores(player.Id).Where(v => v.map == map.Id).GroupBy(v => v.game).Select(g => (g.Key, total: g.Sum(v => v.score))).OrderByDescending(x => x.total).FirstOrDefault();
+                    }
+                    <Container Condition="bestMap == (0, 0)">
+                        <td>Pas de données</td>
+                    </Container>
+                    <Container Condition="bestMap != (0, 0)">
+                        <td>@bestMap.total (Partie #@bestMap.Key)</td>
+                    </Container>
+                </Repeater>
             </tr>
         </Repeater>
     </tbody>
