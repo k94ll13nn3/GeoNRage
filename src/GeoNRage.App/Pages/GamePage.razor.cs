@@ -30,18 +30,41 @@ namespace GeoNRage.App.Pages
 
         public bool Loaded { get; set; }
 
+        public bool HubClosed { get; set; }
+
+        public bool HubReconnecting { get; set; }
+
+        public bool HubReconnected { get; set; }
+
         public async ValueTask DisposeAsync()
         {
+            _hubConnection.Closed -= OnHubConnectionClosed;
+            _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
+            _hubConnection.Reconnected -= OnHubConnectionReconnected;
             await _hubConnection.DisposeAsync();
+        }
+
+        public async Task ReloadPageAsync()
+        {
+            HubClosed = false;
+            HubReconnected = false;
+            HubReconnecting = false;
+            Loaded = false;
+            await OnInitializedAsync();
         }
 
         protected override async Task OnInitializedAsync()
         {
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
+                .WithAutomaticReconnect()
                 .Build();
 
             _hubConnection.On<int, int, int, int>("ReceiveValue", HandleReceiveValueAsync);
+
+            _hubConnection.Closed += OnHubConnectionClosed;
+            _hubConnection.Reconnecting += OnHubConnectionReconnecting;
+            _hubConnection.Reconnected += OnHubConnectionReconnected;
 
             await _hubConnection.StartAsync();
 
@@ -58,6 +81,33 @@ namespace GeoNRage.App.Pages
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
                 StateHasChanged();
             }
+        }
+
+        private Task OnHubConnectionReconnected(string arg)
+        {
+            HubClosed = false;
+            HubReconnected = true;
+            HubReconnecting = false;
+            StateHasChanged();
+            return Task.FromResult(0);
+        }
+
+        private Task OnHubConnectionReconnecting(Exception arg)
+        {
+            HubClosed = false;
+            HubReconnected = false;
+            HubReconnecting = true;
+            StateHasChanged();
+            return Task.FromResult(0);
+        }
+
+        private Task OnHubConnectionClosed(Exception arg)
+        {
+            HubClosed = true;
+            HubReconnected = false;
+            HubReconnecting = false;
+            StateHasChanged();
+            return Task.FromResult(0);
         }
 
         private async Task HandleReceiveValueAsync(int mapId, int playerId, int round, int score)

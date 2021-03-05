@@ -2,6 +2,22 @@
 
 @using GeoNRage.App.Components.Games
 
+<Container Condition="HubClosed">
+    <p>Connexion avec le serveur perdue, reconnexion echouée.</p>
+</Container>
+
+<Container Condition="HubReconnecting">
+    <p>Connexion avec le serveur perdue, tentative de reconnexion...</p>
+</Container>
+
+<Container Condition="HubReconnected">
+    <p>
+        Connexion avec le serveur rétablie. Vous pouvez à nouveau envoyer et recevoir des données, cependant les données reçues
+        pendant la tentative de reconnexion ne seront pas mise à jour.
+    </p>
+    <button @onclick="ReloadPageAsync">Rafraichir la page</button>
+</Container>
+
 <Container Condition="Loaded && GameFound">
     <h1>#@Game.Date.ToShortDateString() — @Game.Name</h1>
 
