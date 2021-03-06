@@ -182,5 +182,8 @@ dotnet_diagnostic.CA1716.severity = none
 [Program.cs]
 dotnet_diagnostic.IDE1006.severity = none
 
+[**/Dtos/*.cs]
+dotnet_diagnostic.CA2227.severity = none
+
 [**/Entities/*.cs]
 dotnet_diagnostic.CA2227.severity = none
