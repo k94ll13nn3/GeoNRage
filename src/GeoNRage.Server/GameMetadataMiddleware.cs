@@ -36,7 +36,7 @@ namespace GeoNRage.Server
 <head>
     <title>Geo'N Rage - {game.Name}</title>
     <meta property=""og:title"" content=""{game.Name}"">
-    <meta property=""og:description"" content=""Partie du {game.Date.ToShortDateString()}"">
+    <meta property=""og:description"" content=""C'est la France de Jean Castex !"">
     <meta property=""og:site_name"" content=""Geo'N Rage"">
     <meta property=""og:image"" content=""{context.Request.Scheme}://{context.Request.Host}/img/site.png"">
     <meta name=""twitter:card"" content=""summary_large_image"">
