@@ -38,7 +38,8 @@ namespace GeoNRage.Server
     <meta property=""og:title"" content=""{game.Name}"">
     <meta property=""og:description"" content=""Partie du {game.Date.ToShortDateString()}"">
     <meta property=""og:site_name"" content=""Geo'N Rage"">
-    <meta name=""twitter:card"" content=""{context.Request.Scheme}://{context.Request.Host}/img/site.png"">
+    <meta property=""og:image"" content=""{context.Request.Scheme}://{context.Request.Host}/img/site.png"">
+    <meta name=""twitter:card"" content=""summary_large_image"">
     <meta name=""theme-color"" content=""#950740"">
 </head>
 <body>
