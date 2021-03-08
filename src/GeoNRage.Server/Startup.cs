@@ -84,9 +84,10 @@ namespace GeoNRage.Server
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<GameMetadataMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/games/{id:int}", endpoints.CreateApplicationBuilder().UseMiddleware<GameMetadataMiddleware>().Build());
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapHub<AppHub>("/apphub");
