@@ -79,7 +79,7 @@ namespace GeoNRage.App.Components.Games
 
         private void CreatePlot()
         {
-            foreach (string item in Game.Maps.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.Name[0]}_R{y}")))
+            foreach (string item in Game.Maps.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.Name[0]}_R{y}")).Prepend("0"))
             {
                 PlotConfig.Data.Labels.Add(item);
             }
@@ -115,7 +115,7 @@ namespace GeoNRage.App.Components.Games
         private void UpdatePlot(PlayerDto player)
         {
             int sum = 0;
-            var scores = new List<int>();
+            var scores = new List<int> { 0 };
             var values = new List<int>();
             foreach (MapDto map in Game.Maps)
             {
