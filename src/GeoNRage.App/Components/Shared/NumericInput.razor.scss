@@ -30,4 +30,9 @@ input {
     &[type=number] {
         -moz-appearance: textfield;
     }
+
+    &.perfect {
+        @include t.themify(color, foreground);
+        @include t.themify(background, accent);
+    }
 }

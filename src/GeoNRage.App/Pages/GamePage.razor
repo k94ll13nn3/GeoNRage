@@ -39,7 +39,7 @@
                                 var key = $"{map.Id}_{player.Id}_{round}";
                             }
                             <td>
-                                <NumericInput @key="@key" InitialValue="@Game[map.Id, player.Id, round]" ValueChanged="@(async (e) => { await SendAsync(map.Id, player.Id, round, e);})" Disabled="@Game.Locked"></NumericInput>
+                                <NumericInput @key="@key" InitialValue="@Game[map.Id, player.Id, round]" ValueChanged="@(async (e) => { await SendAsync(map.Id, player.Id, round, e);})" Disabled="@Game.Locked" Class="@(Game[map.Id, player.Id, round] == 5000 ? "perfect" : "")"></NumericInput>
                             </td>
                         </Repeater>
                     </tr>

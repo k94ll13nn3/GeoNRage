@@ -25,6 +25,9 @@ namespace GeoNRage.App.Components.Shared
         [Parameter]
         public EventCallback<int> ValueChanged { get; set; }
 
+        [Parameter]
+        public string Class { get; set; } = string.Empty;
+
         protected override void OnParametersSet()
         {
             _value = InitialValue;
