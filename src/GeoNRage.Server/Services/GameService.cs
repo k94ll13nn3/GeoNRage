@@ -8,14 +8,10 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GeoNRage.Server.Services
 {
-    public class GameService
+    [AutoConstructor]
+    public partial class GameService
     {
         private readonly GeoNRageDbContext _context;
-
-        public GameService(GeoNRageDbContext context)
-        {
-            _context = context;
-        }
 
         public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {

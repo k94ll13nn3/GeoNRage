@@ -13,16 +13,11 @@ namespace GeoNRage.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class PlayersController : ControllerBase
+    [AutoConstructor]
+    public partial class PlayersController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly PlayerService _playerService;
-
-        public PlayersController(PlayerService playerService, IMapper mapper)
-        {
-            _playerService = playerService;
-            _mapper = mapper;
-        }
 
         [HttpGet]
         public async Task<IEnumerable<PlayerDto>> GetAllAsync()

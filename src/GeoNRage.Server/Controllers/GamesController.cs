@@ -13,16 +13,11 @@ namespace GeoNRage.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class GamesController : ControllerBase
+    [AutoConstructor]
+    public partial class GamesController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly GameService _gameService;
-
-        public GamesController(GameService gameService, IMapper mapper)
-        {
-            _gameService = gameService;
-            _mapper = mapper;
-        }
 
         [AllowAnonymous]
         [HttpGet]

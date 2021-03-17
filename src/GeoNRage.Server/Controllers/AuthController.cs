@@ -12,22 +12,14 @@ namespace GeoNRage.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    [AutoConstructor]
+    public partial class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+
+        [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
         private readonly ApplicationOptions _options;
-
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<ApplicationOptions> options)
-        {
-            _ = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _ = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-            _ = options ?? throw new ArgumentNullException(nameof(options));
-
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _options = options.Value;
-        }
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDto request)

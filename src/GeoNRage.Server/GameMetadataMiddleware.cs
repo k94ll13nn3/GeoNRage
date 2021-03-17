@@ -6,14 +6,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace GeoNRage.Server
 {
-    public class GameMetadataMiddleware
+    [AutoConstructor]
+    public partial class GameMetadataMiddleware
     {
         private readonly RequestDelegate _next;
-
-        public GameMetadataMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
 
         public async Task InvokeAsync(HttpContext context, GameService gameService)
         {

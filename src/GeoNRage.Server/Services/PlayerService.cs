@@ -7,14 +7,10 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GeoNRage.Server.Services
 {
-    public class PlayerService
+    [AutoConstructor]
+    public partial class PlayerService
     {
         private readonly GeoNRageDbContext _context;
-
-        public PlayerService(GeoNRageDbContext context)
-        {
-            _context = context;
-        }
 
         public async Task<IEnumerable<Player>> GetAllAsync()
         {

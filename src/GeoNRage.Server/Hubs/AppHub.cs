@@ -5,14 +5,10 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs
 {
-    public class AppHub : Hub
+    [AutoConstructor]
+    public partial class AppHub : Hub
     {
         private readonly GameService _gameService;
-
-        public AppHub(GameService gameService)
-        {
-            _gameService = gameService;
-        }
 
         [HubMethodName("JoinGroup")]
         public Task JoinGroupAsync(int id)
