@@ -3,7 +3,7 @@ WORKDIR /app
 
 # Copy everything else and build
 COPY . ./
-RUN dotnet tool restore --add-source tool/
+RUN dotnet tool restore
 
 # Access to the global tool: https://stackoverflow.com/a/51984439
 ENV PATH="${PATH}:/root/.dotnet/tools"

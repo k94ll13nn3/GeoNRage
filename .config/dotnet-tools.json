@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "dotnet-sass": {
-      "version": "1.32.5",
+      "version": "1.32.8",
       "commands": [
         "dotnet-sass"
       ]
