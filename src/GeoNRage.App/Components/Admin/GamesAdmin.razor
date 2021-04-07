@@ -30,6 +30,7 @@
                         <button @onclick="(() => EditGame(game.Id))" disabled="@(game.Locked)">Editer</button>
                         <button @onclick="(() => DeleteGameAsync(game.Id))" disabled="@(game.Locked || game.Values.Any(v => v.Score != 0))">Supprimer</button>
                         <button @onclick="(() => LockGameAsync(game.Id))" disabled="@(game.Locked)">Verrouiller</button>
+                        <button @onclick="(() => UnlockGameAsync(game.Id))" disabled="@(!game.Locked)">Déverrouiller</button>
                         <button @onclick="(() => ResetGameAsync(game.Id))" disabled="@(game.Locked  || game.Values.All(v => v.Score == 0))">Réinitialiser</button>
                     </td>
                 </tr>

@@ -76,6 +76,13 @@ namespace GeoNRage.Server.Controllers
             return NoContent();
         }
 
+        [HttpPost("{id}/unlock")]
+        public async Task<IActionResult> UnlockAsync(int id)
+        {
+            await _gameService.UnlockAsync(id);
+            return NoContent();
+        }
+
         [HttpPost("{id}/reset")]
         public async Task<IActionResult> ResetAsync(int id)
         {

@@ -24,6 +24,9 @@ namespace GeoNRage.App.Apis
         [Post("/api/games/{id}/lock")]
         Task LockAsync(int id);
 
+        [Post("/api/games/{id}/unlock")]
+        Task UnlockAsync(int id);
+
         [Post("/api/games/{id}/reset")]
         Task ResetAsync(int id);
 

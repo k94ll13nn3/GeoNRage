@@ -72,6 +72,17 @@ namespace GeoNRage.App.Components.Admin
             Games = await GamesApi.GetAllAsync();
         }
 
+        public async Task UnlockGameAsync(int gameId)
+        {
+            if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider le déverrouillage de la partie {gameId} ?"))
+            {
+                return;
+            }
+
+            await GamesApi.UnlockAsync(gameId);
+            Games = await GamesApi.GetAllAsync();
+        }
+
         public async Task ResetGameAsync(int gameId)
         {
             if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider la réinitialisation de la partie {gameId} ?"))

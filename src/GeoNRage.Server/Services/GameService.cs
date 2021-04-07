@@ -131,6 +131,17 @@ namespace GeoNRage.Server.Services
             }
         }
 
+        public async Task UnlockAsync(int id)
+        {
+            Game? game = await _context.Games.FindAsync(id);
+            if (game is not null)
+            {
+                game.Locked = false;
+                _context.Games.Update(game);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task ResetAsync(int id)
         {
             Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
