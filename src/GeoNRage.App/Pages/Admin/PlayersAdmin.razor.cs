@@ -6,7 +6,7 @@ using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace GeoNRage.App.Components.Admin
+namespace GeoNRage.App.Pages.Admin
 {
     public partial class PlayersAdmin
     {

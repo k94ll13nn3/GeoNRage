@@ -1,4 +1,6 @@
-﻿<h2>Cartes</h2>
+﻿@page "/admin/maps"
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 <Container Condition="Maps?.Any() == true">
     <table>

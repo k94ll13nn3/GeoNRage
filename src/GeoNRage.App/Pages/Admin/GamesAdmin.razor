@@ -1,4 +1,6 @@
-﻿<h2>Parties</h2>
+﻿@page "/admin/games"
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 <Container Condition="Games?.Any() == true">
     <table>

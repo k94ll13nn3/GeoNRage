@@ -1,4 +1,6 @@
-﻿<h2>Joueurs</h2>
+﻿@page "/admin/players"
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 <Container Condition="Players?.Any() == true">
     <table>
