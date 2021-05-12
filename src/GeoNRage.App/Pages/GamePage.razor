@@ -22,13 +22,15 @@
     <h1>@Game.Name — @Game.Date.ToShortDateString()</h1>
 
     <Container Condition="AvailablePlayers.Any()">
-        <select @bind="@SelectedPlayerId">
-            @foreach (var player in AvailablePlayers)
-            {
-                <option value="@player.Id"> @player.Name </option>
-            }
-        </select>
-        <button @onclick="AddPlayerAsync">Ajouter joueur</button>
+        <Expander Expanded="false">
+            <select @bind="@SelectedPlayerId">
+                @foreach (var player in AvailablePlayers)
+                {
+                    <option value="@player.Id"> @player.Name </option>
+                }
+            </select>
+            <button @onclick="AddPlayerAsync">Ajouter joueur</button>
+        </Expander>
     </Container>
 
     <div class="container">
