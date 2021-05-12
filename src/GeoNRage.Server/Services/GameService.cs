@@ -120,6 +120,28 @@ namespace GeoNRage.Server.Services
             }
         }
 
+        public async Task AddPlayerAsync(int gameId, int playerId)
+        {
+            Game? game = await GetAsync(gameId);
+            if (game is not null)
+            {
+                if (game.Locked)
+                {
+                    throw new InvalidOperationException("Cannot update a locked game.");
+                }
+
+                if (!game.Players.Select(p => p.Id).Contains(playerId))
+                {
+                    Player? player = await _context.Players.FindAsync(playerId);
+                    if (player is not null)
+                    {
+                        game.Players.Add(player);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+        }
+
         public async Task LockAsync(int id)
         {
             Game? game = await _context.Games.FindAsync(id);

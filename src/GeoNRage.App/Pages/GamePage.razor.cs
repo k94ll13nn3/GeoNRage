@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Games;
@@ -24,6 +26,9 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IGamesApi GamesApi { get; set; } = null!;
 
+        [Inject]
+        public IPlayersApi PlayersApi { get; set; } = null!;
+
         public GameChart Chart { get; set; } = null!;
 
         public bool GameFound { get; set; } = true;
@@ -35,6 +40,10 @@ namespace GeoNRage.App.Pages
         public bool HubReconnecting { get; set; }
 
         public bool HubReconnected { get; set; }
+
+        public IEnumerable<PlayerDto> AvailablePlayers { get; set; } = Enumerable.Empty<PlayerDto>();
+
+        public int SelectedPlayerId { get; set; }
 
         public async ValueTask DisposeAsync()
         {
@@ -79,6 +88,8 @@ namespace GeoNRage.App.Pages
                 GameFound = true;
                 Game = response.Content;
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
+                AvailablePlayers = (await PlayersApi.GetAllAsync()).Where(p => !Game.Players.Any(gp => gp.Id == p.Id));
+                SelectedPlayerId = AvailablePlayers.FirstOrDefault()?.Id ?? 0;
                 StateHasChanged();
             }
         }
@@ -122,6 +133,15 @@ namespace GeoNRage.App.Pages
             int clampedValue = Math.Clamp(score, 0, 5000);
             await _hubConnection.InvokeAsync("UpdateValue", Id, mapId, playerId, round, clampedValue);
             await HandleReceiveValueAsync(mapId, playerId, round, clampedValue);
+        }
+
+        private async Task AddPlayerAsync()
+        {
+            if (Game is not null && SelectedPlayerId != 0)
+            {
+                await GamesApi.AddPlayerAsync(Game.Id, SelectedPlayerId);
+                await ReloadPageAsync();
+            }
         }
     }
 }

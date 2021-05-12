@@ -30,6 +30,9 @@ namespace GeoNRage.App.Apis
         [Post("/api/games/{id}/reset")]
         Task ResetAsync(int id);
 
+        [Post("/api/games/{id}/addPlayer/{playerId}")]
+        Task AddPlayerAsync(int id, int playerId);
+
         [Delete("/api/games/{id}")]
         Task DeleteAsync(int id);
     }

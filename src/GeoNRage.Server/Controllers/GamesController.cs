@@ -90,6 +90,14 @@ namespace GeoNRage.Server.Controllers
             return NoContent();
         }
 
+        [AllowAnonymous]
+        [HttpPost("{id}/addPlayer/{playerId}")]
+        public async Task<IActionResult> AddPlayerAsync(int id, int playerId)
+        {
+            await _gameService.AddPlayerAsync(id, playerId);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

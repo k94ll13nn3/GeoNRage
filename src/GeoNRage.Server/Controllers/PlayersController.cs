@@ -19,6 +19,7 @@ namespace GeoNRage.Server.Controllers
         private readonly IMapper _mapper;
         private readonly PlayerService _playerService;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<PlayerDto>> GetAllAsync()
         {
