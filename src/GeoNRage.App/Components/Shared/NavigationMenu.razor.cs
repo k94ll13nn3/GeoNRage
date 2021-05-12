@@ -31,6 +31,12 @@ namespace GeoNRage.App.Components.Shared
                 Name = identity.Name ?? string.Empty;
             }
         }
+        protected override async Task OnInitializedAsync()
+        {
+            string? theme = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
+            IJSObjectReference module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/utils.js");
+            await module.InvokeVoidAsync("changeTheme", theme ?? "basic");
+        }
 
         private async Task LogoutClickAsync()
         {
@@ -41,6 +47,7 @@ namespace GeoNRage.App.Components.Shared
         {
             IJSObjectReference module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/utils.js");
             await module.InvokeVoidAsync("changeTheme", e.Value);
+            await JsRuntime.InvokeVoidAsync("localStorage.setItem", "theme", e.Value ?? "basic");
         }
     }
 }
