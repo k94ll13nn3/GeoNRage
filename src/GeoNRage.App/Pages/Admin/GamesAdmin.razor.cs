@@ -6,6 +6,7 @@ using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Refit;
 
 namespace GeoNRage.App.Pages.Admin
 {
@@ -34,6 +35,8 @@ namespace GeoNRage.App.Pages.Admin
         public GameCreateOrEditDto Game { get; set; } = null!;
 
         public int? SelectedGameId { get; set; }
+
+        public string? Error { get; set; }
 
         public void EditGame(int gameId)
         {
@@ -96,18 +99,30 @@ namespace GeoNRage.App.Pages.Admin
 
         public async Task CreateOrUpdateGameAsync()
         {
-            if (SelectedGameId is not null)
+            Error = string.Empty;
+            try
             {
-                await GamesApi.UpdateAsync(SelectedGameId.Value, Game);
-            }
-            else
-            {
-                await GamesApi.CreateAsync(Game);
-            }
+                if (SelectedGameId is not null)
+                {
+                    await GamesApi.UpdateAsync(SelectedGameId.Value, Game);
+                }
+                else
+                {
+                    await GamesApi.CreateAsync(Game);
+                }
 
-            ShowEditForm = false;
-            SelectedGameId = null;
-            Games = await GamesApi.GetAllAsync();
+                ShowEditForm = false;
+                SelectedGameId = null;
+                Games = await GamesApi.GetAllAsync();
+            }
+            catch (ValidationApiException e)
+            {
+                Error = e.Content?.Title;
+            }
+            catch (ApiException e)
+            {
+                Error = e.Message;
+            }
         }
 
         public void ShowGameCreation()

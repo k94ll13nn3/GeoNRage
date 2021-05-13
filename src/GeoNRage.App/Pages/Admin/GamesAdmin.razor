@@ -47,6 +47,9 @@
     <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
+        <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+            <p>@Error</p>
+        </Container>
 
         <InputText id="name" @bind-Value="Game.Name" />
         <InputDate id="date" @bind-Value="Game.Date" />
@@ -62,7 +65,7 @@
                         <option value="@map.Id">@map.Name</option>
                     </Repeater>
                 </InputSelect>
-                <button @onclick="() => Game.Maps.Remove(gameMap)">X</button>
+                <button @onclick="() => Game.Maps.Remove(gameMap)" type="button">X</button>
             </div>
         </Repeater>
         <button @onclick="() => Game.Maps.Add(new GameMapCreateOrEditDto())" type="button">Ajouter carte</button>
