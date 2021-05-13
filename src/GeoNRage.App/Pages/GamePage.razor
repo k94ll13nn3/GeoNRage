@@ -35,9 +35,15 @@
 
     <div class="container">
         <table class="ma-5">
-            <Repeater Items="Game.Maps" Context="map">
+            <Repeater Items="Game.GameMaps" Context="gameMap">
                 <tr>
-                    <th>@map.Name</th>
+                    <th>
+                        @gameMap.Name
+                        @if (!string.IsNullOrWhiteSpace(gameMap.Link))
+                        {
+                            <a href="@gameMap.Link" target="_blank">(🔗)</a>
+                        }
+                    </th>
                     <Repeater Items="Game.Players" Context="player">
                         <th>@player.Name</th>
                     </Repeater>
@@ -48,19 +54,19 @@
                         <th>Round @round</th>
                         <Repeater Items="Game.Players" Context="player">
                             @{
-                                var key = $"{map.Id}_{player.Id}_{round}";
+                                var key = $"{gameMap.MapId}_{player.Id}_{round}";
                             }
                             <td>
-                                <NumericInput @key="@key" InitialValue="@Game[map.Id, player.Id, round]" ValueChanged="@(async (e) => { await SendAsync(map.Id, player.Id, round, e);})" Disabled="@Game.Locked" Class="@(Game[map.Id, player.Id, round] == 5000 ? "perfect" : "")"></NumericInput>
+                                <NumericInput @key="@key" InitialValue="@Game[gameMap.MapId, player.Id, round]" ValueChanged="@(async (e) => { await SendAsync(gameMap.MapId, player.Id, round, e);})" Disabled="@Game.Locked" Class="@(Game[gameMap.MapId, player.Id, round] == 5000 ? "perfect" : "")"></NumericInput>
                             </td>
                         </Repeater>
                     </tr>
                 </Repeater>
 
                 <tr>
-                    <th>Total @map.Name</th>
+                    <th>Total @gameMap.Name</th>
                     <Repeater Items="Game.Players" Context="player">
-                        <td>@Game.Values.Where(v => v.MapId == map.Id && v.PlayerId == player.Id).Sum(v => v.Score)</td>
+                        <td>@Game.Values.Where(v => v.MapId == gameMap.MapId && v.PlayerId == player.Id).Sum(v => v.Score)</td>
                     </Repeater>
                 </tr>
             </Repeater>

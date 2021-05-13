@@ -8,7 +8,7 @@ namespace GeoNRage.Server.Entities
 
         public string Name { get; set; } = string.Empty;
 
-        public ICollection<Game> Games { get; set; } = new HashSet<Game>();
+        public ICollection<GameMap> GameMaps { get; set; } = new HashSet<GameMap>();
 
         public ICollection<Value> Values { get; set; } = new HashSet<Value>();
     }

@@ -24,7 +24,7 @@
                     <td>@game.Name</td>
                     <td>@game.Date.ToShortDateString()</td>
                     <td>@game.Rounds</td>
-                    <td>@(new MarkupString(string.Join("<br />", game.Maps.Select(m => m.Name))))</td>
+                    <td>@(new MarkupString(string.Join("<br />", game.GameMaps.Select(m => m.Name))))</td>
                     <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name))))</td>
                     <td><input type="checkbox" disabled checked="@game.Values.Any(v => v.Score != 0)" /></td>
                     <td><input type="checkbox" disabled checked="@game.Locked" /></td>
@@ -52,7 +52,20 @@
         <InputDate id="date" @bind-Value="Game.Date" />
 
         <hr />
-        <CheckboxList Data="@Maps" LabelSelector="@(m => m.Name)" IdSelector="@(m => m.Id)" SelectedIds="@Game.MapIds" />
+        <Repeater Items="@Game.Maps" Context="gameMap">
+            <div>
+                <InputText @bind-Value="gameMap.Name" />
+                <InputText @bind-Value="gameMap.Link" />
+                <InputSelect @bind-Value="gameMap.MapId">
+                    <option value="0">—</option>
+                    <Repeater Items="@Maps" Context="map">
+                        <option value="@map.Id">@map.Name</option>
+                    </Repeater>
+                </InputSelect>
+                <button @onclick="() => Game.Maps.Remove(gameMap)">X</button>
+            </div>
+        </Repeater>
+        <button @onclick="() => Game.Maps.Add(new GameMapCreateOrEditDto())" type="button">Ajouter carte</button>
 
         <hr />
         <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />

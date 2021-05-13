@@ -11,6 +11,6 @@ namespace GeoNRage.Shared.Dtos
 
         public ICollection<int> PlayerIds { get; set; } = new HashSet<int>();
 
-        public ICollection<int> MapIds { get; set; } = new HashSet<int>();
+        public ICollection<GameMapCreateOrEditDto> Maps { get; set; } = new HashSet<GameMapCreateOrEditDto>();
     }
 }

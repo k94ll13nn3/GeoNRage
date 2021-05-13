@@ -7,7 +7,7 @@ namespace GeoNRage.Shared.Dtos
     {
         public ICollection<PlayerDto> Players { get; set; } = new HashSet<PlayerDto>();
 
-        public ICollection<MapDto> Maps { get; set; } = new HashSet<MapDto>();
+        public ICollection<GameMapDto> GameMaps { get; set; } = new HashSet<GameMapDto>();
 
         public ICollection<ValueDto> Values { get; set; } = new HashSet<ValueDto>();
 

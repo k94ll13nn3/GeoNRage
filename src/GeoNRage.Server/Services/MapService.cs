@@ -14,7 +14,7 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<Map>> GetAllAsync()
         {
-            return await _context.Maps.Include(m => m.Games).ToListAsync();
+            return await _context.Maps.Include(m => m.GameMaps).ToListAsync();
         }
 
         public async Task<Map> CreateAsync(string name)
@@ -45,10 +45,10 @@ namespace GeoNRage.Server.Services
 
         public async Task DeleteAsync(int id)
         {
-            Map? map = await _context.Maps.Include(m => m.Games).FirstAsync(m => m.Id == id);
+            Map? map = await _context.Maps.Include(m => m.GameMaps).FirstAsync(m => m.Id == id);
             if (map is not null)
             {
-                if (map.Games.Count > 0)
+                if (map.GameMaps.Count > 0)
                 {
                     throw new InvalidOperationException("Cannot delete a map in use.");
                 }

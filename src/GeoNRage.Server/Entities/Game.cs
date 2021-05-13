@@ -19,7 +19,7 @@ namespace GeoNRage.Server.Entities
 
         public ICollection<Player> Players { get; set; } = new HashSet<Player>();
 
-        public ICollection<Map> Maps { get; set; } = new HashSet<Map>();
+        public ICollection<GameMap> GameMaps { get; set; } = new HashSet<GameMap>();
 
         public ICollection<Value> Values { get; set; } = new HashSet<Value>();
     }

@@ -52,7 +52,7 @@ namespace GeoNRage.Server.Controllers
         public async Task<GameDto> PostAsync(GameCreateOrEditDto game)
         {
             _ = game ?? throw new ArgumentNullException(nameof(game));
-            Game createdGame = await _gameService.CreateAsync(game.Name, game.Date, game.MapIds, game.PlayerIds);
+            Game createdGame = await _gameService.CreateAsync(game.Name, game.Date, game.Maps, game.PlayerIds);
             return _mapper.Map<Game, GameDto>(createdGame);
         }
 
@@ -60,7 +60,7 @@ namespace GeoNRage.Server.Controllers
         public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameCreateOrEditDto game)
         {
             _ = game ?? throw new ArgumentNullException(nameof(game));
-            Game? updatedGame = await _gameService.UpdateAsync(id, game.Name, game.Date, game.MapIds, game.PlayerIds);
+            Game? updatedGame = await _gameService.UpdateAsync(id, game.Name, game.Date, game.Maps, game.PlayerIds);
             if (updatedGame == null)
             {
                 return NotFound();

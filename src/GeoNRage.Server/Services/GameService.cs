@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
+using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -20,7 +21,7 @@ namespace GeoNRage.Server.Services
             {
                 query = query
                     .Include(g => g.Values)
-                    .Include(g => g.Maps)
+                    .Include(g => g.GameMaps).ThenInclude(gm => gm.Map)
                     .Include(g => g.Players);
             }
 
@@ -32,24 +33,23 @@ namespace GeoNRage.Server.Services
             return await _context
                 .Games
                 .Include(g => g.Values)
-                .Include(g => g.Maps)
+                .Include(g => g.GameMaps).ThenInclude(gm => gm.Map)
                 .Include(g => g.Players)
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<Game> CreateAsync(string name, DateTime date, ICollection<int> mapIds, ICollection<int> playerIds)
+        public async Task<Game> CreateAsync(string name, DateTime date, ICollection<GameMapCreateOrEditDto> maps, ICollection<int> playerIds)
         {
-            _ = mapIds ?? throw new ArgumentNullException(nameof(mapIds));
+            _ = maps ?? throw new ArgumentNullException(nameof(maps));
             _ = playerIds ?? throw new ArgumentNullException(nameof(playerIds));
 
-            List<Map> maps = await _context.Maps.Where(m => mapIds.Contains(m.Id)).ToListAsync();
             List<Player> players = await _context.Players.Where(p => playerIds.Contains(p.Id)).ToListAsync();
 
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
                 Name = name,
                 Date = date,
-                Maps = maps,
+                GameMaps = maps.Select(x => new GameMap { MapId = x.MapId, Link = x.Link, Name = x.Name }).ToList(),
                 Players = players,
                 Rounds = 5,
                 CreationDate = DateTime.UtcNow,
@@ -59,9 +59,9 @@ namespace GeoNRage.Server.Services
             return game.Entity;
         }
 
-        public async Task<Game?> UpdateAsync(int id, string name, DateTime date, ICollection<int> mapIds, ICollection<int> playerIds)
+        public async Task<Game?> UpdateAsync(int id, string name, DateTime date, ICollection<GameMapCreateOrEditDto> maps, ICollection<int> playerIds)
         {
-            _ = mapIds ?? throw new ArgumentNullException(nameof(mapIds));
+            _ = maps ?? throw new ArgumentNullException(nameof(maps));
             _ = playerIds ?? throw new ArgumentNullException(nameof(playerIds));
 
             Game? game = await GetAsync(id);
@@ -79,18 +79,17 @@ namespace GeoNRage.Server.Services
                         throw new InvalidOperationException("Cannot remove a player from an ongoing game.");
                     }
 
-                    if (game.Maps.Select(m => m.Id).Any(id => !mapIds.Contains(id)))
+                    if (game.GameMaps.Select(m => m.MapId).Any(id => !maps.Select(x => x.MapId).Contains(id)))
                     {
                         throw new InvalidOperationException("Cannot remove a map from an ongoing game.");
                     }
                 }
 
-                List<Map> maps = await _context.Maps.Where(m => mapIds.Contains(m.Id)).ToListAsync();
                 List<Player> players = await _context.Players.Where(p => playerIds.Contains(p.Id)).ToListAsync();
 
                 game.Name = name;
                 game.Date = date;
-                game.Maps = maps;
+                game.GameMaps = maps.Select(x => new GameMap { MapId = x.MapId, Link = x.Link, Name = x.Name, GameId = game.Id }).ToList();
                 game.Players = players;
 
                 _context.Games.Update(game);

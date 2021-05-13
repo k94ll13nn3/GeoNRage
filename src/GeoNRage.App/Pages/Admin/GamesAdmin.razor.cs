@@ -43,7 +43,7 @@ namespace GeoNRage.App.Pages.Admin
             {
                 Name = gameToEdit.Name,
                 Date = gameToEdit.Date,
-                MapIds = gameToEdit.Maps.Select(m => m.Id).ToList(),
+                Maps = gameToEdit.GameMaps.Select(gm => new GameMapCreateOrEditDto { MapId = gm.MapId, Link = gm.Link, Name = gm.Name }).ToList(),
                 PlayerIds = gameToEdit.Players.Select(p => p.Id).ToList(),
             };
 

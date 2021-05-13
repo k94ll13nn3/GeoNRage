@@ -9,7 +9,7 @@ namespace GeoNRage.Server
         public AutoMapperProfile()
         {
             CreateMap<Map, MapDto>()
-                .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.Games.Count));
+                .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.GameMaps.Count));
 
             CreateMap<Player, PlayerDto>()
                 .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.Games.Count));
@@ -18,6 +18,7 @@ namespace GeoNRage.Server
 
             CreateMap<Game, GameDto>();
             CreateMap<Game, GameLightDto>();
+            CreateMap<GameMap, GameMapDto>();
         }
     }
 }
