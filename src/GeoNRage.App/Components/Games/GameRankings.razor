@@ -10,17 +10,17 @@
         </tr>
     </thead>
     <tbody>
-        <Repeater Items="Game.GameMaps" Context="gameMap">
+        <Repeater Items="Game.Challenges" Context="challenge">
             <tr>
-                <th>@gameMap.Name</th>
-                <Repeater Items="Game.Players.Select(p => (name: p.Name, score: Game.Values.Where(v => v.PlayerId == p.Id && v.MapId == gameMap.MapId).Sum(v => v.Score))).OrderByDescending(p => p.score)" Context="player">
+                <th>@challenge.MapName</th>
+                <Repeater Items="challenge.PlayerScores.Select(p => (name: p.PlayerName, score: p.Sum)).OrderByDescending(p => p.score)" Context="player">
                     <td>@player.name (@player.score) </td>
                 </Repeater>
             </tr>
         </Repeater>
         <tr>
             <th>Général</th>
-            <Repeater Items="Game.Players.Select(p => (name: p.Name, score: Game.Values.Where(v => v.PlayerId == p.Id ).Sum(v => v.Score))).OrderByDescending(p => p.score)" Context="player">
+            <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(c => c.PlayerId).Select(p => (name: p.First().PlayerName, score: p.Sum(ps => ps.Sum))).OrderByDescending(p => p.score)" Context="player">
                 <td>@player.name (@player.score) </td>
             </Repeater>
         </tr>

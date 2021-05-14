@@ -66,7 +66,7 @@ namespace GeoNRage.App.Components.Games
         [Parameter]
         public GameDto Game { get; set; } = null!;
 
-        public async Task UpdateAsync(int playerId)
+        public async Task UpdateAsync(string playerId)
         {
             UpdatePlot(Game.Players.First(x => x.Id == playerId));
             await Chart.Update();
@@ -79,7 +79,7 @@ namespace GeoNRage.App.Components.Games
 
         private void CreatePlot()
         {
-            foreach (string item in Game.GameMaps.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.Name[0]}_R{y}")).Prepend("0"))
+            foreach (string item in Game.Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.MapName[0]}_R{y}")).Prepend("0"))
             {
                 PlotConfig.Data.Labels.Add(item);
             }
@@ -117,11 +117,11 @@ namespace GeoNRage.App.Components.Games
             int sum = 0;
             var scores = new List<int> { 0 };
             var values = new List<int>();
-            foreach (GameMapDto map in Game.GameMaps)
+            foreach (ChallengeDto challenge in Game.Challenges)
             {
-                for (int i = 0; i < Game.Rounds; i++)
+                for (int i = 0; i < 5; i++)
                 {
-                    values.Add(Game[map.MapId, player.Id, i + 1]);
+                    values.Add(Game[challenge.Id, player.Id, i + 1]);
                 }
             }
 

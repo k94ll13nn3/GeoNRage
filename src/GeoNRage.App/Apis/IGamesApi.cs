@@ -16,22 +16,13 @@ namespace GeoNRage.App.Apis
         Task<ApiResponse<GameDto>> GetAsync(int id);
 
         [Post("/api/games")]
-        Task<GameDto> CreateAsync([Body] GameCreateOrEditDto map);
+        Task<GameDto> CreateAsync([Body] GameCreateDto dto);
 
         [Post("/api/games/{id}")]
-        Task<GameDto> UpdateAsync(int id, [Body] GameCreateOrEditDto map);
-
-        [Post("/api/games/{id}/lock")]
-        Task LockAsync(int id);
-
-        [Post("/api/games/{id}/unlock")]
-        Task UnlockAsync(int id);
-
-        [Post("/api/games/{id}/reset")]
-        Task ResetAsync(int id);
+        Task<GameDto> UpdateAsync(int id, [Body] GameEditDto dto);
 
         [Post("/api/games/{id}/addPlayer/{playerId}")]
-        Task AddPlayerAsync(int id, int playerId);
+        Task AddPlayerAsync(int id, string playerId);
 
         [Delete("/api/games/{id}")]
         Task DeleteAsync(int id);

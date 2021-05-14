@@ -20,18 +20,18 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public MapCreateOrEditDto Map { get; set; } = null!;
+        public MapCreateDto Map { get; set; } = null!;
 
-        public int? SelectedMapId { get; set; }
+        public string? SelectedMapId { get; set; }
 
-        public void EditMap(int mapId)
+        public void EditMap(string mapId)
         {
             ShowEditForm = true;
-            Map = new MapCreateOrEditDto { Name = Maps.First(m => m.Id == mapId).Name };
+            Map = new MapCreateDto { Name = Maps.First(m => m.Id == mapId).Name, Id = mapId };
             SelectedMapId = mapId;
         }
 
-        public async Task DeleteMapAsync(int mapId)
+        public async Task DeleteMapAsync(string mapId)
         {
             if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider la suppression de la carte {mapId} ?"))
             {
@@ -46,7 +46,7 @@ namespace GeoNRage.App.Pages.Admin
         {
             if (SelectedMapId is not null)
             {
-                await MapsApi.UpdateAsync(SelectedMapId.Value, Map);
+                await MapsApi.UpdateAsync(SelectedMapId, Map);
             }
             else
             {
@@ -61,7 +61,7 @@ namespace GeoNRage.App.Pages.Admin
         public void ShowMapCreation()
         {
             ShowEditForm = true;
-            Map = new MapCreateOrEditDto();
+            Map = new MapCreateDto();
         }
 
         protected override async Task OnInitializedAsync()

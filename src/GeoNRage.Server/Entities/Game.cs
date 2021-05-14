@@ -9,18 +9,10 @@ namespace GeoNRage.Server.Entities
 
         public string Name { get; set; } = string.Empty;
 
-        public bool Locked { get; set; }
-
         public DateTime CreationDate { get; set; }
 
         public DateTime Date { get; set; }
 
-        public int Rounds { get; set; }
-
-        public ICollection<Player> Players { get; set; } = new HashSet<Player>();
-
-        public ICollection<GameMap> GameMaps { get; set; } = new HashSet<GameMap>();
-
-        public ICollection<Value> Values { get; set; } = new HashSet<Value>();
+        public ICollection<Challenge> Challenges { get; set; } = new HashSet<Challenge>();
     }
 }

@@ -9,11 +9,8 @@
                 <th>Id</th>
                 <th>Nom</th>
                 <th>Date</th>
-                <th>Rounds</th>
                 <th>Cartes</th>
                 <th>Joueurs</th>
-                <th>En cours</th>
-                <th>Verrouillée</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -23,17 +20,11 @@
                     <td>@game.Id</td>
                     <td>@game.Name</td>
                     <td>@game.Date.ToShortDateString()</td>
-                    <td>@game.Rounds</td>
-                    <td>@(new MarkupString(string.Join("<br />", game.GameMaps.Select(m => m.Name))))</td>
-                    <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name))))</td>
-                    <td><input type="checkbox" disabled checked="@game.Values.Any(v => v.Score != 0)" /></td>
-                    <td><input type="checkbox" disabled checked="@game.Locked" /></td>
+                    <td>@(new MarkupString(string.Join("<br />", game.Challenges.Select(c => c.MapName))))</td>
+                    <td>@(new MarkupString(string.Join("<br />", game.Challenges.First().PlayerScores.Select(p => p.PlayerName))))</td>
                     <td>
-                        <button @onclick="(() => EditGame(game.Id))" disabled="@(game.Locked)">Editer</button>
-                        <button @onclick="(() => DeleteGameAsync(game.Id))" disabled="@(game.Locked || game.Values.Any(v => v.Score != 0))">Supprimer</button>
-                        <button @onclick="(() => LockGameAsync(game.Id))" disabled="@(game.Locked)">Verrouiller</button>
-                        <button @onclick="(() => UnlockGameAsync(game.Id))" disabled="@(!game.Locked)">Déverrouiller</button>
-                        <button @onclick="(() => ResetGameAsync(game.Id))" disabled="@(game.Locked  || game.Values.All(v => v.Score == 0))">Réinitialiser</button>
+                        <button @onclick="(() => EditGame(game.Id))">Editer</button>
+                        <button @onclick="(() => DeleteGameAsync(game.Id))">Supprimer</button>
                     </td>
                 </tr>
             </Repeater>
@@ -55,20 +46,19 @@
         <InputDate id="date" @bind-Value="Game.Date" />
 
         <hr />
-        <Repeater Items="@Game.Maps" Context="gameMap">
+        <Repeater Items="@Game.Challenges" Context="challenge">
             <div>
-                <InputText @bind-Value="gameMap.Name" />
-                <InputText @bind-Value="gameMap.Link" />
-                <InputSelect @bind-Value="gameMap.MapId">
+                <InputText @bind-Value="challenge.Link" />
+                <InputSelect @bind-Value="challenge.MapId">
                     <option value="0">—</option>
                     <Repeater Items="@Maps" Context="map">
                         <option value="@map.Id">@map.Name</option>
                     </Repeater>
                 </InputSelect>
-                <button @onclick="() => Game.Maps.Remove(gameMap)" type="button">X</button>
+                <button @onclick="() => Game.Challenges.Remove(challenge)" type="button">X</button>
             </div>
         </Repeater>
-        <button @onclick="() => Game.Maps.Add(new GameMapCreateOrEditDto())" type="button">Ajouter carte</button>
+        <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto())" type="button">Ajouter carte</button>
 
         <hr />
         <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />

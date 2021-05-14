@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
 
@@ -8,17 +9,15 @@ namespace GeoNRage.Server
     {
         public AutoMapperProfile()
         {
-            CreateMap<Map, MapDto>()
-                .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.GameMaps.Count));
-
-            CreateMap<Player, PlayerDto>()
-                .ForMember(dest => dest.GameCount, opt => opt.MapFrom(src => src.Games.Count));
-
-            CreateMap<Value, ValueDto>();
-
-            CreateMap<Game, GameDto>();
+            CreateMap<Map, MapDto>();
+            CreateMap<Player, PlayerDto>();
+            CreateMap<Game, GameDto>()
+                .ForMember(dest => dest.Players, opt => opt.MapFrom(src => src.Challenges.Count > 0 ? src.Challenges.First().PlayerScores.Select(p => p.Player) : Enumerable.Empty<Player>()));
             CreateMap<Game, GameLightDto>();
-            CreateMap<GameMap, GameMapDto>();
+            CreateMap<Challenge, ChallengeDto>()
+                .ForMember(dest => dest.MapName, opt => opt.MapFrom(src => src.Map.Name));
+            CreateMap<PlayerScore, PlayerScoreDto>()
+                .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name));
         }
     }
 }

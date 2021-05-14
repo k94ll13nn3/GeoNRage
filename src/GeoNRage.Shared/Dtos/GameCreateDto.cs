@@ -1,0 +1,14 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace GeoNRage.Shared.Dtos
+{
+    public class GameCreateDto : GameEditDto
+    {
+        [Required]
+        public ICollection<string> PlayerIds { get; set; } = new HashSet<string>();
+
+        [Required]
+        public ICollection<ChallengeCreateOrEditDto> Challenges { get; set; } = new HashSet<ChallengeCreateOrEditDto>();
+    }
+}

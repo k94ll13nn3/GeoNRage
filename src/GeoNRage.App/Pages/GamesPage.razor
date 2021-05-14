@@ -2,6 +2,6 @@
 
 <ul>
     <Repeater Items="Games" Context="game">
-        <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">@game.Name @(game.Locked ? "(terminée)" : "") (@game.Date.ToShortDateString())</a></li>
+        <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">@game.Name (@game.Date.ToShortDateString())</a></li>
     </Repeater>
 </ul>

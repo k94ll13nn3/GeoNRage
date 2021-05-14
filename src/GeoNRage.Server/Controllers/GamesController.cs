@@ -49,18 +49,18 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<GameDto> PostAsync(GameCreateOrEditDto game)
+        public async Task<GameDto> CreateAsync(GameCreateDto dto)
         {
-            _ = game ?? throw new ArgumentNullException(nameof(game));
-            Game createdGame = await _gameService.CreateAsync(game.Name, game.Date, game.Maps, game.PlayerIds);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+            Game createdGame = await _gameService.CreateAsync(dto);
             return _mapper.Map<Game, GameDto>(createdGame);
         }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameCreateOrEditDto game)
+        public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameEditDto dto)
         {
-            _ = game ?? throw new ArgumentNullException(nameof(game));
-            Game? updatedGame = await _gameService.UpdateAsync(id, game.Name, game.Date, game.Maps, game.PlayerIds);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+            Game? updatedGame = await _gameService.UpdateAsync(id, dto);
             if (updatedGame == null)
             {
                 return NotFound();
@@ -69,30 +69,9 @@ namespace GeoNRage.Server.Controllers
             return _mapper.Map<Game, GameDto>(updatedGame);
         }
 
-        [HttpPost("{id}/lock")]
-        public async Task<IActionResult> LockAsync(int id)
-        {
-            await _gameService.LockAsync(id);
-            return NoContent();
-        }
-
-        [HttpPost("{id}/unlock")]
-        public async Task<IActionResult> UnlockAsync(int id)
-        {
-            await _gameService.UnlockAsync(id);
-            return NoContent();
-        }
-
-        [HttpPost("{id}/reset")]
-        public async Task<IActionResult> ResetAsync(int id)
-        {
-            await _gameService.ResetAsync(id);
-            return NoContent();
-        }
-
         [AllowAnonymous]
         [HttpPost("{id}/addPlayer/{playerId}")]
-        public async Task<IActionResult> AddPlayerAsync(int id, int playerId)
+        public async Task<IActionResult> AddPlayerAsync(int id, string playerId)
         {
             await _gameService.AddPlayerAsync(id, playerId);
             return NoContent();

@@ -2,9 +2,9 @@
 
 namespace GeoNRage.Shared.Dtos
 {
-    public class PlayerCreateOrEditDto
+    public class PlayerCreateDto : PlayerEditDto
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Id { get; set; } = null!;
     }
 }

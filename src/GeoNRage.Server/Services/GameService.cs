@@ -20,9 +20,11 @@ namespace GeoNRage.Server.Services
             if (includeNavigation)
             {
                 query = query
-                    .Include(g => g.Values)
-                    .Include(g => g.GameMaps).ThenInclude(gm => gm.Map)
-                    .Include(g => g.Players);
+                    .Include(g => g.Challenges)
+                    .ThenInclude(c => c.Map)
+                    .Include(g => g.Challenges)
+                    .ThenInclude(c => c.PlayerScores)
+                    .ThenInclude(c => c.Player);
             }
 
             return await query.ToListAsync();
@@ -32,65 +34,44 @@ namespace GeoNRage.Server.Services
         {
             return await _context
                 .Games
-                .Include(g => g.Values)
-                .Include(g => g.GameMaps).ThenInclude(gm => gm.Map)
-                .Include(g => g.Players)
+                .Include(g => g.Challenges)
+                .ThenInclude(c => c.Map)
+                .Include(g => g.Challenges)
+                .ThenInclude(c => c.PlayerScores)
+                .ThenInclude(c => c.Player)
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<Game> CreateAsync(string name, DateTime date, ICollection<GameMapCreateOrEditDto> maps, ICollection<int> playerIds)
+        public async Task<Game> CreateAsync(GameCreateDto dto)
         {
-            _ = maps ?? throw new ArgumentNullException(nameof(maps));
-            _ = playerIds ?? throw new ArgumentNullException(nameof(playerIds));
-
-            List<Player> players = await _context.Players.Where(p => playerIds.Contains(p.Id)).ToListAsync();
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
-                Name = name,
-                Date = date,
-                GameMaps = maps.Select(x => new GameMap { MapId = x.MapId, Link = x.Link, Name = x.Name }).ToList(),
-                Players = players,
-                Rounds = 5,
+                Name = dto.Name,
+                Date = dto.Date,
                 CreationDate = DateTime.UtcNow,
+                Challenges = dto.Challenges.Select(x => new Challenge
+                {
+                    Link = x.Link,
+                    MapId = x.MapId,
+                    PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
+                }).ToList()
             });
             await _context.SaveChangesAsync();
 
             return game.Entity;
         }
 
-        public async Task<Game?> UpdateAsync(int id, string name, DateTime date, ICollection<GameMapCreateOrEditDto> maps, ICollection<int> playerIds)
+        public async Task<Game?> UpdateAsync(int id, GameEditDto dto)
         {
-            _ = maps ?? throw new ArgumentNullException(nameof(maps));
-            _ = playerIds ?? throw new ArgumentNullException(nameof(playerIds));
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
             Game? game = await GetAsync(id);
             if (game is not null)
             {
-                if (game.Locked)
-                {
-                    throw new InvalidOperationException("Cannot update a locked game.");
-                }
-
-                if (game.Values.Any(v => v.Score > 0))
-                {
-                    if (game.Players.Select(p => p.Id).Any(id => !playerIds.Contains(id)))
-                    {
-                        throw new InvalidOperationException("Cannot remove a player from an ongoing game.");
-                    }
-
-                    if (game.GameMaps.Select(m => m.MapId).Any(id => !maps.Select(x => x.MapId).Contains(id)))
-                    {
-                        throw new InvalidOperationException("Cannot remove a map from an ongoing game.");
-                    }
-                }
-
-                List<Player> players = await _context.Players.Where(p => playerIds.Contains(p.Id)).ToListAsync();
-
-                game.Name = name;
-                game.Date = date;
-                game.GameMaps = maps.Select(x => new GameMap { MapId = x.MapId, Link = x.Link, Name = x.Name, GameId = game.Id }).ToList();
-                game.Players = players;
+                game.Name = dto.Name;
+                game.Date = dto.Date;
 
                 _context.Games.Update(game);
                 await _context.SaveChangesAsync();
@@ -101,15 +82,13 @@ namespace GeoNRage.Server.Services
 
         public async Task DeleteAsync(int id)
         {
-            Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
+            Game? game = await _context.Games
+                .Include(g => g.Challenges)
+                .ThenInclude(c => c.PlayerScores)
+                .FirstOrDefaultAsync(g => g.Id == id);
             if (game is not null)
             {
-                if (game.Locked)
-                {
-                    throw new InvalidOperationException("Cannot delete a locked game.");
-                }
-
-                if (game.Values.Any(v => v.Score > 0))
+                if (game.Challenges.SelectMany(c => c.PlayerScores).Any(p => p.Round1 > 0 || p.Round2 > 0 || p.Round3 > 0 || p.Round4 > 0 || p.Round5 > 0))
                 {
                     throw new InvalidOperationException("Cannot delete an ongoing game.");
                 }
@@ -119,93 +98,53 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task AddPlayerAsync(int gameId, int playerId)
+        public async Task AddPlayerAsync(int gameId, string playerId)
         {
             Game? game = await GetAsync(gameId);
             if (game is not null)
             {
-                if (game.Locked)
+                foreach (Challenge challenge in game.Challenges)
                 {
-                    throw new InvalidOperationException("Cannot update a locked game.");
-                }
-
-                if (!game.Players.Select(p => p.Id).Contains(playerId))
-                {
-                    Player? player = await _context.Players.FindAsync(playerId);
-                    if (player is not null)
+                    if (!challenge.PlayerScores.Select(p => p.PlayerId).Contains(playerId) && await _context.Players.AnyAsync(p => p.Id == playerId))
                     {
-                        game.Players.Add(player);
+                        challenge.PlayerScores.Add(new PlayerScore { PlayerId = playerId });
                         await _context.SaveChangesAsync();
                     }
                 }
             }
         }
 
-        public async Task LockAsync(int id)
-        {
-            Game? game = await _context.Games.FindAsync(id);
-            if (game is not null)
-            {
-                game.Locked = true;
-                _context.Games.Update(game);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task UnlockAsync(int id)
-        {
-            Game? game = await _context.Games.FindAsync(id);
-            if (game is not null)
-            {
-                game.Locked = false;
-                _context.Games.Update(game);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task ResetAsync(int id)
-        {
-            Game? game = await _context.Games.Include(g => g.Values).FirstOrDefaultAsync(g => g.Id == id);
-            if (game is not null)
-            {
-                if (game.Locked)
-                {
-                    throw new InvalidOperationException("Cannot reset a locked game.");
-                }
-
-                List<Value> values = await _context.Values.Where(v => v.GameId == id).ToListAsync();
-                _context.Values.RemoveRange(values);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdateValueAsync(int gameId, int mapId, int playerId, int round, int newScore)
+        public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
         {
             Game? game = await _context.Games.FindAsync(gameId);
             if (game is not null)
             {
-                if (game.Locked)
-                {
-                    throw new InvalidOperationException("Cannot update a locked game.");
-                }
+                PlayerScore playerScore = game.Challenges.First(c => c.Id == challengeId).PlayerScores.First(p => p.PlayerId == playerId);
 
-                Value? value = await _context.Values.FirstOrDefaultAsync(x => x.GameId == gameId && x.MapId == mapId && x.PlayerId == playerId && x.Round == round);
-                if (value is null)
+                switch (round)
                 {
-                    value = new Value
-                    {
-                        GameId = gameId,
-                        MapId = mapId,
-                        PlayerId = playerId,
-                        Round = round,
-                        Score = newScore,
-                    };
-                    _context.Values.Add(value);
-                }
-                else
-                {
-                    value.Score = newScore;
-                    _context.Values.Update(value);
+                    case 1:
+                        playerScore.Round1 = newScore;
+                        break;
+
+                    case 2:
+                        playerScore.Round2 = newScore;
+                        break;
+
+                    case 3:
+                        playerScore.Round3 = newScore;
+                        break;
+
+                    case 4:
+                        playerScore.Round4 = newScore;
+                        break;
+
+                    case 5:
+                        playerScore.Round5 = newScore;
+                        break;
+
+                    default:
+                        throw new InvalidOperationException("Invalid round number.");
                 }
 
                 await _context.SaveChangesAsync();

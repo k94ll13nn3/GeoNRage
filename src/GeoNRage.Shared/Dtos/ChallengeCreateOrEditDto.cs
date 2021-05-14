@@ -2,13 +2,10 @@
 
 namespace GeoNRage.Shared.Dtos
 {
-    public class GameMapCreateOrEditDto
+    public class ChallengeCreateOrEditDto
     {
         [Required]
-        public int MapId { get; set; }
-
-        [Required]
-        public string Name { get; set; } = string.Empty;
+        public string MapId { get; set; } = null!;
 
         public string? Link { get; set; }
     }

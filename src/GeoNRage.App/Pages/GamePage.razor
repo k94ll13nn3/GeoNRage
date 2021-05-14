@@ -35,50 +35,55 @@
 
     <div class="container">
         <table class="ma-5">
-            <Repeater Items="Game.GameMaps" Context="gameMap">
+            <Repeater Items="Game.Challenges" Context="challenge">
                 <tr>
                     <th>
-                        @gameMap.Name
-                        @if (!string.IsNullOrWhiteSpace(gameMap.Link))
+                        @challenge.MapName
+                        @if (!string.IsNullOrWhiteSpace(challenge.Link))
                         {
-                            <a href="@gameMap.Link" target="_blank">(🔗)</a>
+                            <a href="@challenge.Link" target="_blank">(🔗)</a>
                         }
                     </th>
-                    <Repeater Items="Game.Players" Context="player">
-                        <th>@player.Name</th>
+                    <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                        <th>@playerScore.PlayerName</th>
                     </Repeater>
                 </tr>
 
-                <Repeater Items="Enumerable.Range(1, Game.Rounds)" Context="round">
+                <Repeater Items="Enumerable.Range(1, 5)" Context="round">
                     <tr>
                         <th>Round @round</th>
-                        <Repeater Items="Game.Players" Context="player">
+                        <Repeater Items="challenge.PlayerScores" Context="playerScore">
                             @{
-                                var key = $"{gameMap.MapId}_{player.Id}_{round}";
+                                var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
                             }
                             <td>
-                                <NumericInput @key="@key" InitialValue="@Game[gameMap.MapId, player.Id, round]" ValueChanged="@(async (e) => { await SendAsync(gameMap.MapId, player.Id, round, e);})" Disabled="@Game.Locked" Class="@(Game[gameMap.MapId, player.Id, round] == 5000 ? "perfect" : "")"></NumericInput>
+                                <NumericInput @key="@key"
+                                              InitialValue="@Game[challenge.Id, playerScore.PlayerId, round]"
+                                              ValueChanged="@(async (e) => { await SendAsync(challenge.Id, playerScore.PlayerId, round, e);})"
+                                              Class="@(Game[challenge.Id, playerScore.PlayerId, round] == 5000 ? "perfect" : "")"></NumericInput>
                             </td>
                         </Repeater>
                     </tr>
                 </Repeater>
 
                 <tr>
-                    <th>Total @gameMap.Name</th>
-                    <Repeater Items="Game.Players" Context="player">
-                        <td>@Game.Values.Where(v => v.MapId == gameMap.MapId && v.PlayerId == player.Id).Sum(v => v.Score)</td>
+                    <th>Total @challenge.MapName</th>
+                    <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                        <td>@playerScore.Sum</td>
                     </Repeater>
                 </tr>
             </Repeater>
 
             <tr style="border-bottom: 1px solid #000;"></tr>
 
-            <tr class="bordered">
-                <th>Total </th>
-                <Repeater Items="Game.Players" Context="player">
-                    <td>@Game.Values.Where(v => v.PlayerId == player.Id).Sum(v => v.Score)</td>
-                </Repeater>
-            </tr>
+            <Container Condition="Game.Challenges.Any()">
+                <tr class="bordered">
+                    <th>Total </th>
+                    <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
+                        <td>@playerScores.Sum(playerScore => playerScore.Sum)</td>
+                    </Repeater>
+                </tr>
+            </Container>
         </table>
 
         <div class="ma-5">

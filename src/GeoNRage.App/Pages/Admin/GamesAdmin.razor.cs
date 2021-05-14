@@ -32,7 +32,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public GameCreateOrEditDto Game { get; set; } = null!;
+        public GameCreateDto Game { get; set; } = null!;
 
         public int? SelectedGameId { get; set; }
 
@@ -42,12 +42,10 @@ namespace GeoNRage.App.Pages.Admin
         {
             ShowEditForm = true;
             GameDto gameToEdit = Games.First(m => m.Id == gameId);
-            Game = new GameCreateOrEditDto
+            Game = new GameCreateDto
             {
                 Name = gameToEdit.Name,
                 Date = gameToEdit.Date,
-                Maps = gameToEdit.GameMaps.Select(gm => new GameMapCreateOrEditDto { MapId = gm.MapId, Link = gm.Link, Name = gm.Name }).ToList(),
-                PlayerIds = gameToEdit.Players.Select(p => p.Id).ToList(),
             };
 
             SelectedGameId = gameId;
@@ -64,63 +62,23 @@ namespace GeoNRage.App.Pages.Admin
             Games = await GamesApi.GetAllAsync();
         }
 
-        public async Task LockGameAsync(int gameId)
-        {
-            if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider le verrouillage de la partie {gameId} ?"))
-            {
-                return;
-            }
-
-            await GamesApi.LockAsync(gameId);
-            Games = await GamesApi.GetAllAsync();
-        }
-
-        public async Task UnlockGameAsync(int gameId)
-        {
-            if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider le déverrouillage de la partie {gameId} ?"))
-            {
-                return;
-            }
-
-            await GamesApi.UnlockAsync(gameId);
-            Games = await GamesApi.GetAllAsync();
-        }
-
-        public async Task ResetGameAsync(int gameId)
-        {
-            if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider la réinitialisation de la partie {gameId} ?"))
-            {
-                return;
-            }
-
-            await GamesApi.ResetAsync(gameId);
-            Games = await GamesApi.GetAllAsync();
-        }
-
         public async Task CreateOrUpdateGameAsync()
         {
             Error = string.Empty;
             try
             {
-                if (Game.Maps.Select(x => x.MapId).Distinct().Count() != Game.Maps.Count)
+                if (SelectedGameId is not null)
                 {
-                    Error = "Chaque carte ne doit être utilisée qu'une seule fois.";
+                    await GamesApi.UpdateAsync(SelectedGameId.Value, Game);
                 }
                 else
                 {
-                    if (SelectedGameId is not null)
-                    {
-                        await GamesApi.UpdateAsync(SelectedGameId.Value, Game);
-                    }
-                    else
-                    {
-                        await GamesApi.CreateAsync(Game);
-                    }
-
-                    ShowEditForm = false;
-                    SelectedGameId = null;
-                    Games = await GamesApi.GetAllAsync();
+                    await GamesApi.CreateAsync(Game);
                 }
+
+                ShowEditForm = false;
+                SelectedGameId = null;
+                Games = await GamesApi.GetAllAsync();
             }
             catch (ValidationApiException e)
             {
@@ -135,7 +93,7 @@ namespace GeoNRage.App.Pages.Admin
         public void ShowGameCreation()
         {
             ShowEditForm = true;
-            Game = new GameCreateOrEditDto { Date = DateTime.Now };
+            Game = new GameCreateDto { Date = DateTime.Now };
         }
 
         protected override async Task OnInitializedAsync()

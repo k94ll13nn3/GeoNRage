@@ -19,6 +19,7 @@ namespace GeoNRage.Server.Controllers
         private readonly IMapper _mapper;
         private readonly MapService _mapService;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<MapDto>> GetAllAsync()
         {
@@ -28,18 +29,18 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<MapDto> PostAsync(MapCreateOrEditDto map)
+        public async Task<MapDto> PostAsync(MapCreateDto dto)
         {
-            _ = map ?? throw new ArgumentNullException(nameof(map));
-            Map createdMap = await _mapService.CreateAsync(map.Name);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+            Map createdMap = await _mapService.CreateAsync(dto);
             return _mapper.Map<Map, MapDto>(createdMap);
         }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<MapDto>> UpdateAsync(int id, MapCreateOrEditDto map)
+        public async Task<ActionResult<MapDto>> UpdateAsync(string id, MapEditDto dto)
         {
-            _ = map ?? throw new ArgumentNullException(nameof(map));
-            Map? updatedMap = await _mapService.UpdateAsync(id, map.Name);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+            Map? updatedMap = await _mapService.UpdateAsync(id, dto);
             if (updatedMap == null)
             {
                 return NotFound();
@@ -49,7 +50,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             await _mapService.DeleteAsync(id);
             return NoContent();

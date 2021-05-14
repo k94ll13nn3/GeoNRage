@@ -5,32 +5,60 @@ namespace GeoNRage.Shared.Dtos
 {
     public class GameDto : GameLightDto
     {
+        public ICollection<ChallengeDto> Challenges { get; set; } = new HashSet<ChallengeDto>();
+
         public ICollection<PlayerDto> Players { get; set; } = new HashSet<PlayerDto>();
 
-        public ICollection<GameMapDto> GameMaps { get; set; } = new HashSet<GameMapDto>();
-
-        public ICollection<ValueDto> Values { get; set; } = new HashSet<ValueDto>();
-
-        public int this[int mapId, int playerId, int round]
+        public int this[int challengeId, string playerId, int round]
         {
-            get => Values.FirstOrDefault(x => x.MapId == mapId && x.PlayerId == playerId && x.Round == round)?.Score ?? 0;
-            set
+            get
             {
-                ValueDto? v = Values.FirstOrDefault(x => x.MapId == mapId && x.PlayerId == playerId && x.Round == round);
-                if (v is null)
+                PlayerScoreDto? playerScore = Challenges.FirstOrDefault(c => c.Id == challengeId)?.PlayerScores.FirstOrDefault(p => p.PlayerId == playerId);
+                if (playerScore is not null)
                 {
-                    Values.Add(new ValueDto
+                    return round switch
                     {
-                        Score = value,
-                        MapId = mapId,
-                        PlayerId = playerId,
-                        Round = round,
-                        GameId = Id
-                    });
+                        1 => playerScore.Round1,
+                        2 => playerScore.Round2,
+                        3 => playerScore.Round3,
+                        4 => playerScore.Round4,
+                        5 => playerScore.Round5,
+                        _ => 0,
+                    };
                 }
                 else
                 {
-                    Values.First(x => x.MapId == mapId && x.PlayerId == playerId && x.Round == round).Score = value;
+                    return 0;
+                }
+            }
+
+            set
+            {
+                PlayerScoreDto? playerScore = Challenges.FirstOrDefault(c => c.Id == challengeId)?.PlayerScores.FirstOrDefault(p => p.PlayerId == playerId);
+                if (playerScore is not null)
+                {
+                    switch (round)
+                    {
+                        case 1:
+                            playerScore.Round1 = value;
+                            break;
+
+                        case 2:
+                            playerScore.Round2 = value;
+                            break;
+
+                        case 3:
+                            playerScore.Round3 = value;
+                            break;
+
+                        case 4:
+                            playerScore.Round4 = value;
+                            break;
+
+                        case 5:
+                            playerScore.Round5 = value;
+                            break;
+                    }
                 }
             }
         }

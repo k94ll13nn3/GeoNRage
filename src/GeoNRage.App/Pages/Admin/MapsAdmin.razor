@@ -8,7 +8,6 @@
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>Utilisée</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -17,10 +16,9 @@
                 <tr>
                     <td>@map.Id</td>
                     <td>@map.Name</td>
-                    <td><input type="checkbox" disabled checked="@(map.GameCount > 0)" /></td>
                     <td>
                         <button @onclick="(() => EditMap(map.Id))">Editer</button>
-                        <button @onclick="(() => DeleteMapAsync(map.Id))" disabled="@(map.GameCount > 0)">Supprimer</button>
+                        <button @onclick="(() => DeleteMapAsync(map.Id))">Supprimer</button>
                     </td>
                 </tr>
             </Repeater>
@@ -35,6 +33,7 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
+        <InputText id="id" @bind-Value="Map.Id" />
         <InputText id="name" @bind-Value="Map.Name" />
 
         <button type="submit">Valider</button>

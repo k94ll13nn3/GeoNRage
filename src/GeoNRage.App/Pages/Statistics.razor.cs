@@ -12,27 +12,39 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IGamesApi GamesApi { get; set; } = null!;
 
+        [Inject]
+        public IPlayersApi PlayersApi { get; set; } = null!;
+
         public IEnumerable<GameDto> Games { get; set; } = Enumerable.Empty<GameDto>();
 
         public IEnumerable<PlayerDto> Players { get; set; } = Enumerable.Empty<PlayerDto>();
 
-        public IEnumerable<MapDto> Maps { get; set; } = Enumerable.Empty<MapDto>();
-
-        public IList<(int game, int map, int score)> GetScores(int playerId)
+        public IList<int> GetScores(string playerId)
         {
-            return Games
-                .Select(g => g.Values.Where(v => v.PlayerId == playerId && g.GameMaps.Select(m => m.MapId).Contains(v.MapId)))
-                .SelectMany(v => v)
-                .Select(v => (v.GameId, v.MapId, v.Score))
-                .ToList();
+            List<int> scores = new();
+            foreach (GameDto game in Games)
+            {
+                foreach (ChallengeDto challenge in game.Challenges)
+                {
+                    PlayerScoreDto? playerScore = challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
+                    if (playerScore is not null)
+                    {
+                        scores.Add(playerScore.Round1);
+                        scores.Add(playerScore.Round2);
+                        scores.Add(playerScore.Round3);
+                        scores.Add(playerScore.Round4);
+                        scores.Add(playerScore.Round5);
+                    }
+                }
+            }
+
+            return scores;
         }
 
         protected override async Task OnInitializedAsync()
         {
             Games = await GamesApi.GetAllAsync();
-
-            Players = Games.SelectMany(g => g.Players).GroupBy(p => p.Id).Select(g => g.First());
-            Maps = Games.SelectMany(g => g.GameMaps.Select(gm => gm.Map)).GroupBy(p => p.Id).Select(g => g.First());
+            Players = await PlayersApi.GetAllAsync();
         }
     }
 }

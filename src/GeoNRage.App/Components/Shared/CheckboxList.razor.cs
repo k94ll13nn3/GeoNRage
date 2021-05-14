@@ -6,22 +6,22 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components.Shared
 {
-    public partial class CheckboxList<T>
+    public partial class CheckboxList<TItem, TId>
     {
         [Parameter]
-        public IEnumerable<T> Data { get; set; } = Enumerable.Empty<T>();
+        public IEnumerable<TItem> Data { get; set; } = Enumerable.Empty<TItem>();
 
         [Parameter]
-        public Func<T, string> LabelSelector { get; set; } = null!;
+        public Func<TItem, string> LabelSelector { get; set; } = null!;
 
         [Parameter]
-        public Func<T, int> IdSelector { get; set; } = null!;
+        public Func<TItem, TId> IdSelector { get; set; } = null!;
 
         [Parameter]
         [SuppressMessage("Usage", "CA2227", Justification = "Component parameter.")]
-        public ICollection<int> SelectedIds { get; set; } = Array.Empty<int>();
+        public ICollection<TId> SelectedIds { get; set; } = Array.Empty<TId>();
 
-        public void CheckboxClicked(int selectedId, object? value)
+        public void CheckboxClicked(TId selectedId, object? value)
         {
             if ((bool?)value == true)
             {

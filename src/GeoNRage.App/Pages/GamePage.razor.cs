@@ -43,7 +43,7 @@ namespace GeoNRage.App.Pages
 
         public IEnumerable<PlayerDto> AvailablePlayers { get; set; } = Enumerable.Empty<PlayerDto>();
 
-        public int SelectedPlayerId { get; set; }
+        public string? SelectedPlayerId { get; set; }
 
         public async ValueTask DisposeAsync()
         {
@@ -69,7 +69,7 @@ namespace GeoNRage.App.Pages
                 .WithAutomaticReconnect()
                 .Build();
 
-            _hubConnection.On<int, int, int, int>("ReceiveValue", HandleReceiveValueAsync);
+            _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValueAsync);
 
             _hubConnection.Closed += OnHubConnectionClosed;
             _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -88,8 +88,8 @@ namespace GeoNRage.App.Pages
                 GameFound = true;
                 Game = response.Content;
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
-                AvailablePlayers = (await PlayersApi.GetAllAsync()).Where(p => !Game.Players.Any(gp => gp.Id == p.Id));
-                SelectedPlayerId = AvailablePlayers.FirstOrDefault()?.Id ?? 0;
+                AvailablePlayers = (await PlayersApi.GetAllAsync()).Where(p => Game.Challenges.FirstOrDefault()?.PlayerScores.Any(gp => gp.PlayerId == p.Id) != true);
+                SelectedPlayerId = AvailablePlayers.FirstOrDefault()?.Id;
                 StateHasChanged();
             }
         }
@@ -121,23 +121,23 @@ namespace GeoNRage.App.Pages
             return Task.FromResult(0);
         }
 
-        private async Task HandleReceiveValueAsync(int mapId, int playerId, int round, int score)
+        private async Task HandleReceiveValueAsync(int challengeId, string playerId, int round, int score)
         {
-            Game[mapId, playerId, round] = score;
+            Game[challengeId, playerId, round] = score;
             await Chart.UpdateAsync(playerId);
             StateHasChanged();
         }
 
-        private async Task SendAsync(int mapId, int playerId, int round, int score)
+        private async Task SendAsync(int challengeId, string playerId, int round, int score)
         {
             int clampedValue = Math.Clamp(score, 0, 5000);
-            await _hubConnection.InvokeAsync("UpdateValue", Id, mapId, playerId, round, clampedValue);
-            await HandleReceiveValueAsync(mapId, playerId, round, clampedValue);
+            await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, playerId, round, clampedValue);
+            await HandleReceiveValueAsync(challengeId, playerId, round, clampedValue);
         }
 
         private async Task AddPlayerAsync()
         {
-            if (Game is not null && SelectedPlayerId != 0)
+            if (Game is not null && SelectedPlayerId is not null)
             {
                 await GamesApi.AddPlayerAsync(Game.Id, SelectedPlayerId);
                 await ReloadPageAsync();

@@ -29,18 +29,18 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<PlayerDto> PostAsync(PlayerCreateOrEditDto player)
+        public async Task<PlayerDto> PostAsync(PlayerCreateDto dto)
         {
-            _ = player ?? throw new ArgumentNullException(nameof(player));
-            Player createdPlayer = await _playerService.CreateAsync(player.Name);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+            Player createdPlayer = await _playerService.CreateAsync(dto);
             return _mapper.Map<Player, PlayerDto>(createdPlayer);
         }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<PlayerDto>> UpdateAsync(int id, PlayerCreateOrEditDto player)
+        public async Task<ActionResult<PlayerDto>> UpdateAsync(string id, PlayerEditDto dto)
         {
-            _ = player ?? throw new ArgumentNullException(nameof(player));
-            Player? updatedPlayer = await _playerService.UpdateAsync(id, player.Name);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+            Player? updatedPlayer = await _playerService.UpdateAsync(id, dto);
             if (updatedPlayer == null)
             {
                 return NotFound();
@@ -50,7 +50,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             await _playerService.DeleteAsync(id);
             return NoContent();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
+using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -14,14 +15,17 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<Player>> GetAllAsync()
         {
-            return await _context.Players.Include(m => m.Games).ToListAsync();
+            return await _context.Players.ToListAsync();
         }
 
-        public async Task<Player> CreateAsync(string name)
+        public async Task<Player> CreateAsync(PlayerCreateDto dto)
         {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
             EntityEntry<Player> player = await _context.Players.AddAsync(new Player
             {
-                Name = name,
+                Id = dto.Id,
+                Name = dto.Name,
             });
 
             await _context.SaveChangesAsync();
@@ -29,12 +33,14 @@ namespace GeoNRage.Server.Services
             return player.Entity;
         }
 
-        public async Task<Player?> UpdateAsync(int id, string name)
+        public async Task<Player?> UpdateAsync(string id, PlayerEditDto dto)
         {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
             Player? player = await _context.Players.FindAsync(id);
             if (player is not null)
             {
-                player.Name = name;
+                player.Name = dto.Name;
 
                 _context.Players.Update(player);
                 await _context.SaveChangesAsync();
@@ -43,12 +49,12 @@ namespace GeoNRage.Server.Services
             return player;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
-            Player? player = await _context.Players.Include(m => m.Games).FirstAsync(m => m.Id == id);
+            Player? player = await _context.Players.FindAsync(id);
             if (player is not null)
             {
-                if (player.Games.Count > 0)
+                if (await _context.PlayerScores.AnyAsync(ps => ps.PlayerId == id))
                 {
                     throw new InvalidOperationException("Cannot delete a player in use.");
                 }

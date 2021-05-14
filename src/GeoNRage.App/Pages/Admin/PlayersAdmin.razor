@@ -8,7 +8,6 @@
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>Utilisée</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -17,10 +16,9 @@
                 <tr>
                     <td>@player.Id</td>
                     <td>@player.Name</td>
-                    <td><input type="checkbox" disabled checked="@(player.GameCount > 0)" /></td>
                     <td>
                         <button @onclick="(() => EditPlayer(player.Id))">Editer</button>
-                        <button @onclick="(() => DeletePlayerAsync(player.Id))" disabled="@(player.GameCount > 0)">Supprimer</button>
+                        <button @onclick="(() => DeletePlayerAsync(player.Id))">Supprimer</button>
                     </td>
                 </tr>
             </Repeater>
@@ -35,6 +33,7 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
+        <InputText id="id" @bind-Value="Player.Id" />
         <InputText id="name" @bind-Value="Player.Name" />
 
         <button type="submit">Valider</button>

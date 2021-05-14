@@ -2,9 +2,9 @@
 
 namespace GeoNRage.Shared.Dtos
 {
-    public class MapCreateOrEditDto
+    public class MapEditDto
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = null!;
     }
 }
