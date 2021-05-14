@@ -1,11 +1,12 @@
 ﻿using System;
 using GeoNRage.Server.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server
 {
-    public class GeoNRageDbContext : IdentityDbContext<User>
+    public class GeoNRageDbContext : IdentityDbContext<IdentityUser>
     {
         public GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : base(options)
         {

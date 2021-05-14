@@ -37,7 +37,7 @@ namespace GeoNRage.Server
                 connectionString,
                 ServerVersion.AutoDetect(connectionString)));
 
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
 
             services.ConfigureApplicationCookie(options =>
             {

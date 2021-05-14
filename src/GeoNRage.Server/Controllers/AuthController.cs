@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,8 +14,8 @@ namespace GeoNRage.Server.Controllers
     [AutoConstructor]
     public partial class AuthController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
         [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
         private readonly ApplicationOptions _options;
@@ -26,7 +25,7 @@ namespace GeoNRage.Server.Controllers
         {
             _ = request ?? throw new ArgumentNullException(nameof(request));
 
-            User user = await _userManager.FindByNameAsync(request.UserName);
+            IdentityUser user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
                 return BadRequest("Invalid password or user.");
@@ -61,7 +60,7 @@ namespace GeoNRage.Server.Controllers
                 return BadRequest("Registration not enabled.");
             }
 
-            var user = new User
+            var user = new IdentityUser
             {
                 UserName = parameters.UserName
             };
