@@ -102,18 +102,25 @@ namespace GeoNRage.App.Pages.Admin
             Error = string.Empty;
             try
             {
-                if (SelectedGameId is not null)
+                if (Game.Maps.Select(x => x.MapId).Distinct().Count() != Game.Maps.Count)
                 {
-                    await GamesApi.UpdateAsync(SelectedGameId.Value, Game);
+                    Error = "Chaque carte ne doit être utilisée qu'une seule fois.";
                 }
                 else
                 {
-                    await GamesApi.CreateAsync(Game);
-                }
+                    if (SelectedGameId is not null)
+                    {
+                        await GamesApi.UpdateAsync(SelectedGameId.Value, Game);
+                    }
+                    else
+                    {
+                        await GamesApi.CreateAsync(Game);
+                    }
 
-                ShowEditForm = false;
-                SelectedGameId = null;
-                Games = await GamesApi.GetAllAsync();
+                    ShowEditForm = false;
+                    SelectedGameId = null;
+                    Games = await GamesApi.GetAllAsync();
+                }
             }
             catch (ValidationApiException e)
             {
