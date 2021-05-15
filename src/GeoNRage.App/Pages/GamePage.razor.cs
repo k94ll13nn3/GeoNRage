@@ -29,7 +29,7 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IPlayersApi PlayersApi { get; set; } = null!;
 
-        public GameChart Chart { get; set; } = null!;
+        public GameChart? Chart { get; set; } = null!;
 
         public bool GameFound { get; set; } = true;
 
@@ -124,7 +124,10 @@ namespace GeoNRage.App.Pages
         private async Task HandleReceiveValueAsync(int challengeId, string playerId, int round, int score)
         {
             Game[challengeId, playerId, round] = score;
-            await Chart.UpdateAsync(playerId);
+            if (Chart is not null)
+            {
+                await Chart.UpdateAsync(playerId);
+            }
             StateHasChanged();
         }
 
