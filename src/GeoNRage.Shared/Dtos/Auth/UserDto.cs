@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GeoNRage.Shared.Dtos
+namespace GeoNRage.Shared.Dtos.Auth
 {
     public class UserDto
     {

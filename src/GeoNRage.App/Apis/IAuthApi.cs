@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Auth;
 using Refit;
 
 namespace GeoNRage.App.Apis

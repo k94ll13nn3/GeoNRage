@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace GeoNRage.App.Authentication

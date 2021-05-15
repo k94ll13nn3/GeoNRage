@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GeoNRage.App.Authentication;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components.Admin
