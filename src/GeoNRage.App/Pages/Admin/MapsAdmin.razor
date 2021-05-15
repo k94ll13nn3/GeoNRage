@@ -33,8 +33,19 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <InputText id="id" @bind-Value="Map.Id" />
-        <InputText id="name" @bind-Value="Map.Name" />
+        <p>
+            <label>
+                Id :
+                <InputText @bind-Value="Map.Id" />
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Nom :
+                <InputText @bind-Value="Map.Name" />
+            </label>
+        </p>
 
         <button type="submit">Valider</button>
     </EditForm>

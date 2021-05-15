@@ -1,0 +1,8 @@
+﻿td {
+    width: 200px;
+    max-width: none;
+}
+
+::deep input {
+    width: 200px;
+}

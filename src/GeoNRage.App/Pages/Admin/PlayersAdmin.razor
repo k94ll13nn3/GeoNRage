@@ -33,8 +33,19 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <InputText id="id" @bind-Value="Player.Id" />
-        <InputText id="name" @bind-Value="Player.Name" />
+        <p>
+            <label>
+                Id :
+                <InputText @bind-Value="Player.Id" />
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Nom :
+                <InputText @bind-Value="Player.Name" />
+            </label>
+        </p>
 
         <button type="submit">Valider</button>
     </EditForm>
