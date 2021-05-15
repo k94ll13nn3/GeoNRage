@@ -21,10 +21,13 @@ namespace GeoNRage.App.Apis
         [Post("/api/games/{id}")]
         Task<GameDto> UpdateAsync(int id, [Body] GameCreateOrEditDto dto);
 
-        [Post("/api/games/{id}/addPlayer/{playerId}")]
+        [Post("/api/games/{id}/add-player/{playerId}")]
         Task AddPlayerAsync(int id, string playerId);
 
         [Delete("/api/games/{id}")]
         Task DeleteAsync(int id);
+
+        [Post("/api/games/{id}/import-challenge")]
+        Task<ChallengeDto> ImportChallengeAsync(int id, [Body] ChallengeImportDto dto);
     }
 }

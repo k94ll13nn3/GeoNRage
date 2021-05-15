@@ -12,6 +12,8 @@ namespace GeoNRage.Shared.Dtos
 
         public string? Link { get; set; }
 
+        public int GameId { get; set; }
+
         public ICollection<PlayerScoreDto> PlayerScores { get; set; } = new HashSet<PlayerScoreDto>();
     }
 }

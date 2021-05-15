@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.GeoGuessr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Services
 {
@@ -13,6 +19,10 @@ namespace GeoNRage.Server.Services
     public partial class GameService
     {
         private readonly GeoNRageDbContext _context;
+        private readonly IHttpClientFactory _clientFactory;
+
+        [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
+        private readonly ApplicationOptions _options;
 
         public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {
@@ -129,6 +139,10 @@ namespace GeoNRage.Server.Services
                     }
                 }
             }
+            else
+            {
+                throw new InvalidOperationException("Game not found.");
+            }
         }
 
         public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
@@ -166,6 +180,86 @@ namespace GeoNRage.Server.Services
 
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<Challenge> ImportChallengeAsync(int id, ChallengeImportDto dto)
+        {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
+            Game? game = await GetAsync(id);
+            if (game == null)
+            {
+                throw new InvalidOperationException("Game not found.");
+            }
+
+            HttpClient client = _clientFactory.CreateClient("geoguessr");
+            await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin { Email = _options.GeoGuessrEmail, Password = _options.GeoGuessrPassword });
+            string challengeId = new Uri(dto.Link).Segments[^1];
+
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new JsonStringEnumConverter() },
+                PropertyNameCaseInsensitive = true,
+                NumberHandling = JsonNumberHandling.AllowReadingFromString
+            };
+
+            GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{challengeId}/0/26", options);
+
+            if (response is null)
+            {
+                throw new InvalidOperationException("Cannot import data.");
+            }
+
+            var playerScores = new List<PlayerScore>();
+            foreach (GeoGuessrChallenge geoChallenge in response)
+            {
+                Player player = await _context.Players.FindAsync(geoChallenge.Game.Player.Id) ?? new Player
+                {
+                    Id = geoChallenge.Game.Player.Id,
+                    Name = geoChallenge.Game.Player.Nick,
+                };
+
+                var playerScore = new PlayerScore
+                {
+                    PlayerId = player.Id,
+                    Player = player,
+                    Round1 = geoChallenge.Game.Player.Guesses[0].RoundScore.Amount,
+                    Round2 = geoChallenge.Game.Player.Guesses[1].RoundScore.Amount,
+                    Round3 = geoChallenge.Game.Player.Guesses[2].RoundScore.Amount,
+                    Round4 = geoChallenge.Game.Player.Guesses[3].RoundScore.Amount,
+                    Round5 = geoChallenge.Game.Player.Guesses[4].RoundScore.Amount
+                };
+                playerScores.Add(playerScore);
+            }
+
+            Map map = await _context.Maps.FindAsync(response[0].Game.Map) ?? new Map
+            {
+                Id = response[0].Game.Map,
+                Name = response[0].Game.MapName,
+            };
+
+            var challenge = new Challenge
+            {
+                GameId = id,
+                MapId = map.Id,
+                Map = map,
+                Link = dto.Link,
+                PlayerScores = playerScores
+            };
+            if (dto.PersistData)
+            {
+                game.Challenges.Add(challenge);
+                await _context.SaveChangesAsync();
+            }
+
+            // Cutting the relations to avoid cycles in JSON.
+            challenge.Game = null!;
+            foreach (PlayerScore score in challenge.PlayerScores)
+            {
+                score.Challenge = null!;
+            }
+
+            return challenge;
         }
     }
 }

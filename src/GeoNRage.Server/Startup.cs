@@ -1,6 +1,6 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GeoNRage.Server.Entities;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Builder;
@@ -52,6 +52,8 @@ namespace GeoNRage.Server
             services.AddTransient<GameService>();
             services.AddTransient<MapService>();
             services.AddTransient<PlayerService>();
+
+            services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"));
 
             services.AddAutoMapper(typeof(Startup));
         }

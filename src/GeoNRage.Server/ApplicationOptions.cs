@@ -3,5 +3,9 @@
     public class ApplicationOptions
     {
         public bool CanRegister { get; set; }
+
+        public string GeoGuessrEmail { get; set; } = string.Empty;
+
+        public string GeoGuessrPassword { get; set; } = string.Empty;
     }
 }

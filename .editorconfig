@@ -179,6 +179,8 @@ dotnet_diagnostic.CA1003.severity = none
 
 dotnet_diagnostic.CA1716.severity = none
 
+dotnet_diagnostic.S1075.severity = none
+
 [Program.cs]
 dotnet_diagnostic.IDE1006.severity = none
 

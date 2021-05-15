@@ -1,0 +1,48 @@
+﻿@page "/admin/import"
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+<EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>
+        <label>
+            Lien :
+            <InputText @bind-Value="ChallengeImportDto.Link" />
+        </label>
+    </p>
+
+    <p>
+        <label>
+            Partie :
+            <InputSelect @bind-Value="SelectedGameId">
+                <option value="0">—</option>
+                <Repeater Items="@Games" Context="game">
+                    <option value="@game.Id">#@game.Id - @game.Name</option>
+                </Repeater>
+            </InputSelect>
+        </label>
+    </p>
+
+    <p>
+        <label>
+            Sauvegarder les données :
+            <InputCheckbox @bind-Value="ChallengeImportDto.PersistData" />
+        </label>
+    </p>
+
+    <p>
+        <button type="submit">Valider</button>
+    </p>
+</EditForm>
+
+<Container Condition="Result is not null && !DataImported">
+    <p>Import réussi !</p>
+    <p>Carte : @Result!.MapName</p>
+</Container>
+
+<Container Condition="Result is not null && DataImported">
+    <p>Ajout des données réussi !</p>
+    <a href="@NavigationManager.ToAbsoluteUri($"/games/{SelectedGameId}")">Voir la partie</a>
+</Container>

@@ -70,7 +70,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("{id}/addPlayer/{playerId}")]
+        [HttpPost("{id}/add-player/{playerId}")]
         public async Task<IActionResult> AddPlayerAsync(int id, string playerId)
         {
             await _gameService.AddPlayerAsync(id, playerId);
@@ -82,6 +82,15 @@ namespace GeoNRage.Server.Controllers
         {
             await _gameService.DeleteAsync(id);
             return NoContent();
+        }
+
+        [HttpPost("/api/games/{id}/import-challenge")]
+        public async Task<ActionResult<ChallengeDto>> ImportChallengeAsync(int id, ChallengeImportDto dto)
+        {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
+            Challenge challenge = await _gameService.ImportChallengeAsync(id, dto);
+            return _mapper.Map<Challenge, ChallengeDto>(challenge);
         }
     }
 }
