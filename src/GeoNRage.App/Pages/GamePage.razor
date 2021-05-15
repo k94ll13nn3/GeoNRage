@@ -41,7 +41,7 @@
                         @challenge.MapName
                         @if (!string.IsNullOrWhiteSpace(challenge.Link))
                         {
-                            <a href="@challenge.Link" target="_blank">(🔗)</a>
+                            <a href="@challenge.Link" target="_blank"> 🔗</a>
                         }
                     </th>
                     <Repeater Items="challenge.PlayerScores" Context="playerScore">
@@ -67,7 +67,7 @@
                 </Repeater>
 
                 <tr>
-                    <th>Total @challenge.MapName</th>
+                    <th>Total</th>
                     <Repeater Items="challenge.PlayerScores" Context="playerScore">
                         <td>@playerScore.Sum</td>
                     </Repeater>
@@ -78,7 +78,7 @@
 
             <Container Condition="Game.Challenges.Any()">
                 <tr class="bordered">
-                    <th>Total </th>
+                    <th>Total global</th>
                     <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
                         <td>@playerScores.Sum(playerScore => playerScore.Sum)</td>
                     </Repeater>

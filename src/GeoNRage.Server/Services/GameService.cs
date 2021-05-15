@@ -42,7 +42,7 @@ namespace GeoNRage.Server.Services
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<Game> CreateAsync(GameCreateDto dto)
+        public async Task<Game> CreateAsync(GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -63,7 +63,7 @@ namespace GeoNRage.Server.Services
             return game.Entity;
         }
 
-        public async Task<Game?> UpdateAsync(int id, GameEditDto dto)
+        public async Task<Game?> UpdateAsync(int id, GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -72,6 +72,28 @@ namespace GeoNRage.Server.Services
             {
                 game.Name = dto.Name;
                 game.Date = dto.Date;
+
+                IEnumerable<int> challengeIds = dto.Challenges.Select(x => x.Id).Where(id => id != 0);
+                game.Challenges = game.Challenges
+                    .Where(c => challengeIds.Contains(c.Id))
+                    .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
+                    {
+                        Link = x.Link,
+                        MapId = x.MapId,
+                        PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
+                    })).ToList();
+
+                foreach (Challenge challenge in game.Challenges)
+                {
+                    ChallengeCreateOrEditDto? modifiedChallenge = dto.Challenges.FirstOrDefault(c => c.Id == challenge.Id && challenge.Id != 0);
+                    if (modifiedChallenge is not null)
+                    {
+                        challenge.MapId = modifiedChallenge.MapId;
+                        challenge.Link = modifiedChallenge.Link;
+                    }
+                    challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
+                    challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
+                }
 
                 _context.Games.Update(game);
                 await _context.SaveChangesAsync();
@@ -88,11 +110,6 @@ namespace GeoNRage.Server.Services
                 .FirstOrDefaultAsync(g => g.Id == id);
             if (game is not null)
             {
-                if (game.Challenges.SelectMany(c => c.PlayerScores).Any(p => p.Round1 > 0 || p.Round2 > 0 || p.Round3 > 0 || p.Round4 > 0 || p.Round5 > 0))
-                {
-                    throw new InvalidOperationException("Cannot delete an ongoing game.");
-                }
-
                 _context.Games.Remove(game);
                 await _context.SaveChangesAsync();
             }

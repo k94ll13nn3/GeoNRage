@@ -32,7 +32,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public GameCreateDto Game { get; set; } = null!;
+        public GameCreateOrEditDto Game { get; set; } = null!;
 
         public int? SelectedGameId { get; set; }
 
@@ -42,10 +42,12 @@ namespace GeoNRage.App.Pages.Admin
         {
             ShowEditForm = true;
             GameDto gameToEdit = Games.First(m => m.Id == gameId);
-            Game = new GameCreateDto
+            Game = new GameCreateOrEditDto
             {
                 Name = gameToEdit.Name,
                 Date = gameToEdit.Date,
+                Challenges = gameToEdit.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link, MapId = c.MapId }).ToList(),
+                PlayerIds = gameToEdit.Players.Select(p => p.Id).ToList()
             };
 
             SelectedGameId = gameId;
@@ -93,7 +95,7 @@ namespace GeoNRage.App.Pages.Admin
         public void ShowGameCreation()
         {
             ShowEditForm = true;
-            Game = new GameCreateDto { Date = DateTime.Now };
+            Game = new GameCreateOrEditDto { Date = DateTime.Now };
         }
 
         protected override async Task OnInitializedAsync()

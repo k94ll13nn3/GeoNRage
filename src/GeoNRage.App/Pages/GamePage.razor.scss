@@ -19,9 +19,9 @@ table {
         text-overflow: ellipsis;
     }
 
-    th {
+    ::deep th {
         width: 100px;
-        max-width: 100px;
+        max-width: 200px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

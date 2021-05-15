@@ -49,7 +49,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<GameDto> CreateAsync(GameCreateDto dto)
+        public async Task<GameDto> CreateAsync(GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
             Game createdGame = await _gameService.CreateAsync(dto);
@@ -57,7 +57,7 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameEditDto dto)
+        public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
             Game? updatedGame = await _gameService.UpdateAsync(id, dto);

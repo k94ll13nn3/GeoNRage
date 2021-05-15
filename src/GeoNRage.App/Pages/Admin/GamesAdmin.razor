@@ -42,25 +42,46 @@
             <p>@Error</p>
         </Container>
 
-        <InputText id="name" @bind-Value="Game.Name" />
-        <InputDate id="date" @bind-Value="Game.Date" />
+        <p>
+            <label>
+                Nom :
+                <InputText @bind-Value="Game.Name" />
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Date :
+                <InputDate @bind-Value="Game.Date" />
+            </label>
+        </p>
 
         <hr />
+        <p>Challenges</p>
         <Repeater Items="@Game.Challenges" Context="challenge">
             <div>
-                <InputText @bind-Value="challenge.Link" />
-                <InputSelect @bind-Value="challenge.MapId">
-                    <option value="0">—</option>
-                    <Repeater Items="@Maps" Context="map">
-                        <option value="@map.Id">@map.Name</option>
-                    </Repeater>
-                </InputSelect>
-                <button @onclick="() => Game.Challenges.Remove(challenge)" type="button">X</button>
+                <p>
+                    <label>
+                        Lien :
+                        <InputText @bind-Value="challenge.Link" />
+                    </label>
+                    <label>
+                        Carte :
+                        <InputSelect @bind-Value="challenge.MapId">
+                            <option value="0">—</option>
+                            <Repeater Items="@Maps" Context="map">
+                                <option value="@map.Id">@map.Name</option>
+                            </Repeater>
+                        </InputSelect>
+                    </label>
+                    <button @onclick="() => Game.Challenges.Remove(challenge)" type="button">X</button>
+                </p>
             </div>
         </Repeater>
         <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto())" type="button">Ajouter carte</button>
 
         <hr />
+        <p>Joueurs</p>
         <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
 
         <button type="submit">Valider</button>
