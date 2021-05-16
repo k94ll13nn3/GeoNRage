@@ -39,7 +39,7 @@
                 <tr>
                     <th>
                         @challenge.MapName
-                        @if (!string.IsNullOrWhiteSpace(challenge.Link))
+                        @if (challenge.Link is not null)
                         {
                             <a href="@challenge.Link" target="_blank"> 🔗</a>
                         }

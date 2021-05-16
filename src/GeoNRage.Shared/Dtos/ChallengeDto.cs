@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GeoNRage.Shared.Dtos
 {
@@ -10,7 +11,7 @@ namespace GeoNRage.Shared.Dtos
 
         public string MapName { get; set; } = null!;
 
-        public string? Link { get; set; }
+        public Uri? Link { get; set; }
 
         public int GameId { get; set; }
 

@@ -18,8 +18,6 @@ namespace GeoNRage.App.Pages.Admin
 
         public int SelectedGameId { get; set; }
 
-        public string Link { get; set; } = string.Empty;
-
         public ChallengeImportDto ChallengeImportDto { get; set; } = new ChallengeImportDto();
 
         public ChallengeDto? Result { get; set; }

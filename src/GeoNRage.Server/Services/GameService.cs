@@ -66,7 +66,7 @@ namespace GeoNRage.Server.Services
                 CreationDate = DateTime.UtcNow,
                 Challenges = dto.Challenges.Select(x => new Challenge
                 {
-                    Link = x.Link,
+                    Link = x.Link is not null ? new Uri(x.Link) : null,
                     MapId = x.MapId,
                     PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
                 }).ToList()
@@ -91,7 +91,7 @@ namespace GeoNRage.Server.Services
                     .Where(c => challengeIds.Contains(c.Id))
                     .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
                     {
-                        Link = x.Link,
+                        Link = x.Link is not null ? new Uri(x.Link) : null,
                         MapId = x.MapId,
                         PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
                     })).ToList();
@@ -102,7 +102,7 @@ namespace GeoNRage.Server.Services
                     if (modifiedChallenge is not null)
                     {
                         challenge.MapId = modifiedChallenge.MapId;
-                        challenge.Link = modifiedChallenge.Link;
+                        challenge.Link = modifiedChallenge.Link is not null ? new Uri(modifiedChallenge.Link) : null;
                     }
                     challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
                     challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
@@ -251,7 +251,7 @@ namespace GeoNRage.Server.Services
                 GameId = id,
                 MapId = map.Id,
                 Map = map,
-                Link = dto.Link,
+                Link = new Uri(dto.Link),
                 PlayerScores = playerScores
             };
             if (dto.PersistData)

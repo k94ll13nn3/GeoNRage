@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GeoNRage.Server.Entities
 {
@@ -14,7 +15,7 @@ namespace GeoNRage.Server.Entities
 
         public Game Game { get; set; } = null!;
 
-        public string? Link { get; set; }
+        public Uri? Link { get; set; }
 
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
     }

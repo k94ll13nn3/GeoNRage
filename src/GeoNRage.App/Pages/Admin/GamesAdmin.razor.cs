@@ -46,7 +46,7 @@ namespace GeoNRage.App.Pages.Admin
             {
                 Name = gameToEdit.Name,
                 Date = gameToEdit.Date,
-                Challenges = gameToEdit.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link, MapId = c.MapId }).ToList(),
+                Challenges = gameToEdit.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link?.ToString(), MapId = c.MapId }).ToList(),
                 PlayerIds = gameToEdit.Players.Select(p => p.Id).ToList()
             };
 

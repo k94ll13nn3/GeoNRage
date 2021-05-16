@@ -9,6 +9,7 @@ namespace GeoNRage.Shared.Dtos
         [Required]
         public string MapId { get; set; } = null!;
 
+        [Url]
         public string? Link { get; set; }
     }
 }
