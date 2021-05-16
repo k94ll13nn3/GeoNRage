@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -23,6 +24,8 @@ namespace GeoNRage.Server.Services
 
         [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
         private readonly ApplicationOptions _options;
+
+        private readonly CookieContainer _cookieContainer;
 
         public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {
@@ -193,7 +196,12 @@ namespace GeoNRage.Server.Services
             }
 
             HttpClient client = _clientFactory.CreateClient("geoguessr");
-            await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin { Email = _options.GeoGuessrEmail, Password = _options.GeoGuessrPassword });
+
+            if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
+            {
+                await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin { Email = _options.GeoGuessrEmail, Password = _options.GeoGuessrPassword });
+            }
+
             string challengeId = new Uri(dto.Link).Segments[^1];
 
             var options = new JsonSerializerOptions

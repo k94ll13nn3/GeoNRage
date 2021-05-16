@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net;
 using System.Threading.Tasks;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
@@ -53,7 +55,17 @@ namespace GeoNRage.Server
             services.AddTransient<MapService>();
             services.AddTransient<PlayerService>();
 
-            services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"));
+            var cookieContainer = new CookieContainer();
+            services.AddSingleton(cookieContainer);
+
+            services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"))
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new HttpClientHandler()
+                    {
+                        CookieContainer = cookieContainer
+                    };
+                });
 
             services.AddAutoMapper(typeof(Startup));
         }
