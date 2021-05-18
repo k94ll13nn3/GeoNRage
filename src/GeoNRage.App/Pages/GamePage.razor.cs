@@ -131,9 +131,9 @@ namespace GeoNRage.App.Pages
             StateHasChanged();
         }
 
-        private async Task SendAsync(int challengeId, string playerId, int round, int score)
+        private async Task SendAsync(int challengeId, string playerId, int round, int? score)
         {
-            int clampedValue = Math.Clamp(score, 0, 5000);
+            int clampedValue = Math.Clamp(score ?? 0, 0, 5000);
             await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, playerId, round, clampedValue);
             await HandleReceiveValueAsync(challengeId, playerId, round, clampedValue);
         }

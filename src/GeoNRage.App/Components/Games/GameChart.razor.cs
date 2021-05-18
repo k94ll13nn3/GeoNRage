@@ -116,7 +116,7 @@ namespace GeoNRage.App.Components.Games
         {
             int sum = 0;
             var scores = new List<int> { 0 };
-            var values = new List<int>();
+            var values = new List<int?>();
             foreach (ChallengeDto challenge in Game.Challenges)
             {
                 for (int i = 0; i < 5; i++)
@@ -125,9 +125,9 @@ namespace GeoNRage.App.Components.Games
                 }
             }
 
-            foreach (int score in values.TakeWhile(x => x > 0))
+            foreach (int? score in values.TakeWhile(x => x is not null))
             {
-                sum += score;
+                sum += score ?? 0;
                 scores.Add(sum);
             }
 

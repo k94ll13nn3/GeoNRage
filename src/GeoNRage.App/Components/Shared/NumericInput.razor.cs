@@ -4,9 +4,9 @@ namespace GeoNRage.App.Components.Shared
 {
     public partial class NumericInput
     {
-        private int _value;
+        private int? _value;
 
-        public int Value
+        public int? Value
         {
             get => _value;
             set
@@ -17,13 +17,13 @@ namespace GeoNRage.App.Components.Shared
         }
 
         [Parameter]
-        public int InitialValue { get; set; }
+        public int? InitialValue { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
 
         [Parameter]
-        public EventCallback<int> ValueChanged { get; set; }
+        public EventCallback<int?> ValueChanged { get; set; }
 
         [Parameter]
         public string Class { get; set; } = string.Empty;

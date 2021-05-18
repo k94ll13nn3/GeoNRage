@@ -9,7 +9,7 @@ namespace GeoNRage.Shared.Dtos
 
         public ICollection<PlayerDto> Players { get; set; } = new HashSet<PlayerDto>();
 
-        public int this[int challengeId, string playerId, int round]
+        public int? this[int challengeId, string playerId, int round]
         {
             get
             {
@@ -20,7 +20,7 @@ namespace GeoNRage.Shared.Dtos
                 }
                 else
                 {
-                    return 0;
+                    return null;
                 }
             }
 
