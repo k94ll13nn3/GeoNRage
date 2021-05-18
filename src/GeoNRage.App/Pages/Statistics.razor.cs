@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
@@ -17,6 +18,9 @@ namespace GeoNRage.App.Pages
 
         [Inject]
         public IMapsApi MapsApi { get; set; } = null!;
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; } = null!;
 
         public IEnumerable<PlayerDto> Players { get; set; } = Enumerable.Empty<PlayerDto>();
 

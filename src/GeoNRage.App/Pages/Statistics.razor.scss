@@ -1,16 +1,14 @@
 ﻿table {
     td {
-        width: 150px;
-        max-width: none;
-        white-space: nowrap;
+        width: none;
+        max-width: 120px;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     th {
-        width: 150px;
-        max-width: none;
-        white-space: nowrap;
+        width: none;
+        max-width: 120px;
         overflow: hidden;
         text-overflow: ellipsis;
     }

@@ -33,13 +33,13 @@
                         @{
                             List<(ChallengeDto challenge, PlayerScoreDto score)> results = ScoresByPlayer[player.Id].GroupBy(p => p.challenge.GameId).OrderByDescending(g => g.Select(p => p.score.Sum).Sum()).First().ToList();
                         }
-                        @results.First().challenge.GameName (@results.Select(p => p.score.Sum).Sum())
+                        @results.Select(p => p.score.Sum).Sum() (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().challenge.GameId}")">#@results.First().challenge.GameId</a>)
                     </td>
                     <td>
                         @{
                             (ChallengeDto challenge, PlayerScoreDto score) = ScoresByPlayer[player.Id].OrderByDescending(p => p.score.Sum).First();
                         }
-                        @score.Sum (@challenge.GameName - @challenge.MapName)
+                        @score.Sum — @challenge.MapName (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().challenge.GameId}")">#@results.First().challenge.GameId</a>)
                     </td>
                     <Repeater Items="Maps" Context="map">
                         <td>
