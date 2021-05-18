@@ -1,4 +1,6 @@
-﻿namespace GeoNRage.Shared.Dtos
+﻿using System.Collections.Generic;
+
+namespace GeoNRage.Shared.Dtos
 {
     public class PlayerScoreDto
     {
@@ -17,5 +19,7 @@
         public int Round5 { get; set; }
 
         public int Sum => Round1 + Round2 + Round3 + Round4 + Round5;
+
+        public IReadOnlyList<int> Rounds => new[] { Round1, Round2, Round3, Round4, Round5 };
     }
 }

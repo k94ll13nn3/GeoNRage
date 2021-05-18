@@ -14,17 +14,9 @@ namespace GeoNRage.Shared.Dtos
             get
             {
                 PlayerScoreDto? playerScore = Challenges.FirstOrDefault(c => c.Id == challengeId)?.PlayerScores.FirstOrDefault(p => p.PlayerId == playerId);
-                if (playerScore is not null)
+                if (playerScore is not null && round >= 1 && round <= playerScore.Rounds.Count)
                 {
-                    return round switch
-                    {
-                        1 => playerScore.Round1,
-                        2 => playerScore.Round2,
-                        3 => playerScore.Round3,
-                        4 => playerScore.Round4,
-                        5 => playerScore.Round5,
-                        _ => 0,
-                    };
+                    return playerScore.Rounds[round - 1];
                 }
                 else
                 {

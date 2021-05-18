@@ -21,6 +21,7 @@ namespace GeoNRage.App
             builder.Services.AddRefitClient<IMapsApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddRefitClient<IPlayersApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddRefitClient<IAuthApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddRefitClient<IChallengesApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();

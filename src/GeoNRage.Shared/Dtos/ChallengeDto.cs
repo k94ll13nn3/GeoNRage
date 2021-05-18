@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GeoNRage.Shared.Dtos
 {
@@ -15,6 +16,10 @@ namespace GeoNRage.Shared.Dtos
 
         public int GameId { get; set; }
 
+        public string GameName { get; set; } = null!;
+
         public ICollection<PlayerScoreDto> PlayerScores { get; set; } = new HashSet<PlayerScoreDto>();
+
+        public PlayerScoreDto? this[string playerId] => PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
     }
 }
