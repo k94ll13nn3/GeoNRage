@@ -46,10 +46,10 @@
                             @{
                                 (ChallengeDto? challenge, PlayerScoreDto? score) = ScoresByPlayer[player.Id].Where(c => c.challenge.MapId == map.Id).OrderByDescending(p => p.score.Sum).FirstOrDefault();
                             }
-                            <Container Condition="challenge is not null">
+                            <Container Condition="score?.Sum is not null">
                                 @score.Sum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
                             </Container>
-                            <Container Condition="challenge is null">
+                            <Container Condition="score?.Sum is null">
                                 —
                             </Container>
                         </td>

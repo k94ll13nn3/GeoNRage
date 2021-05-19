@@ -19,7 +19,7 @@ namespace GeoNRage.Shared.Dtos
 
         public int? Round5 { get; set; }
 
-        public int Sum => Rounds.Sum() ?? 0;
+        public int? Sum => Rounds.Any(r => r is not null) ? Rounds.Sum() : null;
 
         public IReadOnlyList<int?> Rounds => new[] { Round1, Round2, Round3, Round4, Round5 };
     }
