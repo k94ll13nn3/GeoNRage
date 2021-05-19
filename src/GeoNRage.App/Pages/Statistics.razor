@@ -44,9 +44,14 @@
                     <Repeater Items="Maps" Context="map">
                         <td>
                             @{
-                                (ChallengeDto challenge, PlayerScoreDto score) = ScoresByPlayer[player.Id].Where(c => c.challenge.MapId == map.Id).OrderByDescending(p => p.score.Sum).First();
+                                (ChallengeDto? challenge, PlayerScoreDto? score) = ScoresByPlayer[player.Id].Where(c => c.challenge.MapId == map.Id).OrderByDescending(p => p.score.Sum).FirstOrDefault();
                             }
-                            @score.Sum
+                            <Container Condition="challenge is not null">
+                                @score.Sum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
+                            </Container>
+                            <Container Condition="challenge is null">
+                                —
+                            </Container>
                         </td>
                     </Repeater>
                 </tr>
@@ -54,5 +59,3 @@
         </tbody>
     </table>
 </Container>
-
-
