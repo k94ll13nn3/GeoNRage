@@ -256,8 +256,29 @@ namespace GeoNRage.Server.Services
             };
             if (dto.PersistData)
             {
-                game.Challenges.Add(challenge);
+                if (dto.OverrideData)
+                {
+                    Challenge existingChallenge = game.Challenges.Single(c => c.Link == new Uri(dto.Link));
+                    existingChallenge.PlayerScores = challenge.PlayerScores;
+                    existingChallenge.MapId = challenge.MapId;
+                }
+                else
+                {
+                    game.Challenges.Add(challenge);
+                }
+
                 await _context.SaveChangesAsync();
+
+                game = await GetAsync(id);
+                var createDto = new GameCreateOrEditDto
+                {
+                    Name = game!.Name,
+                    Date = game.Date,
+                    Challenges = game.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link?.ToString(), MapId = c.MapId }).ToList(),
+                    PlayerIds = game.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
+                };
+
+                await UpdateAsync(id, createDto);
             }
 
             // Cutting the relations to avoid cycles in JSON.

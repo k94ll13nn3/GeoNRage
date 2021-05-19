@@ -10,5 +10,8 @@ namespace GeoNRage.Shared.Dtos
 
         [Required]
         public bool PersistData { get; set; }
+
+        [Required]
+        public bool OverrideData { get; set; }
     }
 }

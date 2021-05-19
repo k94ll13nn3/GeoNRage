@@ -21,7 +21,7 @@
                     <td>@game.Name</td>
                     <td>@game.Date.ToShortDateString()</td>
                     <td>@(new MarkupString(string.Join("<br />", game.Challenges.Select(c => c.MapName))))</td>
-                    <td>@(new MarkupString(string.Join("<br />", game.Challenges.FirstOrDefault()?.PlayerScores.Select(p => p.PlayerName) ?? new string[] { })))</td>
+                    <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name) ?? new string[] { })))</td>
                     <td>
                         <button @onclick="(() => EditGame(game.Id))">Editer</button>
                         <button @onclick="(() => DeleteGameAsync(game.Id))">Supprimer</button>

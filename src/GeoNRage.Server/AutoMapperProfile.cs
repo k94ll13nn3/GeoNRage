@@ -12,7 +12,10 @@ namespace GeoNRage.Server
             CreateMap<Map, MapDto>();
             CreateMap<Player, PlayerDto>();
             CreateMap<Game, GameDto>()
-                .ForMember(dest => dest.Players, opt => opt.MapFrom(src => src.Challenges.Count > 0 ? src.Challenges.First().PlayerScores.Select(p => p.Player) : Enumerable.Empty<Player>()));
+                .ForMember(dest => dest.Players, opt => opt.MapFrom(src =>
+                    src.Challenges.Count > 0 ?
+                    src.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.Player).Distinct() :
+                    Enumerable.Empty<Player>()));
             CreateMap<Game, GameLightDto>();
             CreateMap<Challenge, ChallengeDto>()
                 .ForMember(dest => dest.GameName, opt => opt.MapFrom(src => src.Game.Name))
