@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
@@ -26,7 +25,7 @@ namespace GeoNRage.App.Pages
 
         public IEnumerable<MapDto> Maps { get; set; } = Enumerable.Empty<MapDto>();
 
-        public IDictionary<string, List<(ChallengeDto challenge, PlayerScoreDto score)>> ScoresByPlayer { get; private set; } = null!;
+        public Dictionary<string, List<(ChallengeDto challenge, PlayerScoreDto score)>> ScoresByPlayer { get; private set; } = new();
 
         protected override async Task OnInitializedAsync()
         {

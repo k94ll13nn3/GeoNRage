@@ -13,7 +13,7 @@
                 <th rowspan="2">Joueur</th>
                 <th rowspan="2">Nombre de 5000</th>
                 <th rowspan="2">Nombre de 4999 😏</th>
-                <th rowspan="2">Meilleure partie</th>
+                <th rowspan="2">Meilleure partie (<span title="Seules les 3 premières cartes comptent" style="cursor:help">?</span>)</th>
                 <th rowspan="2">Meilleure carte</th>
                 <th colspan="@Maps.Count()">Carte par carte</th>
             </tr>
@@ -31,7 +31,7 @@
                     <td>@ScoresByPlayer[player.Id].SelectMany(p => p.score.Rounds).Count(s => s == 4999)</td>
                     <td>
                         @{
-                            List<(ChallengeDto challenge, PlayerScoreDto score)> results = ScoresByPlayer[player.Id].GroupBy(p => p.challenge.GameId).OrderByDescending(g => g.Select(p => p.score.Sum).Sum()).First().ToList();
+                            List<(ChallengeDto challenge, PlayerScoreDto score)> results = ScoresByPlayer[player.Id].GroupBy(p => p.challenge.GameId).OrderByDescending(g => g.OrderBy(c => c.challenge.Id).Take(3).Select(p => p.score.Sum).Sum()).First().OrderBy(c => c.challenge.Id).Take(3).ToList();
                         }
                         @results.Select(p => p.score.Sum).Sum() (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().challenge.GameId}")">#@results.First().challenge.GameId</a>)
                     </td>
