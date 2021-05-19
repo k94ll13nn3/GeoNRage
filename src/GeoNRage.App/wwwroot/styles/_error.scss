@@ -10,10 +10,15 @@
     z-index: 1000;
     color: black;
 
-    .dismiss {
+    & > .dismiss {
         cursor: pointer;
         position: absolute;
-        right: 0.75rem;
+        right: 3rem;
         top: 0.5rem;
+    }
+
+    & > .reload {
+        margin-left: 10px;
+        color: dodgerblue;
     }
 }
