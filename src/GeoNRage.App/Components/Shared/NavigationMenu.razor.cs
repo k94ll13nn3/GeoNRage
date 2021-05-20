@@ -23,6 +23,8 @@ namespace GeoNRage.App.Components.Shared
         [Inject]
         public IJSRuntime JsRuntime { get; set; } = null!;
 
+        public string SelectedTheme { get; set; } = "basic";
+
         protected override async Task OnParametersSetAsync()
         {
             IIdentity? identity = (await AuthenticationState).User.Identity;
@@ -35,7 +37,8 @@ namespace GeoNRage.App.Components.Shared
         {
             string? theme = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
             IJSObjectReference module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/utils.js");
-            await module.InvokeVoidAsync("changeTheme", theme ?? "basic");
+            SelectedTheme = theme ?? "basic";
+            await module.InvokeVoidAsync("changeTheme", SelectedTheme);
         }
 
         private async Task LogoutClickAsync()
