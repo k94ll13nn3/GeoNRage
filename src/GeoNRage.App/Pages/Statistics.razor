@@ -39,7 +39,7 @@
                         @{
                             (ChallengeDto challenge, PlayerScoreDto score) = ScoresByPlayer[player.Id].OrderByDescending(p => p.score.Sum).First();
                         }
-                        @score.Sum — @challenge.MapName (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().challenge.GameId}")">#@results.First().challenge.GameId</a>)
+                        @score.Sum — @challenge.MapName (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
                     </td>
                     <Repeater Items="Maps" Context="map">
                         <td>
