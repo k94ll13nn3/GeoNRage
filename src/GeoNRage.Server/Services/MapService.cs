@@ -36,6 +36,7 @@ namespace GeoNRage.Server.Services
         public async Task<Map?> UpdateAsync(string id, MapEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
             Map? map = await _context.Maps.FindAsync(id);
             if (map is not null)
             {
@@ -50,7 +51,7 @@ namespace GeoNRage.Server.Services
 
         public async Task DeleteAsync(string id)
         {
-            Map? map = await _context.Maps.FirstAsync(m => m.Id == id);
+            Map? map = await _context.Maps.FindAsync(id);
             if (map is not null)
             {
                 if (await _context.Challenges.AnyAsync(c => c.MapId == id))

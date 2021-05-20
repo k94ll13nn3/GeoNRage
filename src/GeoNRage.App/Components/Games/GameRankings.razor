@@ -14,14 +14,14 @@
             <tr>
                 <th>@challenge.MapName</th>
                 <Repeater Items="challenge.PlayerScores.Select(p => (name: p.PlayerName, score: p.Sum)).OrderByDescending(p => p.score)" Context="player">
-                    <td>@player.name (@player.score) </td>
+                    <td>@player.name (@(player.score ?? 0))</td>
                 </Repeater>
             </tr>
         </Repeater>
         <tr>
             <th>Général</th>
             <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(c => c.PlayerId).Select(p => (name: p.First().PlayerName, score: p.Sum(ps => ps.Sum))).OrderByDescending(p => p.score)" Context="player">
-                <td>@player.name (@player.score) </td>
+                <td>@player.name (@player.score)</td>
             </Repeater>
         </tr>
     </tbody>

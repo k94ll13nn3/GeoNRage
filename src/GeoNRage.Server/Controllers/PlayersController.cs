@@ -52,8 +52,15 @@ namespace GeoNRage.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            await _playerService.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+                await _playerService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

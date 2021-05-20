@@ -69,7 +69,7 @@
                 <tr>
                     <th>Total</th>
                     <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                        <td>@playerScore.Sum</td>
+                        <td>@(playerScore.Sum ?? 0)</td>
                     </Repeater>
                 </tr>
             </Repeater>

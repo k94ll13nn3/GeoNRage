@@ -70,7 +70,7 @@ namespace GeoNRage.Server.Controllers
             try
             {
                 Game? updatedGame = await _gameService.UpdateAsync(id, dto);
-                if (updatedGame == null)
+                if (updatedGame is null)
                 {
                     return NotFound();
                 }
@@ -85,10 +85,22 @@ namespace GeoNRage.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("{id}/add-player/{playerId}")]
-        public async Task<IActionResult> AddPlayerAsync(int id, string playerId)
+        public async Task<ActionResult<GameDto>> AddPlayerAsync(int id, string playerId)
         {
-            await _gameService.AddPlayerAsync(id, playerId);
-            return NoContent();
+            try
+            {
+                Game? updatedGame = await _gameService.AddPlayerAsync(id, playerId);
+                if (updatedGame is null)
+                {
+                    return NotFound();
+                }
+
+                return _mapper.Map<Game, GameDto>(updatedGame);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete("{id}")]
@@ -105,7 +117,12 @@ namespace GeoNRage.Server.Controllers
 
             try
             {
-                Challenge challenge = await _gameService.ImportChallengeAsync(id, dto);
+                Challenge? challenge = await _gameService.ImportChallengeAsync(id, dto);
+                if (challenge is null)
+                {
+                    return NotFound();
+                }
+
                 return _mapper.Map<Challenge, ChallengeDto>(challenge);
             }
             catch (InvalidOperationException e)

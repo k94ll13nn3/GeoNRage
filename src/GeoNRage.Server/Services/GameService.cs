@@ -71,6 +71,12 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more maps do not exists.");
             }
 
+            IEnumerable<string> playerIds = dto.PlayerIds;
+            if (playerIds.Except(_context.Players.Select(c => c.Id).AsEnumerable()).Any())
+            {
+                throw new InvalidOperationException("One or more players do not exists.");
+            }
+
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
                 Name = dto.Name,
@@ -103,6 +109,12 @@ namespace GeoNRage.Server.Services
             if (_context.Challenges.Select(c => c.Link).AsEnumerable().Intersect(links).Any())
             {
                 throw new InvalidOperationException("One or more challenge links are already registered.");
+            }
+
+            IEnumerable<string> playerIds = dto.PlayerIds;
+            if (playerIds.Except(_context.Players.Select(c => c.Id).AsEnumerable()).Any())
+            {
+                throw new InvalidOperationException("One or more players do not exists.");
             }
 
             Game? game = await GetAsync(id);
@@ -153,24 +165,27 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task AddPlayerAsync(int gameId, string playerId)
+        public async Task<Game?> AddPlayerAsync(int gameId, string playerId)
         {
             Game? game = await GetAsync(gameId);
             if (game is not null)
             {
+                if (!await _context.Players.AnyAsync(p => p.Id == playerId))
+                {
+                    throw new InvalidOperationException($"No player with id '{playerId}' exists");
+                }
+
                 foreach (Challenge challenge in game.Challenges)
                 {
-                    if (!challenge.PlayerScores.Select(p => p.PlayerId).Contains(playerId) && await _context.Players.AnyAsync(p => p.Id == playerId))
+                    if (!challenge.PlayerScores.Select(p => p.PlayerId).Contains(playerId))
                     {
                         challenge.PlayerScores.Add(new PlayerScore { PlayerId = playerId });
                         await _context.SaveChangesAsync();
                     }
                 }
             }
-            else
-            {
-                throw new InvalidOperationException("Game not found.");
-            }
+
+            return game;
         }
 
         public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
@@ -210,14 +225,14 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task<Challenge> ImportChallengeAsync(int id, ChallengeImportDto dto)
+        public async Task<Challenge?> ImportChallengeAsync(int id, ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
             Game? game = await GetAsync(id);
             if (game == null)
             {
-                throw new InvalidOperationException("Game not found.");
+                return null;
             }
 
             HttpClient client = _clientFactory.CreateClient("geoguessr");
@@ -281,14 +296,30 @@ namespace GeoNRage.Server.Services
             };
             if (dto.PersistData)
             {
+                Challenge? existingChallenge = await _context.Challenges.SingleOrDefaultAsync(c => c.Link == new Uri(dto.Link));
                 if (dto.OverrideData)
                 {
-                    Challenge existingChallenge = game.Challenges.Single(c => c.Link == new Uri(dto.Link));
-                    existingChallenge.PlayerScores = challenge.PlayerScores;
-                    existingChallenge.MapId = challenge.MapId;
+                    if (existingChallenge is not null)
+                    {
+                        if (existingChallenge.GameId != id)
+                        {
+                            throw new InvalidOperationException($"The challenge with link '{dto.Link}' is not associated to game '{id}'.");
+                        }
+                        existingChallenge.PlayerScores = challenge.PlayerScores;
+                        existingChallenge.MapId = challenge.MapId;
+                    }
+                    else
+                    {
+                        game.Challenges.Add(challenge);
+                    }
                 }
                 else
                 {
+                    if (existingChallenge is not null)
+                    {
+                        throw new InvalidOperationException($"The challenge with link '{dto.Link}' already exists.");
+                    }
+
                     game.Challenges.Add(challenge);
                 }
 
