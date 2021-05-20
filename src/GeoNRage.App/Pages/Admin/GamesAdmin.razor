@@ -64,11 +64,11 @@
                     <label>
                         Lien :
                         <InputText @bind-Value="challenge.Link" />
+                        <button @onclick="() => challenge.Link = null" type="button">X</button>
                     </label>
                     <label>
                         Carte :
                         <InputSelect @bind-Value="challenge.MapId">
-                            <option value="0">—</option>
                             <Repeater Items="@Maps" Context="map">
                                 <option value="@map.Id">@map.Name</option>
                             </Repeater>
@@ -78,7 +78,7 @@
                 </p>
             </div>
         </Repeater>
-        <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto())" type="button">Ajouter carte</button>
+        <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button">Ajouter carte</button>
 
         <hr />
         <p>Joueurs</p>

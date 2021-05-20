@@ -59,6 +59,18 @@ namespace GeoNRage.Server.Services
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
+            IEnumerable<Uri> links = dto.Challenges.Where(c => c.Link is not null).Select(c => new Uri(c.Link!));
+            if (_context.Challenges.Select(c => c.Link).AsEnumerable().Intersect(links).Any())
+            {
+                throw new InvalidOperationException("One or more challenge links are already registered.");
+            }
+
+            IEnumerable<string> mapIds = dto.Challenges.Select(c => c.MapId);
+            if (mapIds.Except(_context.Maps.Select(c => c.Id).AsEnumerable()).Any())
+            {
+                throw new InvalidOperationException("One or more maps do not exists.");
+            }
+
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
                 Name = dto.Name,
@@ -79,6 +91,19 @@ namespace GeoNRage.Server.Services
         public async Task<Game?> UpdateAsync(int id, GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
+            IEnumerable<string> mapIds = dto.Challenges.Select(c => c.MapId);
+            if (mapIds.Except(_context.Maps.Select(c => c.Id).AsEnumerable()).Any())
+            {
+                throw new InvalidOperationException("One or more maps do not exists.");
+            }
+
+            // Check challenge link for new challenges only.
+            IEnumerable<Uri> links = dto.Challenges.Where(c => c.Id == 0 && c.Link is not null).Select(c => new Uri(c.Link!));
+            if (_context.Challenges.Select(c => c.Link).AsEnumerable().Intersect(links).Any())
+            {
+                throw new InvalidOperationException("One or more challenge links are already registered.");
+            }
 
             Game? game = await GetAsync(id);
             if (game is not null)

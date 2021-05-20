@@ -84,11 +84,11 @@ namespace GeoNRage.App.Pages.Admin
             }
             catch (ValidationApiException e)
             {
-                Error = e.Content?.Title;
+                Error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
             }
             catch (ApiException e)
             {
-                Error = e.Message;
+                Error = e.Content;
             }
         }
 

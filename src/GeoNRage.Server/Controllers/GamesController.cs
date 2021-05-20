@@ -49,24 +49,38 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<GameDto> CreateAsync(GameCreateOrEditDto dto)
+        public async Task<ActionResult<GameDto>> CreateAsync(GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            Game createdGame = await _gameService.CreateAsync(dto);
-            return _mapper.Map<Game, GameDto>(createdGame);
+            try
+            {
+                Game createdGame = await _gameService.CreateAsync(dto);
+                return _mapper.Map<Game, GameDto>(createdGame);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("{id}")]
         public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            Game? updatedGame = await _gameService.UpdateAsync(id, dto);
-            if (updatedGame == null)
+            try
             {
-                return NotFound();
-            }
+                Game? updatedGame = await _gameService.UpdateAsync(id, dto);
+                if (updatedGame == null)
+                {
+                    return NotFound();
+                }
 
-            return _mapper.Map<Game, GameDto>(updatedGame);
+                return _mapper.Map<Game, GameDto>(updatedGame);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [AllowAnonymous]
@@ -89,8 +103,15 @@ namespace GeoNRage.Server.Controllers
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
-            Challenge challenge = await _gameService.ImportChallengeAsync(id, dto);
-            return _mapper.Map<Challenge, ChallengeDto>(challenge);
+            try
+            {
+                Challenge challenge = await _gameService.ImportChallengeAsync(id, dto);
+                return _mapper.Map<Challenge, ChallengeDto>(challenge);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
