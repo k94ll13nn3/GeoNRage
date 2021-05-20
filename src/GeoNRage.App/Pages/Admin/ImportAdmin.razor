@@ -5,6 +5,9 @@
 <EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+        <p>@Error</p>
+    </Container>
 
     <p>
         <label>
@@ -17,7 +20,6 @@
         <label>
             Partie :
             <InputSelect @bind-Value="SelectedGameId">
-                <option value="0">—</option>
                 <Repeater Items="@Games" Context="game">
                     <option value="@game.Id">#@game.Id - @game.Name</option>
                 </Repeater>

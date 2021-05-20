@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
+using Refit;
 
 namespace GeoNRage.App.Pages.Admin
 {
@@ -24,16 +27,31 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool DataImported { get; set; }
 
+        public string? Error { get; set; }
+
         public async Task ImportAsync()
         {
-            Result = null;
-            Result = await GamesApi.ImportChallengeAsync(SelectedGameId, ChallengeImportDto);
-            DataImported = ChallengeImportDto.PersistData;
+            try
+            {
+                Error = null;
+                Result = null;
+                Result = await GamesApi.ImportChallengeAsync(SelectedGameId, ChallengeImportDto);
+                DataImported = ChallengeImportDto.PersistData;
+            }
+            catch (ValidationApiException e)
+            {
+                Error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
+            }
+            catch (ApiException e)
+            {
+                Error = e.Content;
+            }
         }
 
         protected override async Task OnInitializedAsync()
         {
             Games = await GamesApi.GetAllAsync();
+            SelectedGameId = Games.First().Id;
         }
     }
 }
