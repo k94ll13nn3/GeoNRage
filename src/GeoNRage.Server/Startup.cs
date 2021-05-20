@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
@@ -16,25 +16,22 @@ using Microsoft.Extensions.Hosting;
 
 namespace GeoNRage.Server
 {
-    public class Startup
+    [AutoConstructor]
+    public partial class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ApplicationOptions>(Configuration.GetSection(nameof(ApplicationOptions)));
+            services.Configure<ApplicationOptions>(_configuration.GetSection(nameof(ApplicationOptions)));
 
             services.AddSignalR();
             services.AddControllers();
             services.AddRazorPages();
             services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
 
-            string connectionString = Configuration.GetConnectionString("GeoNRageConnection");
+            string connectionString = _configuration.GetConnectionString("GeoNRageConnection");
             services.AddDbContextPool<GeoNRageDbContext>(options => options.UseMySql(
                 connectionString,
                 ServerVersion.AutoDetect(connectionString)));
@@ -69,9 +66,14 @@ namespace GeoNRage.Server
                 });
 
             services.AddAutoMapper(typeof(Startup));
+
+            if (_env.IsDevelopment())
+            {
+                services.AddSwaggerGen();
+            }
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, GeoNRageDbContext context)
+        public void Configure(IApplicationBuilder app, GeoNRageDbContext context)
         {
             _ = context ?? throw new System.ArgumentNullException(nameof(context));
 
@@ -79,10 +81,12 @@ namespace GeoNRage.Server
 
             app.UseResponseCompression();
 
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API"));
             }
             else
             {
