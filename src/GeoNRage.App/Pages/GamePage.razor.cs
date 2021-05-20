@@ -143,7 +143,7 @@ namespace GeoNRage.App.Pages
             if (Game is not null && SelectedPlayerId is not null)
             {
                 await GamesApi.AddPlayerAsync(Game.Id, SelectedPlayerId);
-                NavigationManager.NavigateTo(NavigationManager.Uri, true);
+                await ReloadPageAsync();
             }
         }
     }

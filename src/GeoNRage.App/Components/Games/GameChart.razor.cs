@@ -15,6 +15,20 @@ namespace GeoNRage.App.Components.Games
 {
     public partial class GameChart
     {
+        private readonly List<Color> _colors = new()
+        {
+            Color.Aqua,
+            Color.BlueViolet,
+            Color.Chartreuse,
+            Color.DarkGoldenrod,
+            Color.DarkOrange,
+            Color.HotPink,
+            Color.Lime,
+            Color.RoyalBlue,
+            Color.Salmon,
+            Color.Snow,
+        };
+
         public LineConfig PlotConfig { get; set; } = new LineConfig
         {
             Options = new LineOptions
@@ -84,30 +98,17 @@ namespace GeoNRage.App.Components.Games
                 PlotConfig.Data.Labels.Add(item);
             }
 
-            var colors = new List<Color>()
-            {
-                Color.FromArgb(255, 99, 132),
-                Color.FromArgb(255, 159, 64),
-                Color.FromArgb(255, 205, 86),
-                Color.FromArgb(75, 192, 192),
-                Color.FromArgb(54, 162, 235),
-                Color.FromArgb(153, 102, 255),
-                Color.FromArgb(201, 203, 207)
-            };
-
-            int colorIndex = 0;
             foreach (PlayerDto player in Game.Players)
             {
                 IDataset<int> dataset = new LineDataset<int>()
                 {
                     Label = player.Name,
-                    BackgroundColor = ColorUtil.FromDrawingColor(colors[colorIndex % colors.Count]),
-                    BorderColor = ColorUtil.FromDrawingColor(colors[colorIndex % colors.Count]),
+                    BackgroundColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
+                    BorderColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
                     Fill = FillingMode.Disabled
                 };
 
                 PlotConfig.Data.Datasets.Add(dataset);
-                colorIndex++;
                 UpdatePlot(player);
             }
         }
@@ -131,7 +132,18 @@ namespace GeoNRage.App.Components.Games
                 scores.Add(sum);
             }
 
-            Dataset<int> dataset = (PlotConfig.Data.Datasets.First(x => (x as LineDataset<int>)?.Label == player.Name) as Dataset<int>)!;
+            if (PlotConfig.Data.Datasets.FirstOrDefault(x => (x as LineDataset<int>)?.Label == player.Name) is not Dataset<int> dataset)
+            {
+                dataset = new LineDataset<int>()
+                {
+                    Label = player.Name,
+                    BackgroundColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
+                    BorderColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
+                    Fill = FillingMode.Disabled
+                };
+
+                PlotConfig.Data.Datasets.Add(dataset);
+            }
             dataset.Clear();
             dataset.AddRange(scores);
         }
