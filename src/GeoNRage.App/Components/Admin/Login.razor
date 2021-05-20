@@ -3,7 +3,11 @@
         <InputText id="inputUsername" @bind-Value="LoginRequest.UserName" placeholder="Username" class="text-box" />
         <InputText type="password" id="inputPassword" @bind-Value="LoginRequest.Password" class="text-box" placeholder="Password" />
 
-        @*<InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginRequest.RememberMe" />*@
+        <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginRequest.RememberMe" />
+
+        <Container Condition="ShowError">
+            <span title="@Error">⚠️</span>
+        </Container>
 
         <button type="submit">Connexion</button>
     </EditForm>
