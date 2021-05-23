@@ -9,5 +9,8 @@ namespace GeoNRage.App.Components.Shared
 
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
+
+        [Parameter]
+        public RenderFragment? ElseContent { get; set; }
     }
 }

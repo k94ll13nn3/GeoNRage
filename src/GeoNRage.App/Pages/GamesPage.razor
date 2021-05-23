@@ -1,7 +1,40 @@
 ﻿@page "/games"
 
-<ul>
-    <Repeater Items="Games" Context="game">
-        <li><a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">@game.Name (@game.Date.ToShortDateString())</a></li>
-    </Repeater>
-</ul>
+<Container Condition="Games?.Any() == true">
+    <ChildContent>
+        <div class="container mt-1">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nom</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Repeater Items="Games" Context="game">
+                        <tr>
+                            <th>@game.Id</th>
+                            <td>@game.Name</td>
+                            <td>@game.Date.ToShortDateString()</td>
+                            <td>
+                                <a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </span>
+                                </a>
+                            </td>
+                        </tr>
+                    </Repeater>
+                </tbody>
+            </table>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des parties...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>
