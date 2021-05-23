@@ -45,3 +45,12 @@ table {
 .action-button {
     color: t.$text;
 }
+
+.error-alert {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    margin-bottom: 0px !important;
+    border-radius: 0px !important;
+    z-index: 100;
+}

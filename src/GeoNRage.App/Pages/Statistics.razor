@@ -7,55 +7,57 @@
 </Container>
 
 <Container Condition="ScoresByPlayer?.Any() == true">
-    <table>
-        <thead>
-            <tr>
-                <th rowspan="2">Joueur</th>
-                <th rowspan="2">Nombre de 5000</th>
-                <th rowspan="2">Nombre de 4999 😏</th>
-                <th rowspan="2">Meilleure partie (<span title="Seules les 3 premières cartes comptent" style="cursor:help">?</span>)</th>
-                <th rowspan="2">Meilleure carte</th>
-                <th colspan="@Maps.Count()">Carte par carte</th>
-            </tr>
-            <tr>
-                <Repeater Items="Maps" Context="map">
-                    <th>@map.Name</th>
-                </Repeater>
-            </tr>
-        </thead>
-        <tbody>
-            <Repeater Items="Players" Context="player">
+    <div class="container mt-1">
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+            <thead>
                 <tr>
-                    <th>@player.Name</th>
-                    <td>@ScoresByPlayer[player.Id].SelectMany(p => p.score.Rounds).Count(s => s == 5000)</td>
-                    <td>@ScoresByPlayer[player.Id].SelectMany(p => p.score.Rounds).Count(s => s == 4999)</td>
-                    <td>
-                        @{
-                            List<(ChallengeDto challenge, PlayerScoreDto score)> results = ScoresByPlayer[player.Id].GroupBy(p => p.challenge.GameId).OrderByDescending(g => g.OrderBy(c => c.challenge.Id).Take(3).Select(p => p.score.Sum).Sum()).First().OrderBy(c => c.challenge.Id).Take(3).ToList();
-                        }
-                        @results.Select(p => p.score.Sum).Sum() (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().challenge.GameId}")">#@results.First().challenge.GameId</a>)
-                    </td>
-                    <td>
-                        @{
-                            (ChallengeDto challenge, PlayerScoreDto score) = ScoresByPlayer[player.Id].OrderByDescending(p => p.score.Sum).First();
-                        }
-                        @score.Sum — @challenge.MapName (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
-                    </td>
+                    <th rowspan="2">Joueur</th>
+                    <th rowspan="2">Nombre de 5000</th>
+                    <th rowspan="2">Nombre de 4999 😏</th>
+                    <th rowspan="2">Meilleure partie (<span title="Seules les 3 premières cartes comptent" style="cursor:help">?</span>)</th>
+                    <th rowspan="2">Meilleure carte</th>
+                    <th colspan="@Maps.Count()">Carte par carte</th>
+                </tr>
+                <tr>
                     <Repeater Items="Maps" Context="map">
-                        <td>
-                            @{
-                                (ChallengeDto? challenge, PlayerScoreDto? score) = ScoresByPlayer[player.Id].Where(c => c.challenge.MapId == map.Id).OrderByDescending(p => p.score.Sum).FirstOrDefault();
-                            }
-                            <Container Condition="score?.Sum is not null">
-                                @score.Sum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
-                            </Container>
-                            <Container Condition="score?.Sum is null">
-                                —
-                            </Container>
-                        </td>
+                        <th>@map.Name</th>
                     </Repeater>
                 </tr>
-            </Repeater>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <Repeater Items="Players" Context="player">
+                    <tr>
+                        <th>@player.Name</th>
+                        <td>@ScoresByPlayer[player.Id].SelectMany(p => p.score.Rounds).Count(s => s == 5000)</td>
+                        <td>@ScoresByPlayer[player.Id].SelectMany(p => p.score.Rounds).Count(s => s == 4999)</td>
+                        <td>
+                            @{
+                                List<(ChallengeDto challenge, PlayerScoreDto score)> results = ScoresByPlayer[player.Id].GroupBy(p => p.challenge.GameId).OrderByDescending(g => g.OrderBy(c => c.challenge.Id).Take(3).Select(p => p.score.Sum).Sum()).First().OrderBy(c => c.challenge.Id).Take(3).ToList();
+                            }
+                            @results.Select(p => p.score.Sum).Sum() (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().challenge.GameId}")">#@results.First().challenge.GameId</a>)
+                        </td>
+                        <td>
+                            @{
+                                (ChallengeDto challenge, PlayerScoreDto score) = ScoresByPlayer[player.Id].OrderByDescending(p => p.score.Sum).First();
+                            }
+                            @score.Sum — @challenge.MapName (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
+                        </td>
+                        <Repeater Items="Maps" Context="map">
+                            <td>
+                                @{
+                                    (ChallengeDto? challenge, PlayerScoreDto? score) = ScoresByPlayer[player.Id].Where(c => c.challenge.MapId == map.Id).OrderByDescending(p => p.score.Sum).FirstOrDefault();
+                                }
+                                <Container Condition="score?.Sum is not null">
+                                    @score.Sum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">#@challenge.GameId</a>)
+                                </Container>
+                                <Container Condition="score?.Sum is null">
+                                    —
+                                </Container>
+                            </td>
+                        </Repeater>
+                    </tr>
+                </Repeater>
+            </tbody>
+        </table>
+    </div>
 </Container>

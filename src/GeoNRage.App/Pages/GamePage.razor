@@ -3,19 +3,23 @@
 @using GeoNRage.App.Components.Games
 
 <Container Condition="HubClosed">
-    <p>Connexion avec le serveur perdue, reconnexion echouée.</p>
+    <div class="notification is-danger error-alert">
+        Connexion avec le serveur perdue, reconnexion echouée.
+    </div>
 </Container>
 
 <Container Condition="HubReconnecting">
-    <p>Connexion avec le serveur perdue, tentative de reconnexion...</p>
+    <div class="notification is-warning error-alert">
+        Connexion avec le serveur perdue, tentative de reconnexion...
+    </div>
 </Container>
 
 <Container Condition="HubReconnected">
-    <p>
+    <div class="notification is-info error-alert">
         Connexion avec le serveur rétablie. Vous pouvez à nouveau envoyer et recevoir des données, cependant les données reçues
         pendant la tentative de reconnexion ne seront pas mise à jour.
-    </p>
-    <button @onclick="ReloadPageAsync">Rafraichir la page</button>
+        <a @onclick="ReloadPageAsync">Rafraichir la page</a>
+    </div>
 </Container>
 
 <Container Condition="Loaded && GameFound">
@@ -27,23 +31,34 @@
                     <h2 class="subtitle">@Game.Date.ToShortDateString()</h2>
                 </div>
                 <div class="card-header-icon">
-                    <Container Condition="AvailablePlayers.Any()">
-                        <a aria-label="more options" class="mr-4 action-button" @onclick="() => ShowAddPlayer = true">
-                            <span class="icon">
-                                <i class="fas fa-user fa-2x" aria-hidden="true"></i>
-                            </span>
-                        </a>
-                    </Container>
-                    <a aria-label="more options" class="mr-4 action-button" @onclick="() => ShowChart = true">
-                        <span class="icon">
-                            <i class="fas fa-chart-line fa-2x" aria-hidden="true"></i>
-                        </span>
-                    </a>
-                    <a aria-label="more options" class="mr-4 action-button" @onclick="() => ShowRankings = true">
-                        <span class="icon">
-                            <i class="fas fa-table fa-2x" aria-hidden="true"></i>
-                        </span>
-                    </a>
+                    <div class="field has-addons">
+                        <Container Condition="AvailablePlayers.Any()">
+                            <p class="control">
+                                <button class="button" @onclick="() => ShowAddPlayer = true">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <span>Joueurs</span>
+                                </button>
+                            </p>
+                        </Container>
+                        <p class="control">
+                            <button class="button" @onclick="() => ShowChart = true">
+                                <span class="icon is-small">
+                                    <i class="fas fa-chart-line"></i>
+                                </span>
+                                <span>Graph.</span>
+                            </button>
+                        </p>
+                        <p class="control">
+                            <button class="button" @onclick="() => ShowRankings = true">
+                                <span class="icon is-small">
+                                    <i class="fas fa-table"></i>
+                                </span>
+                                <span>Classement</span>
+                            </button>
+                        </p>
+                    </div>
                 </div>
             </header>
             <div class="card-content">
@@ -54,7 +69,11 @@
                                 @challenge.MapName
                                 @if (challenge.Link is not null)
                                 {
-                                    <a href="@challenge.Link" target="_blank"> 🔗</a>
+                                    <a href="@challenge.Link" target="_blank" class="action-button">
+                                        <span class="icon">
+                                            <i class="fas fa-link" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
                                 }
                             </th>
                             <Repeater Items="challenge.PlayerScores" Context="playerScore">

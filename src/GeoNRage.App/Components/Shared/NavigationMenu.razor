@@ -13,7 +13,7 @@
                 <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")">Parties</NavLink>
                 <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics")">Statistiques</NavLink>
                 <AuthorizeView>
-                    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/maps")" class="navbar-item" ActiveClass="is-active">Cartes (admin)</NavLink>
+                    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active">Administration</NavLink>
                 </AuthorizeView>
             </div>
             <div class="navbar-end">
