@@ -18,6 +18,8 @@ namespace GeoNRage.App.Components.Admin
 
         public string Error { get; set; } = string.Empty;
 
+        public bool ShowLogin { get; set; }
+
         private async Task OnSubmitAsync()
         {
             ShowError = false;
@@ -34,6 +36,11 @@ namespace GeoNRage.App.Components.Admin
                     Error = "Erreur imprévue";
                 }
             }
+        }
+
+        private void ToggleLoginForm()
+        {
+            ShowLogin = !ShowLogin;
         }
     }
 }

@@ -1,14 +1,9 @@
-﻿@use 'bulma/helpers/color' as c;
-@use 'bulma/utilities/derived-variables' as d;
-
-$logo-font: "Lobster", cursive;
-
-.logo-text {
+﻿.logo-text {
     font-size: 60px;
     font-family: $logo-font;
 
     > .logo-text-inner {
-        color: c.$primary;
+        color: $primary;
     }
 }
 
@@ -28,8 +23,8 @@ $logo-font: "Lobster", cursive;
     }
 
     > path {
-        stroke: d.$text;
-        fill: c.$primary;
+        stroke: $text;
+        fill: $primary;
         stroke-width: 1;
     }
 }

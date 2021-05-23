@@ -1,7 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
+@import 'darkly';
+
 $family-sans-serif: "Alata", sans-serif;
+$logo-font: "Lobster", cursive;
 
 @import 'bulma/_all';
 @import 'error';
@@ -26,6 +29,6 @@ html {
 }
 
 .page-header {
-    font-family: "Lobster", cursive;
+    font-family: $logo-font;
     font-size: 30px;
 }

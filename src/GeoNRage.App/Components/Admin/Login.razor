@@ -1,45 +1,61 @@
-﻿<div class="login-form">
-    <EditForm OnValidSubmit="OnSubmitAsync" Model="LoginRequest">
-        <div class="field is-horizontal">
-            <div class="field-body">
-                <div class="field">
-                    <p class="control is-expanded has-icons-left">
-                        <InputText id="inputUsername" @bind-Value="LoginRequest.UserName" placeholder="Nom d'utilisateur" class="@(ShowError ? "input is-danger" : "input")" />
-                        <Container Condition="!ShowError">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-user"></i>
-                            </span>
-                        </Container>
-                        <Container Condition="ShowError">
-                            <span class="icon is-small is-left" title="@Error">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </span>
-                        </Container>
-                    </p>
-                </div>
-                <div class="field">
-                    <p class="control is-expanded has-icons-left">
-                        <InputText type="password" id="inputPassword" @bind-Value="LoginRequest.Password" class="@(ShowError ? "input is-danger" : "input")" placeholder="Mot de passe" />
-                        <Container Condition="!ShowError">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-key"></i>
-                            </span>
-                        </Container>
-                        <Container Condition="ShowError">
-                            <span class="icon is-small is-left" title="@Error">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </span>
-                        </Container>
-                    </p>
-                </div>
+﻿<Container Condition="ShowLogin">
+    <div class="login-form">
+        <EditForm OnValidSubmit="OnSubmitAsync" Model="LoginRequest">
+            <div class="field is-horizontal">
+                <div class="field-body">
+                    <div class="field">
+                        <p class="control is-expanded has-icons-left">
+                            <InputText id="inputUsername" @bind-Value="LoginRequest.UserName" placeholder="Nom d'utilisateur" class="@(ShowError ? "input is-danger" : "input")" />
+                            <Container Condition="!ShowError">
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </Container>
+                            <Container Condition="ShowError">
+                                <span class="icon is-small is-left" title="@Error">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            </Container>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="control is-expanded has-icons-left">
+                            <InputText type="password" id="inputPassword" @bind-Value="LoginRequest.Password" class="@(ShowError ? "input is-danger" : "input")" placeholder="Mot de passe" />
+                            <Container Condition="!ShowError">
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                            </Container>
+                            <Container Condition="ShowError">
+                                <span class="icon is-small is-left" title="@Error">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            </Container>
+                        </p>
+                    </div>
 
-                <button class="button is-link" type="submit">
-                    <span class="icon">
-                        <i class="fas fa-sign-in-alt"></i>
-                    </span>
-                    <span>Connexion</span>
-                </button>
+                    <button class="button is-link" type="submit">
+                        <span class="icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </span>
+                        <span>Valider</span>
+                    </button>
+                    <button class="button is-link ml-1" @onclick="ToggleLoginForm">
+                        <span class="icon">
+                            <i class="fas fa-eye-slash"></i>
+                        </span>
+                    </button>
+                </div>
             </div>
-        </div>
-    </EditForm>
-</div>
+        </EditForm>
+    </div>
+</Container>
+
+<Container Condition="!ShowLogin">
+    <button class="button is-link" @onclick="ToggleLoginForm">
+        <span class="icon">
+            <i class="fas fa-sign-in-alt"></i>
+        </span>
+        <span>Connexion</span>
+    </button>
+</Container>
