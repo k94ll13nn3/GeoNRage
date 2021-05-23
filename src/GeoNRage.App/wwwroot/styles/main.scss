@@ -1,76 +1,31 @@
-@use 'variables' as v;
-@use 'themes' as t;
-
-@import 'error';
-@import 'loader';
-@import 'spacing';
 @import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
-body {
-    font-family: v.$font-stack;
-    font-weight: normal;
-    height: 100vh;
-    padding: 0;
-    margin: 0;
+$family-sans-serif: "Alata", sans-serif;
 
-    @include t.themify(background, background);
-    @include t.themify(color, foreground);
+@import 'bulma/_all';
+@import 'error';
+@import 'loader';
+
+html {
+    overflow: auto;
 }
 
 .application-container {
-    height: 100%;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-
-    &:hover, &:visited, &:active {
-        text-decoration: none;
-    }
-
-    &.active {
-        @include t.themify(color, secondary);
-    }
-}
-
-.centered-container {
+    min-height: 100vh;
     display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
 }
 
-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    font-size: 14px;
+#wrapper {
+    flex: 1;
+}
 
-    td {
-        text-align: center;
-        width: 100px;
-        max-width: 100px;
-        border: 1px solid;
+.footer-small {
+    padding: 2rem 1rem !important;
+}
 
-        @include t.themify(border-color, foreground);
-        @include t.themify(background, secondary);
-    }
-
-    th {
-        width: 100px;
-        max-width: 100px;
-        border: 1px solid;
-        font-weight: normal;
-
-        @include t.themify(border-color, foreground);
-        @include t.themify(background, primary);
-    }
-
-    tr.bordered {
-        border-top: 5px solid;
-
-        @include t.themify(border-color, foreground);
-    }
+.page-header {
+    font-family: "Lobster", cursive;
+    font-size: 30px;
 }

@@ -1,12 +1,14 @@
-﻿@use 'variables' as v;
-@use 'themes' as t;
+﻿@use 'bulma/helpers/color' as c;
+@use 'bulma/utilities/derived-variables' as d;
+
+$logo-font: "Lobster", cursive;
 
 .logo-text {
     font-size: 60px;
-    font-family: v.$logo-font;
+    font-family: $logo-font;
 
     > .logo-text-inner {
-        @include t.themify(color, accent);
+        color: c.$primary;
     }
 }
 
@@ -26,8 +28,8 @@
     }
 
     > path {
-        @include t.themify(stroke, foreground);
-        @include t.themify(fill, accent);
+        stroke: d.$text;
+        fill: c.$primary;
         stroke-width: 1;
     }
 }

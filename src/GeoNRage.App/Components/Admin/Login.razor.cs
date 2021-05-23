@@ -12,7 +12,7 @@ namespace GeoNRage.App.Components.Admin
         [Inject]
         public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
 
-        public LoginDto LoginRequest { get; set; } = new LoginDto();
+        public LoginDto LoginRequest { get; set; } = new LoginDto { RememberMe = true };
 
         public bool ShowError { get; set; }
 

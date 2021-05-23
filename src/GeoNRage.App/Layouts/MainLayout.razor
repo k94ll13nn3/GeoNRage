@@ -1,19 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page-wrap">
-    <header class="page-header">
-        <a href="@NavigationManager.ToAbsoluteUri("/")">Geo'N Rage</a>
-    </header>
+<NavigationMenu />
 
-    <nav class="page-nav">
-        <NavigationMenu />
-    </nav>
+<section id="wrapper" class="is-flex is-align-items-strech">
+    @Body
+</section>
 
-    <main class="page-main">
-        @Body
-    </main>
-
-    <footer class="page-footer">
-        Geo'N Rage @(VersionString) — Rageux/20
-    </footer>
-</div>
+<footer class="footer footer-small">
+    <div class="content has-text-centered">
+        <p>
+            <a href="https://geonrage.k94ll13nn3.dev/">Geo'N Rage</a> v0.11.1 par
+            <a href="https://github.com/k94ll13nn3/">k94ll13nn3</a> — Rageux/20
+        </p>
+    </div>
+</footer>

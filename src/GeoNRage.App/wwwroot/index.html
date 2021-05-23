@@ -2,18 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Geo'N Rage</title>
     <base href="/" />
+    <link rel="icon" href="favicon.ico" />
     <link href="styles/main.css" rel="stylesheet" />
     <link href="GeoNRage.App.styles.css" rel="stylesheet" />
-    <link rel="icon" href="favicon.ico" />
 </head>
 
-<body class="theme-basic">
+<body>
     <div id="app" class="application-container">
-        <div class="centered-container">
+        <div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column">
             <svg viewBox="0 0 24 24" class="logo-icon big animated">
                 <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
             </svg>
@@ -21,14 +20,14 @@
         </div>
     </div>
 
-    <div id="blazor-error-ui">
-        C TOUT KC
-        <a href="" class="reload">Recharger</a>
-        <a class="dismiss">🗙</a>
+    <div class="notification is-danger" id="blazor-error-ui">
+        <button class="delete dismiss"></button>
+        Une erreur s'est produite, veuillez recharger la page.
     </div>
 
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
 </body>
 </html>
