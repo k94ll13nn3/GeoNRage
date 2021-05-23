@@ -45,6 +45,12 @@ namespace GeoNRage.App.Pages
 
         public string? SelectedPlayerId { get; set; }
 
+        public bool ShowRankings { get; set; }
+
+        public bool ShowChart { get; set; }
+
+        public bool ShowAddPlayer { get; set; }
+
         public async ValueTask DisposeAsync()
         {
             _hubConnection.Closed -= OnHubConnectionClosed;
@@ -55,6 +61,9 @@ namespace GeoNRage.App.Pages
 
         public async Task ReloadPageAsync()
         {
+            ShowAddPlayer = false;
+            ShowChart = false;
+            ShowRankings = false;
             HubClosed = false;
             HubReconnected = false;
             HubReconnecting = false;

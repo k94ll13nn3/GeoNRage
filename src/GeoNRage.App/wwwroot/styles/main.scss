@@ -1,14 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
-@import 'darkly';
+@import 'theme';
 
 $family-sans-serif: "Alata", sans-serif;
 $logo-font: "Lobster", cursive;
+$modal-content-width: 800px;
 
 @import 'bulma/_all';
 @import 'error';
 @import 'loader';
+
+@import 'darkly-overrides';
 
 html {
     overflow: auto;

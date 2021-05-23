@@ -1,0 +1,27 @@
+﻿input {
+    font-family: inherit;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-color: transparent;
+    border-radius: 0% !important;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled,
+    &[disabled] {
+        text-align: center;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[type="number"] {
+        -moz-appearance: textfield;
+    }
+}
