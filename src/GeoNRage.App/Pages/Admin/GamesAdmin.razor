@@ -6,7 +6,7 @@
 
 <div class="container is-fluid mt-1">
     <Container Condition="Games?.Any() == true">
-        <table>
+        <table class="table is-bordered is-striped is-hoverable">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -23,71 +23,128 @@
                         <td>@game.Id</td>
                         <td>@game.Name</td>
                         <td>@game.Date.ToShortDateString()</td>
-                        <td>@(new MarkupString(string.Join("<br />", game.Challenges.Select(c => c.MapName))))</td>
-                        <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name) ?? new string[] { })))</td>
-                        <td>
-                            <button @onclick="(() => EditGame(game.Id))">Editer</button>
-                            <button @onclick="(() => DeleteGameAsync(game.Id))">Supprimer</button>
+                        <td>@game.Challenges.Count</td>
+                        <td>@game.Players.Count</td>
+                        <td class="has-text-centered">
+                            <a class="has-text-info" @onclick="(() => EditGame(game.Id))">
+                                <span class="icon">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </a>
+                            <a class="has-text-danger" @onclick="(() => DeleteGameAsync(game.Id))">
+                                <span class="icon">
+                                    <i class="fas fa-trash-alt"></i>
+                                </span>
+                            </a>
                         </td>
                     </tr>
                 </Repeater>
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="6" class="has-text-right">
+                        <button class="button is-primary" @onclick="ShowGameCreation">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Créer</span>
+                        </button>
+                    </th>
+                </tr>
+            </tfoot>
         </table>
     </Container>
+</div>
 
-    <button @onclick="ShowGameCreation">Créer</button>
+<div class="modal @(ShowEditForm ? "is-active" : "")">
+    <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync" @ref="Form">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edition de partie</p>
+                <button class="delete" aria-label="close" @onclick="() => ShowEditForm = false" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+                <DataAnnotationsValidator />
 
-    <Container Condition="ShowEditForm">
-        <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-                <p>@Error</p>
-            </Container>
+                <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                    <div class="notification is-danger">
+                        @Error
+                    </div>
+                </Container>
 
-            <p>
-                <label>
-                    Nom :
-                    <InputText @bind-Value="Game.Name" />
-                </label>
-            </p>
-
-            <p>
-                <label>
-                    Date :
-                    <InputDate @bind-Value="Game.Date" />
-                </label>
-            </p>
-
-            <hr />
-            <p>Challenges</p>
-            <Repeater Items="@Game.Challenges" Context="challenge">
-                <div>
-                    <p>
-                        <label>
-                            Lien :
-                            <InputText @bind-Value="challenge.Link" />
-                            <button @onclick="() => challenge.Link = null" type="button">X</button>
-                        </label>
-                        <label>
-                            Carte :
-                            <InputSelect @bind-Value="challenge.MapId">
-                                <Repeater Items="@Maps" Context="map">
-                                    <option value="@map.Id">@map.Name</option>
-                                </Repeater>
-                            </InputSelect>
-                        </label>
-                        <button @onclick="() => Game.Challenges.Remove(challenge)" type="button">X</button>
-                    </p>
+                <div class="field">
+                    <label class="label">Nom</label>
+                    <div class="control">
+                        <InputText @bind-Value="Game.Name" placeholder="Nom" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => Game.Name)"></ValidationMessage>
+                        </p>
+                    </div>
                 </div>
-            </Repeater>
-            <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button">Ajouter carte</button>
 
-            <hr />
-            <p>Joueurs</p>
-            <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
+                <div class="field">
+                    <label class="label">Date</label>
+                    <div class="control">
+                        <InputDate @bind-Value="Game.Date" placeholder="Date" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => Game.Date)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-            <button type="submit">Valider</button>
-        </EditForm>
-    </Container>
+                <Repeater Items="@Game.Challenges" Context="challenge">
+                    <div class="field">
+                        <label class="label">Lien</label>
+                        <div class="control">
+                            <div class="field is-grouped">
+                                <div class="control is-expanded">
+                                    <InputText @bind-Value="challenge.Link" placeholder="Nom" class="input" />
+                                    <p class="help is-danger">
+                                        <ValidationMessage For="@(() => challenge.Link)"></ValidationMessage>
+                                    </p>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-info" @onclick="() => challenge.Link = null" type="button">
+                                        <span class="icon">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="control">
+                                    <div class="select">
+                                        <InputSelect @bind-Value="challenge.MapId">
+                                            <Repeater Items="@Maps" Context="map">
+                                                <option value="@map.Id">@map.Name</option>
+                                            </Repeater>
+                                        </InputSelect>
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-danger" @onclick="() => Game.Challenges.Remove(challenge)" type="button">
+                                        <span class="icon">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Repeater>
+
+                <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button" class="button is-primary">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Ajouter carte</span>
+                </button>
+
+                <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-primary" type="submit">Valider</button>
+                <button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
+            </footer>
+        </div>
+    </EditForm>
 </div>

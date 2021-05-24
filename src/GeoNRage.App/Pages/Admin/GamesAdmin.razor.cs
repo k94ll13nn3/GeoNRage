@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using Refit;
 
@@ -32,11 +34,13 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public GameCreateOrEditDto Game { get; set; } = null!;
+        public GameCreateOrEditDto Game { get; set; } = new();
 
         public int? SelectedGameId { get; set; }
 
         public string? Error { get; set; }
+
+        public EditForm Form { get; set; } = null!;
 
         public void EditGame(int gameId)
         {
@@ -103,6 +107,11 @@ namespace GeoNRage.App.Pages.Admin
             Maps = await MapsApi.GetAllAsync();
             Players = await PlayersApi.GetAllAsync();
             Games = await GamesApi.GetAllAsync();
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            Form?.EditContext?.UpdateCssClassProvider();
         }
     }
 }
