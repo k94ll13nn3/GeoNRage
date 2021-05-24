@@ -1,32 +1,48 @@
-﻿<div class="menu-links">
-    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/games")" class="ml-10 mr-10">Parties</NavLink>
-    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/statistics")" class="ml-10 mr-10">Stats</NavLink>
-    <AuthorizeView>
-        —
-        <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/maps")" class="ml-10 mr-10">Cartes (admin)</NavLink>
-        <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/players")" class="ml-10 mr-10">Joueurs (admin)</NavLink>
-        <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/games")" class="ml-10 mr-10">Parties (admin)</NavLink>
-        <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin/import")" class="ml-10 mr-10">Import (admin)</NavLink>
-    </AuthorizeView>
-
-    <div class="theme-chooser">
-        <AuthorizeView>
-            <Authorized>
-                @Name
-                <button type="button" @onclick="@LogoutClickAsync">Déconnexion</button>
-            </Authorized>
-            <Authorizing>
-                <GeoNRage.App.Components.Admin.Login />
-            </Authorizing>
-            <NotAuthorized>
-                <GeoNRage.App.Components.Admin.Login />
-            </NotAuthorized>
-        </AuthorizeView>
-
-        <select value="@SelectedTheme" @onchange="ChangeThemeAsync">
-            <option value="basic">Basic</option>
-            <option value="legacy">Legacy</option>
-            <option value="zelda">Zelda</option>
-        </select>
+﻿<nav class="navbar is-radiusless" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item page-header" href="@NavigationManager.ToAbsoluteUri("/")" @onclick="() => ShowMenu = false">Geo'N Rage</a>
+            <span class="navbar-burger" data-target="navbarMenu" @onclick="ToggleMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </div>
+        <div id="navbarMenu" class="navbar-menu @(ShowMenu ? "is-active" : "")">
+            <div class="navbar-start">
+                <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")" @onclick="() => ShowMenu = false">Parties</NavLink>
+                <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics")" @onclick="() => ShowMenu = false">Statistiques</NavLink>
+                <AuthorizeView>
+                    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active" @onclick="() => ShowMenu = false">Administration</NavLink>
+                </AuthorizeView>
+            </div>
+            <div class="navbar-end">
+                <AuthorizeView>
+                    <Authorized>
+                        <span class="navbar-item">
+                            @Name
+                        </span>
+                        <span class="navbar-item">
+                            <button class="button is-link" @onclick="@LogoutClickAsync">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Déconnexion</span>
+                            </button>
+                        </span>
+                    </Authorized>
+                    <Authorizing>
+                        <span class="navbar-item">
+                            <GeoNRage.App.Components.Admin.Login />
+                        </span>
+                    </Authorizing>
+                    <NotAuthorized>
+                        <span class="navbar-item">
+                            <GeoNRage.App.Components.Admin.Login />
+                        </span>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
     </div>
-</div>
+</nav>

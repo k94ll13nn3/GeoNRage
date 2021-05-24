@@ -1,12 +1,17 @@
 ﻿@typeparam TItem
 @typeparam TId
 
-<div>
+<div class="field">
     <Repeater Items="Data" Context="item">
         @{
             var value = IdSelector(item);
-            <input type="checkbox" checked=@SelectedIds.Contains(value) @onchange="eventArgs => { CheckboxClicked(value, eventArgs.Value); }" />
-            @LabelSelector(item) <br />
         }
+
+        <div class="control">
+            <label class="checkbox">
+                <input type="checkbox" checked=@SelectedIds.Contains(value) @onchange="eventArgs => { CheckboxClicked(value, eventArgs.Value); }" />
+                @LabelSelector(item)
+            </label>
+        </div>
     </Repeater>
 </div>

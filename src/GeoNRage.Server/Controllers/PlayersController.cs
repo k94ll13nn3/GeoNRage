@@ -29,11 +29,18 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<PlayerDto> PostAsync(PlayerCreateDto dto)
+        public async Task<ActionResult<PlayerDto>> PostAsync(PlayerCreateDto dto)
         {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            Player createdPlayer = await _playerService.CreateAsync(dto);
-            return _mapper.Map<Player, PlayerDto>(createdPlayer);
+            try
+            {
+                _ = dto ?? throw new ArgumentNullException(nameof(dto));
+                Player createdPlayer = await _playerService.CreateAsync(dto);
+                return _mapper.Map<Player, PlayerDto>(createdPlayer);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("{id}")]

@@ -1,28 +1,30 @@
 ﻿@using Humanizer;
 
-<table>
-    <thead>
-        <tr>
-            <th></th>
-            <Repeater Items="Enumerable.Range(1, Game.Players.Count)" Context="i">
-                <th>@i.Ordinalize()</th>
-            </Repeater>
-        </tr>
-    </thead>
-    <tbody>
-        <Repeater Items="Game.Challenges" Context="challenge">
+<div class="container">
+    <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
+        <thead>
             <tr>
-                <th>@challenge.MapName</th>
-                <Repeater Items="challenge.PlayerScores.Select(p => (name: p.PlayerName, score: p.Sum)).OrderByDescending(p => p.score)" Context="player">
-                    <td>@player.name (@(player.score ?? 0))</td>
+                <th></th>
+                <Repeater Items="Enumerable.Range(1, Game.Players.Count)" Context="i">
+                    <th>@i.Ordinalize()</th>
                 </Repeater>
             </tr>
-        </Repeater>
-        <tr>
-            <th>Général</th>
-            <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(c => c.PlayerId).Select(p => (name: p.First().PlayerName, score: p.Sum(ps => ps.Sum))).OrderByDescending(p => p.score)" Context="player">
-                <td>@player.name (@player.score)</td>
+        </thead>
+        <tbody>
+            <Repeater Items="Game.Challenges" Context="challenge">
+                <tr>
+                    <th>@challenge.MapName</th>
+                    <Repeater Items="challenge.PlayerScores.Select(p => (name: p.PlayerName[..3], score: p.Sum)).OrderByDescending(p => p.score)" Context="player">
+                        <td>@(player.name).<br /><span class="is-size-7">@(player.score ?? 0)</span></td>
+                    </Repeater>
+                </tr>
             </Repeater>
-        </tr>
-    </tbody>
-</table>
+            <tr>
+                <th>Général</th>
+                <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(c => c.PlayerId).Select(p => (name: p.First().PlayerName[..3], score: p.Sum(ps => ps.Sum))).OrderByDescending(p => p.score)" Context="player">
+                    <td>@(player.name).<br /><span class="is-size-7">@player.score</span></td>
+                </Repeater>
+            </tr>
+        </tbody>
+    </table>
+</div>

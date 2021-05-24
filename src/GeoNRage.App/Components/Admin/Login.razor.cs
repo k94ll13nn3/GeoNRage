@@ -12,11 +12,13 @@ namespace GeoNRage.App.Components.Admin
         [Inject]
         public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
 
-        public LoginDto LoginRequest { get; set; } = new LoginDto();
+        public LoginDto LoginRequest { get; set; } = new LoginDto { RememberMe = true };
 
         public bool ShowError { get; set; }
 
         public string Error { get; set; } = string.Empty;
+
+        public bool ShowLogin { get; set; }
 
         private async Task OnSubmitAsync()
         {
@@ -34,6 +36,11 @@ namespace GeoNRage.App.Components.Admin
                     Error = "Erreur imprévue";
                 }
             }
+        }
+
+        private void ToggleLoginForm()
+        {
+            ShowLogin = !ShowLogin;
         }
     }
 }

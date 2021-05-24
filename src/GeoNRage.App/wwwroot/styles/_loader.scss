@@ -1,12 +1,9 @@
-﻿@use 'variables' as v;
-@use 'themes' as t;
-
-.logo-text {
+﻿.logo-text {
     font-size: 60px;
-    font-family: v.$logo-font;
+    font-family: $logo-font;
 
     > .logo-text-inner {
-        @include t.themify(color, accent);
+        color: $primary;
     }
 }
 
@@ -26,8 +23,8 @@
     }
 
     > path {
-        @include t.themify(stroke, foreground);
-        @include t.themify(fill, accent);
+        stroke: $text;
+        fill: $primary;
         stroke-width: 1;
     }
 }

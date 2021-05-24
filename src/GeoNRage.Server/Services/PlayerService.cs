@@ -22,6 +22,11 @@ namespace GeoNRage.Server.Services
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
+            if (await _context.Players.AnyAsync(p => p.Id == dto.Id))
+            {
+                throw new InvalidOperationException($"Player '{dto.Id}' already exists.");
+            }
+
             EntityEntry<Player> player = await _context.Players.AddAsync(new Player
             {
                 Id = dto.Id,

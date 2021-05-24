@@ -29,11 +29,18 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<MapDto> PostAsync(MapCreateDto dto)
+        public async Task<ActionResult<MapDto>> PostAsync(MapCreateDto dto)
         {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            Map createdMap = await _mapService.CreateAsync(dto);
-            return _mapper.Map<Map, MapDto>(createdMap);
+            try
+            {
+                _ = dto ?? throw new ArgumentNullException(nameof(dto));
+                Map createdMap = await _mapService.CreateAsync(dto);
+                return _mapper.Map<Map, MapDto>(createdMap);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("{id}")]

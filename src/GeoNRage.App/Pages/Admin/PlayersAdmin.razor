@@ -2,51 +2,95 @@
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
-<Container Condition="Players?.Any() == true">
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <Repeater Items="Players" Context="player">
+<GeoNRage.App.Components.Admin.AdminMenu />
+
+<div class="container is-fluid mt-1">
+    <Container Condition="Players?.Any() == true">
+        <table class="table is-bordered is-striped is-hoverable">
+            <thead>
                 <tr>
-                    <td>@player.Id</td>
-                    <td>@player.Name</td>
-                    <td>
-                        <button @onclick="(() => EditPlayer(player.Id))">Editer</button>
-                        <button @onclick="(() => DeletePlayerAsync(player.Id))">Supprimer</button>
-                    </td>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Actions</th>
                 </tr>
-            </Repeater>
-        </tbody>
-    </table>
-</Container>
+            </thead>
+            <tbody>
+                <Repeater Items="Players" Context="player">
+                    <tr>
+                        <td>@player.Id</td>
+                        <td>@player.Name</td>
+                        <td class="has-text-centered">
+                            <a class="has-text-info" @onclick="(() => EditPlayer(player.Id))">
+                                <span class="icon">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </a>
+                            <a class="has-text-danger" @onclick="(() => DeletePlayerAsync(player.Id))">
+                                <span class="icon">
+                                    <i class="fas fa-trash-alt"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </Repeater>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="has-text-right">
+                        <button class="button is-primary" @onclick="ShowPlayerCreation">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Créer</span>
+                        </button>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </Container>
+</div>
 
-<button @onclick="ShowPlayerCreation">Créer</button>
+<div class="modal @(ShowEditForm ? "is-active" : "")">
+    <EditForm Model="Player" OnValidSubmit="CreateOrUpdatePlayerAsync" @ref="Form">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edition de joueur</p>
+                <button class="delete" aria-label="close" @onclick="() => ShowEditForm = false" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+                <DataAnnotationsValidator />
 
-<Container Condition="ShowEditForm">
-    <EditForm Model="Player" OnValidSubmit="CreateOrUpdatePlayerAsync">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+                <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                    <div class="notification is-danger">
+                        @Error
+                    </div>
+                </Container>
 
-        <p>
-            <label>
-                Id :
-                <InputText @bind-Value="Player.Id" />
-            </label>
-        </p>
+                <div class="field">
+                    <label class="label">Id</label>
+                    <div class="control">
+                        <InputText @bind-Value="Player.Id" placeholder="Id" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => Player.Id)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-        <p>
-            <label>
-                Nom :
-                <InputText @bind-Value="Player.Name" />
-            </label>
-        </p>
-
-        <button type="submit">Valider</button>
+                <div class="field">
+                    <label class="label">Nom</label>
+                    <div class="control">
+                        <InputText @bind-Value="Player.Name" placeholder="Nom" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => Player.Name)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-primary" type="submit">Valider</button>
+                <button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
+            </footer>
+        </div>
     </EditForm>
-</Container>
+</div>

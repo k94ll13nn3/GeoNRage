@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using GeoNRage.App.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.JSInterop;
 
 namespace GeoNRage.App.Components.Shared
 {
@@ -20,10 +19,7 @@ namespace GeoNRage.App.Components.Shared
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        [Inject]
-        public IJSRuntime JsRuntime { get; set; } = null!;
-
-        public string SelectedTheme { get; set; } = "basic";
+        public bool ShowMenu { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
@@ -33,24 +29,15 @@ namespace GeoNRage.App.Components.Shared
                 Name = identity.Name ?? string.Empty;
             }
         }
-        protected override async Task OnInitializedAsync()
-        {
-            string? theme = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
-            IJSObjectReference module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/utils.js");
-            SelectedTheme = theme ?? "basic";
-            await module.InvokeVoidAsync("changeTheme", SelectedTheme);
-        }
 
         private async Task LogoutClickAsync()
         {
             await GeoNRageStateProvider.LogoutAsync();
         }
 
-        private async Task ChangeThemeAsync(ChangeEventArgs e)
+        private void ToggleMenu()
         {
-            IJSObjectReference module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/utils.js");
-            await module.InvokeVoidAsync("changeTheme", e.Value);
-            await JsRuntime.InvokeVoidAsync("localStorage.setItem", "theme", e.Value ?? "basic");
+            ShowMenu = !ShowMenu;
         }
     }
 }
