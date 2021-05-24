@@ -5,57 +5,78 @@
 <GeoNRage.App.Components.Admin.AdminMenu />
 
 <div class="container is-fluid mt-1">
-    <EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-            <p>@Error</p>
-        </Container>
+    <div class="columns">
+        <div class="column is-one-third-fullhd is-full-touch is-half-desktop">
+            <EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync" @ref="Form">
+                <DataAnnotationsValidator />
 
-        <p>
-            <label>
-                Lien :
-                <InputText @bind-Value="ChallengeImportDto.Link" />
-            </label>
-        </p>
+                <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                    <div class="notification is-danger">
+                        @Error
+                    </div>
+                </Container>
 
-        <p>
-            <label>
-                Partie :
-                <InputSelect @bind-Value="SelectedGameId">
-                    <Repeater Items="@Games" Context="game">
-                        <option value="@game.Id">#@game.Id - @game.Name</option>
-                    </Repeater>
-                </InputSelect>
-            </label>
-        </p>
+                <Container Condition="Result is not null && !DataImported">
+                    <div class="notification is-info">
+                        <p>Import réussi !</p>
+                        <p>Carte : @Result!.MapName</p>
+                    </div>
+                </Container>
 
-        <p>
-            <label>
-                Sauvegarder les données :
-                <InputCheckbox @bind-Value="ChallengeImportDto.PersistData" />
-            </label>
-        </p>
+                <Container Condition="Result is not null && DataImported">
+                    <div class="notification is-link">
+                        <p>Ajout des données réussi !</p>
+                        <a href="@NavigationManager.ToAbsoluteUri($"/games/{SelectedGameId}")">Voir la partie</a>
+                    </div>
+                </Container>
 
-        <p>
-            <label>
-                Ecraser les données :
-                <InputCheckbox @bind-Value="ChallengeImportDto.OverrideData" />
-            </label>
-        </p>
+                <div class="field">
+                    <label class="label">Lien</label>
+                    <div class="control">
+                        <InputText @bind-Value="ChallengeImportDto.Link" placeholder="Lien" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => ChallengeImportDto.Link)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-        <p>
-            <button type="submit">Valider</button>
-        </p>
-    </EditForm>
+                <div class="field">
+                    <label class="label">Partie</label>
+                    <div class="control">
+                        <div class="select">
+                            <InputSelect @bind-Value="SelectedGameId">
+                                <Repeater Items="@Games" Context="game">
+                                    <option value="@game.Id">#@game.Id - @game.Name</option>
+                                </Repeater>
+                            </InputSelect>
+                        </div>
+                    </div>
+                </div>
 
-    <Container Condition="Result is not null && !DataImported">
-        <p>Import réussi !</p>
-        <p>Carte : @Result!.MapName</p>
-    </Container>
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <InputCheckbox @bind-Value="ChallengeImportDto.PersistData" />
+                            Sauvegarder les données
+                        </label>
+                    </div>
+                </div>
 
-    <Container Condition="Result is not null && DataImported">
-        <p>Ajout des données réussi !</p>
-        <a href="@NavigationManager.ToAbsoluteUri($"/games/{SelectedGameId}")">Voir la partie</a>
-    </Container>
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <InputCheckbox @bind-Value="ChallengeImportDto.OverrideData" />
+                            Ecraser les données
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Valider</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
 </div>

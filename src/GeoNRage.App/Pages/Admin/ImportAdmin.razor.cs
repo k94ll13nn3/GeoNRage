@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Refit;
 
 namespace GeoNRage.App.Pages.Admin
@@ -29,6 +31,8 @@ namespace GeoNRage.App.Pages.Admin
 
         public string? Error { get; set; }
 
+        public EditForm Form { get; set; } = null!;
+
         public async Task ImportAsync()
         {
             try
@@ -52,6 +56,11 @@ namespace GeoNRage.App.Pages.Admin
         {
             Games = await GamesApi.GetAllAsync();
             SelectedGameId = Games.First().Id;
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            Form?.EditContext?.UpdateCssClassProvider();
         }
     }
 }
