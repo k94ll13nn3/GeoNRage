@@ -2,88 +2,92 @@
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
-<Container Condition="Games?.Any() == true">
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Date</th>
-                <th>Cartes</th>
-                <th>Joueurs</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <Repeater Items="Games" Context="game">
+<GeoNRage.App.Components.Admin.AdminMenu />
+
+<div class="container is-fluid mt-1">
+    <Container Condition="Games?.Any() == true">
+        <table>
+            <thead>
                 <tr>
-                    <td>@game.Id</td>
-                    <td>@game.Name</td>
-                    <td>@game.Date.ToShortDateString()</td>
-                    <td>@(new MarkupString(string.Join("<br />", game.Challenges.Select(c => c.MapName))))</td>
-                    <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name) ?? new string[] { })))</td>
-                    <td>
-                        <button @onclick="(() => EditGame(game.Id))">Editer</button>
-                        <button @onclick="(() => DeleteGameAsync(game.Id))">Supprimer</button>
-                    </td>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Date</th>
+                    <th>Cartes</th>
+                    <th>Joueurs</th>
+                    <th>Actions</th>
                 </tr>
+            </thead>
+            <tbody>
+                <Repeater Items="Games" Context="game">
+                    <tr>
+                        <td>@game.Id</td>
+                        <td>@game.Name</td>
+                        <td>@game.Date.ToShortDateString()</td>
+                        <td>@(new MarkupString(string.Join("<br />", game.Challenges.Select(c => c.MapName))))</td>
+                        <td>@(new MarkupString(string.Join("<br />", game.Players.Select(p => p.Name) ?? new string[] { })))</td>
+                        <td>
+                            <button @onclick="(() => EditGame(game.Id))">Editer</button>
+                            <button @onclick="(() => DeleteGameAsync(game.Id))">Supprimer</button>
+                        </td>
+                    </tr>
+                </Repeater>
+            </tbody>
+        </table>
+    </Container>
+
+    <button @onclick="ShowGameCreation">Créer</button>
+
+    <Container Condition="ShowEditForm">
+        <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                <p>@Error</p>
+            </Container>
+
+            <p>
+                <label>
+                    Nom :
+                    <InputText @bind-Value="Game.Name" />
+                </label>
+            </p>
+
+            <p>
+                <label>
+                    Date :
+                    <InputDate @bind-Value="Game.Date" />
+                </label>
+            </p>
+
+            <hr />
+            <p>Challenges</p>
+            <Repeater Items="@Game.Challenges" Context="challenge">
+                <div>
+                    <p>
+                        <label>
+                            Lien :
+                            <InputText @bind-Value="challenge.Link" />
+                            <button @onclick="() => challenge.Link = null" type="button">X</button>
+                        </label>
+                        <label>
+                            Carte :
+                            <InputSelect @bind-Value="challenge.MapId">
+                                <Repeater Items="@Maps" Context="map">
+                                    <option value="@map.Id">@map.Name</option>
+                                </Repeater>
+                            </InputSelect>
+                        </label>
+                        <button @onclick="() => Game.Challenges.Remove(challenge)" type="button">X</button>
+                    </p>
+                </div>
             </Repeater>
-        </tbody>
-    </table>
-</Container>
+            <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button">Ajouter carte</button>
 
-<button @onclick="ShowGameCreation">Créer</button>
+            <hr />
+            <p>Joueurs</p>
+            <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
 
-<Container Condition="ShowEditForm">
-    <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-            <p>@Error</p>
-        </Container>
-
-        <p>
-            <label>
-                Nom :
-                <InputText @bind-Value="Game.Name" />
-            </label>
-        </p>
-
-        <p>
-            <label>
-                Date :
-                <InputDate @bind-Value="Game.Date" />
-            </label>
-        </p>
-
-        <hr />
-        <p>Challenges</p>
-        <Repeater Items="@Game.Challenges" Context="challenge">
-            <div>
-                <p>
-                    <label>
-                        Lien :
-                        <InputText @bind-Value="challenge.Link" />
-                        <button @onclick="() => challenge.Link = null" type="button">X</button>
-                    </label>
-                    <label>
-                        Carte :
-                        <InputSelect @bind-Value="challenge.MapId">
-                            <Repeater Items="@Maps" Context="map">
-                                <option value="@map.Id">@map.Name</option>
-                            </Repeater>
-                        </InputSelect>
-                    </label>
-                    <button @onclick="() => Game.Challenges.Remove(challenge)" type="button">X</button>
-                </p>
-            </div>
-        </Repeater>
-        <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button">Ajouter carte</button>
-
-        <hr />
-        <p>Joueurs</p>
-        <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
-
-        <button type="submit">Valider</button>
-    </EditForm>
-</Container>
+            <button type="submit">Valider</button>
+        </EditForm>
+    </Container>
+</div>

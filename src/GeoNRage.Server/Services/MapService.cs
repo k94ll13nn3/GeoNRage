@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
@@ -21,6 +22,11 @@ namespace GeoNRage.Server.Services
         public async Task<Map> CreateAsync(MapCreateDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
+            if (await _context.Maps.AnyAsync(m => m.Id == dto.Id))
+            {
+                throw new InvalidOperationException($"Map '{dto.Id}' already exists.");
+            }
 
             EntityEntry<Map> map = await _context.Maps.AddAsync(new Map
             {

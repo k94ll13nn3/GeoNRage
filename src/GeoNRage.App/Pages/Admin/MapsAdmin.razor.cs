@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using Refit;
 
 namespace GeoNRage.App.Pages.Admin
 {
@@ -20,12 +24,17 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public MapCreateDto Map { get; set; } = null!;
+        public MapCreateDto Map { get; set; } = new();
 
         public string? SelectedMapId { get; set; }
 
+        public EditForm Form { get; set; } = null!;
+
+        public string? Error { get; set; }
+
         public void EditMap(string mapId)
         {
+            Error = null;
             ShowEditForm = true;
             Map = new MapCreateDto { Name = Maps.First(m => m.Id == mapId).Name, Id = mapId };
             SelectedMapId = mapId;
@@ -44,22 +53,31 @@ namespace GeoNRage.App.Pages.Admin
 
         public async Task CreateOrUpdateMapAsync()
         {
-            if (SelectedMapId is not null)
+            try
             {
-                await MapsApi.UpdateAsync(SelectedMapId, Map);
-            }
-            else
-            {
-                await MapsApi.CreateAsync(Map);
-            }
+                Error = null;
+                if (SelectedMapId is not null)
+                {
+                    await MapsApi.UpdateAsync(SelectedMapId, Map);
+                }
+                else
+                {
+                    await MapsApi.CreateAsync(Map);
+                }
 
-            ShowEditForm = false;
-            SelectedMapId = null;
-            Maps = await MapsApi.GetAllAsync();
+                ShowEditForm = false;
+                SelectedMapId = null;
+                Maps = await MapsApi.GetAllAsync();
+            }
+            catch (ApiException e)
+            {
+                Error = e.Content;
+            }
         }
 
         public void ShowMapCreation()
         {
+            Error = null;
             ShowEditForm = true;
             Map = new MapCreateDto();
         }
@@ -67,6 +85,11 @@ namespace GeoNRage.App.Pages.Admin
         protected override async Task OnInitializedAsync()
         {
             Maps = await MapsApi.GetAllAsync();
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            Form?.EditContext?.UpdateCssClassProvider();
         }
     }
 }

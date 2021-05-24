@@ -2,56 +2,60 @@
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
-<EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-        <p>@Error</p>
+<GeoNRage.App.Components.Admin.AdminMenu />
+
+<div class="container is-fluid mt-1">
+    <EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+            <p>@Error</p>
+        </Container>
+
+        <p>
+            <label>
+                Lien :
+                <InputText @bind-Value="ChallengeImportDto.Link" />
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Partie :
+                <InputSelect @bind-Value="SelectedGameId">
+                    <Repeater Items="@Games" Context="game">
+                        <option value="@game.Id">#@game.Id - @game.Name</option>
+                    </Repeater>
+                </InputSelect>
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Sauvegarder les données :
+                <InputCheckbox @bind-Value="ChallengeImportDto.PersistData" />
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Ecraser les données :
+                <InputCheckbox @bind-Value="ChallengeImportDto.OverrideData" />
+            </label>
+        </p>
+
+        <p>
+            <button type="submit">Valider</button>
+        </p>
+    </EditForm>
+
+    <Container Condition="Result is not null && !DataImported">
+        <p>Import réussi !</p>
+        <p>Carte : @Result!.MapName</p>
     </Container>
 
-    <p>
-        <label>
-            Lien :
-            <InputText @bind-Value="ChallengeImportDto.Link" />
-        </label>
-    </p>
-
-    <p>
-        <label>
-            Partie :
-            <InputSelect @bind-Value="SelectedGameId">
-                <Repeater Items="@Games" Context="game">
-                    <option value="@game.Id">#@game.Id - @game.Name</option>
-                </Repeater>
-            </InputSelect>
-        </label>
-    </p>
-
-    <p>
-        <label>
-            Sauvegarder les données :
-            <InputCheckbox @bind-Value="ChallengeImportDto.PersistData" />
-        </label>
-    </p>
-
-    <p>
-        <label>
-            Ecraser les données :
-            <InputCheckbox @bind-Value="ChallengeImportDto.OverrideData" />
-        </label>
-    </p>
-
-    <p>
-        <button type="submit">Valider</button>
-    </p>
-</EditForm>
-
-<Container Condition="Result is not null && !DataImported">
-    <p>Import réussi !</p>
-    <p>Carte : @Result!.MapName</p>
-</Container>
-
-<Container Condition="Result is not null && DataImported">
-    <p>Ajout des données réussi !</p>
-    <a href="@NavigationManager.ToAbsoluteUri($"/games/{SelectedGameId}")">Voir la partie</a>
-</Container>
+    <Container Condition="Result is not null && DataImported">
+        <p>Ajout des données réussi !</p>
+        <a href="@NavigationManager.ToAbsoluteUri($"/games/{SelectedGameId}")">Voir la partie</a>
+    </Container>
+</div>
