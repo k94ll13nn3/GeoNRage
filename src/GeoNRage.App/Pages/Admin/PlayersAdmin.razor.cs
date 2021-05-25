@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
+using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
 using Refit;
 
 namespace GeoNRage.App.Pages.Admin
@@ -17,7 +17,7 @@ namespace GeoNRage.App.Pages.Admin
         public IPlayersApi PlayersApi { get; set; } = null!;
 
         [Inject]
-        public IJSRuntime JSRuntime { get; set; } = null!;
+        public PopupService PopupService { get; set; } = null!;
 
         public IEnumerable<PlayerDto> Players { get; set; } = null!;
 
@@ -39,15 +39,9 @@ namespace GeoNRage.App.Pages.Admin
             SelectedPlayerId = playerId;
         }
 
-        public async Task DeletePlayerAsync(string playerId)
+        public void DeletePlayer(string playerId)
         {
-            if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider la suppression du joueur {playerId} ?"))
-            {
-                return;
-            }
-
-            await PlayersApi.DeleteAsync(playerId);
-            Players = await PlayersApi.GetAllAsync();
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId));
         }
 
         public async Task CreateOrUpdatePlayerAsync()
@@ -89,6 +83,20 @@ namespace GeoNRage.App.Pages.Admin
         protected override void OnAfterRender(bool firstRender)
         {
             Form?.EditContext?.UpdateCssClassProvider();
+        }
+
+        private async void OnConfirmDeleteAsync(string playerId)
+        {
+            try
+            {
+                await PlayersApi.DeleteAsync(playerId);
+                Players = await PlayersApi.GetAllAsync();
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            }
         }
     }
 }

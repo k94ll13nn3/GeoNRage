@@ -44,5 +44,11 @@ namespace GeoNRage.App.Components.Shared
         {
             StateHasChanged();
         }
+
+        private void OnValidate()
+        {
+            PopupService.OnOnClick?.Invoke();
+            PopupService.HidePopup();
+        }
     }
 }

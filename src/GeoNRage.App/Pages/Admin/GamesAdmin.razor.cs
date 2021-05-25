@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
+using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
 using Refit;
 
 namespace GeoNRage.App.Pages.Admin
@@ -24,7 +24,7 @@ namespace GeoNRage.App.Pages.Admin
         public IGamesApi GamesApi { get; set; } = null!;
 
         [Inject]
-        public IJSRuntime JSRuntime { get; set; } = null!;
+        public PopupService PopupService { get; set; } = null!;
 
         public IEnumerable<MapDto> Maps { get; set; } = null!;
 
@@ -57,15 +57,9 @@ namespace GeoNRage.App.Pages.Admin
             SelectedGameId = gameId;
         }
 
-        public async Task DeleteGameAsync(int gameId)
+        public void DeleteGame(int gameId)
         {
-            if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Valider la suppression de la partie {gameId} ?"))
-            {
-                return;
-            }
-
-            await GamesApi.DeleteAsync(gameId);
-            Games = await GamesApi.GetAllAsync();
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la partie {gameId} ?", () => OnConfirmDeleteAsync(gameId));
         }
 
         public async Task CreateOrUpdateGameAsync()
@@ -112,6 +106,20 @@ namespace GeoNRage.App.Pages.Admin
         protected override void OnAfterRender(bool firstRender)
         {
             Form?.EditContext?.UpdateCssClassProvider();
+        }
+
+        private async void OnConfirmDeleteAsync(int gameId)
+        {
+            try
+            {
+                await GamesApi.DeleteAsync(gameId);
+                Games = await GamesApi.GetAllAsync();
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            }
         }
     }
 }

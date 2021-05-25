@@ -10,7 +10,15 @@
                 @PopupService.Message
             </section>
             <footer class="modal-card-foot is-justify-content-flex-end">
-                <button class="button" @onclick="PopupService.HidePopup" type="button">Fermer</button>
+                <Container Condition="PopupService.IsOkCancel">
+                    <ChildContent>
+                        <button class="button is-primary" @onclick="OnValidate" type="button">Valider</button>
+                        <button class="button is-danger" @onclick="PopupService.HidePopup" type="button">Annuler</button>
+                    </ChildContent>
+                    <ElseContent>
+                        <button class="button is-primary" @onclick="PopupService.HidePopup" type="button">Fermer</button>
+                    </ElseContent>
+                </Container>
             </footer>
         </div>
     </div>
