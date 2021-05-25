@@ -1,0 +1,17 @@
+﻿<Container Condition="PopupService!.IsOpen">
+    <div class="modal is-active">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title is-capitalized">@PopupService.Title</p>
+                <button class="delete" aria-label="close" @onclick="PopupService.HidePopup" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+                @PopupService.Message
+            </section>
+            <footer class="modal-card-foot is-justify-content-flex-end">
+                <button class="button" @onclick="PopupService.HidePopup" type="button">Fermer</button>
+            </footer>
+        </div>
+    </div>
+</Container>

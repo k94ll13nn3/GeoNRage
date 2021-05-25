@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Authentication;
+using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,8 @@ namespace GeoNRage.App
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<GeoNRageStateProvider>();
             builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<GeoNRageStateProvider>());
+
+            builder.Services.AddSingleton(new PopupService());
 
             builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
