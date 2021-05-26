@@ -8,8 +8,9 @@
   </PropertyGroup>
 
   <!-- https://github.com/dotnet/roslyn/issues/37876#issuecomment-738042719 -->
+  <!-- https://github.com/dotnet/roslyn/issues/51602 -->
   <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1014</NoWarn>
+    <NoWarn>$(NoWarn);CA1014;AD0001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.22.0.31243">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.23.0.32424">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

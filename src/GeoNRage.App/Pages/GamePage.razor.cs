@@ -57,6 +57,7 @@ namespace GeoNRage.App.Pages
             _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
             _hubConnection.Reconnected -= OnHubConnectionReconnected;
             await _hubConnection.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
 
         public async Task ReloadPageAsync()
@@ -103,7 +104,7 @@ namespace GeoNRage.App.Pages
             }
         }
 
-        private Task OnHubConnectionReconnected(string arg)
+        private Task OnHubConnectionReconnected(string? arg)
         {
             HubClosed = false;
             HubReconnected = true;
@@ -112,7 +113,7 @@ namespace GeoNRage.App.Pages
             return Task.FromResult(0);
         }
 
-        private Task OnHubConnectionReconnecting(Exception arg)
+        private Task OnHubConnectionReconnecting(Exception? arg)
         {
             HubClosed = false;
             HubReconnected = false;
@@ -121,7 +122,7 @@ namespace GeoNRage.App.Pages
             return Task.FromResult(0);
         }
 
-        private Task OnHubConnectionClosed(Exception arg)
+        private Task OnHubConnectionClosed(Exception? arg)
         {
             HubClosed = true;
             HubReconnected = false;

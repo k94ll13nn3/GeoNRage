@@ -174,16 +174,13 @@ csharp_space_between_square_brackets = false
 dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.RCS1090.severity = none
 
-# Forces an EventArgs derivated class for no reasons...
-dotnet_diagnostic.CA1003.severity = none
-
-dotnet_diagnostic.CA1716.severity = none
-
+# S1075: Refactor your code not to use hardcoded absolute paths or URIs
 dotnet_diagnostic.S1075.severity = none
 
-[Program.cs]
-dotnet_diagnostic.IDE1006.severity = none
+# CA1716: Identifiers should not match keywords
+dotnet_diagnostic.CA1716.severity = none
 
+# CA2227: Collection properties should be read only
 [**/Dtos/**.cs]
 dotnet_diagnostic.CA2227.severity = none
 
