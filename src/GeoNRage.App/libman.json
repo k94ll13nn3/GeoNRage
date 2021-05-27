@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "provider": "unpkg",
+      "library": "bulma@0.9.2",
+      "destination": "wwwroot/styles/bulma/",
+      "files": [
+        "sass/**/*.sass",
+        "package.json",
+        "LICENSE",
+        "bulma.sass"
+      ]
+    }
+  ]
+}
