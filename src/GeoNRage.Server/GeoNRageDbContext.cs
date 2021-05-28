@@ -46,7 +46,7 @@ namespace GeoNRage.Server
             builder.Entity<Challenge>().HasMany(c => c.PlayerScores).WithOne(p => p.Challenge).HasForeignKey(p => p.ChallengeId);
 
             builder.Entity<PlayerScore>().HasKey(p => new { p.ChallengeId, p.PlayerId });
-            builder.Entity<PlayerScore>().HasOne(p => p.Player).WithMany().HasForeignKey(p => p.PlayerId).IsRequired();
+            builder.Entity<PlayerScore>().HasOne(p => p.Player).WithMany(p => p.PlayerScores).HasForeignKey(p => p.PlayerId).IsRequired();
 
             base.OnModelCreating(builder);
         }

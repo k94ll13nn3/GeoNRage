@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
@@ -13,9 +14,31 @@ namespace GeoNRage.Server.Services
     {
         private readonly GeoNRageDbContext _context;
 
-        public async Task<IEnumerable<Player>> GetAllAsync()
+        public async Task<IEnumerable<Player>> GetAllAsync(bool includeNavigation)
         {
-            return await _context.Players.ToListAsync();
+            IQueryable<Player> query = _context.Players;
+            if (includeNavigation)
+            {
+                query = query
+                    .Include(p => p.PlayerScores)
+                    .ThenInclude(p => p.Challenge)
+                    .ThenInclude(c => c.Game)
+                    .Include(p => p.PlayerScores)
+                    .ThenInclude(p => p.Challenge)
+                    .ThenInclude(c => c.Map);
+            }
+
+            List<Player> players = await query.ToListAsync();
+            if (includeNavigation)
+            {
+                // Cutting the relations to avoid cycles in JSON.
+                foreach (PlayerScore score in players.SelectMany(p => p.PlayerScores))
+                {
+                    score.Challenge.PlayerScores = null!;
+                }
+            }
+
+            return players;
         }
 
         public async Task<Player> CreateAsync(PlayerCreateDto dto)

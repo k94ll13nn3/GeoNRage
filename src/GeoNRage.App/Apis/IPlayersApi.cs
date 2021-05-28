@@ -9,6 +9,9 @@ namespace GeoNRage.App.Apis
         [Get("/api/players")]
         Task<PlayerDto[]> GetAllAsync();
 
+        [Get("/api/players/full")]
+        Task<PlayerFullDto[]> GetAllFullAsync();
+
         [Post("/api/players")]
         Task<PlayerDto> CreateAsync([Body] PlayerCreateDto dto);
 

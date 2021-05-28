@@ -23,9 +23,16 @@ namespace GeoNRage.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<PlayerDto>> GetAllAsync()
         {
-            IEnumerable<Player> players = await _playerService.GetAllAsync();
-
+            IEnumerable<Player> players = await _playerService.GetAllAsync(false);
             return _mapper.Map<IEnumerable<Player>, IEnumerable<PlayerDto>>(players);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("full")]
+        public async Task<IEnumerable<PlayerFullDto>> GetAllFulleAsync()
+        {
+            IEnumerable<Player> players = await _playerService.GetAllAsync(true);
+            return _mapper.Map<IEnumerable<Player>, IEnumerable<PlayerFullDto>>(players);
         }
 
         [HttpPost]
