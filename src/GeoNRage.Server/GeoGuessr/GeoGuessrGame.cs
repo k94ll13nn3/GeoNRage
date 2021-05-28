@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Shared.Dtos.GeoGuessr
+﻿namespace GeoNRage.Server.Dtos.GeoGuessr
 {
     public class GeoGuessrGame
     {
