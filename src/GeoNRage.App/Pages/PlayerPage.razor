@@ -1,0 +1,68 @@
+﻿@page "/players/{Id}"
+
+<Container Condition="Loaded && PlayerFound">
+    <ChildContent>
+        <div class="container">
+            <div class="m-3">
+                <section class="hero m-3 is-primary is-small">
+                    <div class="hero-body">
+                        <p class="title">
+                            @Player.Name
+                        </p>
+                        <p class="subtitle">
+                            <a href="https://www.geoguessr.com/user/@Player.Id" target="_blank">
+                                <span class="icon is-small">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </span>
+                                <span>Profil GeoGuessr</span>
+                            </a>
+                        </p>
+                    </div>
+                </section>
+            </div>
+            <nav class="level m-3">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de 5000</p>
+                        <p class="title">@Player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 5000)</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de 4999</p>
+                        <p class="title">@Player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999)</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de carte complétées</p>
+                        <p class="title">@Player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0))</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Meilleure partie (<span title="Seules les 3 premières cartes (ou moins) comptent" style="cursor:help">?</span>)</p>
+                        <p class="title">
+                            @{
+                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.GroupBy(p => p.Challenge.GameId).OrderByDescending(g => g.OrderBy(c => c.Challenge.Id).Take(3).Select(p => p.Sum).Sum()).First().OrderBy(c => c.Challenge.Id).Take(3).ToList();
+                            }
+                            @results.Select(p => p.Sum).Sum()
+                        </p>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <Container Condition="!Loaded && PlayerFound">
+            <LoadingAnimation>
+                Chargement du joueur @(Id)...
+            </LoadingAnimation>
+        </Container>
+
+        <Container Condition="!PlayerFound">
+            <PageNotFound />
+        </Container>
+    </ElseContent>
+</Container>

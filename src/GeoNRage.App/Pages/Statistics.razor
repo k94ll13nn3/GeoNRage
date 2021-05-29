@@ -21,7 +21,7 @@
             <tbody>
                 <Repeater Items="Players" Context="player">
                     <tr>
-                        <th>@player.Name</th>
+                        <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.Id}")">@player.Name</a></th>
                         <td>@player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 5000)</td>
                         <td>@player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999)</td>
                         <td>@player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0))</td>

@@ -41,6 +41,18 @@ namespace GeoNRage.Server.Services
             return players;
         }
 
+        public async Task<Player?> GetFullAsync(string id)
+        {
+            return await _context.Players
+                .Include(p => p.PlayerScores)
+                .ThenInclude(p => p.Challenge)
+                .ThenInclude(c => c.Game)
+                .Include(p => p.PlayerScores)
+                .ThenInclude(p => p.Challenge)
+                .ThenInclude(c => c.Map)
+                .FirstOrDefaultAsync(g => g.Id == id);
+        }
+
         public async Task<Player> CreateAsync(PlayerCreateDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
