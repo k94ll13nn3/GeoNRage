@@ -29,6 +29,18 @@
                     </Repeater>
                 </tbody>
             </table>
+
+            <nav class="pagination" role="navigation" aria-label="pagination">
+                <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
+                <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
+                <ul class="pagination-list">
+                    <Repeater Items="Enumerable.Range(1, PageCount)" Context="pageNumber">
+                        <li>
+                            <a class="pagination-link @(pageNumber == CurrentPage ? "is-current" : "")" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
+                        </li>
+                    </Repeater>
+                </ul>
+            </nav>
         </div>
     </ChildContent>
 
