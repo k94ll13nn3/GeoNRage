@@ -65,59 +65,61 @@
                 </div>
             </header>
             <div class="card-content">
-                <table>
-                    <Repeater Items="Game.Challenges" Context="challenge">
-                        <tr>
-                            <th>
-                                @challenge.MapName
-                                @if (challenge.Link is not null)
-                                {
-                                    <a href="@challenge.Link" target="_blank" class="action-button">
-                                        <span class="icon">
-                                            <i class="fas fa-link" aria-hidden="true"></i>
-                                        </span>
-                                    </a>
-                                }
-                            </th>
-                            <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                <th>@playerScore.PlayerName</th>
-                            </Repeater>
-                        </tr>
-
-                        <Repeater Items="Enumerable.Range(1, 5)" Context="round">
+                <div class="table-container">
+                    <table>
+                        <Repeater Items="Game.Challenges" Context="challenge">
                             <tr>
-                                <th>Round @round</th>
-                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                    @{
-                                        var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
+                                <th>
+                                    @challenge.MapName
+                                    @if (challenge.Link is not null)
+                                    {
+                                        <a href="@challenge.Link" target="_blank" class="action-button">
+                                            <span class="icon">
+                                                <i class="fas fa-link" aria-hidden="true"></i>
+                                            </span>
+                                        </a>
                                     }
-                                    <td>
-                                        <NumericInput @key="@key"
-                                                      InitialValue="@Game[challenge.Id, playerScore.PlayerId, round]"
-                                                      ValueChanged="@(async (e) => { await SendAsync(challenge.Id, playerScore.PlayerId, round, e);})"
-                                                      Class="@(Game[challenge.Id, playerScore.PlayerId, round] == 5000 ? "perfect" : (Game[challenge.Id, playerScore.PlayerId, round] == 4999 ? "almost-perfect" : ""))"></NumericInput>
-                                    </td>
+                                </th>
+                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                    <th>@playerScore.PlayerName</th>
+                                </Repeater>
+                            </tr>
+
+                            <Repeater Items="Enumerable.Range(1, 5)" Context="round">
+                                <tr>
+                                    <th>Round @round</th>
+                                    <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                        @{
+                                            var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
+                                        }
+                                        <td>
+                                            <NumericInput @key="@key"
+                                                          InitialValue="@Game[challenge.Id, playerScore.PlayerId, round]"
+                                                          ValueChanged="@(async (e) => { await SendAsync(challenge.Id, playerScore.PlayerId, round, e);})"
+                                                          Class="@(Game[challenge.Id, playerScore.PlayerId, round] == 5000 ? "perfect" : (Game[challenge.Id, playerScore.PlayerId, round] == 4999 ? "almost-perfect" : ""))"></NumericInput>
+                                        </td>
+                                    </Repeater>
+                                </tr>
+                            </Repeater>
+
+                            <tr>
+                                <th>Total</th>
+                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                    <th>@(playerScore.Sum ?? 0)</th>
                                 </Repeater>
                             </tr>
                         </Repeater>
 
-                        <tr>
-                            <th>Total</th>
-                            <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                <th>@(playerScore.Sum ?? 0)</th>
-                            </Repeater>
-                        </tr>
-                    </Repeater>
-
-                    <Container Condition="Game.Challenges.Any()">
-                        <tr class="bordered">
-                            <th>Total global</th>
-                            <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
-                                <th>@playerScores.Sum(playerScore => playerScore.Sum)</th>
-                            </Repeater>
-                        </tr>
-                    </Container>
-                </table>
+                        <Container Condition="Game.Challenges.Any()">
+                            <tr class="bordered">
+                                <th>Total global</th>
+                                <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
+                                    <th>@playerScores.Sum(playerScore => playerScore.Sum)</th>
+                                </Repeater>
+                            </tr>
+                        </Container>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
