@@ -35,10 +35,6 @@ table {
         text-overflow: ellipsis;
         background-color: t.$primary;
         color: f.findColorInvert(t.$primary);
-
-        &.bordered {
-            border-top: 5px solid black;
-        }
     }
 }
 
