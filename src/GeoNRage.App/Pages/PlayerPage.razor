@@ -20,7 +20,9 @@
                     </div>
                 </section>
             </div>
-            <nav class="level m-3">
+
+            <h1 class="is-size-4 my-3 mx-6">Statistiques générales</h1>
+            <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 5000</p>
@@ -51,6 +53,137 @@
                     </div>
                 </div>
             </nav>
+
+            <h1 class="is-size-4 my-3 mx-6">Meilleur score par carte</h1>
+            <nav class="level mx-3 my-5">
+                <Repeater Items="Maps" Context="map">
+                    @{
+                        PlayerScoreWithChallengeDto? score = Player.PlayerScores.Where(c => c.Challenge.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
+                    }
+                    <div class="level-item has-text-centered">
+                        <div>
+                            <p class="heading">@map.Name</p>
+                            <p class="title">
+                                <Container Condition="score?.Sum is not null">
+                                    @score!.Sum
+                                </Container>
+                                <Container Condition="score?.Sum is null">
+                                    —
+                                </Container>
+                            </p>
+                        </div>
+                    </div>
+                </Repeater>
+            </nav>
+
+            <h1 class="is-size-4 my-3 mx-6">Statistiques diverses</h1>
+            <nav class="level mx-3 my-5">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de 25k</p>
+                        <p class="title">@Player.PlayerScores.Count(p => p.Sum == 25000)</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Moyenne par partie</p>
+                        <p class="title">@((int)(Player.PlayerScores.Where(p => p.Sum is not null).Average(p => p.Sum) ?? 0))</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Moyenne par round</p>
+                        <p class="title">@((int)(Player.PlayerScores.SelectMany(p => p.Rounds).Where(s => s is not null).Average() ?? 0))</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de 0</p>
+                        <p class="title">@Player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 0)</p>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="columns m-3">
+                <div class="column">
+                    <Container Condition="ChallengesNotDone?.Any() == true">
+                        <ChildContent>
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        Cartes non jouées
+                                    </p>
+                                </header>
+                                <div class="card-table">
+                                    <div class="content">
+                                        <table class="table table is-striped is-hoverable is-fullwidth">
+                                            <tbody>
+                                                <Repeater Items="ChallengesNotDone" Context="challenge">
+                                                    <tr>
+                                                        <td>@challenge.MapName</td>
+                                                        <td>
+                                                            <a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
+                                                                #@challenge.GameId
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </Repeater>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </ChildContent>
+                        <ElseContent>
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        Cartes non jouées
+                                    </p>
+                                </header>
+                                <div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
+                                    Toutes les cartes disponibles ont été jouées !
+                                </div>
+                            </div>
+                        </ElseContent>
+                    </Container>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées. Survoler les barres pour voir le score.">?</span>)
+                            </p>
+                        </header>
+                        <div class="card-content py-0">
+                            <div class="container is-flex is-justify-content-center is-align-items-center m-0" style="max-height:250px;height:250px;">
+                                <table class="charts-css column show-labels show-primary-axis show-data-axes">
+                                    <caption>
+                                        Historique des parties
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Partie</th>
+                                            <th scope="col">Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <Repeater Items="GameHistoric" Context="game">
+                                            <tr>
+                                                <th scope="row"></th>
+                                                <td style="--size: calc(@game / @GameHistoric.Max());">
+                                                    <span class="data"></span>
+                                                    <span class="tooltip">@game</span>
+                                                </td>
+                                            </tr>
+                                        </Repeater>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </ChildContent>
 

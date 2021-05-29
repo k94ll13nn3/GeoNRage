@@ -18,6 +18,8 @@ namespace GeoNRage.Shared.Dtos
 
         public string GameName { get; set; } = null!;
 
+        public DateTime GameDate { get; set; }
+
         public ICollection<PlayerScoreDto> PlayerScores { get; set; } = new HashSet<PlayerScoreDto>();
 
         public PlayerScoreDto? this[string playerId] => PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
