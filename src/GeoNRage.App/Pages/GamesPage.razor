@@ -6,7 +6,6 @@
             <table class="table is-bordered is-striped is-hoverable is-fullwidth">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Nom</th>
                         <th>Date</th>
                         <th></th>
@@ -15,7 +14,6 @@
                 <tbody>
                     <Repeater Items="Games" Context="game">
                         <tr>
-                            <th>@game.Id</th>
                             <td>@game.Name</td>
                             <td>@game.Date.ToShortDateString()</td>
                             <td>
