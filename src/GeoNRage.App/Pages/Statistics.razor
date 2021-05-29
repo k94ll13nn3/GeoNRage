@@ -7,29 +7,86 @@
 </Container>
 
 <Container Condition="Players?.Any() == true">
-    <div class="container mt-1">
-        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+    <div class="container">
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth m-3">
             <thead>
                 <tr>
-                    <th>Joueur</th>
-                    <th>Nombre de 5000</th>
-                    <th>Nombre de 4999 😏</th>
-                    <th>Nombre de carte complétées</th>
-                    <th>Meilleure partie (<span title="Seules les 3 premières cartes (ou moins) comptent" style="cursor:help">?</span>)</th>
+                    <th>
+                        <div class="is-flex">
+                            <span>Joueur</span>
+                            <div class="sort-icons">
+                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.PlayerName))">
+                                    <i class="fas fa-sort-amount-up-alt"></i>
+                                </span>
+                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.PlayerName))">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="is-flex">
+                            <span>Nombre de 5000</span>
+                            <div class="sort-icons">
+                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf5000))">
+                                    <i class="fas fa-sort-amount-up-alt"></i>
+                                </span>
+                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf5000))">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="is-flex">
+                            <span>Nombre de 4999 😏</span>
+                            <div class="sort-icons">
+                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf4999))">
+                                    <i class="fas fa-sort-amount-up-alt"></i>
+                                </span>
+                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf4999))">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="is-flex">
+                            <span>Nombre de carte complétées</span>
+                            <div class="sort-icons">
+                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.ChallengesCompleted))">
+                                    <i class="fas fa-sort-amount-up-alt"></i>
+                                </span>
+                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.ChallengesCompleted))">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="is-flex">
+                            <span>Meilleure partie (<span class="help-tooltip" title="Seules les 3 premières cartes (ou moins) comptent">?</span>)</span>
+                            <div class="sort-icons">
+                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.BestGame))">
+                                    <i class="fas fa-sort-amount-up-alt"></i>
+                                </span>
+                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.BestGame))">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 <Repeater Items="Players" Context="player">
                     <tr>
-                        <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.Id}")">@player.Name</a></th>
-                        <td>@player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 5000)</td>
-                        <td>@player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999)</td>
-                        <td>@player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0))</td>
+                        <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.PlayerId}")">@player.PlayerName</a></th>
+                        <td>@player.NumberOf5000</td>
+                        <td>@player.NumberOf4999</td>
+                        <td>@player.ChallengesCompleted</td>
                         <td>
-                            @{
-                                List<PlayerScoreWithChallengeDto> results = player.PlayerScores.GroupBy(p => p.Challenge.GameId).OrderByDescending(g => g.OrderBy(c => c.Challenge.Id).Take(3).Select(p => p.Sum).Sum()).First().OrderBy(c => c.Challenge.Id).Take(3).ToList();
-                            }
-                            @results.Select(p => p.Sum).Sum() (<a href="@NavigationManager.ToAbsoluteUri($"/games/{results.First().Challenge.GameId}")">#@results.First().Challenge.GameId</a>)
+                            @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
                         </td>
                     </tr>
                 </Repeater>
