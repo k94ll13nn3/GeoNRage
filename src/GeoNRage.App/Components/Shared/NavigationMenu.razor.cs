@@ -1,13 +1,17 @@
-﻿using System.Security.Principal;
+﻿using System;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using GeoNRage.App.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace GeoNRage.App.Components.Shared
 {
-    public partial class NavigationMenu
+    public partial class NavigationMenu : IDisposable
     {
+        private bool _disposedValue;
+
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
@@ -21,6 +25,12 @@ namespace GeoNRage.App.Components.Shared
 
         public bool ShowMenu { get; set; }
 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         protected override async Task OnParametersSetAsync()
         {
             IIdentity? identity = (await AuthenticationState).User.Identity;
@@ -28,6 +38,30 @@ namespace GeoNRage.App.Components.Shared
             {
                 Name = identity.Name ?? string.Empty;
             }
+        }
+
+        protected override void OnInitialized()
+        {
+            NavigationManager.LocationChanged += LocationChanged;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    NavigationManager.LocationChanged -= LocationChanged;
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        private void LocationChanged(object? sender, LocationChangedEventArgs e)
+        {
+            ShowMenu = false;
+            StateHasChanged();
         }
 
         private async Task LogoutClickAsync()
