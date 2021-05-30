@@ -10,6 +10,7 @@ namespace GeoNRage.Shared.Dtos
         public string MapId { get; set; } = null!;
 
         [Url]
-        public string? Link { get; set; }
+        [Required]
+        public string Link { get; set; } = null!;
     }
 }

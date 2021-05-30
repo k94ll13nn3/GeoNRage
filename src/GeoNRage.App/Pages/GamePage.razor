@@ -71,14 +71,11 @@
                             <tr>
                                 <th>
                                     @challenge.MapName
-                                    @if (challenge.Link is not null)
-                                    {
-                                        <a href="@challenge.Link" target="_blank" class="action-button">
-                                            <span class="icon">
-                                                <i class="fas fa-link" aria-hidden="true"></i>
-                                            </span>
-                                        </a>
-                                    }
+                                    <a href="@challenge.Link" target="_blank" class="action-button">
+                                        <span class="icon">
+                                            <i class="fas fa-link" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
                                 </th>
                                 <Repeater Items="challenge.PlayerScores" Context="playerScore">
                                     <th>@playerScore.PlayerName</th>

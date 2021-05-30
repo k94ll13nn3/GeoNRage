@@ -12,7 +12,7 @@ namespace GeoNRage.Shared.Dtos
 
         public string MapName { get; set; } = null!;
 
-        public Uri? Link { get; set; }
+        public Uri Link { get; set; } = null!;
 
         public int GameId { get; set; }
 

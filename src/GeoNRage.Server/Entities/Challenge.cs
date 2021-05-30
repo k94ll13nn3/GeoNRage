@@ -15,7 +15,7 @@ namespace GeoNRage.Server.Entities
 
         public Game Game { get; set; } = null!;
 
-        public Uri? Link { get; set; }
+        public Uri Link { get; set; } = null!;
 
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
     }

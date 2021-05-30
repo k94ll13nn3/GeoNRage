@@ -84,7 +84,7 @@ namespace GeoNRage.Server.Services
                 CreationDate = DateTime.UtcNow,
                 Challenges = dto.Challenges.Select(x => new Challenge
                 {
-                    Link = x.Link is not null ? new Uri(x.Link) : null,
+                    Link = new Uri(x.Link),
                     MapId = x.MapId,
                     PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
                 }).ToList()
@@ -128,7 +128,7 @@ namespace GeoNRage.Server.Services
                     .Where(c => challengeIds.Contains(c.Id))
                     .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
                     {
-                        Link = x.Link is not null ? new Uri(x.Link) : null,
+                        Link = new Uri(x.Link),
                         MapId = x.MapId,
                         PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
                     })).ToList();
@@ -139,7 +139,7 @@ namespace GeoNRage.Server.Services
                     if (modifiedChallenge is not null)
                     {
                         challenge.MapId = modifiedChallenge.MapId;
-                        challenge.Link = modifiedChallenge.Link is not null ? new Uri(modifiedChallenge.Link) : null;
+                        challenge.Link = new Uri(modifiedChallenge.Link);
                     }
                     challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
                     challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
@@ -330,7 +330,7 @@ namespace GeoNRage.Server.Services
                 {
                     Name = game!.Name,
                     Date = game.Date,
-                    Challenges = game.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link?.ToString(), MapId = c.MapId }).ToList(),
+                    Challenges = game.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link.ToString(), MapId = c.MapId }).ToList(),
                     PlayerIds = game.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
                 };
 

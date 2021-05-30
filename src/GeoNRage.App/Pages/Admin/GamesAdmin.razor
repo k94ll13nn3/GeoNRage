@@ -105,13 +105,6 @@
                                     </p>
                                 </div>
                                 <div class="control">
-                                    <button class="button is-info" @onclick="() => challenge.Link = null" type="button">
-                                        <span class="icon">
-                                            <i class="fas fa-times"></i>
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="control">
                                     <div class="select">
                                         <InputSelect @bind-Value="challenge.MapId">
                                             <Repeater Items="@Maps" Context="map">
