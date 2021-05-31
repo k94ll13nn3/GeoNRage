@@ -28,7 +28,12 @@ namespace GeoNRage.Server
 
             CreateMap<PlayerScore, PlayerScoreDto>()
                 .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name));
-            CreateMap<PlayerScore, PlayerScoreWithChallengeDto>();
+            CreateMap<PlayerScore, PlayerScoreWithChallengeDto>()
+                .ForMember(dest => dest.Rounds, opt => opt.MapFrom(src => new[] { src.Round1, src.Round2, src.Round3, src.Round4, src.Round5 }))
+                .ForMember(dest => dest.GameDate, opt => opt.MapFrom(src => src.Challenge.Game.Date))
+                .ForMember(dest => dest.GameId, opt => opt.MapFrom(src => src.Challenge.Game.Id))
+                .ForMember(dest => dest.ChallengeId, opt => opt.MapFrom(src => src.Challenge.Id))
+                .ForMember(dest => dest.MapId, opt => opt.MapFrom(src => src.Challenge.Map.Id));
         }
     }
 }

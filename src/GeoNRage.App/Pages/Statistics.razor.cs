@@ -55,10 +55,10 @@ namespace GeoNRage.App.Pages
         {
             List<PlayerScoreWithChallengeDto> results = player
                   .PlayerScores
-                  .GroupBy(p => p.Challenge.GameId)
-                  .OrderByDescending(g => g.OrderBy(c => c.Challenge.Id).Take(3).Select(p => p.Sum).Sum())
+                  .GroupBy(p => p.GameId)
+                  .OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Take(3).Select(p => p.Sum).Sum())
                   .First()
-                  .OrderBy(c => c.Challenge.Id)
+                  .OrderBy(c => c.ChallengeId)
                   .Take(3)
                   .ToList();
 
@@ -69,7 +69,7 @@ namespace GeoNRage.App.Pages
                 player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999),
                 player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0)),
                 results.Sum(p => p.Sum) ?? 0,
-                results[0].Challenge.GameId);
+                results[0].GameId);
         }
 
         internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int BestGame, int BestGameId);

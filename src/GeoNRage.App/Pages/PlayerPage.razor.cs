@@ -53,10 +53,10 @@ namespace GeoNRage.App.Pages
                 PlayerFound = true;
                 Player = response.Content;
 
-                ChallengesNotDone = challenges.ExceptBy(Player.PlayerScores.Where(p => p.Rounds.All(r => r is not null)).Select(p => p.Challenge.Id), c => c.Id);
+                ChallengesNotDone = challenges.ExceptBy(Player.PlayerScores.Where(p => p.Rounds.All(r => r is not null)).Select(p => p.ChallengeId), c => c.Id);
                 GameHistoric = Player
                     .PlayerScores
-                    .GroupBy(p => p.Challenge.GameDate)
+                    .GroupBy(p => p.GameDate)
                     .Where(g => g.Count() == 3)
                     .OrderBy(g => g.Key)
                     .Select(g => g.Sum(p => p.Sum) ?? 0);

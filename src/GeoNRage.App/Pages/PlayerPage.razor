@@ -46,7 +46,7 @@
                         <p class="heading">Meilleure partie (<span title="Seules les 3 premières cartes (ou moins) comptent" style="cursor:help">?</span>)</p>
                         <p class="title">
                             @{
-                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.GroupBy(p => p.Challenge.GameId).OrderByDescending(g => g.OrderBy(c => c.Challenge.Id).Take(3).Select(p => p.Sum).Sum()).First().OrderBy(c => c.Challenge.Id).Take(3).ToList();
+                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.GroupBy(p => p.GameId).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Take(3).Select(p => p.Sum).Sum()).First().OrderBy(c => c.ChallengeId).Take(3).ToList();
                             }
                             @results.Select(p => p.Sum).Sum()
                         </p>
@@ -58,7 +58,7 @@
             <nav class="level mx-3 my-5">
                 <Repeater Items="Maps" Context="map">
                     @{
-                        PlayerScoreWithChallengeDto? score = Player.PlayerScores.Where(c => c.Challenge.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
+                        PlayerScoreWithChallengeDto? score = Player.PlayerScores.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
                     }
                     <div class="level-item has-text-centered">
                         <div>

@@ -29,14 +29,6 @@ namespace GeoNRage.Server.Services
             }
 
             List<Player> players = await query.ToListAsync();
-            if (includeNavigation)
-            {
-                // Cutting the relations to avoid cycles in JSON.
-                foreach (PlayerScore score in players.SelectMany(p => p.PlayerScores))
-                {
-                    score.Challenge.PlayerScores = null!;
-                }
-            }
 
             return players;
         }
