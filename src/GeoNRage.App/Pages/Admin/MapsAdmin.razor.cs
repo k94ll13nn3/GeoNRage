@@ -61,6 +61,7 @@ namespace GeoNRage.App.Pages.Admin
                 ShowEditForm = false;
                 SelectedMapId = null;
                 Maps = await MapsApi.GetAllAsync();
+                StateHasChanged();
             }
             catch (ApiException e)
             {

@@ -61,6 +61,7 @@ namespace GeoNRage.App.Pages.Admin
                 ShowEditForm = false;
                 SelectedPlayerId = null;
                 Players = await PlayersApi.GetAllAsync();
+                StateHasChanged();
             }
             catch (ApiException e)
             {
