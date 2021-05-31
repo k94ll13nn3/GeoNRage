@@ -41,7 +41,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public void DeleteMap(string mapId)
         {
-            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la carte {mapId} ?", () => OnConfirmDeleteAsync(mapId));
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la carte {mapId} ?", () => OnConfirmDeleteAsync(mapId), false);
         }
 
         public async Task CreateOrUpdateMapAsync()

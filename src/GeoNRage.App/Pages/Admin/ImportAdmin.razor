@@ -5,6 +5,8 @@
 <GeoNRage.App.Components.Admin.AdminMenu />
 
 <div class="container is-fluid m-3">
+    <button type="button" class="button is-danger my-5" @onclick="RestoreAll">Restaurer les challenges</button>
+
     <div class="columns">
         <div class="column is-one-third-fullhd is-full-touch is-half-desktop">
             <EditForm Model="ChallengeImportDto" OnValidSubmit="ImportAsync" @ref="Form">

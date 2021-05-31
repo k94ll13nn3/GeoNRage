@@ -11,6 +11,10 @@ namespace GeoNRage.App.Components.Shared
         [Inject]
         public PopupService PopupService { get; set; } = null!;
 
+        public bool ShowProgress { get; set; }
+
+        public bool DisableButtons { get; set; }
+
         public void Dispose()
         {
             Dispose(disposing: true);
@@ -42,13 +46,23 @@ namespace GeoNRage.App.Components.Shared
 
         private void Update(object? sender, EventArgs e)
         {
+            ShowProgress = false;
+            DisableButtons = false;
             StateHasChanged();
         }
 
         private void OnValidate()
         {
             PopupService.OnOnClick?.Invoke();
-            PopupService.HidePopup();
+            if (!PopupService.ShowProgressBar)
+            {
+                PopupService.HidePopup();
+            }
+            else
+            {
+                ShowProgress = true;
+                DisableButtons = true;
+            }
         }
     }
 }

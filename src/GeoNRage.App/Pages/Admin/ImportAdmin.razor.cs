@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
+using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -14,10 +15,16 @@ namespace GeoNRage.App.Pages.Admin
     public partial class ImportAdmin
     {
         [Inject]
+        public IChallengesApi ChallengesApi { get; set; } = null!;
+
+        [Inject]
         public IGamesApi GamesApi { get; set; } = null!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
+
+        [Inject]
+        public PopupService PopupService { get; set; } = null!;
 
         public IEnumerable<GameDto> Games { get; set; } = null!;
 
@@ -52,6 +59,11 @@ namespace GeoNRage.App.Pages.Admin
             }
         }
 
+        public void RestoreAll()
+        {
+            PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration de tous les challenges ?", () => OnRestoreAllAsync(), true);
+        }
+
         protected override async Task OnInitializedAsync()
         {
             Games = await GamesApi.GetAllAsync();
@@ -61,6 +73,17 @@ namespace GeoNRage.App.Pages.Admin
         protected override void OnAfterRender(bool firstRender)
         {
             Form?.EditContext?.UpdateCssClassProvider();
+        }
+
+        private async void OnRestoreAllAsync()
+        {
+            IEnumerable<ChallengeDto> challenges = await ChallengesApi.GetAllAsync();
+            foreach (ChallengeDto challenge in challenges)
+            {
+                await GamesApi.ImportChallengeAsync(challenge.GameId, new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true, PersistData = true });
+            }
+
+            PopupService.HidePopup();
         }
     }
 }

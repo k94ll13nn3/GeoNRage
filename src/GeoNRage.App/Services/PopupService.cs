@@ -10,6 +10,8 @@ namespace GeoNRage.App.Services
 
         public bool IsOkCancel { get; private set; }
 
+        public bool ShowProgressBar { get; set; }
+
         public string Title { get; private set; } = string.Empty;
 
         public string Message { get; private set; } = string.Empty;
@@ -25,10 +27,11 @@ namespace GeoNRage.App.Services
             OnPopupUpdated?.Invoke(this, EventArgs.Empty);
         }
 
-        public void DisplayOkCancelPopup(string title, string message, Action onOkClick)
+        public void DisplayOkCancelPopup(string title, string message, Action onOkClick, bool showProgressBar)
         {
             IsOkCancel = true;
             IsOpen = true;
+            ShowProgressBar = showProgressBar;
             Title = title;
             Message = message;
             OnOnClick = onOkClick;

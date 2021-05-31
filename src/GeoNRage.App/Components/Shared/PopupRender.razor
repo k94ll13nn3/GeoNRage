@@ -4,19 +4,22 @@
         <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title is-capitalized">@PopupService.Title</p>
-                <button class="delete" aria-label="close" @onclick="PopupService.HidePopup" type="button"></button>
+                <button class="delete" aria-label="close" @onclick="PopupService.HidePopup" type="button" disabled="@DisableButtons"></button>
             </header>
             <section class="modal-card-body">
                 @PopupService.Message
+                <Container Condition="ShowProgress">
+                    <progress class="progress is-large is-info" max="100">60%</progress>
+                </Container>
             </section>
             <footer class="modal-card-foot is-justify-content-flex-end">
                 <Container Condition="PopupService.IsOkCancel">
                     <ChildContent>
-                        <button class="button is-primary" @onclick="OnValidate" type="button">Valider</button>
-                        <button class="button is-danger" @onclick="PopupService.HidePopup" type="button">Annuler</button>
+                        <button class="button is-primary" @onclick="OnValidate" type="button" disabled="@DisableButtons">Valider</button>
+                        <button class="button is-danger" @onclick="PopupService.HidePopup" type="button" disabled="@DisableButtons">Annuler</button>
                     </ChildContent>
                     <ElseContent>
-                        <button class="button is-primary" @onclick="PopupService.HidePopup" type="button">Fermer</button>
+                        <button class="button is-primary" @onclick="PopupService.HidePopup" type="button" disabled="@DisableButtons">Fermer</button>
                     </ElseContent>
                 </Container>
             </footer>

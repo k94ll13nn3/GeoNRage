@@ -59,7 +59,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public void DeleteGame(int gameId)
         {
-            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la partie {gameId} ?", () => OnConfirmDeleteAsync(gameId));
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la partie {gameId} ?", () => OnConfirmDeleteAsync(gameId), false);
         }
 
         public async Task CreateOrUpdateGameAsync()

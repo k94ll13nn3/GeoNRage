@@ -41,7 +41,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public void DeletePlayer(string playerId)
         {
-            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId));
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId), false);
         }
 
         public async Task CreateOrUpdatePlayerAsync()
