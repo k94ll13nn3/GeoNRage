@@ -31,11 +31,11 @@
                 </Container>
 
                 <div class="field">
-                    <label class="label">Lien</label>
+                    <label class="label">Id GeoGuessr</label>
                     <div class="control">
-                        <InputText @bind-Value="ChallengeImportDto.Link" placeholder="Lien" class="input" />
+                        <InputText @bind-Value="ChallengeImportDto.GeoGuessrId" placeholder="GeoGuessr Id" class="input" />
                         <p class="help is-danger">
-                            <ValidationMessage For="@(() => ChallengeImportDto.Link)"></ValidationMessage>
+                            <ValidationMessage For="@(() => ChallengeImportDto.GeoGuessrId)"></ValidationMessage>
                         </p>
                     </div>
                 </div>

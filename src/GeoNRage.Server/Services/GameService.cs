@@ -59,10 +59,10 @@ namespace GeoNRage.Server.Services
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
-            IEnumerable<Uri> links = dto.Challenges.Where(c => c.Link is not null).Select(c => new Uri(c.Link!));
-            if (_context.Challenges.Select(c => c.Link).AsEnumerable().Intersect(links).Any())
+            IEnumerable<string> geoGuessrIds = dto.Challenges.Select(c => c.GeoGuessrId);
+            if (_context.Challenges.Select(c => c.GeoGuessrId).AsEnumerable().Intersect(geoGuessrIds).Any())
             {
-                throw new InvalidOperationException("One or more challenge links are already registered.");
+                throw new InvalidOperationException("One or more challenge GeoGuessr ids are already registered.");
             }
 
             IEnumerable<string> mapIds = dto.Challenges.Select(c => c.MapId);
@@ -84,7 +84,7 @@ namespace GeoNRage.Server.Services
                 CreationDate = DateTime.UtcNow,
                 Challenges = dto.Challenges.Select(x => new Challenge
                 {
-                    Link = new Uri(x.Link),
+                    GeoGuessrId = x.GeoGuessrId,
                     MapId = x.MapId,
                     PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
                 }).ToList()
@@ -104,11 +104,11 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more maps do not exists.");
             }
 
-            // Check challenge link for new challenges only.
-            IEnumerable<Uri> links = dto.Challenges.Where(c => c.Id == 0 && c.Link is not null).Select(c => new Uri(c.Link!));
-            if (_context.Challenges.Select(c => c.Link).AsEnumerable().Intersect(links).Any())
+            // Check challenge GeoGuessr id for new challenges only.
+            IEnumerable<string> geoGuessrIds = dto.Challenges.Where(c => c.Id == 0).Select(c => c.GeoGuessrId);
+            if (_context.Challenges.Select(c => c.GeoGuessrId).AsEnumerable().Intersect(geoGuessrIds).Any())
             {
-                throw new InvalidOperationException("One or more challenge links are already registered.");
+                throw new InvalidOperationException("One or more challenge GeoGuessr ids are already registered.");
             }
 
             IEnumerable<string> playerIds = dto.PlayerIds;
@@ -128,7 +128,7 @@ namespace GeoNRage.Server.Services
                     .Where(c => challengeIds.Contains(c.Id))
                     .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
                     {
-                        Link = new Uri(x.Link),
+                        GeoGuessrId = x.GeoGuessrId,
                         MapId = x.MapId,
                         PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
                     })).ToList();
@@ -139,7 +139,7 @@ namespace GeoNRage.Server.Services
                     if (modifiedChallenge is not null)
                     {
                         challenge.MapId = modifiedChallenge.MapId;
-                        challenge.Link = new Uri(modifiedChallenge.Link);
+                        challenge.GeoGuessrId = modifiedChallenge.GeoGuessrId;
                     }
                     challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
                     challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
@@ -242,8 +242,6 @@ namespace GeoNRage.Server.Services
                 await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin { Email = _options.GeoGuessrEmail, Password = _options.GeoGuessrPassword });
             }
 
-            string challengeId = new Uri(dto.Link).Segments[^1];
-
             var options = new JsonSerializerOptions
             {
                 Converters = { new JsonStringEnumConverter() },
@@ -251,7 +249,7 @@ namespace GeoNRage.Server.Services
                 NumberHandling = JsonNumberHandling.AllowReadingFromString
             };
 
-            GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{challengeId}/0/26", options);
+            GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{dto.GeoGuessrId}/0/26", options);
 
             if (response is null)
             {
@@ -291,19 +289,19 @@ namespace GeoNRage.Server.Services
                 GameId = id,
                 MapId = map.Id,
                 Map = map,
-                Link = new Uri(dto.Link),
+                GeoGuessrId = dto.GeoGuessrId,
                 PlayerScores = playerScores
             };
             if (dto.PersistData)
             {
-                Challenge? existingChallenge = await _context.Challenges.SingleOrDefaultAsync(c => c.Link == new Uri(dto.Link));
+                Challenge? existingChallenge = await _context.Challenges.SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
                 if (dto.OverrideData)
                 {
                     if (existingChallenge is not null)
                     {
                         if (existingChallenge.GameId != id)
                         {
-                            throw new InvalidOperationException($"The challenge with link '{dto.Link}' is not associated to game '{id}'.");
+                            throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' is not associated to game '{id}'.");
                         }
                         existingChallenge.PlayerScores = challenge.PlayerScores;
                         existingChallenge.MapId = challenge.MapId;
@@ -317,7 +315,7 @@ namespace GeoNRage.Server.Services
                 {
                     if (existingChallenge is not null)
                     {
-                        throw new InvalidOperationException($"The challenge with link '{dto.Link}' already exists.");
+                        throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' already exists.");
                     }
 
                     game.Challenges.Add(challenge);
@@ -330,7 +328,7 @@ namespace GeoNRage.Server.Services
                 {
                     Name = game!.Name,
                     Date = game.Date,
-                    Challenges = game.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, Link = c.Link.ToString(), MapId = c.MapId }).ToList(),
+                    Challenges = game.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
                     PlayerIds = game.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
                 };
 

@@ -95,13 +95,13 @@
 
                 <Repeater Items="@Game.Challenges" Context="challenge">
                     <div class="field">
-                        <label class="label">Lien</label>
+                        <label class="label">Id GeoGuessr</label>
                         <div class="control">
                             <div class="field is-grouped">
                                 <div class="control is-expanded">
-                                    <InputText @bind-Value="challenge.Link" placeholder="Nom" class="input" />
+                                    <InputText @bind-Value="challenge.GeoGuessrId" placeholder="GeoGuessr Id" class="input" />
                                     <p class="help is-danger">
-                                        <ValidationMessage For="@(() => challenge.Link)"></ValidationMessage>
+                                        <ValidationMessage For="@(() => challenge.GeoGuessrId)"></ValidationMessage>
                                     </p>
                                 </div>
                                 <div class="control">
