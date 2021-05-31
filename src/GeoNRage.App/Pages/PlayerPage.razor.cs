@@ -53,7 +53,8 @@ namespace GeoNRage.App.Pages
                 PlayerFound = true;
                 Player = response.Content;
 
-                ChallengesNotDone = challenges.ExceptBy(Player.PlayerScores.Where(p => p.Rounds.All(r => r is not null)).Select(p => p.ChallengeId), c => c.Id);
+                IEnumerable<int> challengesDoneIds = Player.PlayerScores.Where(p => p.Rounds.All(r => r is not null)).Select(p => p.ChallengeId);
+                ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id));
                 GameHistoric = Player
                     .PlayerScores
                     .GroupBy(p => p.GameDate)

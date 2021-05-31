@@ -47,7 +47,7 @@ namespace GeoNRage.App.Pages
 
                 Games.Clear();
                 System.Console.WriteLine((CurrentPage - 1) * PageSize);
-                foreach (GameLightDto game in _games.Take(((CurrentPage - 1) * PageSize)..(CurrentPage * PageSize)))
+                foreach (GameLightDto game in _games.Take(CurrentPage * PageSize).Skip((CurrentPage - 1) * PageSize))
                 {
                     Games.Add(game);
                 }
