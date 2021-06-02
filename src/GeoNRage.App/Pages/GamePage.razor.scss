@@ -50,3 +50,9 @@ table {
     border-radius: 0px !important;
     z-index: 100;
 }
+
+.game-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
+}
