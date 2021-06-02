@@ -29,7 +29,7 @@ namespace GeoNRage.App.Pages
 
         public IEnumerable<ChallengeDto> ChallengesNotDone { get; set; } = null!;
 
-        public IEnumerable<int> GameHistoric { get; set; } = null!;
+        public IEnumerable<(int id, int score)> GameHistoric { get; set; } = null!;
 
         public PlayerFullDto Player { get; set; } = null!;
 
@@ -57,10 +57,10 @@ namespace GeoNRage.App.Pages
                 ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id));
                 GameHistoric = Player
                     .PlayerScores
-                    .GroupBy(p => p.GameDate)
+                    .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
                     .OrderBy(g => g.Key)
-                    .Select(g => g.Sum(p => p.Sum) ?? 0);
+                    .Select(g => (id: g.Key, score: g.Sum(p => p.Sum) ?? 0));
 
                 StateHasChanged();
             }

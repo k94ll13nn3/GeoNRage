@@ -56,10 +56,10 @@ namespace GeoNRage.App.Pages
             List<PlayerScoreWithChallengeDto> results = player
                   .PlayerScores
                   .GroupBy(p => p.GameId)
-                  .OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Take(3).Select(p => p.Sum).Sum())
+                  .Where(g => g.Count() == 3)
+                  .OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum())
                   .First()
                   .OrderBy(c => c.ChallengeId)
-                  .Take(3)
                   .ToList();
 
             return new(

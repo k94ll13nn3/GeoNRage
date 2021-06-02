@@ -43,10 +43,10 @@
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Meilleure partie (<span title="Seules les 3 premières cartes (ou moins) comptent" style="cursor:help">?</span>)</p>
+                        <p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
                         <p class="title">
                             @{
-                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.GroupBy(p => p.GameId).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Take(3).Select(p => p.Sum).Sum()).First().OrderBy(c => c.ChallengeId).Take(3).ToList();
+                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.GroupBy(p => p.GameId).Where(g => g.Count() == 3).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum()).First().OrderBy(c => c.ChallengeId).ToList();
                             }
                             @results.Select(p => p.Sum).Sum()
                         </p>
@@ -152,12 +152,12 @@
                     <div class="card">
                         <header class="card-header">
                             <p class="card-header-title">
-                                Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées. Survoler les barres pour voir le score.">?</span>)
+                                Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
                             </p>
                         </header>
                         <div class="card-content py-0">
                             <div class="container is-flex is-justify-content-center is-align-items-center m-0" style="max-height:250px;height:250px;">
-                                <table class="charts-css column show-labels show-primary-axis show-data-axes">
+                                <table class="charts-css column show-labels show-primary-axis show-data-axes show-5-secondary-axes">
                                     <caption>
                                         Historique des parties
                                     </caption>
@@ -171,9 +171,9 @@
                                         <Repeater Items="GameHistoric" Context="game">
                                             <tr>
                                                 <th scope="row"></th>
-                                                <td style="--size: calc(@game / @GameHistoric.Max());">
+                                                <td style="--size: calc(@game.score / 75000);">
                                                     <span class="data"></span>
-                                                    <span class="tooltip">@game</span>
+                                                    <span class="tooltip">Partie #@game.id, score @game.score</span>
                                                 </td>
                                             </tr>
                                         </Repeater>
