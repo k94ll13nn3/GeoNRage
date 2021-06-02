@@ -290,8 +290,10 @@ namespace GeoNRage.Server.Services
                 MapId = map.Id,
                 Map = map,
                 GeoGuessrId = dto.GeoGuessrId,
-                PlayerScores = playerScores
+                PlayerScores = playerScores,
+                TimeLimit = response[0].Game.TimeLimit,
             };
+
             if (dto.PersistData)
             {
                 Challenge? existingChallenge = await _context.Challenges.SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
@@ -305,6 +307,7 @@ namespace GeoNRage.Server.Services
                         }
                         existingChallenge.PlayerScores = challenge.PlayerScores;
                         existingChallenge.MapId = challenge.MapId;
+                        existingChallenge.TimeLimit = challenge.TimeLimit;
                     }
                     else
                     {

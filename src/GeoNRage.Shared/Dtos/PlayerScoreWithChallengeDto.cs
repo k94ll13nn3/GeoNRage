@@ -12,6 +12,8 @@ namespace GeoNRage.Shared.Dtos
 
         public int ChallengeId { get; set; }
 
+        public int? ChallengeTimeLimit { get; set; }
+
         public string MapId { get; set; } = null!;
 
         public int GameId { get; set; }

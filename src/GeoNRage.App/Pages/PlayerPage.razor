@@ -46,7 +46,7 @@
                         <p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
                         <p class="title">
                             @{
-                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.GroupBy(p => p.GameId).Where(g => g.Count() == 3).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum()).First().OrderBy(c => c.ChallengeId).ToList();
+                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.Where(p => (p.ChallengeTimeLimit ?? 300) == 300).GroupBy(p => p.GameId).Where(g => g.Count() == 3).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum()).First().OrderBy(c => c.ChallengeId).ToList();
                             }
                             @results.Select(p => p.Sum).Sum()
                         </p>

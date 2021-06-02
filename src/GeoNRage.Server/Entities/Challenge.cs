@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace GeoNRage.Server.Entities
 {
@@ -16,6 +15,8 @@ namespace GeoNRage.Server.Entities
         public Game Game { get; set; } = null!;
 
         public string GeoGuessrId { get; set; } = null!;
+
+        public int? TimeLimit { get; set; }
 
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
     }
