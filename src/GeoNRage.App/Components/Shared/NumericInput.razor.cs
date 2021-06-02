@@ -20,6 +20,9 @@ namespace GeoNRage.App.Components.Shared
         public int? InitialValue { get; set; }
 
         [Parameter]
+        public int TabIndex { get; set; } = 1;
+
+        [Parameter]
         public bool Disabled { get; set; }
 
         [Parameter]

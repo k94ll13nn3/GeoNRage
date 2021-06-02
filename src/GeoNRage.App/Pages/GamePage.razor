@@ -82,9 +82,11 @@
                                 </Repeater>
                             </tr>
 
+                            @{ var i = 1; }
                             <Repeater Items="Enumerable.Range(1, 5)" Context="round">
                                 <tr>
                                     <th>Round @round</th>
+                                    @{ var j = 1; }
                                     <Repeater Items="challenge.PlayerScores" Context="playerScore">
                                         @{
                                             var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
@@ -93,9 +95,12 @@
                                             <NumericInput @key="@key"
                                                           InitialValue="@Game[challenge.Id, playerScore.PlayerId, round]"
                                                           ValueChanged="@(async (e) => { await SendAsync(challenge.Id, playerScore.PlayerId, round, e);})"
-                                                          Class="@(Game[challenge.Id, playerScore.PlayerId, round] == 5000 ? "perfect" : (Game[challenge.Id, playerScore.PlayerId, round] == 4999 ? "almost-perfect" : ""))"></NumericInput>
+                                                          Class="@(Game[challenge.Id, playerScore.PlayerId, round] == 5000 ? "perfect" : (Game[challenge.Id, playerScore.PlayerId, round] == 4999 ? "almost-perfect" : ""))"
+                                                          TabIndex="@(i + j)"></NumericInput>
                                         </td>
+                                        @{ j++; }
                                     </Repeater>
+                                    @{ i += 100; }
                                 </tr>
                             </Repeater>
 
