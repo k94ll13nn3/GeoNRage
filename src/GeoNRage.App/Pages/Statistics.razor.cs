@@ -70,9 +70,10 @@ namespace GeoNRage.App.Pages
                 player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999),
                 player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0)),
                 results.Sum(p => p.Sum) ?? 0,
-                results[0].GameId);
+                results[0].GameId,
+                (int)(player.PlayerScores.SelectMany(p => p.Rounds).Average() ?? 0));
         }
 
-        internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int BestGame, int BestGameId);
+        internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int BestGame, int BestGameId, int RoundAverage);
     }
 }

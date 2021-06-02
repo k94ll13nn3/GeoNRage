@@ -65,6 +65,19 @@
                     </th>
                     <th>
                         <div class="is-flex">
+                            <span>Moyenne par round</span>
+                            <div class="sort-icons">
+                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.RoundAverage))">
+                                    <i class="fas fa-sort-amount-up-alt"></i>
+                                </span>
+                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.RoundAverage))">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="is-flex">
                             <span>Meilleure partie (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées">?</span>)</span>
                             <div class="sort-icons">
                                 <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.BestGame))">
@@ -85,6 +98,7 @@
                         <td>@player.NumberOf5000</td>
                         <td>@player.NumberOf4999</td>
                         <td>@player.ChallengesCompleted</td>
+                        <td>@player.RoundAverage</td>
                         <td>
                             @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
                         </td>
