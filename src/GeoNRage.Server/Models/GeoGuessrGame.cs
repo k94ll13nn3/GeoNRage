@@ -1,4 +1,6 @@
-﻿namespace GeoNRage.Server.Dtos.GeoGuessr
+﻿using System.Collections.Generic;
+
+namespace GeoNRage.Server.Models
 {
     public class GeoGuessrGame
     {
@@ -9,5 +11,7 @@
         public int TimeLimit { get; set; }
 
         public GeoGuessrPlayer Player { get; set; } = null!;
+
+        public IList<GeoGuessrRound> Rounds { get; set; } = new List<GeoGuessrRound>();
     }
 }

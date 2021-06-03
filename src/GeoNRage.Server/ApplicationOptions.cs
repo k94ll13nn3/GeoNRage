@@ -7,5 +7,7 @@
         public string GeoGuessrEmail { get; set; } = string.Empty;
 
         public string GeoGuessrPassword { get; set; } = string.Empty;
+
+        public string GoogleApiKey { get; set; } = string.Empty;
     }
 }

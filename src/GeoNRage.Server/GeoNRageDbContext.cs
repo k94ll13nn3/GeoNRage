@@ -22,6 +22,8 @@ namespace GeoNRage.Server
 
         public DbSet<PlayerScore> PlayerScores { get; set; } = null!;
 
+        public DbSet<Location> Locations { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
@@ -48,6 +50,12 @@ namespace GeoNRage.Server
 
             builder.Entity<PlayerScore>().HasKey(p => new { p.ChallengeId, p.PlayerId });
             builder.Entity<PlayerScore>().HasOne(p => p.Player).WithMany(p => p.PlayerScores).HasForeignKey(p => p.PlayerId).IsRequired();
+
+            builder.Entity<Location>().HasKey(m => m.Id);
+            builder.Entity<Location>().HasOne(l => l.Challenge).WithMany(c => c.Locations).HasForeignKey(l => l.ChallengeId).IsRequired();
+            builder.Entity<Location>().Property(l => l.RoundNumber).IsRequired();
+            builder.Entity<Location>().Property(l => l.Latitude).IsRequired();
+            builder.Entity<Location>().Property(l => l.Longitude).IsRequired();
 
             base.OnModelCreating(builder);
         }

@@ -65,6 +65,7 @@ namespace GeoNRage.Server
                     };
                 });
 
+            services.AddHttpClient("google", c => c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/"));
             services.AddAutoMapper(typeof(Startup));
 
             if (_env.IsDevelopment())

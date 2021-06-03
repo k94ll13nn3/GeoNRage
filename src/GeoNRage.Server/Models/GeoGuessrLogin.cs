@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Server.Dtos.GeoGuessr
+﻿namespace GeoNRage.Server.Models
 {
     public class GeoGuessrLogin
     {

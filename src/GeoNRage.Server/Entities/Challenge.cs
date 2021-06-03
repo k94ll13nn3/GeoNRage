@@ -19,5 +19,7 @@ namespace GeoNRage.Server.Entities
         public int? TimeLimit { get; set; }
 
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
+
+        public ICollection<Location> Locations { get; set; } = new HashSet<Location>();
     }
 }

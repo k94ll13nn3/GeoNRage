@@ -186,3 +186,6 @@ dotnet_diagnostic.CA2227.severity = none
 
 [**/Entities/**.cs]
 dotnet_diagnostic.CA2227.severity = none
+
+[**/Models/**.cs]
+dotnet_diagnostic.CA2227.severity = none

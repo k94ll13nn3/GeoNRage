@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,8 +8,9 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GeoNRage.Server.Dtos.GeoGuessr;
 using GeoNRage.Server.Entities;
+using GeoNRage.Server.GeoGuessr;
+using GeoNRage.Server.Models;
 using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -246,7 +248,7 @@ namespace GeoNRage.Server.Services
             {
                 Converters = { new JsonStringEnumConverter() },
                 PropertyNameCaseInsensitive = true,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString
+                NumberHandling = JsonNumberHandling.AllowReadingFromString,
             };
 
             GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{dto.GeoGuessrId}/0/26", options);
@@ -254,6 +256,32 @@ namespace GeoNRage.Server.Services
             if (response is null)
             {
                 throw new InvalidOperationException("Cannot import data.");
+            }
+
+            List<Location> locations = new();
+            HttpClient googleClient = _clientFactory.CreateClient("google");
+            for (int i = 0; i < response[0].Game.Rounds.Count; i++)
+            {
+                GeoGuessrRound round = response[0].Game.Rounds[i];
+                string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}";
+                GoogleGeocode? geocode = await googleClient.GetFromJsonAsync<GoogleGeocode>(query);
+                if (geocode?.Results?.Count > 0)
+                {
+                    GoogleGeocodeResult result = geocode.Results[0];
+                    Location location = new()
+                    {
+                        DisplayName = result.FormattedAddress,
+                        Locality = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("locality"))?.Name,
+                        AdministrativeAreaLevel2 = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("administrative_area_level_2"))?.Name,
+                        AdministrativeAreaLevel1 = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("administrative_area_level_1"))?.Name,
+                        Country = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("country"))?.Name,
+                        Latitude = round.Lat,
+                        Longitude = round.Lng,
+                        RoundNumber = i + 1,
+                    };
+
+                    locations.Add(location);
+                }
             }
 
             var playerScores = new List<PlayerScore>();
@@ -292,6 +320,7 @@ namespace GeoNRage.Server.Services
                 GeoGuessrId = dto.GeoGuessrId,
                 PlayerScores = playerScores,
                 TimeLimit = response[0].Game.TimeLimit,
+                Locations = locations,
             };
 
             if (dto.PersistData)
@@ -308,6 +337,7 @@ namespace GeoNRage.Server.Services
                         existingChallenge.PlayerScores = challenge.PlayerScores;
                         existingChallenge.MapId = challenge.MapId;
                         existingChallenge.TimeLimit = challenge.TimeLimit;
+                        existingChallenge.Locations = challenge.Locations;
                     }
                     else
                     {
