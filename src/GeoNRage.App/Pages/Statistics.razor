@@ -1,110 +1,138 @@
 ﻿@page "/statistics"
 
-<Container Condition="Players?.Any() != true">
-    <LoadingAnimation>
-        Chargement...
-    </LoadingAnimation>
-</Container>
+<Container Condition="Players?.Any() == true || Locations?.Any() == true">
+    <ChildContent>
+        <div class="container">
+            <Container Condition="Players?.Any() == true">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth m-3">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="is-flex">
+                                    <span>Joueur</span>
+                                    <div class="sort-icons">
+                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.PlayerName))">
+                                            <i class="fas fa-sort-amount-up-alt"></i>
+                                        </span>
+                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.PlayerName))">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="is-flex">
+                                    <span>Nombre de 5000</span>
+                                    <div class="sort-icons">
+                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf5000))">
+                                            <i class="fas fa-sort-amount-up-alt"></i>
+                                        </span>
+                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf5000))">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="is-flex">
+                                    <span>Nombre de 4999 😏</span>
+                                    <div class="sort-icons">
+                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf4999))">
+                                            <i class="fas fa-sort-amount-up-alt"></i>
+                                        </span>
+                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf4999))">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="is-flex">
+                                    <span>Nombre de carte complétées</span>
+                                    <div class="sort-icons">
+                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.ChallengesCompleted))">
+                                            <i class="fas fa-sort-amount-up-alt"></i>
+                                        </span>
+                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.ChallengesCompleted))">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="is-flex">
+                                    <span>Moyenne par round</span>
+                                    <div class="sort-icons">
+                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.RoundAverage))">
+                                            <i class="fas fa-sort-amount-up-alt"></i>
+                                        </span>
+                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.RoundAverage))">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="is-flex">
+                                    <span>Meilleure partie (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées">?</span>)</span>
+                                    <div class="sort-icons">
+                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.BestGame))">
+                                            <i class="fas fa-sort-amount-up-alt"></i>
+                                        </span>
+                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.BestGame))">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <Repeater Items="Players" Context="player">
+                            <tr>
+                                <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.PlayerId}")">@player.PlayerName</a></th>
+                                <td>@player.NumberOf5000</td>
+                                <td>@player.NumberOf4999</td>
+                                <td>@player.ChallengesCompleted</td>
+                                <td>@player.RoundAverage</td>
+                                <td>
+                                    @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
+                                </td>
+                            </tr>
+                        </Repeater>
+                    </tbody>
+                </table>
+            </Container>
 
-<Container Condition="Players?.Any() == true">
-    <div class="container">
-        <table class="table is-bordered is-striped is-hoverable is-fullwidth m-3">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="is-flex">
-                            <span>Joueur</span>
-                            <div class="sort-icons">
-                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.PlayerName))">
-                                    <i class="fas fa-sort-amount-up-alt"></i>
-                                </span>
-                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.PlayerName))">
-                                    <i class="fas fa-sort-amount-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="is-flex">
-                            <span>Nombre de 5000</span>
-                            <div class="sort-icons">
-                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf5000))">
-                                    <i class="fas fa-sort-amount-up-alt"></i>
-                                </span>
-                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf5000))">
-                                    <i class="fas fa-sort-amount-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="is-flex">
-                            <span>Nombre de 4999 😏</span>
-                            <div class="sort-icons">
-                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf4999))">
-                                    <i class="fas fa-sort-amount-up-alt"></i>
-                                </span>
-                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf4999))">
-                                    <i class="fas fa-sort-amount-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="is-flex">
-                            <span>Nombre de carte complétées</span>
-                            <div class="sort-icons">
-                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.ChallengesCompleted))">
-                                    <i class="fas fa-sort-amount-up-alt"></i>
-                                </span>
-                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.ChallengesCompleted))">
-                                    <i class="fas fa-sort-amount-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="is-flex">
-                            <span>Moyenne par round</span>
-                            <div class="sort-icons">
-                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.RoundAverage))">
-                                    <i class="fas fa-sort-amount-up-alt"></i>
-                                </span>
-                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.RoundAverage))">
-                                    <i class="fas fa-sort-amount-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="is-flex">
-                            <span>Meilleure partie (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées">?</span>)</span>
-                            <div class="sort-icons">
-                                <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.BestGame))">
-                                    <i class="fas fa-sort-amount-up-alt"></i>
-                                </span>
-                                <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.BestGame))">
-                                    <i class="fas fa-sort-amount-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <Repeater Items="Players" Context="player">
-                    <tr>
-                        <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.PlayerId}")">@player.PlayerName</a></th>
-                        <td>@player.NumberOf5000</td>
-                        <td>@player.NumberOf4999</td>
-                        <td>@player.ChallengesCompleted</td>
-                        <td>@player.RoundAverage</td>
-                        <td>
-                            @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
-                        </td>
-                    </tr>
-                </Repeater>
-            </tbody>
-        </table>
-    </div>
+            <Container Condition="Locations?.Any() == true">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth m-3">
+                    <thead>
+                        <tr>
+                            <th>DisplayName</th>
+                            <th>Locality</th>
+                            <th>AdministrativeAreaLevel2</th>
+                            <th>AdministrativeAreaLevel1</th>
+                            <th>Country</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <Repeater Items="Locations" Context="location">
+                            <tr>
+                                <td>@(location.DisplayName ?? "—")</td>
+                                <td>@(location.Locality ?? "—")</td>
+                                <td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
+                                <td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
+                                <td>@(location.Country ?? "—")</td>
+                            </tr>
+                        </Repeater>
+                    </tbody>
+                </table>
+            </Container>
+        </div>
+    </ChildContent>
+    <ElseContent>
+        <LoadingAnimation>
+            Chargement...
+        </LoadingAnimation>
+    </ElseContent>
 </Container>

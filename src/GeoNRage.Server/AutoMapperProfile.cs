@@ -35,6 +35,8 @@ namespace GeoNRage.Server
                 .ForMember(dest => dest.ChallengeId, opt => opt.MapFrom(src => src.Challenge.Id))
                 .ForMember(dest => dest.ChallengeTimeLimit, opt => opt.MapFrom(src => src.Challenge.TimeLimit))
                 .ForMember(dest => dest.MapId, opt => opt.MapFrom(src => src.Challenge.Map.Id));
+
+            CreateMap<Location, LocationDto>();
         }
     }
 }

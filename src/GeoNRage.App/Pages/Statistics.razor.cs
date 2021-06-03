@@ -13,13 +13,19 @@ namespace GeoNRage.App.Pages
         public IPlayersApi PlayersApi { get; set; } = null!;
 
         [Inject]
+        public ILocationsApi LocationsApi { get; set; } = null!;
+
+        [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
         internal IEnumerable<PlayerStatistic> Players { get; set; } = Enumerable.Empty<PlayerStatistic>();
 
+        internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
+
         protected override async Task OnInitializedAsync()
         {
             Players = (await PlayersApi.GetAllFullAsync()).Select(CreateStatistic).ToList();
+            Locations = await LocationsApi.GetAllAsync();
             Sort(true, nameof(PlayerStatistic.PlayerName));
         }
 

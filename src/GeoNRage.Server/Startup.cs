@@ -52,6 +52,7 @@ namespace GeoNRage.Server
             services.AddTransient<MapService>();
             services.AddTransient<PlayerService>();
             services.AddTransient<ChallengeService>();
+            services.AddTransient<LocationService>();
 
             var cookieContainer = new CookieContainer();
             services.AddSingleton(cookieContainer);
