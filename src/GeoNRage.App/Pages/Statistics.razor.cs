@@ -57,6 +57,15 @@ namespace GeoNRage.App.Pages
             };
         }
 
+        private static IEnumerable<LocationDto> Filter(IEnumerable<LocationDto> locations, string searchTerm)
+        {
+            return locations.Where(x =>
+                (x.AdministrativeAreaLevel1 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                || (x.AdministrativeAreaLevel2 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                || (x.Country ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                || (x.Locality ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+        }
+
         private PlayerStatistic CreateStatistic(PlayerFullDto player)
         {
             List<PlayerScoreWithChallengeDto> results = player

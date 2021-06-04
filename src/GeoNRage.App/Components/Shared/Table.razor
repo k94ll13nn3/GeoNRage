@@ -1,6 +1,17 @@
 ﻿@typeparam T
 
 <div class="m-3">
+    <Container Condition="CanSearch">
+        <div class="field">
+            <p class="control has-icons-right">
+                <input class="input" type="text" placeholder="Rechercher" @oninput="OnFilter" >
+                <span class="icon is-small is-right">
+                    <i class="fas fa-search"></i>
+                </span>
+            </p>
+        </div>
+        
+    </Container>
     <div class="table-container">
         <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
             <thead>
@@ -40,7 +51,7 @@
         </table>
     </div>
 
-    <Container Condition="Paginate">
+    <Container Condition="Paginate && PageCount > 1">
         <Container Condition="PageCount <= 5">
             <ChildContent>
                 <nav class="pagination" role="navigation" aria-label="pagination">

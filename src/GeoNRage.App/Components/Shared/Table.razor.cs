@@ -22,13 +22,19 @@ namespace GeoNRage.App.Components.Shared
         public IEnumerable<TableHeader> Headers { get; set; } = null!;
 
         [Parameter]
-        public Func<IEnumerable<T>, string, bool, IEnumerable<T>> SortFunction { get; set; } = null!;
+        public Func<IEnumerable<T>, string, bool, IEnumerable<T>>? SortFunction { get; set; }
+
+        [Parameter]
+        public Func<IEnumerable<T>, string, IEnumerable<T>>? FilterFunction { get; set; }
 
         [Parameter]
         public bool Paginate { get; set; }
 
         [Parameter]
         public int PageSize { get; set; } = 10;
+
+        [Parameter]
+        public bool CanSearch { get; set; }
 
         public ICollection<T> DisplayedItems { get; } = new List<T>();
 
@@ -77,7 +83,7 @@ namespace GeoNRage.App.Components.Shared
         {
             if (SortFunction is not null)
             {
-                _items = SortFunction(_items, column, ascending);
+                _items = SortFunction(Items, column, ascending);
                 if (Paginate)
                 {
                     ChangePage(CurrentPage);
@@ -91,6 +97,31 @@ namespace GeoNRage.App.Components.Shared
                     }
                 }
                 StateHasChanged();
+            }
+        }
+
+        private void OnFilter(ChangeEventArgs args)
+        {
+            if (FilterFunction is not null && args.Value is string s)
+            {
+                _items = FilterFunction(Items, s);
+                if (Paginate)
+                {
+                    PageCount = (int)Math.Ceiling(1.0 * _items.Count() / PageSize);
+                    DisplayedItems.Clear();
+                    foreach (T game in _items.Take(PageSize))
+                    {
+                        DisplayedItems.Add(game);
+                    }
+                }
+                else
+                {
+                    DisplayedItems.Clear();
+                    foreach (T game in _items)
+                    {
+                        DisplayedItems.Add(game);
+                    }
+                }
             }
         }
     }

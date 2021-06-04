@@ -4,6 +4,7 @@
     <ChildContent>
         <div class="container">
             <Container Condition="Locations?.Any() == true">
+                <h1 class="is-size-4 m-3">Joueurs</h1>
                 <Table Items="Players"
                        Headers="@(new TableHeader[]
                                   {
@@ -29,6 +30,7 @@
             </Container>
 
             <Container Condition="Locations?.Any() == true">
+                <h1 class="is-size-4 m-3">Lieux</h1>
                 <Table Items="Locations"
                        Headers="@(new TableHeader[]
                                   {
@@ -40,7 +42,9 @@
                                   })"
                        Paginate="true"
                        PageSize="15"
-                       SortFunction="Sort">
+                       SortFunction="Sort"
+                       CanSearch="true"
+                       FilterFunction="Filter">
                     <RowContent Context="location">
                         <td>@(location.DisplayName ?? "—")</td>
                         <td>@(location.Locality ?? "—")</td>
