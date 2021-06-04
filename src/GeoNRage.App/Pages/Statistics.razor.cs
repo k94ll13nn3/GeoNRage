@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
@@ -26,35 +27,34 @@ namespace GeoNRage.App.Pages
         {
             Players = (await PlayersApi.GetAllFullAsync()).Select(CreateStatistic).ToList();
             Locations = await LocationsApi.GetAllAsync();
-            Sort(true, nameof(PlayerStatistic.PlayerName));
+            Players = Sort(Players, nameof(PlayerStatistic.PlayerName), true);
+            Locations = Sort(Locations, nameof(LocationDto.DisplayName), true);
         }
 
-        private void Sort(bool ascending, string column)
+        private static IEnumerable<PlayerStatistic> Sort(IEnumerable<PlayerStatistic> players, string column, bool ascending)
         {
-            switch (column)
+            return column switch
             {
-                case nameof(PlayerStatistic.PlayerName):
-                    Players = ascending ? Players.OrderBy(p => p.PlayerName) : Players.OrderByDescending(p => p.PlayerName);
-                    break;
+                nameof(PlayerStatistic.PlayerName) => ascending ? players.OrderBy(p => p.PlayerName) : players.OrderByDescending(p => p.PlayerName),
+                nameof(PlayerStatistic.NumberOf5000) => ascending ? players.OrderBy(p => p.NumberOf5000) : players.OrderByDescending(p => p.NumberOf5000),
+                nameof(PlayerStatistic.NumberOf4999) => ascending ? players.OrderBy(p => p.NumberOf4999) : players.OrderByDescending(p => p.NumberOf4999),
+                nameof(PlayerStatistic.ChallengesCompleted) => ascending ? players.OrderBy(p => p.ChallengesCompleted) : players.OrderByDescending(p => p.ChallengesCompleted),
+                nameof(PlayerStatistic.BestGame) => ascending ? players.OrderBy(p => p.BestGame) : players.OrderByDescending(p => p.BestGame),
+                _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
+            };
+        }
 
-                case nameof(PlayerStatistic.NumberOf5000):
-                    Players = ascending ? Players.OrderBy(p => p.NumberOf5000) : Players.OrderByDescending(p => p.NumberOf5000);
-                    break;
-
-                case nameof(PlayerStatistic.NumberOf4999):
-                    Players = ascending ? Players.OrderBy(p => p.NumberOf4999) : Players.OrderByDescending(p => p.NumberOf4999);
-                    break;
-
-                case nameof(PlayerStatistic.ChallengesCompleted):
-                    Players = ascending ? Players.OrderBy(p => p.ChallengesCompleted) : Players.OrderByDescending(p => p.ChallengesCompleted);
-                    break;
-
-                case nameof(PlayerStatistic.BestGame):
-                    Players = ascending ? Players.OrderBy(p => p.BestGame) : Players.OrderByDescending(p => p.BestGame);
-                    break;
-            }
-
-            StateHasChanged();
+        private static IEnumerable<LocationDto> Sort(IEnumerable<LocationDto> locations, string column, bool ascending)
+        {
+            return column switch
+            {
+                nameof(LocationDto.AdministrativeAreaLevel1) => ascending ? locations.OrderBy(p => p.AdministrativeAreaLevel1) : locations.OrderByDescending(p => p.AdministrativeAreaLevel1),
+                nameof(LocationDto.AdministrativeAreaLevel2) => ascending ? locations.OrderBy(p => p.AdministrativeAreaLevel2) : locations.OrderByDescending(p => p.AdministrativeAreaLevel2),
+                nameof(LocationDto.Country) => ascending ? locations.OrderBy(p => p.Country) : locations.OrderByDescending(p => p.Country),
+                nameof(LocationDto.DisplayName) => ascending ? locations.OrderBy(p => p.DisplayName) : locations.OrderByDescending(p => p.DisplayName),
+                nameof(LocationDto.Locality) => ascending ? locations.OrderBy(p => p.Locality) : locations.OrderByDescending(p => p.Locality),
+                _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
+            };
         }
 
         private PlayerStatistic CreateStatistic(PlayerFullDto player)

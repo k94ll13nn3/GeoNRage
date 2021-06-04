@@ -1,27 +1,97 @@
 ﻿@typeparam T
 
-<div class="table-container">
-    <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
-        <thead>
-            <tr>
-                <Repeater Items="Headers" Context="header">
-                    <th>@header</th>
+<div class="m-3">
+    <div class="table-container">
+        <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
+            <thead>
+                <tr>
+                    <Repeater Items="Headers" Context="header">
+                        <th>
+                            <div class="is-flex">
+                                <span>@header.Title</span>
+                                <Container Condition="header.CanSort">
+                                    <span class="delimiter"></span>
+                                    <span class="icon ml-3 icon-hand" @onclick="() => Sort(header.Property, true)">
+                                        <i class="fas fa-sort-amount-up-alt"></i>
+                                    </span>
+                                    <span class="icon icon-hand" @onclick="() => Sort(header.Property, false)">
+                                        <i class="fas fa-sort-amount-down"></i>
+                                    </span>
+                                </Container>
+                            </div>
+                        </th>
+                    </Repeater>
+                </tr>
+            </thead>
+            <tbody>
+                <Repeater Items="DisplayedItems" Context="item">
+                    <tr>
+                        @RowContent(item)
+                    </tr>
                 </Repeater>
-            </tr>
-        </thead>
-        <tbody>
-            <Repeater Items="Items" Context="item">
-                <tr>
-                    @RowContent(item)
-                </tr>
-            </Repeater>
-        </tbody>
-        <Container Condition="FooterContent is not null">
-            <tfoot>
-                <tr>
-                    @FooterContent
-                </tr>
-            </tfoot>
+            </tbody>
+            <Container Condition="FooterContent is not null">
+                <tfoot>
+                    <tr>
+                        @FooterContent
+                    </tr>
+                </tfoot>
+            </Container>
+        </table>
+    </div>
+
+    <Container Condition="Paginate">
+        <Container Condition="PageCount <= 5">
+            <ChildContent>
+                <nav class="pagination" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
+                    <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
+                    <ul class="pagination-list">
+                        <Repeater Items="Enumerable.Range(1, PageCount)" Context="pageNumber">
+                            <li>
+                                <a class="pagination-link @(pageNumber == CurrentPage ? "is-current" : "")" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
+                            </li>
+                        </Repeater>
+                    </ul>
+                </nav>
+            </ChildContent>
+            <ElseContent>
+                <nav class="pagination" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
+                    <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
+                    <ul class="pagination-list">
+                        <Container Condition="CurrentPage > 1">
+                            <li>
+                                <a class="pagination-link" @onclick="() => ChangePage(1)">1</a>
+                            </li>
+                        </Container>
+                        <Container Condition="CurrentPage > 2">
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                            <li>
+                                <a class="pagination-link" @onclick="() => ChangePage(CurrentPage - 1)">@(CurrentPage - 1)</a>
+                            </li>
+                        </Container>
+                        <li>
+                            <a class="pagination-link is-current" @onclick="() => ChangePage(CurrentPage)">@CurrentPage</a>
+                        </li>
+                        <Container Condition="CurrentPage < PageCount - 1">
+                            <li>
+                                <a class="pagination-link" @onclick="() => ChangePage(CurrentPage + 1)">@(CurrentPage + 1)</a>
+                            </li>
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        </Container>
+                        <Container Condition="CurrentPage < PageCount">
+                            <li>
+                                <a class="pagination-link" @onclick="() => ChangePage(PageCount)">@PageCount</a>
+                            </li>
+                        </Container>
+                    </ul>
+                </nav>
+            </ElseContent>
         </Container>
-    </table>
+    </Container>
 </div>

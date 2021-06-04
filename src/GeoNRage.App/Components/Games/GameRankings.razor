@@ -1,7 +1,8 @@
 ﻿@using Humanizer;
 
 <div class="container">
-    <Table Items="Game.Challenges" Headers="@(Enumerable.Range(1, Game.Players.Count).Select(i => i.Ordinalize()).Prepend(""))">
+    <Table Items="Game.Challenges"
+           Headers="@(Enumerable.Range(1, Game.Players.Count).Select(i => new TableHeader(i.Ordinalize(), false, "")).Prepend(new TableHeader("", false, "")))">
         <RowContent Context="challenge">
             <th>@challenge.MapName</th>
             <Repeater Items="challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="player">

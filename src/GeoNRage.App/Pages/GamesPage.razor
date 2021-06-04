@@ -3,44 +3,27 @@
 <Container Condition="Games?.Any() == true">
     <ChildContent>
         <div class="container">
-            <div class="m-3">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Date</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <Repeater Items="Games" Context="game">
-                            <tr>
-                                <td>@game.Name</td>
-                                <td>@game.Date.ToShortDateString()</td>
-                                <td>
-                                    <a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">
-                                        <span class="icon is-small">
-                                            <i class="fas fa-external-link-alt"></i>
-                                        </span>
-                                    </a>
-                                </td>
-                            </tr>
-                        </Repeater>
-                    </tbody>
-                </table>
-
-                <nav class="pagination" role="navigation" aria-label="pagination">
-                    <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
-                    <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
-                    <ul class="pagination-list">
-                        <Repeater Items="Enumerable.Range(1, PageCount)" Context="pageNumber">
-                            <li>
-                                <a class="pagination-link @(pageNumber == CurrentPage ? "is-current" : "")" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
-                            </li>
-                        </Repeater>
-                    </ul>
-                </nav>
-            </div>
+            <Table Items="Games"
+                   Headers="@(new TableHeader[]
+                                  {
+                                      new("Nom", false, string.Empty),
+                                      new("Date", false, string.Empty),
+                                      new("", false, string.Empty),
+                                  })"
+                   Paginate="true"
+                   PageSize="10">
+                <RowContent Context="game">
+                    <td>@game.Name</td>
+                    <td>@game.Date.ToShortDateString()</td>
+                    <td>
+                        <a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">
+                            <span class="icon is-small">
+                                <i class="fas fa-external-link-alt"></i>
+                            </span>
+                        </a>
+                    </td>
+                </RowContent>
+            </Table>
         </div>
     </ChildContent>
 

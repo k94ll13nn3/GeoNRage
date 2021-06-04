@@ -3,130 +3,52 @@
 <Container Condition="Players?.Any() == true || Locations?.Any() == true">
     <ChildContent>
         <div class="container">
-            <Container Condition="Players?.Any() == true">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth m-3">
-                    <thead>
-                        <tr>
-                            <th>
-                                <div class="is-flex">
-                                    <span>Joueur</span>
-                                    <div class="sort-icons">
-                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.PlayerName))">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.PlayerName))">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="is-flex">
-                                    <span>Nombre de 5000</span>
-                                    <div class="sort-icons">
-                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf5000))">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf5000))">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="is-flex">
-                                    <span>Nombre de 4999 😏</span>
-                                    <div class="sort-icons">
-                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.NumberOf4999))">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.NumberOf4999))">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="is-flex">
-                                    <span>Nombre de carte complétées</span>
-                                    <div class="sort-icons">
-                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.ChallengesCompleted))">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.ChallengesCompleted))">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="is-flex">
-                                    <span>Moyenne par round</span>
-                                    <div class="sort-icons">
-                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.RoundAverage))">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.RoundAverage))">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="is-flex">
-                                    <span>Meilleure partie (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées">?</span>)</span>
-                                    <div class="sort-icons">
-                                        <span class="icon" @onclick="() => Sort(true, nameof(PlayerStatistic.BestGame))">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon" @onclick="() => Sort(false, nameof(PlayerStatistic.BestGame))">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <Repeater Items="Players" Context="player">
-                            <tr>
-                                <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.PlayerId}")">@player.PlayerName</a></th>
-                                <td>@player.NumberOf5000</td>
-                                <td>@player.NumberOf4999</td>
-                                <td>@player.ChallengesCompleted</td>
-                                <td>@player.RoundAverage</td>
-                                <td>
-                                    @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
-                                </td>
-                            </tr>
-                        </Repeater>
-                    </tbody>
-                </table>
+            <Container Condition="Locations?.Any() == true">
+                <Table Items="Players"
+                       Headers="@(new TableHeader[]
+                                  {
+                                      new("Joueur", true, nameof(PlayerStatistic.PlayerName)),
+                                      new("Nombre de 5000", true, nameof(PlayerStatistic.NumberOf5000)),
+                                      new("Nombre de 4999 😏", true, nameof(PlayerStatistic.NumberOf4999)),
+                                      new("Nombre de carte complétées", true, nameof(PlayerStatistic.ChallengesCompleted)),
+                                      new("Moyenne par round", true, nameof(PlayerStatistic.RoundAverage)),
+                                      new("Meilleure partie", true, nameof(PlayerStatistic.BestGame))
+                                  })"
+                       SortFunction="Sort">
+                    <RowContent Context="player">
+                        <th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.PlayerId}")">@player.PlayerName</a></th>
+                        <td>@player.NumberOf5000</td>
+                        <td>@player.NumberOf4999</td>
+                        <td>@player.ChallengesCompleted</td>
+                        <td>@player.RoundAverage</td>
+                        <td>
+                            @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
+                        </td>
+                    </RowContent>
+                </Table>
             </Container>
 
             <Container Condition="Locations?.Any() == true">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth m-3">
-                    <thead>
-                        <tr>
-                            <th>DisplayName</th>
-                            <th>Locality</th>
-                            <th>AdministrativeAreaLevel2</th>
-                            <th>AdministrativeAreaLevel1</th>
-                            <th>Country</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <Repeater Items="Locations" Context="location">
-                            <tr>
-                                <td>@(location.DisplayName ?? "—")</td>
-                                <td>@(location.Locality ?? "—")</td>
-                                <td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
-                                <td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
-                                <td>@(location.Country ?? "—")</td>
-                            </tr>
-                        </Repeater>
-                    </tbody>
-                </table>
+                <Table Items="Locations"
+                       Headers="@(new TableHeader[]
+                                  {
+                                      new("Nom", true, nameof(LocationDto.DisplayName)),
+                                      new("Ville", true, nameof(LocationDto.Locality)),
+                                      new("Info niveau 2", true, nameof(LocationDto.AdministrativeAreaLevel2)),
+                                      new("Info niveau 1", true, nameof(LocationDto.AdministrativeAreaLevel1)),
+                                      new("Pays", true, nameof(LocationDto.Country))
+                                  })"
+                       Paginate="true"
+                       PageSize="15"
+                       SortFunction="Sort">
+                    <RowContent Context="location">
+                        <td>@(location.DisplayName ?? "—")</td>
+                        <td>@(location.Locality ?? "—")</td>
+                        <td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
+                        <td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
+                        <td>@(location.Country ?? "—")</td>
+                    </RowContent>
+                </Table>
             </Container>
         </div>
     </ChildContent>
