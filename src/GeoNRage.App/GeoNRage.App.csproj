@@ -20,12 +20,6 @@
     <ProjectReference Include="..\GeoNRage.Shared\GeoNRage.Shared.csproj" />
   </ItemGroup>
 
-  <!-- Launch the debug with "dotnet watch run" to have a light live-reload experience -->
-  <ItemGroup>
-    <Watch Include="**/*/*.scss" />
-    <Watch Include="**/*/*.html" />
-  </ItemGroup>
-
   <!-- Define scss files for the compilation but do not publish them -->
   <ItemGroup>
     <ScssFiles Include="**/*/*.scss" Exclude="**/*/_*.scss" />
