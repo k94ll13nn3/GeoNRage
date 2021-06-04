@@ -1,0 +1,27 @@
+﻿@typeparam T
+
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
+        <thead>
+            <tr>
+                <Repeater Items="Headers" Context="header">
+                    <th>@header</th>
+                </Repeater>
+            </tr>
+        </thead>
+        <tbody>
+            <Repeater Items="Items" Context="item">
+                <tr>
+                    @RowContent(item)
+                </tr>
+            </Repeater>
+        </tbody>
+        <Container Condition="FooterContent is not null">
+            <tfoot>
+                <tr>
+                    @FooterContent
+                </tr>
+            </tfoot>
+        </Container>
+    </table>
+</div>
