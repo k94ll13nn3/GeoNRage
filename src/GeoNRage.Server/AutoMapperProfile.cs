@@ -24,6 +24,7 @@ namespace GeoNRage.Server
             CreateMap<Challenge, ChallengeDto>()
                 .ForMember(dest => dest.GameName, opt => opt.MapFrom(src => src.Game.Name))
                 .ForMember(dest => dest.GameDate, opt => opt.MapFrom(src => src.Game.Date))
+                .ForMember(dest => dest.LocationsCount, opt => opt.MapFrom(src => src.Locations == null ? (int?)null : src.Locations.Count))
                 .ForMember(dest => dest.MapName, opt => opt.MapFrom(src => src.Map.Name));
 
             CreateMap<PlayerScore, PlayerScoreDto>()

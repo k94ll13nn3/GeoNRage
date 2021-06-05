@@ -22,6 +22,10 @@ namespace GeoNRage.Shared.Dtos
 
         public ICollection<PlayerScoreDto> PlayerScores { get; set; } = new HashSet<PlayerScoreDto>();
 
+        public int TimeLimit { get; set; }
+
+        public int? LocationsCount { get; set; }
+
         public PlayerScoreDto? this[string playerId] => PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
     }
 }

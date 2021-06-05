@@ -16,6 +16,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Map)
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
+                .Include(c => c.Locations)
                 .ToListAsync();
         }
     }

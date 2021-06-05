@@ -45,11 +45,20 @@ namespace GeoNRage.App.Components.Shared
         [Parameter]
         public bool IsNarrow { get; set; } = true;
 
+        [Parameter]
+        public bool IsFullWidth { get; set; } = true;
+
         public ICollection<T> DisplayedItems { get; } = new List<T>();
 
         public int PageCount { get; private set; }
 
         public int CurrentPage { get; private set; } = 1;
+
+        public void SetItems(IEnumerable<T> items)
+        {
+            Items = items;
+            RefreshItems();
+        }
 
         protected override void OnInitialized()
         {

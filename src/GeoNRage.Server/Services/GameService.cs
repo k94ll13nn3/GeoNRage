@@ -325,7 +325,7 @@ namespace GeoNRage.Server.Services
 
             if (dto.PersistData)
             {
-                Challenge? existingChallenge = await _context.Challenges.SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
+                Challenge? existingChallenge = await _context.Challenges.Include(c => c.Locations).SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
                 if (dto.OverrideData)
                 {
                     if (existingChallenge is not null)

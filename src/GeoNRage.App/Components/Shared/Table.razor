@@ -12,7 +12,7 @@
         </div>
     </Container>
     <div class="table-container">
-        <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : "") is-fullwidth">
+        <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : "") @(IsFullWidth ? "is-fullwidth" : "")">
             <thead>
                 <tr>
                     <Repeater Items="Headers" Context="header">
