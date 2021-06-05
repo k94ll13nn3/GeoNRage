@@ -12,7 +12,7 @@
         </div>
     </Container>
     <div class="table-container">
-        <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
+        <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : "") is-fullwidth">
             <thead>
                 <tr>
                     <Repeater Items="Headers" Context="header">
@@ -41,11 +41,22 @@
                 </Repeater>
             </tbody>
             <Container Condition="FooterContent is not null">
-                <tfoot>
-                    <tr>
-                        @FooterContent
-                    </tr>
-                </tfoot>
+                <ChildContent>
+                    <tfoot>
+                        <tr>
+                            @FooterContent
+                        </tr>
+                    </tfoot>
+                </ChildContent>
+                <ElseContent>
+                    <Container Condition="ShowRowCount">
+                        <tfoot>
+                            <tr>
+                                <td style="text-align: right;" colspan="@Headers.Count()">@DisplayedItems.Count élément(s)</td>
+                            </tr>
+                        </tfoot>
+                    </Container>
+                </ElseContent>
             </Container>
         </table>
     </div>

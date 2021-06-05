@@ -44,7 +44,8 @@
                        PageSize="15"
                        SortFunction="Sort"
                        CanSearch="true"
-                       FilterFunction="Filter">
+                       FilterFunction="Filter"
+                       ShowRowCount="true">
                     <RowContent Context="location">
                         <td>@(location.DisplayName ?? "—")</td>
                         <td>@(location.Locality ?? "—")</td>

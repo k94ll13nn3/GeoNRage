@@ -39,6 +39,12 @@ namespace GeoNRage.App.Components.Shared
         [Parameter]
         public bool CanSearch { get; set; }
 
+        [Parameter]
+        public bool ShowRowCount { get; set; }
+
+        [Parameter]
+        public bool IsNarrow { get; set; } = true;
+
         public ICollection<T> DisplayedItems { get; } = new List<T>();
 
         public int PageCount { get; private set; }
