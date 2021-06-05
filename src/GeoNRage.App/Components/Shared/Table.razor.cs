@@ -8,6 +8,9 @@ namespace GeoNRage.App.Components.Shared
     public partial class Table<T>
     {
         private IEnumerable<T> _items = null!;
+        private string _filter = string.Empty;
+        private string _sortColumn = string.Empty;
+        private bool _sortAscending = true;
 
         [Parameter]
         public IEnumerable<T> Items { get; set; } = null!;
@@ -44,24 +47,7 @@ namespace GeoNRage.App.Components.Shared
 
         protected override void OnInitialized()
         {
-            _items = Items.ToList();
-            if (Paginate)
-            {
-                PageCount = (int)Math.Ceiling(1.0 * Items.Count() / PageSize);
-                DisplayedItems.Clear();
-                foreach (T game in _items.Take(PageSize))
-                {
-                    DisplayedItems.Add(game);
-                }
-            }
-            else
-            {
-                DisplayedItems.Clear();
-                foreach (T game in _items)
-                {
-                    DisplayedItems.Add(game);
-                }
-            }
+            RefreshItems();
         }
 
         private void ChangePage(int newPage)
@@ -81,48 +67,47 @@ namespace GeoNRage.App.Components.Shared
         }
         private void Sort(string column, bool ascending)
         {
-            if (SortFunction is not null)
-            {
-                _items = SortFunction(Items, column, ascending);
-                if (Paginate)
-                {
-                    ChangePage(CurrentPage);
-                }
-                else
-                {
-                    DisplayedItems.Clear();
-                    foreach (T game in _items)
-                    {
-                        DisplayedItems.Add(game);
-                    }
-                }
-                StateHasChanged();
-            }
+            _sortColumn = column;
+            _sortAscending = ascending;
+            RefreshItems();
         }
 
         private void OnFilter(ChangeEventArgs args)
         {
-            if (FilterFunction is not null && args.Value is string s)
+            _filter = args?.Value as string ?? string.Empty;
+            RefreshItems();
+        }
+
+        private void RefreshItems()
+        {
+            IEnumerable<T> items = Items.ToList();
+            if (SortFunction is not null && !string.IsNullOrWhiteSpace(_sortColumn))
             {
-                _items = FilterFunction(Items, s);
-                if (Paginate)
+                items = SortFunction(items, _sortColumn, _sortAscending);
+            }
+
+            if (FilterFunction is not null && !string.IsNullOrWhiteSpace(_filter))
+            {
+                items = FilterFunction(items, _filter);
+            }
+
+            _items = items;
+
+            if (Paginate)
+            {
+                PageCount = (int)Math.Ceiling(1.0 * _items.Count() / PageSize);
+                ChangePage(Math.Clamp(CurrentPage, 1, PageCount));
+            }
+            else
+            {
+                DisplayedItems.Clear();
+                foreach (T game in _items)
                 {
-                    PageCount = (int)Math.Ceiling(1.0 * _items.Count() / PageSize);
-                    DisplayedItems.Clear();
-                    foreach (T game in _items.Take(PageSize))
-                    {
-                        DisplayedItems.Add(game);
-                    }
-                }
-                else
-                {
-                    DisplayedItems.Clear();
-                    foreach (T game in _items)
-                    {
-                        DisplayedItems.Add(game);
-                    }
+                    DisplayedItems.Add(game);
                 }
             }
+
+            StateHasChanged();
         }
     }
 
