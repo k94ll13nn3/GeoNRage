@@ -4,13 +4,12 @@
     <Container Condition="CanSearch">
         <div class="field">
             <p class="control has-icons-right">
-                <input class="input" type="text" placeholder="Rechercher" @oninput="OnFilter" >
+                <input class="input" type="text" placeholder="Rechercher" @oninput="OnFilter">
                 <span class="icon is-small is-right">
                     <i class="fas fa-search"></i>
                 </span>
             </p>
         </div>
-        
     </Container>
     <div class="table-container">
         <table class="table is-bordered is-striped is-hoverable is-narrow is-fullwidth">
@@ -52,25 +51,19 @@
     </div>
 
     <Container Condition="Paginate && PageCount > 1">
-        <Container Condition="PageCount <= 5">
-            <ChildContent>
-                <nav class="pagination" role="navigation" aria-label="pagination">
-                    <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
-                    <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
-                    <ul class="pagination-list">
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
+            <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
+            <ul class="pagination-list">
+                <Container Condition="PageCount <= 5">
+                    <ChildContent>
                         <Repeater Items="Enumerable.Range(1, PageCount)" Context="pageNumber">
                             <li>
                                 <a class="pagination-link @(pageNumber == CurrentPage ? "is-current" : "")" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
                             </li>
                         </Repeater>
-                    </ul>
-                </nav>
-            </ChildContent>
-            <ElseContent>
-                <nav class="pagination" role="navigation" aria-label="pagination">
-                    <a class="pagination-previous" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Précedent</a>
-                    <a class="pagination-next" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage == PageCount)">Suivant</a>
-                    <ul class="pagination-list">
+                    </ChildContent>
+                    <ElseContent>
                         <Container Condition="CurrentPage > 1">
                             <li>
                                 <a class="pagination-link" @onclick="() => ChangePage(1)">1</a>
@@ -100,9 +93,9 @@
                                 <a class="pagination-link" @onclick="() => ChangePage(PageCount)">@PageCount</a>
                             </li>
                         </Container>
-                    </ul>
-                </nav>
-            </ElseContent>
-        </Container>
+                    </ElseContent>
+                </Container>
+            </ul>
+        </nav>
     </Container>
 </div>
