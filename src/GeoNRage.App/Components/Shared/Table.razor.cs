@@ -96,7 +96,14 @@ namespace GeoNRage.App.Components.Shared
             if (Paginate)
             {
                 PageCount = (int)Math.Ceiling(1.0 * _items.Count() / PageSize);
-                ChangePage(Math.Clamp(CurrentPage, 1, PageCount));
+                if (PageCount <= 0)
+                {
+                    DisplayedItems.Clear();
+                }
+                else
+                {
+                    ChangePage(Math.Clamp(CurrentPage, 1, PageCount));
+                }
             }
             else
             {
