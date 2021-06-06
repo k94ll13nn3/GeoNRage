@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GeoNRage.Server.Entities;
@@ -24,7 +25,14 @@ namespace GeoNRage.Server.Controllers
         {
             IEnumerable<Location> locations = await _locationService.GetAllAsync();
 
-            return _mapper.Map<IEnumerable<Location>, IEnumerable<LocationDto>>(locations);
+            var results = new List<LocationDto>();
+            foreach (IGrouping<string?, Location> location in locations.GroupBy(l => l.DisplayName))
+            {
+                LocationDto dto = _mapper.Map<Location, LocationDto>(location.First());
+                dto.TimesSeen = location.Count();
+                results.Add(dto);
+            }
+            return results;
         }
     }
 }

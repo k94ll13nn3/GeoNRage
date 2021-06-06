@@ -38,7 +38,8 @@
                                       new("Ville", true, nameof(LocationDto.Locality)),
                                       new("Info niveau 2", true, nameof(LocationDto.AdministrativeAreaLevel2)),
                                       new("Info niveau 1", true, nameof(LocationDto.AdministrativeAreaLevel1)),
-                                      new("Pays", true, nameof(LocationDto.Country))
+                                      new("Pays", true, nameof(LocationDto.Country)),
+                                      new("N.", true, nameof(LocationDto.TimesSeen))
                                   })"
                        Paginate="true"
                        PageSize="15"
@@ -52,6 +53,7 @@
                         <td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
                         <td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
                         <td>@(location.Country ?? "—")</td>
+                        <td>@location.TimesSeen</td>
                     </RowContent>
                 </Table>
             </Container>
