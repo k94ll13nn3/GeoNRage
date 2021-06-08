@@ -26,7 +26,7 @@ namespace GeoNRage.Server.Controllers
             IEnumerable<Location> locations = await _locationService.GetAllAsync();
 
             var results = new List<LocationDto>();
-            foreach (IGrouping<string?, Location> location in locations.GroupBy(l => l.DisplayName))
+            foreach (IGrouping<(decimal Latitude, decimal Longitude), Location> location in locations.GroupBy(l => (l.Latitude, l.Longitude)))
             {
                 LocationDto dto = _mapper.Map<Location, LocationDto>(location.First());
                 dto.TimesSeen = location.Count();
