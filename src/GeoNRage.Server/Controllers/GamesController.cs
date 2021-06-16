@@ -110,7 +110,7 @@ namespace GeoNRage.Server.Controllers
             return NoContent();
         }
 
-        [HttpPost("/api/games/{id}/import-challenge")]
+        [HttpPost("{id}/import-challenge")]
         public async Task<ActionResult<ChallengeDto>> ImportChallengeAsync(int id, ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));

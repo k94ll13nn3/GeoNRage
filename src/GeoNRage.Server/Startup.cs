@@ -26,6 +26,7 @@ namespace GeoNRage.Server
         {
             services.Configure<ApplicationOptions>(_configuration.GetSection(nameof(ApplicationOptions)));
 
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddSignalR();
             services.AddControllers();
             services.AddRazorPages();
