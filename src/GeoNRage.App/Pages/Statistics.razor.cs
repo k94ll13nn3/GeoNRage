@@ -89,14 +89,14 @@ namespace GeoNRage.App.Pages
 
         private PlayerStatistic CreateStatistic(PlayerFullDto player)
         {
-            List<PlayerScoreWithChallengeDto> results = player
+            List<PlayerScoreWithChallengeDto>? results = player
                   .PlayerScores
                   .Where(p => (p.ChallengeTimeLimit ?? 300) == 300)
                   .GroupBy(p => p.GameId)
                   .Where(g => g.Count() == 3)
                   .OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum())
-                  .First()
-                  .OrderBy(c => c.ChallengeId)
+                  .FirstOrDefault()
+                  ?.OrderBy(c => c.ChallengeId)
                   .ToList();
 
             return new(
@@ -105,11 +105,11 @@ namespace GeoNRage.App.Pages
                 player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 5000),
                 player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999),
                 player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0)),
-                results.Sum(p => p.Sum) ?? 0,
-                results[0].GameId,
+                results?.Sum(p => p.Sum),
+                results?[0].GameId,
                 (int)(player.PlayerScores.SelectMany(p => p.Rounds).Average() ?? 0));
         }
 
-        internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int BestGame, int BestGameId, int RoundAverage);
+        internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int? BestGame, int? BestGameId, int RoundAverage);
     }
 }

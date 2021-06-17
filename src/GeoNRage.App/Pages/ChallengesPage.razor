@@ -1,0 +1,46 @@
+﻿@page "/challenges"
+
+<Container Condition="Challenges?.Any() == true">
+    <ChildContent>
+        <div class="container">
+            <div class="field m-3 is-grouped">
+                <p class="control is-expanded">
+                    <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
+                </p>
+                <div class="control">
+                    <button type="submit" class="button is-primary" @onclick="ImportAsync">Importer</button>
+                </div>
+            </div>
+            <Table @ref="ChallengesTable"
+                   Items="Challenges"
+                   Headers="@(new TableHeader[]
+                                  {
+                                      new("Nom", false, string.Empty),
+                                      new("Meilleur score", true, nameof(PlayerScoreDto.Sum)),
+                                      new("", false, string.Empty),
+                                  })"
+                   Paginate="true"
+                   PageSize="10"
+                   IsNarrow="false"
+                   SortFunction="Sort">
+                <RowContent Context="challenge">
+                    <td>@challenge.MapName</td>
+                    <td>@challenge.PlayerScores.Max(p => p.Sum)</td>
+                    <td>
+                        <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")">
+                            <span class="icon is-small">
+                                <i class="fas fa-external-link-alt"></i>
+                            </span>
+                        </a>
+                    </td>
+                </RowContent>
+            </Table>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des challenges...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>

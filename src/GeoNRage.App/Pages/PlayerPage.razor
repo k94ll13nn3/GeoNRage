@@ -46,9 +46,16 @@
                         <p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
                         <p class="title">
                             @{
-                                List<PlayerScoreWithChallengeDto> results = Player.PlayerScores.Where(p => (p.ChallengeTimeLimit ?? 300) == 300).GroupBy(p => p.GameId).Where(g => g.Count() == 3).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum()).First().OrderBy(c => c.ChallengeId).ToList();
+                                List<PlayerScoreWithChallengeDto>? results = Player.PlayerScores.Where(p => (p.ChallengeTimeLimit ?? 300) == 300).GroupBy(p => p.GameId).Where(g => g.Count() == 3).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum()).FirstOrDefault()?.OrderBy(c => c.ChallengeId).ToList();
                             }
-                            @results.Select(p => p.Sum).Sum()
+                            <Container Condition="results is not null">
+                                <ChildContent>
+                                    @results!.Select(p => p.Sum).Sum()
+                                </ChildContent>
+                                <ElseContent>
+                                    —
+                                </ElseContent>
+                            </Container>
                         </p>
                     </div>
                 </div>
@@ -122,9 +129,18 @@
                                                     <tr>
                                                         <td>@challenge.MapName</td>
                                                         <td>
-                                                            <a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
-                                                                #@challenge.GameId
-                                                            </a>
+                                                            <Container Condition="challenge.GameId != int.MaxValue">
+                                                                <ChildContent>
+                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
+                                                                        #@challenge.GameId
+                                                                    </a>
+                                                                </ChildContent>
+                                                                <ElseContent>
+                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")">
+                                                                        #@challenge.Id (C)
+                                                                    </a>
+                                                                </ElseContent>
+                                                            </Container>
                                                         </td>
                                                     </tr>
                                                 </Repeater>

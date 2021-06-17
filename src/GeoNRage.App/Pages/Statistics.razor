@@ -23,7 +23,14 @@
                         <td>@player.ChallengesCompleted</td>
                         <td>@player.RoundAverage</td>
                         <td>
-                            @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
+                            <Container Condition="player.BestGame is not null && player.BestGameId is not null">
+                                <ChildContent>
+                                    @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
+                                </ChildContent>
+                                <ElseContent>
+                                    —
+                                </ElseContent>
+                            </Container>
                         </td>
                     </RowContent>
                 </Table>

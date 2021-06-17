@@ -11,6 +11,7 @@
         <div id="navbarMenu" class="navbar-menu @(ShowMenu ? "is-active" : "")">
             <div class="navbar-start">
                 <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")">Parties</NavLink>
+                <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/challenges")">Challenges</NavLink>
                 <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics")">Statistiques</NavLink>
                 <AuthorizeView>
                     <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active">Administration</NavLink>

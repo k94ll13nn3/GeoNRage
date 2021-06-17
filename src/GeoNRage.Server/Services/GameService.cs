@@ -31,7 +31,7 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {
-            IQueryable<Game> query = _context.Games.OrderByDescending(g => g.Date);
+            IQueryable<Game> query = _context.Games.OrderByDescending(g => g.Date).Where(g => g.Id != int.MaxValue);
             if (includeNavigation)
             {
                 query = query
@@ -54,7 +54,7 @@ namespace GeoNRage.Server.Services
                 .Include(g => g.Challenges)
                 .ThenInclude(c => c.PlayerScores)
                 .ThenInclude(c => c.Player)
-                .FirstOrDefaultAsync(g => g.Id == id);
+                .FirstOrDefaultAsync(g => g.Id != int.MaxValue && g.Id == id);
         }
 
         public async Task<Game> CreateAsync(GameCreateOrEditDto dto)

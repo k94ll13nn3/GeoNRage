@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using GeoNRage.Server.Entities;
@@ -25,6 +26,49 @@ namespace GeoNRage.Server.Controllers
             IEnumerable<Challenge> challenges = await _challengeService.GetAllAsync();
 
             return _mapper.Map<IEnumerable<Challenge>, IEnumerable<ChallengeDto>>(challenges);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("without-games")]
+        public async Task<IEnumerable<ChallengeDto>> GetAllWithoutGameAsync()
+        {
+            IEnumerable<Challenge> challenges = await _challengeService.GetAllWithoutGameAsync();
+
+            return _mapper.Map<IEnumerable<Challenge>, IEnumerable<ChallengeDto>>(challenges);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ChallengeDto>> GetAsync(int id)
+        {
+            Challenge? challenge = await _challengeService.GetAsync(id);
+            if (challenge == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<Challenge, ChallengeDto>(challenge);
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportChallengeAsync(ChallengeImportDto dto)
+        {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
+            try
+            {
+                Challenge? challenge = await _challengeService.ImportChallengeAsync(dto.GeoGuessrId);
+                if (challenge is null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

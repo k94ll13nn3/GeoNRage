@@ -1,0 +1,54 @@
+﻿@use 'bulma/sass/utilities/functions' as f;
+@use 'bulma/sass/utilities/derived-variables' as d;
+@use '_theme' as t;
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    td {
+        text-align: center !important;
+        border: 1px solid black;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color: t.$primary;
+
+        ::deep .perfect {
+            background-color: d.$success;
+            color: f.findColorInvert(d.$success);
+        }
+
+        ::deep .almost-perfect {
+            background-color: d.$warning;
+            color: f.findColorInvert(d.$warning);
+        }
+
+        ::deep input:not(.perfect):not(.almost-perfect):disabled {
+            background-color: d.$info;
+            color: f.findColorInvert(d.$info);
+        }
+    }
+
+    th {
+        text-align: center !important;
+        border: 1px solid black;
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color: t.$primary;
+        color: f.findColorInvert(t.$primary);
+    }
+}
+
+.action-button {
+    color: t.$text;
+}
+
+.game-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

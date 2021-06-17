@@ -1,0 +1,85 @@
+﻿@page "/challenges/{Id:int}"
+
+<Container Condition="Loaded && ChallengeFound">
+    <div class="container is-fluid is-flex is-align-items-center is-align-self-center is-justify-content-center">
+        <div class="card m-3">
+            <header class="card-header">
+                <div class="card-header-title is-size-3 game-title" style="display: block">
+                    <h1 class="title">
+                        @Challenge.MapName
+                        <a href="https://www.geoguessr.com/challenge/@Challenge.GeoGuessrId" target="_blank" class="action-button">
+                            <span class="icon">
+                                <i class="fas fa-link" aria-hidden="true"></i>
+                            </span>
+                        </a>
+                    </h1>
+                </div>
+                <div class="card-header-icon">
+                    <div class="field has-addons">
+                        <p class="control">
+                            <button class="button" @onclick="RefreshAsync">
+                                <span class="is-hidden-touch"></span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-sync-alt"></i>
+                                </span>
+                                <span class="is-hidden-touch">Rafraîchir</span>
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </header>
+            <div class="card-content">
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>
+                            </th>
+                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
+                                <th>@playerScore.PlayerName</th>
+                            </Repeater>
+                        </tr>
+
+                        @{ var i = 1; }
+                        <Repeater Items="Enumerable.Range(1, 5)" Context="round">
+                            <tr>
+                                <th>Round @round</th>
+                                @{ var j = 1; }
+                                <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
+                                    @{
+                                        var key = $"{Challenge.Id}_{playerScore.PlayerId}_{round}";
+                                    }
+                                    <td>
+                                        <NumericInput @key="@key"
+                                                      InitialValue="@Challenge[playerScore.PlayerId]?.Rounds[round - 1]"
+                                                      Class="@(Challenge[playerScore.PlayerId]?.Rounds[round - 1] == 5000 ? "perfect" : (Challenge[playerScore.PlayerId]?.Rounds[round - 1] == 4999 ? "almost-perfect" : ""))"
+                                                      TabIndex="@(i + j)"
+                                                      Disabled="true"></NumericInput>
+                                    </td>
+                                    @{ j++; }
+                                </Repeater>
+                                @{ i += 100; }
+                            </tr>
+                        </Repeater>
+
+                        <tr>
+                            <th>Total</th>
+                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
+                                <th>@(playerScore.Sum ?? 0)</th>
+                            </Repeater>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</Container>
+
+<Container Condition="!Loaded && ChallengeFound">
+    <LoadingAnimation>
+        Chargement du challenge @(Id)...
+    </LoadingAnimation>
+</Container>
+
+<Container Condition="!ChallengeFound">
+    <PageNotFound />
+</Container>
