@@ -60,7 +60,7 @@ namespace GeoNRage.App.Pages
                     .Where(p => (p.ChallengeTimeLimit ?? 300) == 300)
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
-                    .OrderBy(g => g.Key)
+                    .OrderBy(g => g.First().GameDate)
                     .Select(g => (id: g.Key, score: g.Sum(p => p.Sum) ?? 0));
 
                 StateHasChanged();

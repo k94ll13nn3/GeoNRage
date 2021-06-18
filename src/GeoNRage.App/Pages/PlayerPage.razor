@@ -165,39 +165,55 @@
                     </Container>
                 </div>
                 <div class="column">
-                    <div class="card">
-                        <header class="card-header">
-                            <p class="card-header-title">
-                                Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
-                            </p>
-                        </header>
-                        <div class="card-content py-0">
-                            <div class="container is-flex is-justify-content-center is-align-items-center m-0" style="max-height:250px;height:250px;">
-                                <table class="charts-css column show-labels show-primary-axis show-data-axes show-5-secondary-axes">
-                                    <caption>
-                                        Historique des parties
-                                    </caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Partie</th>
-                                            <th scope="col">Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <Repeater Items="GameHistoric" Context="game">
-                                            <tr>
-                                                <th scope="row"></th>
-                                                <td style="--size: calc(@game.score / 75000);">
-                                                    <span class="data"></span>
-                                                    <span class="tooltip">Partie #@game.id<br />Score @game.score</span>
-                                                </td>
-                                            </tr>
-                                        </Repeater>
-                                    </tbody>
-                                </table>
+                    <Container Condition="GameHistoric?.Any() == true">
+                        <ChildContent>
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
+                                    </p>
+                                </header>
+                                <div class="card-content py-0">
+                                    <div class="container is-flex is-justify-content-center is-align-items-center m-0" style="max-height:250px;height:250px;">
+                                        <table class="charts-css column show-labels show-primary-axis show-data-axes show-5-secondary-axes">
+                                            <caption>
+                                                Historique des parties
+                                            </caption>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Partie</th>
+                                                    <th scope="col">Score</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <Repeater Items="GameHistoric" Context="game">
+                                                    <tr>
+                                                        <th scope="row"></th>
+                                                        <td style="--size: calc(@game.score / 75000);">
+                                                            <span class="data"></span>
+                                                            <span class="tooltip">Partie #@game.id<br />Score @game.score</span>
+                                                        </td>
+                                                    </tr>
+                                                </Repeater>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </ChildContent>
+                        <ElseContent>
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        Historique des parties
+                                    </p>
+                                </header>
+                                <div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
+                                    Aucune partie jouées
+                                </div>
+                            </div>
+                        </ElseContent>
+                    </Container>
                 </div>
             </div>
         </div>
