@@ -11,11 +11,12 @@ namespace GeoNRage.Server
     {
         private readonly RequestDelegate _next;
 
-        public async Task InvokeAsync(HttpContext context, GameService gameService, PlayerService playerService)
+        public async Task InvokeAsync(HttpContext context, GameService gameService, PlayerService playerService, ChallengeService challengeService)
         {
             _ = context ?? throw new ArgumentNullException(nameof(context));
             _ = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _ = playerService ?? throw new ArgumentNullException(nameof(playerService));
+            _ = challengeService ?? throw new ArgumentNullException(nameof(challengeService));
 
             bool found = false;
             string name = string.Empty;
@@ -31,6 +32,20 @@ namespace GeoNRage.Server
                         {
                             found = true;
                             name = game.Name;
+                        }
+                    }
+                }
+
+                if (context.Request.Path.StartsWithSegments("/challenges", StringComparison.OrdinalIgnoreCase))
+                {
+                    string[]? segments = context.Request.Path.Value?.Split('/');
+                    if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
+                    {
+                        Challenge? challenge = await challengeService.GetAsync(id);
+                        if (challenge != null)
+                        {
+                            found = true;
+                            name = challenge.Map.Name;
                         }
                     }
                 }
