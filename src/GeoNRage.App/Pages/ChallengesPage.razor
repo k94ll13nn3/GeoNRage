@@ -3,6 +3,12 @@
 <Container Condition="Challenges?.Any() == true">
     <ChildContent>
         <div class="container">
+            <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                <div class="notification is-danger m-3">
+                    @Error
+                </div>
+            </Container>
+
             <div class="field m-3 is-grouped">
                 <p class="control is-expanded">
                     <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
@@ -16,6 +22,7 @@
                    Headers="@(new TableHeader[]
                                   {
                                       new("Nom", false, string.Empty),
+                                      new("Id GeoGuessr", false, string.Empty),
                                       new("Meilleur score", true, nameof(PlayerScoreDto.Sum)),
                                       new("", false, string.Empty),
                                   })"
@@ -25,11 +32,17 @@
                    SortFunction="Sort">
                 <RowContent Context="challenge">
                     <td>@challenge.MapName</td>
+                    <td>@challenge.GeoGuessrId</td>
                     <td>@challenge.PlayerScores.Max(p => p.Sum)</td>
                     <td>
                         <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")">
                             <span class="icon is-small">
                                 <i class="fas fa-external-link-alt"></i>
+                            </span>
+                        </a>
+                        <a href="https://www.geoguessr.com/challenge/@challenge.GeoGuessrId" target="_blank">
+                            <span class="icon is-small">
+                                <i class="fas fa-link"></i>
                             </span>
                         </a>
                     </td>

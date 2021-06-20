@@ -6,6 +6,7 @@ using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Shared;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
+using Refit;
 
 namespace GeoNRage.App.Pages
 {
@@ -23,6 +24,8 @@ namespace GeoNRage.App.Pages
 
         public Table<ChallengeDto> ChallengesTable { get; set; } = null!;
 
+        public string? Error { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Challenges = await ChallengesApi.GetAllWithoutGameAsync();
@@ -39,11 +42,26 @@ namespace GeoNRage.App.Pages
 
         private async Task ImportAsync()
         {
-            await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId });
-            Challenges = await ChallengesApi.GetAllWithoutGameAsync();
-            ChallengesTable.SetItems(Challenges);
-            StateHasChanged();
-            GeoGuessrId = string.Empty;
+            try
+            {
+                Error = null;
+                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = false });
+                Challenges = await ChallengesApi.GetAllWithoutGameAsync();
+                ChallengesTable.SetItems(Challenges);
+                GeoGuessrId = string.Empty;
+            }
+            catch (ValidationApiException e)
+            {
+                Error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
+            }
+            catch (ApiException e)
+            {
+                Error = e.Content;
+            }
+            finally
+            {
+                StateHasChanged();
+            }
         }
     }
 }

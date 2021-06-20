@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using GeoNRage.Server.Entities;
@@ -57,13 +58,17 @@ namespace GeoNRage.Server.Controllers
 
             try
             {
-                Challenge? challenge = await _challengeService.ImportChallengeAsync(dto.GeoGuessrId);
+                Challenge? challenge = await _challengeService.ImportChallengeAsync(dto);
                 if (challenge is null)
                 {
                     return NotFound();
                 }
 
                 return NoContent();
+            }
+            catch (HttpRequestException e)
+            {
+                return BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {

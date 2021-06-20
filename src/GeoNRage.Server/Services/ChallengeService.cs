@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.GeoGuessr;
 using GeoNRage.Server.Models;
-using Humanizer;
+using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -60,9 +60,9 @@ namespace GeoNRage.Server.Services
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<Challenge?> ImportChallengeAsync(string geoGuessrId)
+        public async Task<Challenge?> ImportChallengeAsync(ChallengeImportDto dto)
         {
-            _ = geoGuessrId ?? throw new ArgumentNullException(nameof(geoGuessrId));
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
             HttpClient client = _clientFactory.CreateClient("geoguessr");
 
             if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
@@ -77,7 +77,7 @@ namespace GeoNRage.Server.Services
                 NumberHandling = JsonNumberHandling.AllowReadingFromString,
             };
 
-            GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{geoGuessrId}/0/26", options);
+            GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{dto.GeoGuessrId}/0/26", options);
 
             if (response is null)
             {
@@ -143,7 +143,7 @@ namespace GeoNRage.Server.Services
                 GameId = int.MaxValue,
                 MapId = map.Id,
                 Map = map,
-                GeoGuessrId = geoGuessrId,
+                GeoGuessrId = dto.GeoGuessrId,
                 PlayerScores = playerScores,
                 TimeLimit = response[0].Game.TimeLimit,
                 Locations = locations,
@@ -155,12 +155,17 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
-                .SingleOrDefaultAsync(c => c.GeoGuessrId == geoGuessrId);
+                .SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
             if (existingChallenge is not null)
             {
                 if (existingChallenge.GameId != int.MaxValue)
                 {
-                    throw new InvalidOperationException($"The challenge with GeoGuessr Id '{geoGuessrId}' is already linked to a game and cannot be updated.");
+                    throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' is already linked to a game and cannot be updated.");
+                }
+
+                if (!dto.OverrideData)
+                {
+                    throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' already exists.");
                 }
 
                 existingChallenge.PlayerScores = challenge.PlayerScores;
