@@ -17,6 +17,12 @@
                     <button type="submit" class="button is-primary" @onclick="ImportAsync">Importer</button>
                 </div>
             </div>
+            <article class="message m-3">
+                <div class="message-body">
+                    Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
+                </div>
+            </article>
+
             <Table @ref="ChallengesTable"
                    Items="Challenges"
                    Headers="@(new TableHeader[]
@@ -27,7 +33,7 @@
                                       new("", false, string.Empty),
                                   })"
                    Paginate="true"
-                   PageSize="10"
+                   PageSize="20"
                    IsNarrow="false"
                    SortFunction="Sort">
                 <RowContent Context="challenge">
