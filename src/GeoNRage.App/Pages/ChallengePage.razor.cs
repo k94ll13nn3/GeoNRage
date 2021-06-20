@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Refit;
@@ -13,6 +14,9 @@ namespace GeoNRage.App.Pages
 
         [Parameter]
         public int Id { get; set; }
+
+        [Inject]
+        public PopupService PopupService { get; set; } = null!;
 
         public bool ChallengeFound { get; set; } = true;
 
@@ -36,12 +40,25 @@ namespace GeoNRage.App.Pages
             }
         }
 
+        private void Refresh()
+        {
+            PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await RefreshAsync(), true);
+        }
+
         private async Task RefreshAsync()
         {
-            await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId });
-            ApiResponse<ChallengeDto> response = await ChallengesApi.GetAsync(Id);
-            Challenge = response.Content!;
-            StateHasChanged();
+            try
+            {
+                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId });
+                PopupService.HidePopup();
+                ApiResponse<ChallengeDto> response = await ChallengesApi.GetAsync(Id);
+                Challenge = response.Content!;
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                PopupService.DisplayPopup("Erreur", e.Content ?? "Echec de l'opération");
+            }
         }
     }
 }
