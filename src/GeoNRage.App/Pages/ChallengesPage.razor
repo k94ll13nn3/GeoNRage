@@ -1,28 +1,28 @@
 ﻿@page "/challenges"
 
-<Container Condition="Challenges?.Any() == true">
-    <ChildContent>
-        <div class="container">
-            <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-                <div class="notification is-danger m-3">
-                    @Error
-                </div>
-            </Container>
+<div class="container">
+    <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+        <div class="notification is-danger m-3">
+            @Error
+        </div>
+    </Container>
 
-            <div class="field m-3 is-grouped">
-                <p class="control is-expanded">
-                    <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
-                </p>
-                <div class="control">
-                    <button type="submit" class="button is-primary" @onclick="Import">Importer</button>
-                </div>
-            </div>
-            <article class="message m-3">
-                <div class="message-body">
-                    Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
-                </div>
-            </article>
+    <div class="field m-3 is-grouped">
+        <p class="control is-expanded">
+            <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
+        </p>
+        <div class="control">
+            <button type="submit" class="button is-primary" @onclick="Import">Importer</button>
+        </div>
+    </div>
+    <article class="message m-3">
+        <div class="message-body">
+            Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
+        </div>
+    </article>
 
+    <Container Condition="Challenges?.Any() == true">
+        <ChildContent>
             <Table @ref="ChallengesTable"
                    Items="Challenges"
                    Headers="@(new TableHeader[]
@@ -54,12 +54,12 @@
                     </td>
                 </RowContent>
             </Table>
-        </div>
-    </ChildContent>
+        </ChildContent>
 
-    <ElseContent>
-        <LoadingAnimation Animated="true">
-            Chargement des challenges...
-        </LoadingAnimation>
-    </ElseContent>
-</Container>
+        <ElseContent>
+            <LoadingAnimation Animated="true">
+                Chargement des challenges...
+            </LoadingAnimation>
+        </ElseContent>
+    </Container>
+</div>
