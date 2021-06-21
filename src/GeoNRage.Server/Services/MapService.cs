@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
