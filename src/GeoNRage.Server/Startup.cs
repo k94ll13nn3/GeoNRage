@@ -54,6 +54,7 @@ namespace GeoNRage.Server
             services.AddTransient<PlayerService>();
             services.AddTransient<ChallengeService>();
             services.AddTransient<LocationService>();
+            services.AddTransient<GeoGuessrService>();
 
             var cookieContainer = new CookieContainer();
             services.AddSingleton(cookieContainer);

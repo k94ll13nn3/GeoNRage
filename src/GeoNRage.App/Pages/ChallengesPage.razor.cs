@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Shared;
+using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Refit;
@@ -17,6 +18,9 @@ namespace GeoNRage.App.Pages
 
         [Inject]
         public IChallengesApi ChallengesApi { get; set; } = null!;
+
+        [Inject]
+        public PopupService PopupService { get; set; } = null!;
 
         public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
 
@@ -40,6 +44,11 @@ namespace GeoNRage.App.Pages
             };
         }
 
+        private void Import()
+        {
+            PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync(), true);
+        }
+
         private async Task ImportAsync()
         {
             try
@@ -60,6 +69,7 @@ namespace GeoNRage.App.Pages
             }
             finally
             {
+                PopupService.HidePopup();
                 StateHasChanged();
             }
         }

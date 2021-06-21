@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.GeoGuessr;
@@ -26,7 +23,7 @@ namespace GeoNRage.Server.Services
         [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
         private readonly ApplicationOptions _options;
 
-        private readonly CookieContainer _cookieContainer;
+        private readonly GeoGuessrService _geoGuessrService;
 
         public async Task<IEnumerable<Challenge>> GetAllAsync()
         {
@@ -63,27 +60,8 @@ namespace GeoNRage.Server.Services
         public async Task<Challenge?> ImportChallengeAsync(ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            HttpClient client = _clientFactory.CreateClient("geoguessr");
 
-            if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
-            {
-                await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin { Email = _options.GeoGuessrEmail, Password = _options.GeoGuessrPassword });
-            }
-
-            var options = new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() },
-                PropertyNameCaseInsensitive = true,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            };
-
-            GeoGuessrChallenge[]? response = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{dto.GeoGuessrId}/0/26", options);
-
-            if (response is null)
-            {
-                throw new InvalidOperationException("Cannot import data.");
-            }
-
+            IList<GeoGuessrChallenge> response = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
             List<Location> locations = new();
             HttpClient googleClient = _clientFactory.CreateClient("google");
             for (int i = 0; i < response[0].Game.Rounds.Count; i++)
