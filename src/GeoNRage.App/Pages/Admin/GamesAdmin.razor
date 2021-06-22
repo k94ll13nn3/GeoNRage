@@ -4,44 +4,42 @@
 
 <GeoNRage.App.Components.Admin.AdminMenu />
 
-<div class="container is-fluid m-3">
-    <Container Condition="Games?.Any() == true">
-        <table class="table is-bordered is-striped is-hoverable">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Nom</th>
-                    <th>Date</th>
-                    <th>Cartes</th>
-                    <th>Joueurs</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <Repeater Items="Games" Context="game">
-                    <tr>
-                        <td>@game.Id</td>
-                        <td>@game.Name</td>
-                        <td>@game.Date.ToShortDateString()</td>
-                        <td>@game.Challenges.Count</td>
-                        <td>@game.Players.Count</td>
-                        <td class="has-text-centered">
-                            <a class="has-text-info" @onclick="(() => EditGame(game.Id))">
-                                <span class="icon">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                            </a>
-                            <a class="has-text-danger" @onclick="(() => DeleteGame(game.Id))">
-                                <span class="icon">
-                                    <i class="fas fa-trash-alt"></i>
-                                </span>
-                            </a>
-                        </td>
-                    </tr>
-                </Repeater>
-            </tbody>
-            <tfoot>
-                <tr>
+<Container Condition="Games?.Any() == true">
+    <ChildContent>
+        <div class="container is-fluid m-3">
+            <Table Items="Games"
+                   Headers="@(new TableHeader[]
+                          {
+                              new("Id", false, string.Empty),
+                              new("Nom", false, string.Empty),
+                              new("Date", false, string.Empty),
+                              new("Cartes", false, string.Empty),
+                              new("Joueurs", false, string.Empty),
+                              new("Actions", false, string.Empty),
+                          })"
+                   PageSize="15"
+                   Paginate="true"
+                   @ref="GamesTable">
+                <RowContent Context="game">
+                    <td>@game.Id</td>
+                    <td>@game.Name</td>
+                    <td>@game.Date.ToShortDateString()</td>
+                    <td>@game.Challenges.Count</td>
+                    <td>@game.Players.Count</td>
+                    <td class="has-text-centered">
+                        <a class="has-text-info" @onclick="(() => EditGame(game.Id))">
+                            <span class="icon">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                        </a>
+                        <a class="has-text-danger" @onclick="(() => DeleteGame(game.Id))">
+                            <span class="icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                        </a>
+                    </td>
+                </RowContent>
+                <FooterContent>
                     <th colspan="6" class="has-text-right">
                         <button class="button is-primary" @onclick="ShowGameCreation">
                             <span class="icon">
@@ -50,11 +48,17 @@
                             <span>Créer</span>
                         </button>
                     </th>
-                </tr>
-            </tfoot>
-        </table>
-    </Container>
-</div>
+                </FooterContent>
+            </Table>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des parties...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>
 
 <div class="modal @(ShowEditForm ? "is-active" : "")">
     <EditForm Model="Game" OnValidSubmit="CreateOrUpdateGameAsync" @ref="Form">

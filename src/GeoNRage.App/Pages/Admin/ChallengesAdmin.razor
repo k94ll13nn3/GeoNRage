@@ -4,16 +4,17 @@
 
 <GeoNRage.App.Components.Admin.AdminMenu />
 
-<div class="container is-fluid">
-    <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-        <div class="notification is-danger">
-            @Error
-        </div>
-    </Container>
+<Container Condition="Challenges?.Any() == true">
+    <ChildContent>
+        <div class="container is-fluid">
+            <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                <div class="notification is-danger">
+                    @Error
+                </div>
+            </Container>
 
-    <Container Condition="Challenges?.Any() == true">
-        <Table Items="Challenges"
-               Headers="@(new TableHeader[]
+            <Table Items="Challenges"
+                   Headers="@(new TableHeader[]
                           {
                               new("Id", false, string.Empty),
                               new("Carte", false, string.Empty),
@@ -22,21 +23,28 @@
                               new("Nombre de lieux", false, string.Empty),
                               new("Actions", false, string.Empty),
                           })"
-               PageSize="20"
-               Paginate="true"
-               @ref="ChallengesTable">
-            <RowContent Context="challenge">
-                <td>@challenge.Id</td>
-                <td>@challenge.MapName</td>
-                <td>@challenge.GameName</td>
-                <td>@challenge.TimeLimit</td>
-                <td>@(challenge.LocationsCount ?? 0)</td>
-                <td>
-                    <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallenge(challenge)">
-                        <i class="fas fa-sync-alt"></i>
-                    </span>
-                </td>
-            </RowContent>
-        </Table>
-    </Container>
-</div>
+                   PageSize="15"
+                   Paginate="true"
+                   @ref="ChallengesTable">
+                <RowContent Context="challenge">
+                    <td>@challenge.Id</td>
+                    <td>@challenge.MapName</td>
+                    <td>@challenge.GameName</td>
+                    <td>@challenge.TimeLimit</td>
+                    <td>@(challenge.LocationsCount ?? 0)</td>
+                    <td>
+                        <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallenge(challenge)">
+                            <i class="fas fa-sync-alt"></i>
+                        </span>
+                    </td>
+                </RowContent>
+            </Table>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des challenges...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>

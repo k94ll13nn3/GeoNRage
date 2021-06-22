@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components.Shared;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
@@ -42,6 +43,8 @@ namespace GeoNRage.App.Pages.Admin
 
         public EditForm Form { get; set; } = null!;
 
+        public Table<GameDto> GamesTable { get; set; } = null!;
+
         public void EditGame(int gameId)
         {
             ShowEditForm = true;
@@ -80,6 +83,7 @@ namespace GeoNRage.App.Pages.Admin
                 SelectedGameId = null;
                 Games = await GamesApi.GetAllAsync();
                 StateHasChanged();
+                GamesTable.SetItems(Games);
             }
             catch (ValidationApiException e)
             {
@@ -116,6 +120,7 @@ namespace GeoNRage.App.Pages.Admin
                 await GamesApi.DeleteAsync(gameId);
                 Games = await GamesApi.GetAllAsync();
                 StateHasChanged();
+                GamesTable.SetItems(Games);
             }
             catch (ApiException e)
             {
