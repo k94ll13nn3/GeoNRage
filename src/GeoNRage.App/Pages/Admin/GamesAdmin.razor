@@ -15,7 +15,7 @@
                               new("Date", false, string.Empty),
                               new("Cartes", false, string.Empty),
                               new("Joueurs", false, string.Empty),
-                              new("Actions", false, string.Empty),
+                              new("", false, string.Empty),
                           })"
                    PageSize="15"
                    Paginate="true"
@@ -26,7 +26,7 @@
                     <td>@game.Date.ToShortDateString()</td>
                     <td>@game.Challenges.Count</td>
                     <td>@game.Players.Count</td>
-                    <td class="has-text-centered">
+                    <td class="min">
                         <a class="has-text-info" @onclick="(() => EditGame(game.Id))">
                             <span class="icon">
                                 <i class="fas fa-edit"></i>

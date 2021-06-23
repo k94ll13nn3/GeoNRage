@@ -21,7 +21,7 @@
                               new("Partie", false, string.Empty),
                               new("Limite de temps", false, string.Empty),
                               new("Nombre de lieux", false, string.Empty),
-                              new("Actions", false, string.Empty),
+                              new("", false, string.Empty),
                           })"
                    PageSize="15"
                    Paginate="true"
@@ -32,7 +32,7 @@
                     <td>@challenge.GameName</td>
                     <td>@challenge.TimeLimit</td>
                     <td>@(challenge.LocationsCount ?? 0)</td>
-                    <td>
+                    <td class="min">
                         <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallenge(challenge)">
                             <i class="fas fa-sync-alt"></i>
                         </span>

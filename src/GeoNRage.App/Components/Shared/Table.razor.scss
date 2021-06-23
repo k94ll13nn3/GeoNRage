@@ -5,3 +5,8 @@
 .delimiter {
     margin-left: auto;
 }
+
+::deep td.min {
+    width: 1%;
+    white-space: nowrap;
+}

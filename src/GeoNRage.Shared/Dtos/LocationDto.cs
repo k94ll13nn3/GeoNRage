@@ -13,5 +13,9 @@
         public string? Country { get; set; }
 
         public int TimesSeen { get; set; }
+
+        public decimal Latitude { get; set; }
+
+        public decimal Longitude { get; set; }
     }
 }

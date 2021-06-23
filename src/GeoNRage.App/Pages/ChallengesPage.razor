@@ -31,6 +31,7 @@
                                       new("Id GeoGuessr", false, string.Empty),
                                       new("Meilleur score", true, nameof(PlayerScoreDto.Sum)),
                                       new("", false, string.Empty),
+                                      new("", false, string.Empty),
                                   })"
                    Paginate="true"
                    PageSize="20"
@@ -40,17 +41,16 @@
                     <td>@challenge.MapName</td>
                     <td>@challenge.GeoGuessrId</td>
                     <td>@challenge.PlayerScores.Max(p => p.Sum)</td>
-                    <td>
-                        <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")">
-                            <span class="icon is-small">
-                                <i class="fas fa-external-link-alt"></i>
-                            </span>
-                        </a>
-                        <a href="https://www.geoguessr.com/challenge/@challenge.GeoGuessrId" target="_blank">
-                            <span class="icon is-small">
-                                <i class="fas fa-link"></i>
-                            </span>
-                        </a>
+                    <td class="min">
+                        <ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")"
+                                    Icon="fa-external-link-alt"
+                                    Tooltip="Ouvrir" />
+                    </td>
+                    <td class="min">
+                        <ActionIcon Link="@(new Uri($"https://www.geoguessr.com/challenge/{challenge.GeoGuessrId}"))"
+                                    Icon="fa-link"
+                                    Tooltip="Ouvrir sur GeoGuessr"
+                                    IsExternal="true" />
                     </td>
                 </RowContent>
             </Table>

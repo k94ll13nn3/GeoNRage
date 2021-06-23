@@ -16,12 +16,10 @@
                 <RowContent Context="game">
                     <td>@game.Name</td>
                     <td>@game.Date.ToShortDateString()</td>
-                    <td>
-                        <a href="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")">
-                            <span class="icon is-small">
-                                <i class="fas fa-external-link-alt"></i>
-                            </span>
-                        </a>
+                    <td class="min">
+                        <ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")"
+                                    Icon="fa-external-link-alt"
+                                    Tooltip="Ouvrir" />
                     </td>
                 </RowContent>
             </Table>
