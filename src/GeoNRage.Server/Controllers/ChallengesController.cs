@@ -51,6 +51,7 @@ namespace GeoNRage.Server.Controllers
             return _mapper.Map<Challenge, ChallengeDto>(challenge);
         }
 
+        [AllowAnonymous]
         [HttpPost("import")]
         public async Task<IActionResult> ImportChallengeAsync(ChallengeImportDto dto)
         {
