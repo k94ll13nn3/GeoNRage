@@ -22,6 +22,7 @@
                               new("Limite de temps", false, string.Empty),
                               new("Nombre de lieux", false, string.Empty),
                               new("", false, string.Empty),
+                              new("", false, string.Empty),
                           })"
                    PageSize="15"
                    Paginate="true"
@@ -36,6 +37,13 @@
                         <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallenge(challenge)">
                             <i class="fas fa-sync-alt"></i>
                         </span>
+                    </td>
+                    <td class="min">
+                        <a class="has-text-danger" @onclick="(() => DeleteChallenge(challenge.Id))">
+                            <span class="icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                        </a>
                     </td>
                 </RowContent>
             </Table>

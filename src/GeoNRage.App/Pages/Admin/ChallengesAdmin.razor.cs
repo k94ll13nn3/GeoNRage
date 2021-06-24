@@ -37,6 +37,26 @@ namespace GeoNRage.App.Pages.Admin
             Challenges = await ChallengesApi.GetAllAsync();
         }
 
+        private void DeleteChallenge(int challengeId)
+        {
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du challenge {challengeId} ?", () => OnConfirmDeleteAsync(challengeId), false);
+        }
+
+        private async void OnConfirmDeleteAsync(int challengeId)
+        {
+            try
+            {
+                await ChallengesApi.DeleteAsync(challengeId);
+                Challenges = await ChallengesApi.GetAllAsync();
+                ChallengesTable.SetItems(Challenges);
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            }
+        }
+
         private async Task ImportChallengeAsync(ChallengeDto challenge)
         {
             _ = challenge ?? throw new ArgumentNullException(nameof(challenge));

@@ -57,6 +57,19 @@ namespace GeoNRage.Server.Services
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task DeleteAsync(int id)
+        {
+            Challenge? challenge = await _context.Challenges
+                .Include(c => c.PlayerScores)
+                .ThenInclude(p => p.Player)
+                .FirstOrDefaultAsync(g => g.Id == id);
+            if (challenge is not null)
+            {
+                _context.Challenges.Remove(challenge);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task<Challenge?> ImportChallengeAsync(ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
