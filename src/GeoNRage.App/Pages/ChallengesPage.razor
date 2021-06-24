@@ -29,17 +29,21 @@
                                   {
                                       new("Nom", false, string.Empty),
                                       new("Id GeoGuessr", false, string.Empty),
+                                      new("Limite de temps", false, string.Empty),
+                                      new("Nombre de joueurs", false, string.Empty),
                                       new("Meilleur score", true, nameof(PlayerScoreDto.Sum)),
                                       new("", false, string.Empty),
                                       new("", false, string.Empty),
                                   })"
                    Paginate="true"
-                   PageSize="20"
+                   PageSize="15"
                    IsNarrow="false"
                    SortFunction="Sort">
                 <RowContent Context="challenge">
                     <td>@challenge.MapName</td>
                     <td>@challenge.GeoGuessrId</td>
+                    <td>@challenge.TimeLimit</td>
+                    <td>@challenge.PlayerScores.Count</td>
                     <td>@challenge.PlayerScores.Max(p => p.Sum)</td>
                     <td class="min">
                         <ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")"
