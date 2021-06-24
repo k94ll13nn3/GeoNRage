@@ -76,8 +76,11 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more players do not exists.");
             }
 
+            // Cannot be auto-generated because the fake game as int.MaxValue as Id.
+            int gameId = (_context.Games.Where(g => g.Id != int.MaxValue).OrderByDescending(x => x.Id).FirstOrDefault()?.Id ?? 0) + 1;
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
+                Id = gameId,
                 Name = dto.Name,
                 Date = dto.Date,
                 CreationDate = DateTime.UtcNow,
