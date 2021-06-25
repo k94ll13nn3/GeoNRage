@@ -63,7 +63,7 @@
 
             <h1 class="is-size-4 my-3 mx-6">Meilleur score par carte</h1>
             <nav class="level mx-3 my-5">
-                <Repeater Items="Maps" Context="map">
+                <Repeater Items="Maps.Where(m => m.IsMapForGame)" Context="map">
                     @{
                         PlayerScoreWithChallengeDto? score = Player.PlayerScores.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
                     }

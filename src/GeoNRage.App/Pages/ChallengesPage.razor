@@ -57,6 +57,13 @@
                                     IsExternal="true" />
                     </td>
                 </RowContent>
+                <FooterContent>
+                    <th colspan="7" class="has-text-right">
+                        <button class="button is-primary" @onclick="ShowAllMapToggleAsync">
+                            @(ShowAllMaps ? "Afficher les cartes principales" : "Afficher toutes les cartes")
+                        </button>
+                    </th>
+                </FooterContent>
             </Table>
         </ChildContent>
 

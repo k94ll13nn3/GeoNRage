@@ -31,6 +31,7 @@ namespace GeoNRage.Server.Services
             {
                 Id = dto.Id,
                 Name = dto.Name,
+                IsMapForGame = dto.IsMapForGame,
             });
 
             await _context.SaveChangesAsync();
@@ -46,6 +47,7 @@ namespace GeoNRage.Server.Services
             if (map is not null)
             {
                 map.Name = dto.Name;
+                map.IsMapForGame = dto.IsMapForGame;
 
                 _context.Maps.Update(map);
                 await _context.SaveChangesAsync();

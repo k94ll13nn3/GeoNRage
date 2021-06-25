@@ -43,7 +43,7 @@
                     </td>
                 </RowContent>
                 <FooterContent>
-                    <th colspan="6" class="has-text-right">
+                    <th colspan="7" class="has-text-right">
                         <button class="button is-primary" @onclick="ShowGameCreation">
                             <span class="icon">
                                 <i class="fas fa-plus"></i>
@@ -114,8 +114,8 @@
                                 <div class="control">
                                     <div class="select">
                                         <InputSelect @bind-Value="challenge.MapId">
-                                            <Repeater Items="@Maps" Context="map">
-                                                <option value="@map.Id">@map.Name</option>
+                                            <Repeater Items="@Maps.OrderByDescending(m => m.IsMapForGame)" Context="map">
+                                                <option value="@map.Id">@(map.IsMapForGame ? $"{map.Name}*" : map.Name)</option>
                                             </Repeater>
                                         </InputSelect>
                                     </div>

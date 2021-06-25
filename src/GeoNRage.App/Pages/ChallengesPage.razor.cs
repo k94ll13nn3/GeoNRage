@@ -20,9 +20,14 @@ namespace GeoNRage.App.Pages
         public IChallengesApi ChallengesApi { get; set; } = null!;
 
         [Inject]
+        public IMapsApi MapsApi { get; set; } = null!;
+
+        [Inject]
         public PopupService PopupService { get; set; } = null!;
 
         public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
+
+        public IEnumerable<MapDto> Maps { get; set; } = null!;
 
         public string GeoGuessrId { get; set; } = null!;
 
@@ -30,9 +35,13 @@ namespace GeoNRage.App.Pages
 
         public string? Error { get; set; }
 
+        public bool ShowAllMaps { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
-            Challenges = await ChallengesApi.GetAllWithoutGameAsync();
+            Maps = await MapsApi.GetAllAsync();
+            var mapsForGame = Maps.Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
+            Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
         }
 
         private static IEnumerable<ChallengeDto> Sort(IEnumerable<ChallengeDto> challenges, string column, bool ascending)
@@ -47,6 +56,15 @@ namespace GeoNRage.App.Pages
         private void Import()
         {
             PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync(), true);
+        }
+
+        private async Task ShowAllMapToggleAsync()
+        {
+            ShowAllMaps = !ShowAllMaps;
+            var mapsForGame = Maps.Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
+            Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
+            ChallengesTable.SetItems(Challenges);
+            StateHasChanged();
         }
 
         private async Task ImportAsync()

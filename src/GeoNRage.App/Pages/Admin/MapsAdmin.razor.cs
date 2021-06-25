@@ -35,7 +35,7 @@ namespace GeoNRage.App.Pages.Admin
         {
             Error = null;
             ShowEditForm = true;
-            Map = new MapCreateDto { Name = Maps.First(m => m.Id == mapId).Name, Id = mapId };
+            Map = new MapCreateDto { Name = Maps.First(m => m.Id == mapId).Name, Id = mapId, IsMapForGame = Maps.First(m => m.Id == mapId).IsMapForGame };
             SelectedMapId = mapId;
         }
 

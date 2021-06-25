@@ -6,5 +6,8 @@ namespace GeoNRage.Shared.Dtos
     {
         [Required]
         public string Name { get; set; } = null!;
+
+        [Required]
+        public bool IsMapForGame { get; set; }
     }
 }
