@@ -57,6 +57,7 @@ namespace GeoNRage.App.Pages
             _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
             _hubConnection.Reconnected -= OnHubConnectionReconnected;
             await _hubConnection.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
 
         public async Task ReloadPageAsync()
