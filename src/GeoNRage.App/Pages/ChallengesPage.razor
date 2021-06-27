@@ -27,8 +27,9 @@
                    Items="Challenges"
                    Headers="@(new TableHeader[]
                                   {
-                                      new("Nom", false, string.Empty),
+                                      new("Nom", true, nameof(ChallengeDto.MapName)),
                                       new("Id GeoGuessr", false, string.Empty),
+                                      new("Créateur", false, string.Empty),
                                       new("Limite de temps", false, string.Empty),
                                       new("Nombre de joueurs", false, string.Empty),
                                       new("Meilleur score", true, nameof(PlayerScoreDto.Sum)),
@@ -42,6 +43,7 @@
                 <RowContent Context="challenge">
                     <td>@challenge.MapName</td>
                     <td>@challenge.GeoGuessrId</td>
+                    <td>@(challenge.CreatorName ?? "—")</td>
                     <td>@challenge.TimeLimit</td>
                     <td>@challenge.PlayerScores.Count</td>
                     <td>@challenge.PlayerScores.Max(p => p.Sum)</td>

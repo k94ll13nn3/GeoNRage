@@ -27,5 +27,7 @@ namespace GeoNRage.Shared.Dtos
         public int? LocationsCount { get; set; }
 
         public PlayerScoreDto? this[string playerId] => PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
+
+        public string? CreatorName { get; set; }
     }
 }

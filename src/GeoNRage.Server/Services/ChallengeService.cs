@@ -32,6 +32,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
+                .Include(c => c.Creator)
                 .ToListAsync();
         }
 
@@ -42,6 +43,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
+                .Include(c => c.Creator)
                 .Where(c => c.GameId == int.MaxValue)
                 .ToListAsync();
         }
@@ -54,6 +56,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
+                .Include(c => c.Creator)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -74,12 +77,12 @@ namespace GeoNRage.Server.Services
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
-            IList<GeoGuessrChallenge> response = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
+            (GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results) = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
             List<Location> locations = new();
             HttpClient googleClient = _clientFactory.CreateClient("google");
-            for (int i = 0; i < response[0].Game.Rounds.Count; i++)
+            for (int i = 0; i < results[0].Game.Rounds.Count; i++)
             {
-                GeoGuessrRound round = response[0].Game.Rounds[i];
+                GeoGuessrRound round = results[0].Game.Rounds[i];
                 string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}";
                 GoogleGeocode? geocode = await googleClient.GetFromJsonAsync<GoogleGeocode>(query);
                 if (geocode?.Results?.Count > 0)
@@ -102,7 +105,7 @@ namespace GeoNRage.Server.Services
             }
 
             var playerScores = new List<PlayerScore>();
-            foreach (GeoGuessrChallenge geoChallenge in response)
+            foreach (GeoGuessrChallengeResult geoChallenge in results)
             {
                 Player player = await _context.Players.FindAsync(geoChallenge.Game.Player.Id) ?? new Player
                 {
@@ -123,21 +126,28 @@ namespace GeoNRage.Server.Services
                 playerScores.Add(playerScore);
             }
 
-            Map map = await _context.Maps.FindAsync(response[0].Game.Map) ?? new Map
+            Map map = await _context.Maps.FindAsync(challenge.Map.Id) ?? new Map
             {
-                Id = response[0].Game.Map,
-                Name = response[0].Game.MapName,
+                Id = challenge.Map.Id,
+                Name = challenge.Map.Name,
             };
 
-            var challenge = new Challenge
+            Player? creator = await _context.Players.FindAsync(challenge.Creator.Id);
+            if (creator is null)
+            {
+                throw new InvalidOperationException($"Cannot import challenges created by {challenge.Creator.Nick}.");
+            }
+
+            var newChallenge = new Challenge
             {
                 GameId = int.MaxValue,
                 MapId = map.Id,
                 Map = map,
                 GeoGuessrId = dto.GeoGuessrId,
                 PlayerScores = playerScores,
-                TimeLimit = response[0].Game.TimeLimit,
+                TimeLimit = challenge.Challenge.TimeLimit,
                 Locations = locations,
+                CreatorId = creator.Id,
             };
 
             Challenge? existingChallenge = await _context
@@ -159,26 +169,28 @@ namespace GeoNRage.Server.Services
                     throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' already exists.");
                 }
 
-                existingChallenge.PlayerScores = challenge.PlayerScores;
-                existingChallenge.MapId = challenge.MapId;
-                existingChallenge.TimeLimit = challenge.TimeLimit;
-                existingChallenge.Locations = challenge.Locations;
+                existingChallenge.PlayerScores = newChallenge.PlayerScores;
+                existingChallenge.MapId = newChallenge.MapId;
+                existingChallenge.Map = newChallenge.Map;
+                existingChallenge.TimeLimit = newChallenge.TimeLimit;
+                existingChallenge.Locations = newChallenge.Locations;
+                existingChallenge.CreatorId = newChallenge.CreatorId;
             }
             else
             {
-                _context.Challenges.Add(challenge);
+                _context.Challenges.Add(newChallenge);
             }
 
             await _context.SaveChangesAsync();
 
             // Cutting the relations to avoid cycles in JSON.
-            challenge.Game = null!;
-            foreach (PlayerScore score in challenge.PlayerScores)
+            newChallenge.Game = null!;
+            foreach (PlayerScore score in newChallenge.PlayerScores)
             {
                 score.Challenge = null!;
             }
 
-            return challenge;
+            return newChallenge;
         }
     }
 }

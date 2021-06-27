@@ -237,12 +237,12 @@ namespace GeoNRage.Server.Services
                 return null;
             }
 
-            IList<GeoGuessrChallenge> response = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
+            (GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results) = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
             List<Location> locations = new();
             HttpClient googleClient = _clientFactory.CreateClient("google");
-            for (int i = 0; i < response[0].Game.Rounds.Count; i++)
+            for (int i = 0; i < results[0].Game.Rounds.Count; i++)
             {
-                GeoGuessrRound round = response[0].Game.Rounds[i];
+                GeoGuessrRound round = results[0].Game.Rounds[i];
                 string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}";
                 GoogleGeocode? geocode = await googleClient.GetFromJsonAsync<GoogleGeocode>(query);
                 if (geocode?.Results?.Count > 0)
@@ -265,7 +265,7 @@ namespace GeoNRage.Server.Services
             }
 
             var playerScores = new List<PlayerScore>();
-            foreach (GeoGuessrChallenge geoChallenge in response)
+            foreach (GeoGuessrChallengeResult geoChallenge in results)
             {
                 Player player = await _context.Players.FindAsync(geoChallenge.Game.Player.Id) ?? new Player
                 {
@@ -286,21 +286,24 @@ namespace GeoNRage.Server.Services
                 playerScores.Add(playerScore);
             }
 
-            Map map = await _context.Maps.FindAsync(response[0].Game.Map) ?? new Map
+            Player? creator = await _context.Players.FindAsync(challenge.Creator.Id);
+
+            Map map = await _context.Maps.FindAsync(challenge.Map.Id) ?? new Map
             {
-                Id = response[0].Game.Map,
-                Name = response[0].Game.MapName,
+                Id = challenge.Map.Id,
+                Name = challenge.Map.Name,
             };
 
-            var challenge = new Challenge
+            var newChallenge = new Challenge
             {
                 GameId = id,
                 MapId = map.Id,
                 Map = map,
                 GeoGuessrId = dto.GeoGuessrId,
                 PlayerScores = playerScores,
-                TimeLimit = response[0].Game.TimeLimit,
+                TimeLimit = challenge.Challenge.TimeLimit,
                 Locations = locations,
+                CreatorId = creator?.Id
             };
 
             if (dto.PersistData)
@@ -314,14 +317,16 @@ namespace GeoNRage.Server.Services
                         {
                             throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' is not associated to game '{id}'.");
                         }
-                        existingChallenge.PlayerScores = challenge.PlayerScores;
-                        existingChallenge.MapId = challenge.MapId;
-                        existingChallenge.TimeLimit = challenge.TimeLimit;
-                        existingChallenge.Locations = challenge.Locations;
+                        existingChallenge.PlayerScores = newChallenge.PlayerScores;
+                        existingChallenge.MapId = newChallenge.MapId;
+                        existingChallenge.Map = newChallenge.Map;
+                        existingChallenge.TimeLimit = newChallenge.TimeLimit;
+                        existingChallenge.Locations = newChallenge.Locations;
+                        existingChallenge.CreatorId = newChallenge.CreatorId;
                     }
                     else
                     {
-                        game.Challenges.Add(challenge);
+                        game.Challenges.Add(newChallenge);
                     }
                 }
                 else
@@ -331,7 +336,7 @@ namespace GeoNRage.Server.Services
                         throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' already exists.");
                     }
 
-                    game.Challenges.Add(challenge);
+                    game.Challenges.Add(newChallenge);
                 }
 
                 await _context.SaveChangesAsync();
@@ -349,13 +354,13 @@ namespace GeoNRage.Server.Services
             }
 
             // Cutting the relations to avoid cycles in JSON.
-            challenge.Game = null!;
-            foreach (PlayerScore score in challenge.PlayerScores)
+            newChallenge.Game = null!;
+            foreach (PlayerScore score in newChallenge.PlayerScores)
             {
                 score.Challenge = null!;
             }
 
-            return challenge;
+            return newChallenge;
         }
     }
 }

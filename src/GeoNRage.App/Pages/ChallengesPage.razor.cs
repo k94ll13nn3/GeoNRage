@@ -48,6 +48,7 @@ namespace GeoNRage.App.Pages
         {
             return column switch
             {
+                nameof(ChallengeDto.MapName) => ascending ? challenges.OrderBy(c => c.MapName) : challenges.OrderByDescending(c => c.MapName),
                 nameof(PlayerScoreDto.Sum) => ascending ? challenges.OrderBy(c => c.PlayerScores.Max(p => p.Sum)) : challenges.OrderByDescending(c => c.PlayerScores.Max(p => p.Sum)),
                 _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
             };

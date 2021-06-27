@@ -47,6 +47,7 @@ namespace GeoNRage.Server
             builder.Entity<Challenge>().Property(g => g.Id).UseMySqlIdentityColumn();
             builder.Entity<Challenge>().HasOne(c => c.Map).WithMany().HasForeignKey(c => c.MapId).IsRequired();
             builder.Entity<Challenge>().HasMany(c => c.PlayerScores).WithOne(p => p.Challenge).HasForeignKey(p => p.ChallengeId);
+            builder.Entity<Challenge>().HasOne(c => c.Creator).WithMany().HasForeignKey(c => c.CreatorId);
 
             builder.Entity<PlayerScore>().HasKey(p => new { p.ChallengeId, p.PlayerId });
             builder.Entity<PlayerScore>().HasOne(p => p.Player).WithMany(p => p.PlayerScores).HasForeignKey(p => p.PlayerId).IsRequired();

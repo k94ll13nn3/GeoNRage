@@ -22,14 +22,14 @@ namespace GeoNRage.Server.Services
 
         private readonly CookieContainer _cookieContainer;
 
-        public async Task<IList<GeoGuessrChallenge>> ImportChallengeAsync(string geoGuessrId)
+        public async Task<(GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results)> ImportChallengeAsync(string geoGuessrId)
         {
             _ = geoGuessrId ?? throw new ArgumentNullException(nameof(geoGuessrId));
             HttpClient client = _clientFactory.CreateClient("geoguessr");
 
             if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
             {
-                await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin { Email = _options.GeoGuessrEmail, Password = _options.GeoGuessrPassword });
+                await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin(_options.GeoGuessrEmail, _options.GeoGuessrPassword));
             }
 
             var options = new JsonSerializerOptions
@@ -45,21 +45,17 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("Cannot import data.");
             }
 
+            GeoGuessrChallenge? challenge = await client.GetFromJsonAsync<GeoGuessrChallenge>($"challenges/{geoGuessrId}", options);
+            if (challenge is null)
+            {
+                throw new InvalidOperationException("Cannot import data.");
+            }
+
+            var results = new List<GeoGuessrChallengeResult>();
+            GeoGuessrChallengeResult[]? challengeResults;
             try
             {
-                GeoGuessrChallenge[]? challenges = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{geoGuessrId}/0/26", options);
-
-                if (challenges is null)
-                {
-                    throw new InvalidOperationException("Cannot import data.");
-                }
-
-                if (!challenges.Any(r => r.Game.Player.Id != profile.Id))
-                {
-                    throw new InvalidOperationException("At least one player must play the challenge.");
-                }
-
-                return challenges.Where(r => r.Game.Player.Id != profile.Id).ToList();
+                challengeResults = await client.GetFromJsonAsync<GeoGuessrChallengeResult[]>($"results/scores/{geoGuessrId}/0/26", options);
             }
             catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.Unauthorized)
             {
@@ -75,7 +71,7 @@ namespace GeoNRage.Server.Services
                     response = await client.GetAsync(new Uri($"games/{gameId}", UriKind.Relative));
                     if (response.IsSuccessStatusCode)
                     {
-                        response = await client.PostAsJsonAsync(new Uri($"games/{gameId}", UriKind.Relative), new GeoGuessrGameGuess { Token = gameId, Lat = 0m, Lng = 0m, TimedOut = false });
+                        response = await client.PostAsJsonAsync(new Uri($"games/{gameId}", UriKind.Relative), new GeoGuessrGameGuess(gameId, 0m, 0m, false));
                         if (!response.IsSuccessStatusCode)
                         {
                             break;
@@ -87,20 +83,22 @@ namespace GeoNRage.Server.Services
                     }
                 }
 
-                GeoGuessrChallenge[]? challenges = await client.GetFromJsonAsync<GeoGuessrChallenge[]>($"results/scores/{geoGuessrId}/0/26", options);
-
-                if (challenges is null)
-                {
-                    throw new InvalidOperationException("Cannot import data.");
-                }
-
-                if (!challenges.Any(r => r.Game.Player.Id != profile.Id))
-                {
-                    throw new InvalidOperationException("At least one player must play the challenge.");
-                }
-
-                return challenges.Where(r => r.Game.Player.Id != profile.Id).ToList();
+                challengeResults = await client.GetFromJsonAsync<GeoGuessrChallengeResult[]>($"results/scores/{geoGuessrId}/0/26", options);
             }
+
+            if (challengeResults is null)
+            {
+                throw new InvalidOperationException("Cannot import data.");
+            }
+
+            if (!challengeResults.Any(r => r.Game.Player.Id != profile.Id))
+            {
+                throw new InvalidOperationException("At least one player must play the challenge.");
+            }
+
+            results = challengeResults.Where(r => r.Game.Player.Id != profile.Id).ToList();
+
+            return (challenge, results);
         }
     }
 }

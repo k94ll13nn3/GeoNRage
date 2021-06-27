@@ -64,7 +64,14 @@ namespace GeoNRage.App.Pages.Admin
             try
             {
                 Error = null;
-                await GamesApi.ImportChallengeAsync(challenge.GameId, new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true, PersistData = true });
+                if (challenge.GameId == int.MaxValue)
+                {
+                    await ChallengesApi.ImportChallengeAsync(new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true, PersistData = true });
+                }
+                else
+                {
+                    await GamesApi.ImportChallengeAsync(challenge.GameId, new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true, PersistData = true });
+                }
             }
             catch (ApiException e)
             {

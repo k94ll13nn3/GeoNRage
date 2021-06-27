@@ -19,6 +19,7 @@
                               new("Id", false, string.Empty),
                               new("Carte", false, string.Empty),
                               new("Partie", false, string.Empty),
+                              new("Créateur", false, string.Empty),
                               new("Limite de temps", false, string.Empty),
                               new("Nombre de lieux", false, string.Empty),
                               new("", false, string.Empty),
@@ -31,6 +32,7 @@
                     <td>@challenge.Id</td>
                     <td>@challenge.MapName</td>
                     <td>@challenge.GameName</td>
+                    <td>@(challenge.CreatorName ?? "—")</td>
                     <td>@challenge.TimeLimit</td>
                     <td>@(challenge.LocationsCount ?? 0)</td>
                     <td class="min">

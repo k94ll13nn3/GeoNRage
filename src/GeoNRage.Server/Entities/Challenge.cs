@@ -21,5 +21,9 @@ namespace GeoNRage.Server.Entities
         public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
 
         public ICollection<Location> Locations { get; set; } = new HashSet<Location>();
+
+        public string? CreatorId { get; set; } = null!;
+
+        public Player? Creator { get; set; } = null!;
     }
 }

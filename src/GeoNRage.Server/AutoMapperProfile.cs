@@ -25,7 +25,8 @@ namespace GeoNRage.Server
                 .ForMember(dest => dest.GameName, opt => opt.MapFrom(src => src.Game.Name))
                 .ForMember(dest => dest.GameDate, opt => opt.MapFrom(src => src.Game.Date))
                 .ForMember(dest => dest.LocationsCount, opt => opt.MapFrom(src => src.Locations == null ? (int?)null : src.Locations.Count))
-                .ForMember(dest => dest.MapName, opt => opt.MapFrom(src => src.Map.Name));
+                .ForMember(dest => dest.MapName, opt => opt.MapFrom(src => src.Map.Name))
+                .ForMember(dest => dest.CreatorName, opt => opt.MapFrom(src => src.Creator == null ? null : src.Creator.Name));
 
             CreateMap<PlayerScore, PlayerScoreDto>()
                 .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name));
