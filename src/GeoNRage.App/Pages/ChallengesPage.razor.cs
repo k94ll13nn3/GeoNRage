@@ -27,8 +27,6 @@ namespace GeoNRage.App.Pages
 
         public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
 
-        public IEnumerable<MapDto> Maps { get; set; } = null!;
-
         public string GeoGuessrId { get; set; } = null!;
 
         public Table<ChallengeDto> ChallengesTable { get; set; } = null!;
@@ -39,8 +37,7 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Maps = await MapsApi.GetAllAsync();
-            var mapsForGame = Maps.Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
+            var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
             Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
         }
 
@@ -62,7 +59,7 @@ namespace GeoNRage.App.Pages
         private async Task ShowAllMapToggleAsync()
         {
             ShowAllMaps = !ShowAllMaps;
-            var mapsForGame = Maps.Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
+            var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
             Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
             ChallengesTable.SetItems(Challenges);
             StateHasChanged();
@@ -74,7 +71,8 @@ namespace GeoNRage.App.Pages
             {
                 Error = null;
                 await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = false });
-                Challenges = await ChallengesApi.GetAllWithoutGameAsync();
+                var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
+                Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
                 ChallengesTable.SetItems(Challenges);
                 GeoGuessrId = string.Empty;
             }

@@ -29,7 +29,7 @@ namespace GeoNRage.Server.Models
     public record GeoGuessrChallengeResult(GeoGuessrGame Game);
 
     public record GeoGuessrChallenge(
-    GeoGuessrChallengeChallenge Challenge,
-    GeoGuessrChallengeMap Map,
-    GeoGuessrChallengeCreator Creator);
+        GeoGuessrChallengeChallenge Challenge,
+        GeoGuessrChallengeMap Map,
+        GeoGuessrChallengeCreator Creator);
 }
