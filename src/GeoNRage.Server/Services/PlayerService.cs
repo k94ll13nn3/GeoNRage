@@ -28,7 +28,7 @@ namespace GeoNRage.Server.Services
                     .ThenInclude(c => c.Map);
             }
 
-            List<Player> players = await query.ToListAsync();
+            List<Player> players = await query.OrderBy(p => p.Name).ToListAsync();
 
             return players;
         }

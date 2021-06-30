@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
@@ -15,7 +16,7 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<Map>> GetAllAsync()
         {
-            return await _context.Maps.ToListAsync();
+            return await _context.Maps.OrderBy(m => m.Name).ToListAsync();
         }
 
         public async Task<Map> CreateAsync(MapCreateDto dto)
