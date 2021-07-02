@@ -13,6 +13,7 @@ namespace GeoNRage.Server.Services
         public async Task<IEnumerable<Location>> GetAllAsync()
         {
             return await _context.Locations
+                .AsNoTracking()
                 .ToListAsync();
         }
     }

@@ -39,19 +39,12 @@ namespace GeoNRage.Server.Services
                     .ThenInclude(c => c.Player);
             }
 
-            return await query.ToListAsync();
+            return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Game?> GetAsync(int id)
+        public Task<Game?> GetAsync(int id)
         {
-            return await _context
-                .Games
-                .Include(g => g.Challenges)
-                .ThenInclude(c => c.Map)
-                .Include(g => g.Challenges)
-                .ThenInclude(c => c.PlayerScores)
-                .ThenInclude(c => c.Player)
-                .FirstOrDefaultAsync(g => g.Id != int.MaxValue && g.Id == id);
+            return GetInternalAsync(id, false);
         }
 
         public async Task<Game> CreateAsync(GameCreateOrEditDto dto)
@@ -119,7 +112,7 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more players do not exists.");
             }
 
-            Game? game = await GetAsync(id);
+            Game? game = await GetInternalAsync(id, true);
             if (game is not null)
             {
                 game.Name = dto.Name;
@@ -169,7 +162,7 @@ namespace GeoNRage.Server.Services
 
         public async Task<Game?> AddPlayerAsync(int gameId, string playerId)
         {
-            Game? game = await GetAsync(gameId);
+            Game? game = await GetInternalAsync(gameId, true);
             if (game is not null)
             {
                 if (!await _context.Players.AnyAsync(p => p.Id == playerId))
@@ -192,7 +185,7 @@ namespace GeoNRage.Server.Services
 
         public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
         {
-            Game? game = await _context.Games.FindAsync(gameId);
+            Game? game = await GetInternalAsync(gameId, true);
             if (game is not null)
             {
                 PlayerScore playerScore = game.Challenges.First(c => c.Id == challengeId).PlayerScores.First(p => p.PlayerId == playerId);
@@ -231,7 +224,7 @@ namespace GeoNRage.Server.Services
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
-            Game? game = await GetAsync(id);
+            Game? game = await GetInternalAsync(id, true);
             if (game == null)
             {
                 return null;
@@ -341,7 +334,7 @@ namespace GeoNRage.Server.Services
 
                 await _context.SaveChangesAsync();
 
-                game = await GetAsync(id);
+                game = await GetInternalAsync(id, true);
                 var createDto = new GameCreateOrEditDto
                 {
                     Name = game!.Name,
@@ -361,6 +354,25 @@ namespace GeoNRage.Server.Services
             }
 
             return newChallenge;
+        }
+
+        private async Task<Game?> GetInternalAsync(int id, bool tracking)
+        {
+            IQueryable<Game> query = _context
+                .Games
+                .Include(g => g.Challenges)
+                .ThenInclude(c => c.Map)
+                .Include(g => g.Challenges)
+                .ThenInclude(c => c.PlayerScores)
+                .ThenInclude(c => c.Player);
+
+            if (!tracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query
+                .FirstOrDefaultAsync(g => g.Id != int.MaxValue && g.Id == id);
         }
     }
 }

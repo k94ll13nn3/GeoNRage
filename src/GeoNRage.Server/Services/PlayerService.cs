@@ -28,9 +28,7 @@ namespace GeoNRage.Server.Services
                     .ThenInclude(c => c.Map);
             }
 
-            List<Player> players = await query.OrderBy(p => p.Name).ToListAsync();
-
-            return players;
+            return await query.OrderBy(p => p.Name).AsNoTracking().ToListAsync();
         }
 
         public async Task<Player?> GetFullAsync(string id)
@@ -42,6 +40,7 @@ namespace GeoNRage.Server.Services
                 .Include(p => p.PlayerScores)
                 .ThenInclude(p => p.Challenge)
                 .ThenInclude(c => c.Map)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 

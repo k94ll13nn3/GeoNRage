@@ -33,6 +33,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -45,6 +46,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
                 .Where(c => c.GameId == int.MaxValue)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -57,6 +59,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
