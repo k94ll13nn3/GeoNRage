@@ -27,6 +27,8 @@ namespace GeoNRage.App.Pages
 
         public IEnumerable<MapDto> Maps { get; set; } = null!;
 
+        public IEnumerable<string> MapsForGame { get; set; } = null!;
+
         public IEnumerable<ChallengeDto> ChallengesNotDone { get; set; } = null!;
 
         public IEnumerable<(int id, int score)> GameHistoric { get; set; } = null!;
@@ -37,9 +39,12 @@ namespace GeoNRage.App.Pages
 
         public bool Loaded { get; set; }
 
+        public bool ShowAllMaps { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Maps = await MapsApi.GetAllAsync();
+            MapsForGame = Maps.Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
             ChallengeDto[] challenges = await ChallengesApi.GetAllAsync();
 
             ApiResponse<PlayerFullDto> response = await PlayersApi.GetFullAsync(Id);
@@ -65,6 +70,12 @@ namespace GeoNRage.App.Pages
 
                 StateHasChanged();
             }
+        }
+
+        private void ShowAllMapToggle()
+        {
+            ShowAllMaps = !ShowAllMaps;
+            StateHasChanged();
         }
     }
 }

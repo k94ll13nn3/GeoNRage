@@ -120,12 +120,28 @@
                                     <p class="card-header-title">
                                         Cartes non jouées
                                     </p>
+                                    <div class="card-header-icon">
+                                        <button class="button" @onclick="ShowAllMapToggle" title="@(!ShowAllMaps ? "Afficher toutes les cartes" : "Afficher les cartes principales")">
+                                            <Container Condition="ShowAllMaps">
+                                                <ChildContent>
+                                                    <span class="icon is-small">
+                                                        <i class="fas fa-minus"></i>
+                                                    </span>
+                                                </ChildContent>
+                                                <ElseContent>
+                                                    <span class="icon is-small">
+                                                        <i class="fas fa-plus"></i>
+                                                    </span>
+                                                </ElseContent>
+                                            </Container>
+                                        </button>
+                                    </div>
                                 </header>
                                 <div class="card-table">
                                     <div class="content">
                                         <table class="table table is-striped is-hoverable is-fullwidth">
                                             <tbody>
-                                                <Repeater Items="ChallengesNotDone" Context="challenge">
+                                                <Repeater Items="ChallengesNotDone!.Where(c => ShowAllMaps || MapsForGame.Contains(c.MapId))" Context="challenge">
                                                     <tr>
                                                         <td>@challenge.MapName</td>
                                                         <td>
@@ -164,6 +180,7 @@
                         </ElseContent>
                     </Container>
                 </div>
+
                 <div class="column">
                     <Container Condition="GameHistoric?.Any() == true">
                         <ChildContent>
@@ -216,6 +233,98 @@
                     </Container>
                 </div>
             </div>
+
+            <div class="columns m-3">
+                <div class="column">
+                    <Container Condition="Player?.PlayerScores?.Any() == true">
+                        <ChildContent>
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        Cartes jouées
+                                    </p>
+                                </header>
+                                <div class="card-table">
+                                    <div class="content">
+                                        <table class="table table is-striped is-hoverable is-fullwidth">
+                                            <tbody>
+                                                <Repeater Items="Player!.PlayerScores" Context="score">
+                                                    <tr>
+                                                        <td>@score.MapName</td>
+                                                        <td>
+                                                            <Container Condition="score.GameId != int.MaxValue">
+                                                                <ChildContent>
+                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/games/{score.GameId}")">
+                                                                        #@score.GameId
+                                                                    </a>
+                                                                </ChildContent>
+                                                                <ElseContent>
+                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{score.ChallengeId}")">
+                                                                        #@score.ChallengeId (C)
+                                                                    </a>
+                                                                </ElseContent>
+                                                            </Container>
+                                                        </td>
+                                                    </tr>
+                                                </Repeater>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </ChildContent>
+                        <ElseContent>
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        Cartes jouées
+                                    </p>
+                                </header>
+                                <div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
+                                    Aucune carte jouée.
+                                </div>
+                            </div>
+                        </ElseContent>
+                    </Container>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                Meilleur score par carte
+                            </p>
+                        </header>
+                        <div class="card-table">
+                            <div class="content">
+                                <table class="table table is-striped is-hoverable is-fullwidth">
+                                    <tbody>
+                                        <Repeater Items="Maps" Context="map">
+                                            @{
+                                                PlayerScoreWithChallengeDto? score = Player!.PlayerScores!.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
+                                            }
+                                            <tr>
+                                                <td>@map.Name</td>
+                                                <td>
+                                                    <Container Condition="score is not null">
+                                                        <ChildContent>
+                                                            @score!.Sum
+                                                        </ChildContent>
+                                                        <ElseContent>
+                                                            —
+                                                        </ElseContent>
+                                                    </Container>
+                                                </td>
+                                            </tr>
+                                        </Repeater>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </ChildContent>
 

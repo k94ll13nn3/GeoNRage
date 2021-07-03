@@ -16,6 +16,8 @@ namespace GeoNRage.Shared.Dtos
 
         public string MapId { get; set; } = null!;
 
+        public string MapName { get; set; } = null!;
+
         public int GameId { get; set; }
 
         public DateTime GameDate { get; set; }
