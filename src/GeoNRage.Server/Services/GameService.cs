@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
-using GeoNRage.Server.GeoGuessr;
-using GeoNRage.Server.Models;
 using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Services
 {
@@ -19,12 +13,7 @@ namespace GeoNRage.Server.Services
     public partial class GameService
     {
         private readonly GeoNRageDbContext _context;
-        private readonly IHttpClientFactory _clientFactory;
-
-        [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
-        private readonly ApplicationOptions _options;
-
-        private readonly GeoGuessrService _geoGuessrService;
+        private readonly ChallengeService _challengeService;
 
         public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {
@@ -220,140 +209,22 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task<Challenge?> ImportChallengeAsync(int id, ChallengeImportDto dto)
+        public async Task ImportChallengeAsync(int id, ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
-            Game? game = await GetInternalAsync(id, true);
-            if (game == null)
+            await _challengeService.ImportChallengeAsync(dto, id);
+
+            Game gameForDto = (await GetInternalAsync(id, false))!;
+            var createDto = new GameCreateOrEditDto
             {
-                return null;
-            }
-
-            (GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results) = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
-            List<Location> locations = new();
-            HttpClient googleClient = _clientFactory.CreateClient("google");
-            for (int i = 0; i < results[0].Game.Rounds.Count; i++)
-            {
-                GeoGuessrRound round = results[0].Game.Rounds[i];
-                string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}";
-                GoogleGeocode? geocode = await googleClient.GetFromJsonAsync<GoogleGeocode>(query);
-                if (geocode?.Results?.Count > 0)
-                {
-                    GoogleGeocodeResult result = geocode.Results[0];
-                    Location location = new()
-                    {
-                        DisplayName = result.FormattedAddress,
-                        Locality = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("locality"))?.Name,
-                        AdministrativeAreaLevel2 = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("administrative_area_level_2"))?.Name,
-                        AdministrativeAreaLevel1 = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("administrative_area_level_1"))?.Name,
-                        Country = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("country"))?.Name,
-                        Latitude = round.Lat,
-                        Longitude = round.Lng,
-                        RoundNumber = i + 1,
-                    };
-
-                    locations.Add(location);
-                }
-            }
-
-            var playerScores = new List<PlayerScore>();
-            foreach (GeoGuessrChallengeResult geoChallenge in results)
-            {
-                Player player = await _context.Players.FindAsync(geoChallenge.Game.Player.Id) ?? new Player
-                {
-                    Id = geoChallenge.Game.Player.Id,
-                    Name = geoChallenge.Game.Player.Nick,
-                };
-
-                var playerScore = new PlayerScore
-                {
-                    PlayerId = player.Id,
-                    Player = player,
-                    Round1 = geoChallenge.Game.Player.Guesses[0].RoundScore.Amount,
-                    Round2 = geoChallenge.Game.Player.Guesses[1].RoundScore.Amount,
-                    Round3 = geoChallenge.Game.Player.Guesses[2].RoundScore.Amount,
-                    Round4 = geoChallenge.Game.Player.Guesses[3].RoundScore.Amount,
-                    Round5 = geoChallenge.Game.Player.Guesses[4].RoundScore.Amount
-                };
-                playerScores.Add(playerScore);
-            }
-
-            Player? creator = await _context.Players.FindAsync(challenge.Creator.Id);
-
-            Map map = await _context.Maps.FindAsync(challenge.Map.Id) ?? new Map
-            {
-                Id = challenge.Map.Id,
-                Name = challenge.Map.Name,
+                Name = gameForDto.Name,
+                Date = gameForDto.Date,
+                Challenges = gameForDto.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
+                PlayerIds = gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
             };
 
-            var newChallenge = new Challenge
-            {
-                GameId = id,
-                MapId = map.Id,
-                Map = map,
-                GeoGuessrId = dto.GeoGuessrId,
-                PlayerScores = playerScores,
-                TimeLimit = challenge.Challenge.TimeLimit,
-                Locations = locations,
-                CreatorId = creator?.Id
-            };
-
-            if (dto.PersistData)
-            {
-                Challenge? existingChallenge = await _context.Challenges.Include(c => c.Locations).SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
-                if (dto.OverrideData)
-                {
-                    if (existingChallenge is not null)
-                    {
-                        if (existingChallenge.GameId != id)
-                        {
-                            throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' is not associated to game '{id}'.");
-                        }
-                        existingChallenge.PlayerScores = newChallenge.PlayerScores;
-                        existingChallenge.MapId = newChallenge.MapId;
-                        existingChallenge.Map = newChallenge.Map;
-                        existingChallenge.TimeLimit = newChallenge.TimeLimit;
-                        existingChallenge.Locations = newChallenge.Locations;
-                        existingChallenge.CreatorId = newChallenge.CreatorId;
-                    }
-                    else
-                    {
-                        game.Challenges.Add(newChallenge);
-                    }
-                }
-                else
-                {
-                    if (existingChallenge is not null)
-                    {
-                        throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' already exists.");
-                    }
-
-                    game.Challenges.Add(newChallenge);
-                }
-
-                await _context.SaveChangesAsync();
-
-                game = await GetInternalAsync(id, true);
-                var createDto = new GameCreateOrEditDto
-                {
-                    Name = game!.Name,
-                    Date = game.Date,
-                    Challenges = game.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
-                    PlayerIds = game.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
-                };
-
-                await UpdateAsync(id, createDto);
-            }
-
-            // Cutting the relations to avoid cycles in JSON.
-            newChallenge.Game = null!;
-            foreach (PlayerScore score in newChallenge.PlayerScores)
-            {
-                score.Challenge = null!;
-            }
-
-            return newChallenge;
+            await UpdateAsync(id, createDto);
         }
 
         private async Task<Game?> GetInternalAsync(int id, bool tracking)

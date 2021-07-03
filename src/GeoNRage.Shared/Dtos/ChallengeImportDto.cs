@@ -8,9 +8,6 @@ namespace GeoNRage.Shared.Dtos
         public string GeoGuessrId { get; set; } = null!;
 
         [Required]
-        public bool PersistData { get; set; }
-
-        [Required]
         public bool OverrideData { get; set; }
     }
 }

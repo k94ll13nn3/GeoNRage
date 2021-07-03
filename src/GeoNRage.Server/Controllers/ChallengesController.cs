@@ -59,12 +59,7 @@ namespace GeoNRage.Server.Controllers
 
             try
             {
-                Challenge? challenge = await _challengeService.ImportChallengeAsync(dto);
-                if (challenge is null)
-                {
-                    return NotFound();
-                }
-
+                await _challengeService.ImportChallengeAsync(dto);
                 return NoContent();
             }
             catch (HttpRequestException e)

@@ -66,11 +66,11 @@ namespace GeoNRage.App.Pages.Admin
                 Error = null;
                 if (challenge.GameId == int.MaxValue)
                 {
-                    await ChallengesApi.ImportChallengeAsync(new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true, PersistData = true });
+                    await ChallengesApi.ImportChallengeAsync(new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
                 }
                 else
                 {
-                    await GamesApi.ImportChallengeAsync(challenge.GameId, new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true, PersistData = true });
+                    await GamesApi.ImportChallengeAsync(challenge.GameId, new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
                 }
             }
             catch (ApiException e)

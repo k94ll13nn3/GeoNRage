@@ -111,19 +111,21 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost("{id}/import-challenge")]
-        public async Task<ActionResult<ChallengeDto>> ImportChallengeAsync(int id, ChallengeImportDto dto)
+        public async Task<IActionResult> ImportChallengeAsync(int id, ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
             try
             {
-                Challenge? challenge = await _gameService.ImportChallengeAsync(id, dto);
-                if (challenge is null)
+                Game? game = await _gameService.GetAsync(id);
+                if (game == null)
                 {
                     return NotFound();
                 }
 
-                return _mapper.Map<Challenge, ChallengeDto>(challenge);
+                await _gameService.ImportChallengeAsync(id, dto);
+
+                return NoContent();
             }
             catch (InvalidOperationException e)
             {

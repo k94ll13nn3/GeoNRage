@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GeoNRage.Server.Entities
 {
@@ -25,5 +26,7 @@ namespace GeoNRage.Server.Entities
         public string? CreatorId { get; set; } = null!;
 
         public Player? Creator { get; set; } = null!;
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

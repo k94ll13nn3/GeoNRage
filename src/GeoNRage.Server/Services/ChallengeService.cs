@@ -76,7 +76,12 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task<Challenge?> ImportChallengeAsync(ChallengeImportDto dto)
+        public Task ImportChallengeAsync(ChallengeImportDto dto)
+        {
+            return ImportChallengeAsync(dto, int.MaxValue);
+        }
+
+        public async Task ImportChallengeAsync(ChallengeImportDto dto, int gameId)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -141,9 +146,9 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException($"Cannot import challenges created by {challenge.Creator.Nick}.");
             }
 
-            var newChallenge = new Challenge
+            Challenge newChallenge = new()
             {
-                GameId = int.MaxValue,
+                GameId = gameId,
                 MapId = map.Id,
                 Map = map,
                 GeoGuessrId = dto.GeoGuessrId,
@@ -151,6 +156,7 @@ namespace GeoNRage.Server.Services
                 TimeLimit = challenge.Challenge.TimeLimit,
                 Locations = locations,
                 CreatorId = creator.Id,
+                UpdatedAt = DateTime.UtcNow,
             };
 
             Challenge? existingChallenge = await _context
@@ -162,7 +168,7 @@ namespace GeoNRage.Server.Services
                 .SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
             if (existingChallenge is not null)
             {
-                if (existingChallenge.GameId != int.MaxValue)
+                if (existingChallenge.GameId != gameId)
                 {
                     throw new InvalidOperationException($"The challenge with GeoGuessr Id '{dto.GeoGuessrId}' is already linked to a game and cannot be updated.");
                 }
@@ -178,6 +184,7 @@ namespace GeoNRage.Server.Services
                 existingChallenge.TimeLimit = newChallenge.TimeLimit;
                 existingChallenge.Locations = newChallenge.Locations;
                 existingChallenge.CreatorId = newChallenge.CreatorId;
+                existingChallenge.UpdatedAt = newChallenge.UpdatedAt;
             }
             else
             {
@@ -185,15 +192,6 @@ namespace GeoNRage.Server.Services
             }
 
             await _context.SaveChangesAsync();
-
-            // Cutting the relations to avoid cycles in JSON.
-            newChallenge.Game = null!;
-            foreach (PlayerScore score in newChallenge.PlayerScores)
-            {
-                score.Challenge = null!;
-            }
-
-            return newChallenge;
         }
     }
 }
