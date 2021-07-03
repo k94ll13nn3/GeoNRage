@@ -121,7 +121,7 @@
                                         Cartes non jouées
                                     </p>
                                     <div class="card-header-icon">
-                                        <button class="button" @onclick="ShowAllMapToggle" title="@(!ShowAllMaps ? "Afficher toutes les cartes" : "Afficher les cartes principales")">
+                                        <a @onclick="ShowAllMapToggle" title="@(!ShowAllMaps ? "Afficher toutes les cartes" : "Afficher les cartes principales")">
                                             <Container Condition="ShowAllMaps">
                                                 <ChildContent>
                                                     <span class="icon is-small">
@@ -134,7 +134,7 @@
                                                     </span>
                                                 </ElseContent>
                                             </Container>
-                                        </button>
+                                        </a>
                                     </div>
                                 </header>
                                 <div class="card-table">
@@ -265,6 +265,7 @@
                                                                 </ElseContent>
                                                             </Container>
                                                         </td>
+                                                        <td>@score.Sum</td>
                                                     </tr>
                                                 </Repeater>
                                             </tbody>
