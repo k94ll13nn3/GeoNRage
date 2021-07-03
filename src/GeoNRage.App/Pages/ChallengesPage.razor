@@ -7,6 +7,12 @@
         </div>
     </Container>
 
+    <Container Condition="ChallengeImported">
+        <div class="notification is-success m-3">
+            Import réussi !
+        </div>
+    </Container>
+
     <div class="field m-3 is-grouped">
         <p class="control is-expanded">
             <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">

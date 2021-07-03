@@ -35,6 +35,8 @@ namespace GeoNRage.App.Pages
 
         public bool ShowAllMaps { get; set; }
 
+        public bool ChallengeImported { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
@@ -70,11 +72,13 @@ namespace GeoNRage.App.Pages
             try
             {
                 Error = null;
+                ChallengeImported = false;
                 await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = false });
                 var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
                 Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
                 ChallengesTable.SetItems(Challenges);
                 GeoGuessrId = string.Empty;
+                ChallengeImported = true;
             }
             catch (ValidationApiException e)
             {
