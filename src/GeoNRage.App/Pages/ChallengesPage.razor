@@ -27,8 +27,19 @@
         </div>
     </article>
 
-    <Container Condition="Challenges?.Any() == true">
+    <Container Condition="Challenges is not null">
         <ChildContent>
+            <div class="m-3">
+                <Expander IsExpanded="false" Title="Filtrer les joueurs">
+                    Cacher les cartes complétées par les joueurs sélectionnés
+
+                    <CheckboxList Data="Players" IdSelector="p => p.Id" LabelSelector="p => p.Name" SelectedIds="PlayersToHide" />
+                    <button class="button is-primary" @onclick="FilterChallengesAsync">
+                        Filtrer
+                    </button>
+                </Expander>
+            </div>
+
             <Table @ref="ChallengesTable"
                    Items="Challenges"
                    Headers="@(new TableHeader[]
