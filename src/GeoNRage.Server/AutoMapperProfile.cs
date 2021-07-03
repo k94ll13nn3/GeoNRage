@@ -18,7 +18,7 @@ namespace GeoNRage.Server
             CreateMap<Game, GameDto>()
                 .ForMember(dest => dest.Players, opt => opt.MapFrom(src =>
                     src.Challenges.Count > 0 ?
-                    src.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.Player).Distinct() :
+                    src.Challenges.SelectMany(c => c.PlayerScores).DistinctBy(p => p.Player.Id).Select(p => p.Player) :
                     Enumerable.Empty<Player>()));
 
             CreateMap<Game, GameLightDto>();
