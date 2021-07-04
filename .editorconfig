@@ -180,6 +180,9 @@ dotnet_diagnostic.S1075.severity = none
 # CA1716: Identifiers should not match keywords
 dotnet_diagnostic.CA1716.severity = none
 
+# RS0030: Do not use banned APIs
+dotnet_diagnostic.RS0030.severity = error
+
 # CA2227: Collection properties should be read only
 [**/Dtos/**.cs]
 dotnet_diagnostic.CA2227.severity = none

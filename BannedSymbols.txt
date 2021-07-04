@@ -1,0 +1,3 @@
+# Banned APIs across the project.
+
+M:System.Collections.Generic.List`1.ForEach(System.Action{`0}); Use foreach loop instead
