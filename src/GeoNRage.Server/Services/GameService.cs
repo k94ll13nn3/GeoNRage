@@ -75,7 +75,7 @@ namespace GeoNRage.Server.Services
             });
             await _context.SaveChangesAsync();
 
-            return game.Entity;
+            return (await GetInternalAsync(game.Entity.Id, false))!;
         }
 
         public async Task<Game?> UpdateAsync(int id, GameCreateOrEditDto dto)
