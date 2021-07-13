@@ -87,14 +87,12 @@ namespace GeoNRage.Server
 
             if (_env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API"));
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 

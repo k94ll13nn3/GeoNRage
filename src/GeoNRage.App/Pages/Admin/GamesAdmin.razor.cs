@@ -87,16 +87,17 @@ namespace GeoNRage.App.Pages.Admin
             }
             catch (ValidationApiException e)
             {
-                Error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
+                Error = $"Error: {string.Join(",", e.Content?.Errors.Select(x => string.Join(Environment.NewLine, x.Value)) ?? Array.Empty<string>())}";
             }
             catch (ApiException e)
             {
-                Error = e.Content;
+                Error = $"Error: {e.Content}";
             }
         }
 
         public void ShowGameCreation()
         {
+            Error = string.Empty;
             ShowEditForm = true;
             Game = new GameCreateOrEditDto { Date = DateTime.Now };
         }

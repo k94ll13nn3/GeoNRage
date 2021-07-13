@@ -75,7 +75,7 @@ namespace GeoNRage.App.Pages.Admin
             }
             catch (ApiException e)
             {
-                Error = e.Content;
+                Error = $"Error: {e.Content}";
             }
             finally
             {
