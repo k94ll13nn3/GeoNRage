@@ -21,5 +21,7 @@ namespace GeoNRage.Shared.Dtos
         public int GameId { get; set; }
 
         public DateTime GameDate { get; set; }
+
+        public bool MapIsMapForGame { get; set; }
     }
 }

@@ -89,6 +89,10 @@ namespace GeoNRage.App.Pages
 
         private PlayerStatistic CreateStatistic(PlayerFullDto player)
         {
+            IEnumerable<PlayerScoreWithChallengeDto> filteredScores = player
+                .PlayerScores
+                .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && (p.GameId != -1 || p.MapIsMapForGame));
+
             List<PlayerScoreWithChallengeDto>? results = player
                   .PlayerScores
                   .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != -1)
@@ -102,12 +106,12 @@ namespace GeoNRage.App.Pages
             return new(
                 player.Name,
                 player.Id,
-                player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 5000),
-                player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999),
-                player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0)),
+                filteredScores.SelectMany(p => p.Rounds).Count(s => s == 5000),
+                filteredScores.SelectMany(p => p.Rounds).Count(s => s == 4999),
+                filteredScores.Count(p => p.Rounds.All(s => s is not null or 0)),
                 results?.Sum(p => p.Sum),
                 results?[0].GameId,
-                (int)(player.PlayerScores.SelectMany(p => p.Rounds).Average() ?? 0));
+                (int)(filteredScores.SelectMany(p => p.Rounds).Average() ?? 0));
         }
 
         internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int? BestGame, int? BestGameId, int RoundAverage);

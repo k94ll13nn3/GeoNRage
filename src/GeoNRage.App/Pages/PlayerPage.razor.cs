@@ -35,6 +35,8 @@ namespace GeoNRage.App.Pages
 
         public PlayerFullDto Player { get; set; } = null!;
 
+        public IEnumerable<PlayerScoreWithChallengeDto> FilteredScores { get; set; } = null!;
+
         public bool PlayerFound { get; set; } = true;
 
         public bool Loaded { get; set; }
@@ -57,6 +59,10 @@ namespace GeoNRage.App.Pages
                 Loaded = true;
                 PlayerFound = true;
                 Player = response.Content;
+
+                FilteredScores = Player
+                    .PlayerScores
+                    .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && (p.GameId != -1 || p.MapIsMapForGame));
 
                 IEnumerable<int> challengesDoneIds = Player.PlayerScores.Where(p => p.Rounds.All(r => r is not null)).Select(p => p.ChallengeId);
                 ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id)).OrderByDescending(c => c.GameDate);

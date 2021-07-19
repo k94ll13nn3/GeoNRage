@@ -4,7 +4,7 @@
     <ChildContent>
         <div class="container">
             <div class="m-3">
-                <section class="hero m-3 is-primary is-small">
+                <section class="hero is-primary is-small">
                     <div class="hero-body">
                         <p class="title">
                             @Player.Name
@@ -21,24 +21,28 @@
                 </section>
             </div>
 
+            <div class="notification is-warning m-3">
+                Seules les cartes des parties et les cartes principales des challenges sont comptées pour les statistiques.
+            </div>
+
             <h1 class="is-size-4 my-3 mx-6">Statistiques générales</h1>
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 5000</p>
-                        <p class="title">@Player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 5000)</p>
+                        <p class="title">@FilteredScores.SelectMany(p => p.Rounds).Count(s => s == 5000)</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 4999</p>
-                        <p class="title">@Player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 4999)</p>
+                        <p class="title">@FilteredScores.SelectMany(p => p.Rounds).Count(s => s == 4999)</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de carte complétées</p>
-                        <p class="title">@Player.PlayerScores.Count(p => p.Rounds.All(s => s is not null or 0))</p>
+                        <p class="title">@FilteredScores.Count(p => p.Rounds.All(s => s is not null or 0))</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
@@ -88,25 +92,25 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 25k</p>
-                        <p class="title">@Player.PlayerScores.Count(p => p.Sum == 25000)</p>
+                        <p class="title">@FilteredScores.Count(p => p.Sum == 25000)</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Moyenne par partie</p>
-                        <p class="title">@((int)(Player.PlayerScores.Where(p => p.Sum is not null).Average(p => p.Sum) ?? 0))</p>
+                        <p class="heading">Moyenne par carte</p>
+                        <p class="title">@((int)(FilteredScores.Where(p => p.Sum is not null).Average(p => p.Sum) ?? 0))</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Moyenne par round</p>
-                        <p class="title">@((int)(Player.PlayerScores.SelectMany(p => p.Rounds).Where(s => s is not null).Average() ?? 0))</p>
+                        <p class="title">@((int)(FilteredScores.SelectMany(p => p.Rounds).Where(s => s is not null).Average() ?? 0))</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 0</p>
-                        <p class="title">@Player.PlayerScores.SelectMany(p => p.Rounds).Count(s => s == 0)</p>
+                        <p class="title">@FilteredScores.SelectMany(p => p.Rounds).Count(s => s == 0)</p>
                     </div>
                 </div>
             </nav>
