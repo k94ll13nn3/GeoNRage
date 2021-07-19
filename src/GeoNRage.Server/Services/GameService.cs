@@ -17,7 +17,7 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
         {
-            IQueryable<Game> query = _context.Games.OrderByDescending(g => g.Date).Where(g => g.Id != int.MaxValue);
+            IQueryable<Game> query = _context.Games.OrderByDescending(g => g.Date).Where(g => g.Id != -1);
             if (includeNavigation)
             {
                 query = query
@@ -58,11 +58,8 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more players do not exists.");
             }
 
-            // Cannot be auto-generated because the fake game as int.MaxValue as Id.
-            int gameId = (_context.Games.Where(g => g.Id != int.MaxValue).OrderByDescending(x => x.Id).FirstOrDefault()?.Id ?? 0) + 1;
             EntityEntry<Game> game = await _context.Games.AddAsync(new Game
             {
-                Id = gameId,
                 Name = dto.Name,
                 Date = dto.Date,
                 CreationDate = DateTime.UtcNow,
@@ -243,7 +240,7 @@ namespace GeoNRage.Server.Services
             }
 
             return await query
-                .FirstOrDefaultAsync(g => g.Id != int.MaxValue && g.Id == id);
+                .FirstOrDefaultAsync(g => g.Id != -1 && g.Id == id);
         }
     }
 }

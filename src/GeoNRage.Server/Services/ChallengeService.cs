@@ -45,7 +45,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
-                .Where(c => c.GameId == int.MaxValue)
+                .Where(c => c.GameId == -1)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -78,7 +78,7 @@ namespace GeoNRage.Server.Services
 
         public Task ImportChallengeAsync(ChallengeImportDto dto)
         {
-            return ImportChallengeAsync(dto, int.MaxValue);
+            return ImportChallengeAsync(dto, -1);
         }
 
         public async Task ImportChallengeAsync(ChallengeImportDto dto, int gameId)

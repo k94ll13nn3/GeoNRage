@@ -59,7 +59,7 @@ namespace GeoNRage.Server
             builder.Entity<Location>().Property(l => l.Latitude).IsRequired();
             builder.Entity<Location>().Property(l => l.Longitude).IsRequired();
 
-            builder.Entity<Game>().HasData(new Game { Id = int.MaxValue, CreationDate = DateTime.MinValue, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
+            builder.Entity<Game>().HasData(new Game { Id = -1, CreationDate = DateTime.MinValue, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
 
             base.OnModelCreating(builder);
         }

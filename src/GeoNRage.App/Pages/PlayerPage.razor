@@ -145,7 +145,7 @@
                                                     <tr>
                                                         <td>@challenge.MapName</td>
                                                         <td>
-                                                            <Container Condition="challenge.GameId != int.MaxValue">
+                                                            <Container Condition="challenge.GameId != -1">
                                                                 <ChildContent>
                                                                     <a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
                                                                         #@challenge.GameId
@@ -252,7 +252,7 @@
                                                     <tr>
                                                         <td>@score.MapName</td>
                                                         <td>
-                                                            <Container Condition="score.GameId != int.MaxValue">
+                                                            <Container Condition="score.GameId != -1">
                                                                 <ChildContent>
                                                                     <a href="@NavigationManager.ToAbsoluteUri($"/games/{score.GameId}")">
                                                                         #@score.GameId

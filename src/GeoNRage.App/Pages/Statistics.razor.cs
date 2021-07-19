@@ -91,7 +91,7 @@ namespace GeoNRage.App.Pages
         {
             List<PlayerScoreWithChallengeDto>? results = player
                   .PlayerScores
-                  .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != int.MaxValue)
+                  .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != -1)
                   .GroupBy(p => p.GameId)
                   .Where(g => g.Count() == 3)
                   .OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum())

@@ -62,7 +62,7 @@ namespace GeoNRage.App.Pages
                 ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id)).OrderByDescending(c => c.GameDate);
                 GameHistoric = Player
                     .PlayerScores
-                    .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != int.MaxValue)
+                    .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != -1)
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
                     .OrderBy(g => g.First().GameDate)

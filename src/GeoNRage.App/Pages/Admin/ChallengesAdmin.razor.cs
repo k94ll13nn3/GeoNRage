@@ -64,7 +64,7 @@ namespace GeoNRage.App.Pages.Admin
             try
             {
                 Error = null;
-                if (challenge.GameId == int.MaxValue)
+                if (challenge.GameId == -1)
                 {
                     await ChallengesApi.ImportChallengeAsync(new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
                 }
