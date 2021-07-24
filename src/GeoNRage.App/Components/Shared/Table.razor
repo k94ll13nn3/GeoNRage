@@ -21,10 +21,10 @@
                                 <span>@header.Title</span>
                                 <Container Condition="header.CanSort">
                                     <span class="delimiter"></span>
-                                    <span class="icon ml-3 icon-hand" @onclick="() => Sort(header.Property, true)">
+                                    <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : "")" @onclick="() => Sort(header.Property, true)">
                                         <i class="fas fa-sort-amount-up-alt"></i>
                                     </span>
-                                    <span class="icon icon-hand" @onclick="() => Sort(header.Property, false)">
+                                    <span class="icon icon-hand @(IsColumnSorted(header.Property, false) ? "has-text-link" : "")" @onclick="() => Sort(header.Property, false)">
                                         <i class="fas fa-sort-amount-down"></i>
                                     </span>
                                 </Container>

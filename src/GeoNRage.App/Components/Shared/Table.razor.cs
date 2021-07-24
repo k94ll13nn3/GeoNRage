@@ -87,6 +87,11 @@ namespace GeoNRage.App.Components.Shared
             RefreshItems();
         }
 
+        private bool IsColumnSorted(string column, bool ascending)
+        {
+            return column == _sortColumn && ascending == _sortAscending;
+        }
+
         private void OnFilter(ChangeEventArgs args)
         {
             _filter = args?.Value as string ?? string.Empty;
