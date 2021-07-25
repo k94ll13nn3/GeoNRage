@@ -104,7 +104,7 @@ namespace GeoNRage.App.Pages.Admin
 
         protected override async Task OnInitializedAsync()
         {
-            Maps = await MapsApi.GetAllAsync();
+            Maps = (await MapsApi.GetAllAsync()).OrderByDescending(m => m.IsMapForGame);
             Players = await PlayersApi.GetAllAsync();
             Games = await GamesApi.GetAllAsync();
         }

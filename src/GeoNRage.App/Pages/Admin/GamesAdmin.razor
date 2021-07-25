@@ -114,7 +114,7 @@
                                 <div class="control">
                                     <div class="select">
                                         <InputSelect @bind-Value="challenge.MapId">
-                                            <Repeater Items="@Maps.OrderByDescending(m => m.IsMapForGame)" Context="map">
+                                            <Repeater Items="@Maps" Context="map">
                                                 <option value="@map.Id">@(map.IsMapForGame ? $"{map.Name}*" : map.Name)</option>
                                             </Repeater>
                                         </InputSelect>
