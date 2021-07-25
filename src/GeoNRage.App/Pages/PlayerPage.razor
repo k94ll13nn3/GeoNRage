@@ -297,29 +297,29 @@
                     <div class="card">
                         <header class="card-header">
                             <p class="card-header-title">
-                                Meilleur score par carte
+                                Meilleur score et moyenne par carte
                             </p>
                         </header>
                         <div class="card-table">
                             <div class="content">
                                 <table class="table table is-striped is-hoverable is-fullwidth">
                                     <tbody>
-                                        <Repeater Items="Maps" Context="map">
+                                        <Repeater Items="Maps.OrderByDescending(m => m.IsMapForGame)" Context="map">
                                             @{
-                                                PlayerScoreWithChallengeDto? score = Player!.PlayerScores!.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
+                                                IEnumerable<PlayerScoreWithChallengeDto> scores = Player!.PlayerScores!.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum);
                                             }
                                             <tr>
                                                 <td>@map.Name</td>
-                                                <td>
-                                                    <Container Condition="score is not null">
-                                                        <ChildContent>
-                                                            @score!.Sum
-                                                        </ChildContent>
-                                                        <ElseContent>
-                                                            —
-                                                        </ElseContent>
-                                                    </Container>
-                                                </td>
+                                                <Container Condition="scores.Any()">
+                                                    <ChildContent>
+                                                        <td>@scores.First().Sum</td>
+                                                        <td>@((int?)scores.Average(s => s.Sum))</td>
+                                                    </ChildContent>
+                                                    <ElseContent>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                    </ElseContent>
+                                                </Container>
                                             </tr>
                                         </Repeater>
                                     </tbody>
@@ -329,7 +329,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </ChildContent>
 
