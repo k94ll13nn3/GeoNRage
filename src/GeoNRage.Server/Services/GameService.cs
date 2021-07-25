@@ -99,38 +99,39 @@ namespace GeoNRage.Server.Services
             }
 
             Game? game = await GetInternalAsync(id, true);
-            if (game is not null)
+            if (game is null)
             {
-                game.Name = dto.Name;
-                game.Date = dto.Date;
-
-                IEnumerable<int> challengeIds = dto.Challenges.Select(x => x.Id).Where(id => id != 0);
-                game.Challenges = game.Challenges
-                    .Where(c => challengeIds.Contains(c.Id))
-                    .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
-                    {
-                        GeoGuessrId = x.GeoGuessrId,
-                        MapId = x.MapId,
-                        PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
-                    })).ToList();
-
-                foreach (Challenge challenge in game.Challenges)
-                {
-                    ChallengeCreateOrEditDto? modifiedChallenge = dto.Challenges.FirstOrDefault(c => c.Id == challenge.Id && challenge.Id != 0);
-                    if (modifiedChallenge is not null)
-                    {
-                        challenge.MapId = modifiedChallenge.MapId;
-                        challenge.GeoGuessrId = modifiedChallenge.GeoGuessrId;
-                    }
-                    challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
-                    challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
-                }
-
-                _context.Games.Update(game);
-                await _context.SaveChangesAsync();
+                return null;
             }
 
-            return game;
+            game.Name = dto.Name;
+            game.Date = dto.Date;
+
+            IEnumerable<int> challengeIds = dto.Challenges.Select(x => x.Id).Where(id => id != 0);
+            game.Challenges = game.Challenges
+                .Where(c => challengeIds.Contains(c.Id))
+                .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
+                {
+                    GeoGuessrId = x.GeoGuessrId,
+                    MapId = x.MapId,
+                    PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
+                })).ToList();
+
+            foreach (Challenge challenge in game.Challenges)
+            {
+                ChallengeCreateOrEditDto? modifiedChallenge = dto.Challenges.FirstOrDefault(c => c.Id == challenge.Id && challenge.Id != 0);
+                if (modifiedChallenge is not null)
+                {
+                    challenge.MapId = modifiedChallenge.MapId;
+                    challenge.GeoGuessrId = modifiedChallenge.GeoGuessrId;
+                }
+                challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
+                challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
+            }
+
+            _context.Games.Update(game);
+            await _context.SaveChangesAsync();
+            return (await GetInternalAsync(game.Id, false))!;
         }
 
         public async Task DeleteAsync(int id)
