@@ -138,6 +138,7 @@ namespace GeoNRage.App.Pages
             {
                 await Chart.UpdateAsync(playerId);
             }
+
             StateHasChanged();
         }
 

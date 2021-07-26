@@ -32,6 +32,7 @@ namespace GeoNRage.Server.Controllers
                 dto.TimesSeen = location.Count();
                 results.Add(dto);
             }
+
             return results;
         }
     }

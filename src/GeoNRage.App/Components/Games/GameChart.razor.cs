@@ -144,6 +144,7 @@ namespace GeoNRage.App.Components.Games
 
                 PlotConfig.Data.Datasets.Add(dataset);
             }
+
             dataset.Clear();
             dataset.AddRange(scores);
         }

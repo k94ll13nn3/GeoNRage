@@ -125,6 +125,7 @@ namespace GeoNRage.Server.Services
                     challenge.MapId = modifiedChallenge.MapId;
                     challenge.GeoGuessrId = modifiedChallenge.GeoGuessrId;
                 }
+
                 challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
                 challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
             }
