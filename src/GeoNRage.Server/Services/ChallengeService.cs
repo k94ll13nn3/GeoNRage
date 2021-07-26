@@ -125,11 +125,7 @@ namespace GeoNRage.Server.Services
                 {
                     PlayerId = player.Id,
                     Player = player,
-                    Round1 = geoChallenge.Game.Player.Guesses[0].RoundScore.Amount,
-                    Round2 = geoChallenge.Game.Player.Guesses[1].RoundScore.Amount,
-                    Round3 = geoChallenge.Game.Player.Guesses[2].RoundScore.Amount,
-                    Round4 = geoChallenge.Game.Player.Guesses[3].RoundScore.Amount,
-                    Round5 = geoChallenge.Game.Player.Guesses[4].RoundScore.Amount
+                    PlayerGuesses = geoChallenge.Game.Player.Guesses.Select((p, i) => new PlayerGuess { Score = p.RoundScore.Amount, Order = i }).ToList(),
                 };
                 playerScores.Add(playerScore);
             }

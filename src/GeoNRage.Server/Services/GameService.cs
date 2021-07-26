@@ -177,31 +177,14 @@ namespace GeoNRage.Server.Services
             if (game is not null)
             {
                 PlayerScore playerScore = game.Challenges.First(c => c.Id == challengeId).PlayerScores.First(p => p.PlayerId == playerId);
-
-                switch (round)
+                PlayerGuess? existingRound = playerScore.PlayerGuesses.SingleOrDefault(g => g.Order == round);
+                if (existingRound is not null)
                 {
-                    case 1:
-                        playerScore.Round1 = newScore;
-                        break;
-
-                    case 2:
-                        playerScore.Round2 = newScore;
-                        break;
-
-                    case 3:
-                        playerScore.Round3 = newScore;
-                        break;
-
-                    case 4:
-                        playerScore.Round4 = newScore;
-                        break;
-
-                    case 5:
-                        playerScore.Round5 = newScore;
-                        break;
-
-                    default:
-                        throw new InvalidOperationException("Invalid round number.");
+                    existingRound.Score = newScore;
+                }
+                else
+                {
+                    playerScore.PlayerGuesses.Add(new() { Score = newScore, Order = round });
                 }
 
                 await _context.SaveChangesAsync();
