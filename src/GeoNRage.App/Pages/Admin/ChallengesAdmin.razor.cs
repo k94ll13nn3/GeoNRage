@@ -27,14 +27,14 @@ namespace GeoNRage.App.Pages.Admin
 
         public Table<ChallengeDto> ChallengesTable { get; set; } = null!;
 
-        public void ImportChallenge(ChallengeDto challenge)
-        {
-            PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge), true);
-        }
-
         protected override async Task OnInitializedAsync()
         {
             Challenges = await ChallengesApi.GetAllAsync();
+        }
+
+        private void ImportChallenge(ChallengeDto challenge)
+        {
+            PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge), true);
         }
 
         private void DeleteChallenge(int challengeId)
@@ -79,9 +79,9 @@ namespace GeoNRage.App.Pages.Admin
             }
             finally
             {
-                PopupService.HidePopup();
                 Challenges = await ChallengesApi.GetAllAsync();
                 ChallengesTable.SetItems(Challenges);
+                PopupService.HidePopup();
             }
         }
     }
