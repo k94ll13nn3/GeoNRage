@@ -53,14 +53,13 @@ namespace GeoNRage.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("import")]
-        public async Task<IActionResult> ImportChallengeAsync(ChallengeImportDto dto)
+        public async Task<ActionResult<int>> ImportChallengeAsync(ChallengeImportDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
             try
             {
-                await _challengeService.ImportChallengeAsync(dto);
-                return NoContent();
+                return await _challengeService.ImportChallengeAsync(dto);
             }
             catch (HttpRequestException e)
             {

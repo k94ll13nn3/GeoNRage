@@ -195,7 +195,7 @@ namespace GeoNRage.Server.Services
             await _challengeService.ImportChallengeAsync(dto, id);
 
             Game gameForDto = (await GetInternalAsync(id, false))!;
-            var createDto = new GameCreateOrEditDto
+            var editDto = new GameCreateOrEditDto
             {
                 Name = gameForDto.Name,
                 Date = gameForDto.Date,
@@ -203,7 +203,7 @@ namespace GeoNRage.Server.Services
                 PlayerIds = gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
             };
 
-            await UpdateAsync(id, createDto);
+            await UpdateAsync(id, editDto);
         }
 
         private async Task<Game?> GetInternalAsync(int id, bool tracking)

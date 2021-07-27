@@ -16,7 +16,7 @@ namespace GeoNRage.App.Apis
         Task<ApiResponse<ChallengeDto>> GetAsync(int id);
 
         [Post("/api/challenges/import")]
-        Task ImportChallengeAsync([Body] ChallengeImportDto dto);
+        Task<int> ImportChallengeAsync([Body] ChallengeImportDto dto);
 
         [Delete("/api/challenges/{id}")]
         Task DeleteAsync(int id);

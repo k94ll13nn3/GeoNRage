@@ -9,6 +9,7 @@ using GeoNRage.Server.Entities;
 using GeoNRage.Server.Models;
 using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Services
@@ -75,12 +76,12 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public Task ImportChallengeAsync(ChallengeImportDto dto)
+        public Task<int> ImportChallengeAsync(ChallengeImportDto dto)
         {
             return ImportChallengeAsync(dto, -1);
         }
 
-        public async Task ImportChallengeAsync(ChallengeImportDto dto, int gameId)
+        public async Task<int> ImportChallengeAsync(ChallengeImportDto dto, int gameId)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -168,6 +169,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.PlayerScores).ThenInclude(c => c.PlayerGuesses)
                 .Include(c => c.Locations)
                 .SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
+            int challengeId;
             if (existingChallenge is not null)
             {
                 if (existingChallenge.GameId != gameId)
@@ -187,13 +189,18 @@ namespace GeoNRage.Server.Services
                 existingChallenge.Locations = newChallenge.Locations;
                 existingChallenge.CreatorId = newChallenge.CreatorId;
                 existingChallenge.UpdatedAt = newChallenge.UpdatedAt;
+
+                challengeId = existingChallenge.Id;
+                await _context.SaveChangesAsync();
             }
             else
             {
-                _context.Challenges.Add(newChallenge);
+                EntityEntry<Challenge>? newChallengeEntity = _context.Challenges.Add(newChallenge);
+                await _context.SaveChangesAsync();
+                challengeId = newChallengeEntity.Entity.Id;
             }
 
-            await _context.SaveChangesAsync();
+            return challengeId;
         }
     }
 }
