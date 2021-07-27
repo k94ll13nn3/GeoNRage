@@ -31,7 +31,12 @@ namespace GeoNRage.Server
                 .ForMember(dest => dest.CreatorName, opt => opt.MapFrom(src => src.Creator == null ? null : src.Creator.Name));
 
             CreateMap<PlayerScore, PlayerScoreDto>()
-                .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name));
+                .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name))
+                .ForMember(dest => dest.Round1, opt => opt.MapFrom(src => (src.PlayerGuesses.FirstOrDefault(g => g.Order == 1) ?? new()).Score))
+                .ForMember(dest => dest.Round2, opt => opt.MapFrom(src => (src.PlayerGuesses.FirstOrDefault(g => g.Order == 2) ?? new()).Score))
+                .ForMember(dest => dest.Round3, opt => opt.MapFrom(src => (src.PlayerGuesses.FirstOrDefault(g => g.Order == 3) ?? new()).Score))
+                .ForMember(dest => dest.Round4, opt => opt.MapFrom(src => (src.PlayerGuesses.FirstOrDefault(g => g.Order == 4) ?? new()).Score))
+                .ForMember(dest => dest.Round5, opt => opt.MapFrom(src => (src.PlayerGuesses.FirstOrDefault(g => g.Order == 5) ?? new()).Score));
 
             CreateMap<PlayerScore, PlayerScoreWithChallengeDto>()
                 .ForMember(dest => dest.Rounds, opt => opt.MapFrom(src => src.PlayerGuesses.Select(p => p.Score)))

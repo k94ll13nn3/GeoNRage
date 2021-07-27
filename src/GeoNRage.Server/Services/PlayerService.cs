@@ -20,12 +20,9 @@ namespace GeoNRage.Server.Services
             if (includeNavigation)
             {
                 query = query
-                    .Include(p => p.PlayerScores)
-                    .ThenInclude(p => p.Challenge)
-                    .ThenInclude(c => c.Game)
-                    .Include(p => p.PlayerScores)
-                    .ThenInclude(p => p.Challenge)
-                    .ThenInclude(c => c.Map);
+                    .Include(p => p.PlayerScores).ThenInclude(p => p.Challenge).ThenInclude(c => c.Game)
+                    .Include(p => p.PlayerScores).ThenInclude(p => p.Challenge).ThenInclude(c => c.Map)
+                    .Include(p => p.PlayerScores).ThenInclude(p => p.PlayerGuesses);
             }
 
             return await query.OrderBy(p => p.Name).AsNoTracking().ToListAsync();
@@ -34,12 +31,9 @@ namespace GeoNRage.Server.Services
         public async Task<Player?> GetFullAsync(string id)
         {
             return await _context.Players
-                .Include(p => p.PlayerScores)
-                .ThenInclude(p => p.Challenge)
-                .ThenInclude(c => c.Game)
-                .Include(p => p.PlayerScores)
-                .ThenInclude(p => p.Challenge)
-                .ThenInclude(c => c.Map)
+                .Include(p => p.PlayerScores).ThenInclude(p => p.Challenge).ThenInclude(c => c.Game)
+                .Include(p => p.PlayerScores).ThenInclude(p => p.Challenge).ThenInclude(c => c.Map)
+                .Include(p => p.PlayerScores).ThenInclude(p => p.PlayerGuesses)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.Id == id);
         }

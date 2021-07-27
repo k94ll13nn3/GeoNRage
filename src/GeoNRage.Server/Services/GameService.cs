@@ -137,10 +137,7 @@ namespace GeoNRage.Server.Services
 
         public async Task DeleteAsync(int id)
         {
-            Game? game = await _context.Games
-                .Include(g => g.Challenges)
-                .ThenInclude(c => c.PlayerScores)
-                .FirstOrDefaultAsync(g => g.Id == id);
+            Game? game = await _context.Games.FindAsync(id);
             if (game is not null)
             {
                 _context.Games.Remove(game);
@@ -213,11 +210,9 @@ namespace GeoNRage.Server.Services
         {
             IQueryable<Game> query = _context
                 .Games
-                .Include(g => g.Challenges)
-                .ThenInclude(c => c.Map)
-                .Include(g => g.Challenges)
-                .ThenInclude(c => c.PlayerScores)
-                .ThenInclude(c => c.Player);
+                .Include(g => g.Challenges).ThenInclude(c => c.Map)
+                .Include(g => g.Challenges).ThenInclude(c => c.PlayerScores).ThenInclude(c => c.Player)
+                .Include(g => g.Challenges).ThenInclude(c => c.PlayerScores).ThenInclude(c => c.PlayerGuesses);
 
             if (!tracking)
             {

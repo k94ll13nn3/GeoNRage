@@ -31,6 +31,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Map)
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
+                .Include(c => c.PlayerScores).ThenInclude(p => p.PlayerGuesses)
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
                 .AsNoTracking()
@@ -43,6 +44,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Map)
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
+                .Include(c => c.PlayerScores).ThenInclude(p => p.PlayerGuesses)
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
                 .Where(c => c.GameId == -1)
@@ -57,6 +59,7 @@ namespace GeoNRage.Server.Services
                 .Include(c => c.Map)
                 .Include(c => c.Game)
                 .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
+                .Include(c => c.PlayerScores).ThenInclude(p => p.PlayerGuesses)
                 .Include(c => c.Locations)
                 .Include(c => c.Creator)
                 .AsNoTracking()
@@ -65,10 +68,7 @@ namespace GeoNRage.Server.Services
 
         public async Task DeleteAsync(int id)
         {
-            Challenge? challenge = await _context.Challenges
-                .Include(c => c.PlayerScores)
-                .ThenInclude(p => p.Player)
-                .FirstOrDefaultAsync(g => g.Id == id);
+            Challenge? challenge = await _context.Challenges.FindAsync(id);
             if (challenge is not null)
             {
                 _context.Challenges.Remove(challenge);
@@ -158,8 +158,7 @@ namespace GeoNRage.Server.Services
             Challenge? existingChallenge = await _context
                 .Challenges
                 .Include(c => c.Map)
-                .Include(c => c.Game)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
+                .Include(c => c.PlayerScores)
                 .Include(c => c.Locations)
                 .SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
             if (existingChallenge is not null)
