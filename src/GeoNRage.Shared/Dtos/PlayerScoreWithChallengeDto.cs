@@ -6,9 +6,9 @@ namespace GeoNRage.Shared.Dtos
 {
     public class PlayerScoreWithChallengeDto
     {
-        public int? Sum => Rounds.Any(r => r is not null) ? Rounds.Sum() : null;
+        public int? Sum => PlayerGuesses.Select(g => g.Score).Sum();
 
-        public IReadOnlyList<int?> Rounds { get; set; } = new List<int?>();
+        public ICollection<PlayerGuessDto> PlayerGuesses { get; set; } = new HashSet<PlayerGuessDto>();
 
         public int ChallengeId { get; set; }
 

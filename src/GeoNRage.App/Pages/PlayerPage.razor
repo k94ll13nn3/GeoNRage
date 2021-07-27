@@ -30,19 +30,19 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 5000</p>
-                        <p class="title">@FilteredScores.SelectMany(p => p.Rounds).Count(s => s == 5000)</p>
+                        <p class="title">@FilteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000)</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 4999</p>
-                        <p class="title">@FilteredScores.SelectMany(p => p.Rounds).Count(s => s == 4999)</p>
+                        <p class="title">@FilteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999)</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de carte complétées</p>
-                        <p class="title">@FilteredScores.Count(p => p.Rounds.All(s => s is not null or 0))</p>
+                        <p class="title">@FilteredScores.Count(p => p.PlayerGuesses.All(g => g.Score is not null or 0))</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
@@ -104,13 +104,13 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Moyenne par round</p>
-                        <p class="title">@((int)(FilteredScores.SelectMany(p => p.Rounds).Where(s => s is not null).Average() ?? 0))</p>
+                        <p class="title">@((int)(FilteredScores.SelectMany(p => p.PlayerGuesses).Where(g => g.Score is not null).Select(g => g.Score).Average() ?? 0))</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 0</p>
-                        <p class="title">@FilteredScores.SelectMany(p => p.Rounds).Count(s => s == 0)</p>
+                        <p class="title">@FilteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 0)</p>
                     </div>
                 </div>
             </nav>
