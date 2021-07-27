@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
-using GeoNRage.Server.GeoGuessr;
 using GeoNRage.Server.Models;
 using GeoNRage.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
@@ -125,7 +124,15 @@ namespace GeoNRage.Server.Services
                 {
                     PlayerId = player.Id,
                     Player = player,
-                    PlayerGuesses = geoChallenge.Game.Player.Guesses.Select((p, i) => new PlayerGuess { Score = p.RoundScore.Amount, Order = i }).ToList(),
+                    PlayerGuesses = geoChallenge.Game.Player.Guesses.Select((p, i) => new PlayerGuess
+                    {
+                        Score = p.RoundScore.Amount,
+                        Order = i + 1,
+                        Time = p.Time,
+                        TimedOut = p.TimedOut,
+                        TimedOutWithGuess = p.TimedOutWithGuess,
+                        Distance = p.Distance.Meters.Amount * (p.Distance.Meters.Unit == "km" ? 1000 : 1),
+                    }).ToList(),
                 };
                 playerScores.Add(playerScore);
             }
@@ -158,7 +165,7 @@ namespace GeoNRage.Server.Services
             Challenge? existingChallenge = await _context
                 .Challenges
                 .Include(c => c.Map)
-                .Include(c => c.PlayerScores)
+                .Include(c => c.PlayerScores).ThenInclude(c => c.PlayerGuesses)
                 .Include(c => c.Locations)
                 .SingleOrDefaultAsync(c => c.GeoGuessrId == dto.GeoGuessrId);
             if (existingChallenge is not null)
