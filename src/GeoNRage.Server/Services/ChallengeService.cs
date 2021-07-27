@@ -127,7 +127,7 @@ namespace GeoNRage.Server.Services
                     PlayerGuesses = geoChallenge.Game.Player.Guesses.Select((p, i) => new PlayerGuess
                     {
                         Score = p.RoundScore.Amount,
-                        Order = i + 1,
+                        RoundNumber = i + 1,
                         Time = p.Time,
                         TimedOut = p.TimedOut,
                         TimedOutWithGuess = p.TimedOutWithGuess,

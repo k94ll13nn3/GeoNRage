@@ -174,14 +174,14 @@ namespace GeoNRage.Server.Services
             if (game is not null)
             {
                 PlayerScore playerScore = game.Challenges.First(c => c.Id == challengeId).PlayerScores.First(p => p.PlayerId == playerId);
-                PlayerGuess? existingRound = playerScore.PlayerGuesses.SingleOrDefault(g => g.Order == round);
+                PlayerGuess? existingRound = playerScore.PlayerGuesses.SingleOrDefault(g => g.RoundNumber == round);
                 if (existingRound is not null)
                 {
                     existingRound.Score = newScore;
                 }
                 else
                 {
-                    playerScore.PlayerGuesses.Add(new() { Score = newScore, Order = round });
+                    playerScore.PlayerGuesses.Add(new() { Score = newScore, RoundNumber = round });
                 }
 
                 await _context.SaveChangesAsync();
