@@ -108,7 +108,7 @@ namespace GeoNRage.App.Pages
                 player.Id,
                 filteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
                 filteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
-                filteredScores.Count(p => p.PlayerGuesses.All(g => g.Score is not null or 0)),
+                filteredScores.Count(p => p.Done),
                 results?.Sum(p => p.Sum),
                 results?[0].GameId,
                 (int)(filteredScores.SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0));

@@ -64,7 +64,7 @@ namespace GeoNRage.App.Pages
                     .PlayerScores
                     .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && (p.GameId != -1 || p.MapIsMapForGame));
 
-                IEnumerable<int> challengesDoneIds = Player.PlayerScores.Where(p => p.PlayerGuesses.All(g => g.Score is not null)).Select(p => p.ChallengeId);
+                IEnumerable<int> challengesDoneIds = Player.PlayerScores.Where(p => p.Done).Select(p => p.ChallengeId);
                 ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id)).OrderByDescending(c => c.GameDate);
                 GameHistoric = Player
                     .PlayerScores

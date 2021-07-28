@@ -42,7 +42,7 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de carte complétées</p>
-                        <p class="title">@FilteredScores.Count(p => p.PlayerGuesses.All(g => g.Score is not null or 0))</p>
+                        <p class="title">@FilteredScores.Count(p => p.Done)</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">

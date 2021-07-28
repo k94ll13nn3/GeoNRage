@@ -49,6 +49,8 @@ namespace GeoNRage.Server
                 .ForMember(dest => dest.ChallengeTimeLimit, opt => opt.MapFrom(src => src.Challenge.TimeLimit))
                 .ForMember(dest => dest.MapName, opt => opt.MapFrom(src => src.Challenge.Map.Name))
                 .ForMember(dest => dest.MapId, opt => opt.MapFrom(src => src.Challenge.Map.Id))
+                .ForMember(dest => dest.Done, opt => opt.MapFrom(src => src.PlayerGuesses.Count == 5 && src.PlayerGuesses.All(g => g.Score != null)))
+                .ForMember(dest => dest.Sum, opt => opt.MapFrom(src => src.PlayerGuesses.Select(g => g.Score).Sum()))
                 .ForMember(dest => dest.MapIsMapForGame, opt => opt.MapFrom(src => src.Challenge.Map.IsMapForGame));
 
             CreateMap<PlayerScore, PlayerScoreWithGuessDto>();

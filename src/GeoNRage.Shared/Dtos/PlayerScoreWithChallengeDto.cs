@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GeoNRage.Shared.Dtos
 {
     public class PlayerScoreWithChallengeDto
     {
-        public int? Sum => PlayerGuesses.Select(g => g.Score).Sum();
+        public int? Sum { get; set; }
+
+        public bool Done { get; set; }
 
         public ICollection<PlayerGuessDto> PlayerGuesses { get; set; } = new HashSet<PlayerGuessDto>();
 
