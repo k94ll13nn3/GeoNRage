@@ -46,17 +46,17 @@
                                     @{
                                         var guess = Challenge[playerScore.PlayerId]?[round];
                                     }
-                                    <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : ""))">
-                                        <Container Condition="guess is not null">
-                                            <ChildContent>
+                                    <Container Condition="guess is not null">
+                                        <ChildContent>
+                                            <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : ""))">
                                                 @guess!.Score <br />
                                                 <small>@($"{(int?)guess.Distance}m") / @($"{guess.Time}s")</small>
-                                            </ChildContent>
-                                            <ElseContent>
-                                                —
-                                            </ElseContent>
-                                        </Container>
-                                    </td>
+                                            </td>
+                                        </ChildContent>
+                                        <ElseContent>
+                                            <td>—</td>
+                                        </ElseContent>
+                                    </Container>
                                 </Repeater>
                             </tr>
                         </Repeater>
