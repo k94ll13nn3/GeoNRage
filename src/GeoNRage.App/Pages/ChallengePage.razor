@@ -39,32 +39,35 @@
                             </Repeater>
                         </tr>
 
-                        @{ var i = 1; }
                         <Repeater Items="Enumerable.Range(1, 5)" Context="round">
                             <tr>
                                 <th>Round @round</th>
-                                @{ var j = 1; }
                                 <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
                                     @{
-                                        var key = $"{Challenge.Id}_{playerScore.PlayerId}_{round}";
+                                        var guess = Challenge[playerScore.PlayerId]?[round];
                                     }
-                                    <td>
-                                        <NumericInput @key="@key"
-                                                      InitialValue="@Challenge[playerScore.PlayerId]?[round]?.Score"
-                                                      Class="@(Challenge[playerScore.PlayerId]?[round]?.Score == 5000 ? "perfect" : (Challenge[playerScore.PlayerId]?[round]?.Score == 4999 ? "almost-perfect" : ""))"
-                                                      TabIndex="@(i + j)"
-                                                      Disabled="true"></NumericInput>
+                                    <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : ""))">
+                                        <Container Condition="guess is not null">
+                                            <ChildContent>
+                                                @guess!.Score <br />
+                                                <small>@($"{(int?)guess.Distance}m") / @($"{guess.Time}s")</small>
+                                            </ChildContent>
+                                            <ElseContent>
+                                                —
+                                            </ElseContent>
+                                        </Container>
                                     </td>
-                                    @{ j++; }
                                 </Repeater>
-                                @{ i += 100; }
                             </tr>
                         </Repeater>
 
                         <tr>
                             <th>Total</th>
                             <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
-                                <th>@(playerScore.Sum ?? 0)</th>
+                                <th>
+                                    @(playerScore.Sum ?? 0) <br />
+                                    <small>@($"{(int?)playerScore.PlayerGuesses.Sum(g => g.Distance)}m") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time)}s")</small>
+                                </th>
                             </Repeater>
                         </tr>
                     </table>

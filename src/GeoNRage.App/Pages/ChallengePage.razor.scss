@@ -13,21 +13,18 @@ table {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background-color: t.$primary;
+        background-color: d.$info;
+        color: f.findColorInvert(d.$info);
+        padding: 5px;
 
-        ::deep .perfect {
+        &.perfect {
             background-color: d.$success;
             color: f.findColorInvert(d.$success);
         }
 
-        ::deep .almost-perfect {
+        &.almost-perfect {
             background-color: d.$warning;
             color: f.findColorInvert(d.$warning);
-        }
-
-        ::deep input:not(.perfect):not(.almost-perfect):disabled {
-            background-color: d.$info;
-            color: f.findColorInvert(d.$info);
         }
     }
 
@@ -40,6 +37,7 @@ table {
         text-overflow: ellipsis;
         background-color: t.$primary;
         color: f.findColorInvert(t.$primary);
+        padding: 5px;
     }
 }
 
