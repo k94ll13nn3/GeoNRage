@@ -165,7 +165,7 @@ namespace GeoNRage.Server.Services
                 }
             }
 
-            return game;
+            return await GetInternalAsync(gameId, false);
         }
 
         public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
