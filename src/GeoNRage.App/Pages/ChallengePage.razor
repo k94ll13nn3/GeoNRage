@@ -50,8 +50,8 @@
                                     }
                                     <td>
                                         <NumericInput @key="@key"
-                                                      InitialValue="@Challenge[playerScore.PlayerId]?.Rounds[round - 1]"
-                                                      Class="@(Challenge[playerScore.PlayerId]?.Rounds[round - 1] == 5000 ? "perfect" : (Challenge[playerScore.PlayerId]?.Rounds[round - 1] == 4999 ? "almost-perfect" : ""))"
+                                                      InitialValue="@Challenge[playerScore.PlayerId]?[round]?.Score"
+                                                      Class="@(Challenge[playerScore.PlayerId]?[round]?.Score == 5000 ? "perfect" : (Challenge[playerScore.PlayerId]?[round]?.Score == 4999 ? "almost-perfect" : ""))"
                                                       TabIndex="@(i + j)"
                                                       Disabled="true"></NumericInput>
                                     </td>

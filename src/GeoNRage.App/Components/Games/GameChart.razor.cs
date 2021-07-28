@@ -118,7 +118,7 @@ namespace GeoNRage.App.Components.Games
             int sum = 0;
             var scores = new List<int> { 0 };
             var values = new List<int?>();
-            foreach (ChallengeDto challenge in Game.Challenges)
+            foreach (GameChallengeDto challenge in Game.Challenges)
             {
                 for (int i = 0; i < 5; i++)
                 {

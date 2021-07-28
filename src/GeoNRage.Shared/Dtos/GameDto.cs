@@ -5,7 +5,7 @@ namespace GeoNRage.Shared.Dtos
 {
     public class GameDto : GameLightDto
     {
-        public ICollection<ChallengeDto> Challenges { get; set; } = new HashSet<ChallengeDto>();
+        public ICollection<GameChallengeDto> Challenges { get; set; } = new HashSet<GameChallengeDto>();
 
         public ICollection<PlayerDto> Players { get; set; } = new HashSet<PlayerDto>();
 

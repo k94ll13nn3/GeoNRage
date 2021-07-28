@@ -20,13 +20,13 @@ namespace GeoNRage.Shared.Dtos
 
         public DateTime GameDate { get; set; }
 
-        public ICollection<PlayerScoreDto> PlayerScores { get; set; } = new HashSet<PlayerScoreDto>();
+        public ICollection<PlayerScoreWithGuessDto> PlayerScores { get; set; } = new HashSet<PlayerScoreWithGuessDto>();
 
         public int TimeLimit { get; set; }
 
         public int? LocationsCount { get; set; }
 
-        public PlayerScoreDto? this[string playerId] => PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
+        public PlayerScoreWithGuessDto? this[string playerId] => PlayerScores.FirstOrDefault(x => x.PlayerId == playerId);
 
         public string? CreatorName { get; set; }
 
