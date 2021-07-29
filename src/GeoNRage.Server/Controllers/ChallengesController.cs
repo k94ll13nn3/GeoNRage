@@ -29,6 +29,12 @@ namespace GeoNRage.Server.Controllers
             return _mapper.Map<IEnumerable<Challenge>, IEnumerable<ChallengeDto>>(challenges);
         }
 
+        [HttpGet("admin-view")]
+        public async Task<IEnumerable<ChallengeAdminViewDto>> GetAllAsAdminViewAsync()
+        {
+            return await _challengeService.GetAllAsAdminViewAsync();
+        }
+
         [AllowAnonymous]
         [HttpGet("without-games")]
         public async Task<IEnumerable<ChallengeDto>> GetAllWithoutGameAsync()

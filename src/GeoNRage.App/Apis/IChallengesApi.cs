@@ -9,6 +9,9 @@ namespace GeoNRage.App.Apis
         [Get("/api/challenges")]
         Task<ChallengeDto[]> GetAllAsync();
 
+        [Get("/api/challenges/admin-view")]
+        Task<ChallengeAdminViewDto[]> GetAllAsAdminViewAsync();
+
         [Get("/api/challenges/without-games")]
         Task<ChallengeDto[]> GetAllWithoutGameAsync();
 

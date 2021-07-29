@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using GeoNRage.Server.Entities;
@@ -128,6 +129,10 @@ namespace GeoNRage.Server.Controllers
                 return NoContent();
             }
             catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (HttpRequestException e)
             {
                 return BadRequest(e.Message);
             }

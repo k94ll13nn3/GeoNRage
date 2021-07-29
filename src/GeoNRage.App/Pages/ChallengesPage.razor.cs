@@ -46,8 +46,7 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
-            Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
+            await FilterChallengesAsync();
             Players = await PlayersApi.GetAllAsync();
         }
 
@@ -76,7 +75,7 @@ namespace GeoNRage.App.Pages
         {
             var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
             Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId) && c.PlayerScores.All(p => !PlayersToHide.Contains(p.PlayerId)));
-            ChallengesTable.SetItems(Challenges);
+            ChallengesTable?.SetItems(Challenges);
         }
 
         private async Task ImportAsync()
@@ -86,9 +85,7 @@ namespace GeoNRage.App.Pages
                 Error = null;
                 ChallengeImported = false;
                 await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = false });
-                var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
-                Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId));
-                ChallengesTable.SetItems(Challenges);
+                await FilterChallengesAsync();
                 GeoGuessrId = string.Empty;
                 ChallengeImported = true;
             }

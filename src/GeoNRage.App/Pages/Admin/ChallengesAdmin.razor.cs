@@ -21,18 +21,18 @@ namespace GeoNRage.App.Pages.Admin
         [Inject]
         public PopupService PopupService { get; set; } = null!;
 
-        public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
+        public IEnumerable<ChallengeAdminViewDto> Challenges { get; set; } = null!;
 
         public string? Error { get; set; }
 
-        public Table<ChallengeDto> ChallengesTable { get; set; } = null!;
+        public Table<ChallengeAdminViewDto> ChallengesTable { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
-            Challenges = await ChallengesApi.GetAllAsync();
+            Challenges = await ChallengesApi.GetAllAsAdminViewAsync();
         }
 
-        private void ImportChallenge(ChallengeDto challenge)
+        private void ImportChallenge(ChallengeAdminViewDto challenge)
         {
             PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge), true);
         }
@@ -47,7 +47,7 @@ namespace GeoNRage.App.Pages.Admin
             try
             {
                 await ChallengesApi.DeleteAsync(challengeId);
-                Challenges = await ChallengesApi.GetAllAsync();
+                await OnInitializedAsync();
                 ChallengesTable.SetItems(Challenges);
                 StateHasChanged();
             }
@@ -57,7 +57,7 @@ namespace GeoNRage.App.Pages.Admin
             }
         }
 
-        private async Task ImportChallengeAsync(ChallengeDto challenge)
+        private async Task ImportChallengeAsync(ChallengeAdminViewDto challenge)
         {
             _ = challenge ?? throw new ArgumentNullException(nameof(challenge));
 
@@ -79,9 +79,10 @@ namespace GeoNRage.App.Pages.Admin
             }
             finally
             {
-                Challenges = await ChallengesApi.GetAllAsync();
+                await OnInitializedAsync();
                 ChallengesTable.SetItems(Challenges);
                 PopupService.HidePopup();
+                StateHasChanged();
             }
         }
     }

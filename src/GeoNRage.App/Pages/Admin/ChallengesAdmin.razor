@@ -2,13 +2,15 @@
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
+@using Humanizer;
+
 <GeoNRage.App.Components.Admin.AdminMenu />
 
 <Container Condition="Challenges?.Any() == true">
     <ChildContent>
         <div class="container is-fluid">
             <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-                <div class="notification is-danger">
+                <div class="notification is-danger m-3">
                     @Error
                 </div>
             </Container>
@@ -19,10 +21,8 @@
                               new("Id", false, string.Empty),
                               new("Carte", false, string.Empty),
                               new("Partie", false, string.Empty),
-                              new("Créateur", false, string.Empty),
-                              new("Limite de temps", false, string.Empty),
                               new("Mise à jour", false, string.Empty),
-                              new("Nombre de lieux", false, string.Empty),
+                              new("À jour", false, string.Empty),
                               new("", false, string.Empty),
                               new("", false, string.Empty),
                           })"
@@ -33,10 +33,21 @@
                     <td>@challenge.Id</td>
                     <td>@challenge.MapName</td>
                     <td>@challenge.GameName</td>
-                    <td>@(challenge.CreatorName ?? "—")</td>
-                    <td>@challenge.TimeLimit</td>
-                    <td>@challenge.UpdatedAt.ToLocalTime()</td>
-                    <td>@(challenge.LocationsCount ?? 0)</td>
+                    <td>@(challenge.LastUpdate == DateTime.MinValue ? "—" : challenge.LastUpdate.ToLocalTime().Humanize())</td>
+                    <td>
+                        <Container Condition="challenge.UpToDate">
+                            <ChildContent>
+                                <span class="icon has-text-success">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </ChildContent>
+                            <ElseContent>
+                                <span class="icon has-text-warning">
+                                   <i class="fas fa-times"></i>
+                                </span>
+                            </ElseContent>
+                        </Container>
+                    </td>
                     <td class="min">
                         <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallenge(challenge)">
                             <i class="fas fa-sync-alt"></i>

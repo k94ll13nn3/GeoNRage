@@ -38,6 +38,25 @@ namespace GeoNRage.Server.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<ChallengeAdminViewDto>> GetAllAsAdminViewAsync()
+        {
+            return await _context.Challenges
+                .AsNoTracking()
+                .OrderBy(c => c.Id)
+                .Select(c => new ChallengeAdminViewDto
+                {
+                    Id = c.Id,
+                    GameId = c.GameId,
+                    GameName = c.Game.Name,
+                    GeoGuessrId = c.GeoGuessrId,
+                    LastUpdate = c.UpdatedAt,
+                    MapId = c.MapId,
+                    MapName = c.Map.Name,
+                    UpToDate = c.Locations.Count == 5 && c.CreatorId != null && c.TimeLimit != null && c.UpdatedAt != DateTime.MinValue
+                })
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Challenge>> GetAllWithoutGameAsync()
         {
             return await _context.Challenges
