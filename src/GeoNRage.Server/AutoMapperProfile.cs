@@ -9,8 +9,6 @@ namespace GeoNRage.Server
     {
         public AutoMapperProfile()
         {
-            CreateMap<Map, MapDto>();
-
             CreateMap<Player, PlayerDto>();
 
             CreateMap<Player, PlayerFullDto>();

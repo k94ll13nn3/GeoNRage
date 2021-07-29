@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
@@ -14,12 +14,17 @@ namespace GeoNRage.Server.Services
     {
         private readonly GeoNRageDbContext _context;
 
-        public async Task<IEnumerable<Map>> GetAllAsync()
+        public async Task<IEnumerable<MapDto>> GetAllAsync()
         {
-            return await _context.Maps.OrderBy(m => m.Name).AsNoTracking().ToListAsync();
+            return await _context
+                .Maps
+                .OrderBy(m => m.Name)
+                .AsNoTracking()
+                .Select(m => CreateDto(m))
+                .ToListAsync();
         }
 
-        public async Task<Map> CreateAsync(MapCreateDto dto)
+        public async Task<MapDto> CreateAsync(MapCreateDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -37,10 +42,10 @@ namespace GeoNRage.Server.Services
 
             await _context.SaveChangesAsync();
 
-            return map.Entity;
+            return (await GetAsync(map.Entity.Id))!;
         }
 
-        public async Task<Map?> UpdateAsync(string id, MapEditDto dto)
+        public async Task<MapDto?> UpdateAsync(string id, MapEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -54,7 +59,7 @@ namespace GeoNRage.Server.Services
                 await _context.SaveChangesAsync();
             }
 
-            return map;
+            return await GetAsync(id);
         }
 
         public async Task DeleteAsync(string id)
@@ -70,6 +75,25 @@ namespace GeoNRage.Server.Services
                 _context.Maps.Remove(map);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        private async Task<MapDto?> GetAsync(string id)
+        {
+            return await _context
+                .Maps
+                .AsNoTracking()
+                .Select(m => CreateDto(m))
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        private static MapDto CreateDto(Map map)
+        {
+            return new MapDto
+            {
+                Id = map.Id,
+                IsMapForGame = map.IsMapForGame,
+                Name = map.Name,
+            };
         }
     }
 }

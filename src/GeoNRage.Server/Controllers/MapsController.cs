@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using GeoNRage.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
@@ -16,16 +14,13 @@ namespace GeoNRage.Server.Controllers
     [AutoConstructor]
     public partial class MapsController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly MapService _mapService;
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<MapDto>> GetAllAsync()
         {
-            IEnumerable<Map> maps = await _mapService.GetAllAsync();
-
-            return _mapper.Map<IEnumerable<Map>, IEnumerable<MapDto>>(maps);
+            return await _mapService.GetAllAsync();
         }
 
         [HttpPost]
@@ -34,8 +29,7 @@ namespace GeoNRage.Server.Controllers
             try
             {
                 _ = dto ?? throw new ArgumentNullException(nameof(dto));
-                Map createdMap = await _mapService.CreateAsync(dto);
-                return _mapper.Map<Map, MapDto>(createdMap);
+                return await _mapService.CreateAsync(dto);
             }
             catch (InvalidOperationException e)
             {
@@ -47,13 +41,8 @@ namespace GeoNRage.Server.Controllers
         public async Task<ActionResult<MapDto>> UpdateAsync(string id, MapEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            Map? updatedMap = await _mapService.UpdateAsync(id, dto);
-            if (updatedMap == null)
-            {
-                return NotFound();
-            }
-
-            return _mapper.Map<Map, MapDto>(updatedMap);
+            MapDto? updatedMap = await _mapService.UpdateAsync(id, dto);
+            return updatedMap ?? (ActionResult<MapDto>)NotFound();
         }
 
         [HttpDelete("{id}")]
