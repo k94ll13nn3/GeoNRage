@@ -34,7 +34,7 @@
                         <tr>
                             <th>
                             </th>
-                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
+                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
                                 <th>@playerScore.PlayerName</th>
                             </Repeater>
                         </tr>
@@ -42,9 +42,9 @@
                         <Repeater Items="Enumerable.Range(1, 5)" Context="round">
                             <tr>
                                 <th>Round @round</th>
-                                <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
+                                <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
                                     @{
-                                        var guess = Challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerScore.PlayerId)?[round];
+                                        var guess = Challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerScore.PlayerId)?.PlayerGuesses.FirstOrDefault(g => g.RoundNumber == round);
                                     }
                                     <Container Condition="guess is not null">
                                         <ChildContent>
@@ -63,9 +63,9 @@
 
                         <tr>
                             <th>Total</th>
-                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
+                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
                                 <th>
-                                    @(playerScore.Sum ?? 0) <br />
+                                    @(playerScore.PlayerGuesses.Sum(g => g.Score) ?? 0) <br />
                                     <small>@($"{(int?)playerScore.PlayerGuesses.Sum(g => g.Distance)}m") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time)}s")</small>
                                 </th>
                             </Repeater>

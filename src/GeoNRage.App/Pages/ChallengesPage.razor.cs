@@ -81,7 +81,7 @@ namespace GeoNRage.App.Pages
             {
                 Error = null;
                 ChallengeImported = false;
-                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = false });
+                await ChallengesApi.ImportChallengeAsync(new(GeoGuessrId, false));
                 await FilterChallengesAsync();
                 GeoGuessrId = string.Empty;
                 ChallengeImported = true;

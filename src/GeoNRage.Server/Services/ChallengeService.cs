@@ -45,15 +45,15 @@ namespace GeoNRage.Server.Services
 
             return await query
                 .Select(c => new ChallengeDto
-                {
-                    Id = c.Id,
-                    MapId = c.Map.Id,
-                    MapName = c.Map.Name,
-                    CreatorName = c.Creator == null ? null : c.Creator.Name,
-                    GeoGuessrId = c.GeoGuessrId,
-                    GameId = c.GameId == -1 ? null : c.GameId,
-                    MaxScore = c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
-                })
+                (
+                    c.Id,
+                    c.Map.Id,
+                    c.Map.Name,
+                    c.GeoGuessrId,
+                    c.GameId == -1 ? null : c.GameId,
+                    c.Creator == null ? null : c.Creator.Name,
+                    c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0
+                ))
                 .ToListAsync();
         }
 
@@ -63,16 +63,16 @@ namespace GeoNRage.Server.Services
                 .AsNoTracking()
                 .OrderBy(c => c.Id)
                 .Select(c => new ChallengeAdminViewDto
-                {
-                    Id = c.Id,
-                    GameId = c.GameId,
-                    GameName = c.Game.Name,
-                    GeoGuessrId = c.GeoGuessrId,
-                    LastUpdate = c.UpdatedAt,
-                    MapId = c.MapId,
-                    MapName = c.Map.Name,
-                    UpToDate = c.Locations.Count == 5 && c.CreatorId != null && c.TimeLimit != null && c.UpdatedAt != DateTime.MinValue
-                })
+                (
+                    c.Id,
+                    c.MapId,
+                    c.Map.Name,
+                    c.GeoGuessrId,
+                    c.GameId,
+                    c.Game.Name,
+                    c.UpdatedAt,
+                    c.Locations.Count == 5 && c.CreatorId != null && c.TimeLimit != null && c.UpdatedAt != DateTime.MinValue
+                ))
                 .ToListAsync();
         }
 
@@ -81,25 +81,26 @@ namespace GeoNRage.Server.Services
             return await _context
                 .Challenges
                 .AsNoTracking()
+                .Where(c => c.Id == id)
                 .Select(c => new ChallengeDetailDto
-                {
-                    Id = c.Id,
-                    GeoGuessrId = c.GeoGuessrId,
-                    MapName = c.Map.Name,
-                    PlayerScores = c.PlayerScores.Select(p => new PlayerScoreWithGuessDto
-                    {
-                        PlayerId = p.PlayerId,
-                        PlayerName = p.Player.Name,
-                        PlayerGuesses = p.PlayerGuesses.Select(g => new PlayerGuessDto
-                        {
-                            Distance = g.Distance,
-                            RoundNumber = g.RoundNumber,
-                            Score = g.Score,
-                            Time = g.Time,
-                        })
-                    })
-                })
-                .FirstOrDefaultAsync(c => c.Id == id);
+                (
+                    c.Id,
+                    c.Map.Name,
+                    c.GeoGuessrId,
+                    c.PlayerScores.Select(p => new ChallengePlayerScoreDto
+                    (
+                        p.PlayerId,
+                        p.Player.Name,
+                        p.PlayerGuesses.Select(g => new ChallengePlayerGuessDto
+                        (
+                            g.RoundNumber,
+                            g.Score,
+                            g.Time,
+                            g.Distance
+                        ))
+                    ))
+                ))
+                .FirstOrDefaultAsync();
         }
 
         public async Task DeleteAsync(int id)

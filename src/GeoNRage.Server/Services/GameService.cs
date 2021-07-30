@@ -193,7 +193,7 @@ namespace GeoNRage.Server.Services
             Game gameForDto = (await GetInternalAsync(id, false))!;
             foreach (Challenge challenge in gameForDto.Challenges)
             {
-                await _challengeService.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true }, id);
+                await _challengeService.ImportChallengeAsync(new(challenge.GeoGuessrId, true), id);
             }
 
             var editDto = new GameCreateOrEditDto
