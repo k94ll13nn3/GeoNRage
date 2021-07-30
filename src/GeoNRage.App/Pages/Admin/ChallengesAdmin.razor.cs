@@ -70,7 +70,7 @@ namespace GeoNRage.App.Pages.Admin
                 }
                 else
                 {
-                    await GamesApi.ImportChallengeAsync(challenge.GameId, new ChallengeImportDto { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
+                    await GamesApi.ImportChallengeAsync(challenge.GameId);
                 }
             }
             catch (ApiException e)

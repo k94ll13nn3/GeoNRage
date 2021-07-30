@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
-using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -189,13 +188,14 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task ImportChallengeAsync(int id, ChallengeImportDto dto)
+        public async Task ImportChallengeAsync(int id)
         {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-
-            await _challengeService.ImportChallengeAsync(dto, id);
-
             Game gameForDto = (await GetInternalAsync(id, false))!;
+            foreach (Challenge challenge in gameForDto.Challenges)
+            {
+                await _challengeService.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true }, id);
+            }
+
             var editDto = new GameCreateOrEditDto
             {
                 Name = gameForDto.Name,

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using GeoNRage.Shared.Dtos;
-using GeoNRage.Shared.Dtos.Challenges;
 using Refit;
 
 namespace GeoNRage.App.Apis
@@ -29,6 +28,6 @@ namespace GeoNRage.App.Apis
         Task DeleteAsync(int id);
 
         [Post("/api/games/{id}/import-challenge")]
-        Task ImportChallengeAsync(int id, [Body] ChallengeImportDto dto);
+        Task ImportChallengeAsync(int id);
     }
 }

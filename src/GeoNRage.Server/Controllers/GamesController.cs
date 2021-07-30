@@ -6,7 +6,6 @@ using AutoMapper;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using GeoNRage.Shared.Dtos;
-using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -113,10 +112,8 @@ namespace GeoNRage.Server.Controllers
         }
 
         [HttpPost("{id}/import-challenge")]
-        public async Task<IActionResult> ImportChallengeAsync(int id, ChallengeImportDto dto)
+        public async Task<IActionResult> ImportChallengeAsync(int id)
         {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-
             try
             {
                 Game? game = await _gameService.GetAsync(id);
@@ -125,7 +122,7 @@ namespace GeoNRage.Server.Controllers
                     return NotFound();
                 }
 
-                await _gameService.ImportChallengeAsync(id, dto);
+                await _gameService.ImportChallengeAsync(id);
 
                 return NoContent();
             }
