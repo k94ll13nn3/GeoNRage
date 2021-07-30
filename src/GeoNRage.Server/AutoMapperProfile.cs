@@ -52,8 +52,6 @@ namespace GeoNRage.Server
                 .ForMember(dest => dest.MapIsMapForGame, opt => opt.MapFrom(src => src.Challenge.Map.IsMapForGame));
 
             CreateMap<PlayerScore, PlayerScoreWithGuessDto>();
-
-            CreateMap<Location, LocationDto>();
         }
     }
 }
