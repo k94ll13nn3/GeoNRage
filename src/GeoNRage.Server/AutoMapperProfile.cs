@@ -23,13 +23,6 @@ namespace GeoNRage.Server
 
             CreateMap<Game, GameLightDto>();
 
-            CreateMap<Challenge, ChallengeDto>()
-                .ForMember(dest => dest.GameName, opt => opt.MapFrom(src => src.Game.Name))
-                .ForMember(dest => dest.GameDate, opt => opt.MapFrom(src => src.Game.Date))
-                .ForMember(dest => dest.LocationsCount, opt => opt.MapFrom(src => src.Locations == null ? (int?)null : src.Locations.Count))
-                .ForMember(dest => dest.MapName, opt => opt.MapFrom(src => src.Map.Name))
-                .ForMember(dest => dest.CreatorName, opt => opt.MapFrom(src => src.Creator == null ? null : src.Creator.Name));
-
             CreateMap<Challenge, GameChallengeDto>();
 
             CreateMap<PlayerScore, PlayerScoreDto>()
@@ -50,8 +43,6 @@ namespace GeoNRage.Server
                 .ForMember(dest => dest.Done, opt => opt.MapFrom(src => src.PlayerGuesses.Count == 5 && src.PlayerGuesses.All(g => g.Score != null)))
                 .ForMember(dest => dest.Sum, opt => opt.MapFrom(src => src.PlayerGuesses.Select(g => g.Score).Sum()))
                 .ForMember(dest => dest.MapIsMapForGame, opt => opt.MapFrom(src => src.Challenge.Map.IsMapForGame));
-
-            CreateMap<PlayerScore, PlayerScoreWithGuessDto>();
         }
     }
 }

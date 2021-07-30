@@ -149,7 +149,7 @@
                                                     <tr>
                                                         <td>@challenge.MapName</td>
                                                         <td>
-                                                            <Container Condition="challenge.GameId != -1">
+                                                            <Container Condition="challenge.GameId is not null">
                                                                 <ChildContent>
                                                                     <a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
                                                                         #@challenge.GameId

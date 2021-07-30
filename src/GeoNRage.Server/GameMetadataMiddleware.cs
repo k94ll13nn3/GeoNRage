@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
+using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Http;
 
 namespace GeoNRage.Server
@@ -41,11 +43,11 @@ namespace GeoNRage.Server
                     string[]? segments = context.Request.Path.Value?.Split('/');
                     if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
                     {
-                        Challenge? challenge = await challengeService.GetAsync(id);
+                        ChallengeDetailDto? challenge = await challengeService.GetAsync(id);
                         if (challenge != null)
                         {
                             found = true;
-                            name = challenge.Map.Name;
+                            name = challenge.MapName;
                         }
                     }
                 }

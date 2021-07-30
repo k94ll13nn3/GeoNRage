@@ -15,6 +15,6 @@ namespace GeoNRage.Shared.Dtos
         public ICollection<string> PlayerIds { get; set; } = new HashSet<string>();
 
         [Required]
-        public ICollection<ChallengeCreateOrEditDto> Challenges { get; set; } = new HashSet<ChallengeCreateOrEditDto>();
+        public ICollection<GameChallengeCreateOrEditDto> Challenges { get; set; } = new HashSet<GameChallengeCreateOrEditDto>();
     }
 }

@@ -7,6 +7,7 @@ using GeoNRage.App.Components.Shared;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
@@ -53,7 +54,7 @@ namespace GeoNRage.App.Pages.Admin
             {
                 Name = gameToEdit.Name,
                 Date = gameToEdit.Date,
-                Challenges = gameToEdit.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
+                Challenges = gameToEdit.Challenges.Select(c => new GameChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
                 PlayerIds = gameToEdit.Players.Select(p => p.Id).ToList()
             };
 

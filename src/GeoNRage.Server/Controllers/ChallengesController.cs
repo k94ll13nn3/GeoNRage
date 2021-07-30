@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AutoMapper;
-using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,16 +15,13 @@ namespace GeoNRage.Server.Controllers
     [AutoConstructor]
     public partial class ChallengesController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly ChallengeService _challengeService;
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IEnumerable<ChallengeDto>> GetAllAsync()
+        public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame = false, bool onlyMapForGame = false, [FromQuery] string[]? playersToExclude = null)
         {
-            IEnumerable<Challenge> challenges = await _challengeService.GetAllAsync();
-
-            return _mapper.Map<IEnumerable<Challenge>, IEnumerable<ChallengeDto>>(challenges);
+            return await _challengeService.GetAllAsync(onlyWithoutGame, onlyMapForGame, playersToExclude);
         }
 
         [HttpGet("admin-view")]
@@ -36,25 +31,11 @@ namespace GeoNRage.Server.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("without-games")]
-        public async Task<IEnumerable<ChallengeDto>> GetAllWithoutGameAsync()
-        {
-            IEnumerable<Challenge> challenges = await _challengeService.GetAllWithoutGameAsync();
-
-            return _mapper.Map<IEnumerable<Challenge>, IEnumerable<ChallengeDto>>(challenges);
-        }
-
-        [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ChallengeDto>> GetAsync(int id)
+        public async Task<ActionResult<ChallengeDetailDto>> GetAsync(int id)
         {
-            Challenge? challenge = await _challengeService.GetAsync(id);
-            if (challenge == null)
-            {
-                return NotFound();
-            }
-
-            return _mapper.Map<Challenge, ChallengeDto>(challenge);
+            ChallengeDetailDto? challenge = await _challengeService.GetAsync(id);
+            return challenge ?? (ActionResult<ChallengeDetailDto>)NotFound();
         }
 
         [AllowAnonymous]

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Refit;
 
 namespace GeoNRage.App.Apis
@@ -7,16 +7,13 @@ namespace GeoNRage.App.Apis
     public interface IChallengesApi
     {
         [Get("/api/challenges")]
-        Task<ChallengeDto[]> GetAllAsync();
+        Task<ChallengeDto[]> GetAllAsync(bool onlyWithoutGame = false, bool onlyMapForGame = false, [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
 
         [Get("/api/challenges/admin-view")]
         Task<ChallengeAdminViewDto[]> GetAllAsAdminViewAsync();
 
-        [Get("/api/challenges/without-games")]
-        Task<ChallengeDto[]> GetAllWithoutGameAsync();
-
         [Get("/api/challenges/{id}")]
-        Task<ApiResponse<ChallengeDto>> GetAsync(int id);
+        Task<ApiResponse<ChallengeDetailDto>> GetAsync(int id);
 
         [Post("/api/challenges/import")]
         Task<int> ImportChallengeAsync([Body] ChallengeImportDto dto);

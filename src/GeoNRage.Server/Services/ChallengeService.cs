@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Models;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
@@ -25,16 +25,35 @@ namespace GeoNRage.Server.Services
 
         private readonly GeoGuessrService _geoGuessrService;
 
-        public async Task<IEnumerable<Challenge>> GetAllAsync()
+        public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame, bool onlyMapForGame, string[]? playersToExclude)
         {
-            return await _context.Challenges
-                .Include(c => c.Map)
-                .Include(c => c.Game)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.PlayerGuesses)
-                .Include(c => c.Locations)
-                .Include(c => c.Creator)
-                .AsNoTracking()
+            IQueryable<Challenge> query = _context.Challenges.AsNoTracking();
+            if (onlyWithoutGame)
+            {
+                query = query.Where(c => c.GameId == -1);
+            }
+
+            if (onlyMapForGame)
+            {
+                query = query.Where(c => c.Map.IsMapForGame);
+            }
+
+            if (playersToExclude?.Any() == true)
+            {
+                query = query.Where(c => c.PlayerScores.All(p => !playersToExclude.Contains(p.PlayerId)));
+            }
+
+            return await query
+                .Select(c => new ChallengeDto
+                {
+                    Id = c.Id,
+                    MapId = c.Map.Id,
+                    MapName = c.Map.Name,
+                    CreatorName = c.Creator == null ? null : c.Creator.Name,
+                    GeoGuessrId = c.GeoGuessrId,
+                    GameId = c.GameId == -1 ? null : c.GameId,
+                    MaxScore = c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
+                })
                 .ToListAsync();
         }
 
@@ -57,31 +76,29 @@ namespace GeoNRage.Server.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Challenge>> GetAllWithoutGameAsync()
-        {
-            return await _context.Challenges
-                .Include(c => c.Map)
-                .Include(c => c.Game)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.PlayerGuesses)
-                .Include(c => c.Locations)
-                .Include(c => c.Creator)
-                .Where(c => c.GameId == -1)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task<Challenge?> GetAsync(int id)
+        public async Task<ChallengeDetailDto?> GetAsync(int id)
         {
             return await _context
                 .Challenges
-                .Include(c => c.Map)
-                .Include(c => c.Game)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.Player)
-                .Include(c => c.PlayerScores).ThenInclude(p => p.PlayerGuesses)
-                .Include(c => c.Locations)
-                .Include(c => c.Creator)
                 .AsNoTracking()
+                .Select(c => new ChallengeDetailDto
+                {
+                    Id = c.Id,
+                    GeoGuessrId = c.GeoGuessrId,
+                    MapName = c.Map.Name,
+                    PlayerScores = c.PlayerScores.Select(p => new PlayerScoreWithGuessDto
+                    {
+                        PlayerId = p.PlayerId,
+                        PlayerName = p.Player.Name,
+                        PlayerGuesses = p.PlayerGuesses.Select(g => new PlayerGuessDto
+                        {
+                            Distance = g.Distance,
+                            RoundNumber = g.RoundNumber,
+                            Score = g.Score,
+                            Time = g.Time,
+                        })
+                    })
+                })
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

@@ -2,7 +2,7 @@
 
 namespace GeoNRage.Shared.Dtos
 {
-    public class ChallengeCreateOrEditDto
+    public class GameChallengeCreateOrEditDto
     {
         public int Id { get; set; }
 

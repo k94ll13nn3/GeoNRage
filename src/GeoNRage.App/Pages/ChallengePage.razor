@@ -44,7 +44,7 @@
                                 <th>Round @round</th>
                                 <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="playerScore">
                                     @{
-                                        var guess = Challenge[playerScore.PlayerId]?[round];
+                                        var guess = Challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerScore.PlayerId)?[round];
                                     }
                                     <Container Condition="guess is not null">
                                         <ChildContent>

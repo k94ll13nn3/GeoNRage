@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
@@ -22,11 +22,11 @@ namespace GeoNRage.App.Pages
 
         public bool Loaded { get; set; }
 
-        public ChallengeDto Challenge { get; set; } = null!;
+        public ChallengeDetailDto Challenge { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
-            ApiResponse<ChallengeDto> response = await ChallengesApi.GetAsync(Id);
+            ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Id);
             if (!response.IsSuccessStatusCode || response.Content is null)
             {
                 ChallengeFound = false;
@@ -50,7 +50,7 @@ namespace GeoNRage.App.Pages
             try
             {
                 await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
-                ApiResponse<ChallengeDto> response = await ChallengesApi.GetAsync(Id);
+                ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
                 Challenge = response.Content!;
                 PopupService.HidePopup();
                 StateHasChanged();

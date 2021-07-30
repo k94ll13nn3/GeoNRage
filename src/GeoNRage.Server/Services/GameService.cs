@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -119,7 +120,7 @@ namespace GeoNRage.Server.Services
 
             foreach (Challenge challenge in game.Challenges)
             {
-                ChallengeCreateOrEditDto? modifiedChallenge = dto.Challenges.FirstOrDefault(c => c.Id == challenge.Id && challenge.Id != 0);
+                GameChallengeCreateOrEditDto? modifiedChallenge = dto.Challenges.FirstOrDefault(c => c.Id == challenge.Id && challenge.Id != 0);
                 if (modifiedChallenge is not null)
                 {
                     challenge.MapId = modifiedChallenge.MapId;
@@ -199,7 +200,7 @@ namespace GeoNRage.Server.Services
             {
                 Name = gameForDto.Name,
                 Date = gameForDto.Date,
-                Challenges = gameForDto.Challenges.Select(c => new ChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
+                Challenges = gameForDto.Challenges.Select(c => new GameChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
                 PlayerIds = gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
             };
 

@@ -132,7 +132,7 @@
                     </div>
                 </Repeater>
 
-                <button @onclick="() => Game.Challenges.Add(new ChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button" class="button is-primary">
+                <button @onclick="() => Game.Challenges.Add(new GameChallengeCreateOrEditDto { MapId = Maps.First().Id })" type="button" class="button is-primary">
                     <span class="icon">
                         <i class="fas fa-plus"></i>
                     </span>

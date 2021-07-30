@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeoNRage.Shared.Dtos
+namespace GeoNRage.Shared.Dtos.Challenges
 {
     public class ChallengeAdminViewDto
     {

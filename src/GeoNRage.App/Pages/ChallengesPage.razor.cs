@@ -6,6 +6,7 @@ using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Shared;
 using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
@@ -18,9 +19,6 @@ namespace GeoNRage.App.Pages
 
         [Inject]
         public IChallengesApi ChallengesApi { get; set; } = null!;
-
-        [Inject]
-        public IMapsApi MapsApi { get; set; } = null!;
 
         [Inject]
         public IPlayersApi PlayersApi { get; set; } = null!;
@@ -55,7 +53,7 @@ namespace GeoNRage.App.Pages
             return column switch
             {
                 nameof(ChallengeDto.MapName) => ascending ? challenges.OrderBy(c => c.MapName) : challenges.OrderByDescending(c => c.MapName),
-                nameof(PlayerScoreWithGuessDto.Sum) => ascending ? challenges.OrderBy(c => c.PlayerScores.Max(p => p.Sum)) : challenges.OrderByDescending(c => c.PlayerScores.Max(p => p.Sum)),
+                nameof(ChallengeDto.MaxScore) => ascending ? challenges.OrderBy(c => c.MaxScore) : challenges.OrderByDescending(c => c.MaxScore),
                 _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
             };
         }
@@ -73,8 +71,7 @@ namespace GeoNRage.App.Pages
 
         private async Task FilterChallengesAsync()
         {
-            var mapsForGame = (await MapsApi.GetAllAsync()).Where(m => ShowAllMaps || m.IsMapForGame).Select(m => m.Id).ToList();
-            Challenges = (await ChallengesApi.GetAllWithoutGameAsync()).Where(c => mapsForGame.Contains(c.MapId) && c.PlayerScores.All(p => !PlayersToHide.Contains(p.PlayerId)));
+            Challenges = await ChallengesApi.GetAllAsync(true, !ShowAllMaps, PlayersToHide.ToArray());
             ChallengesTable?.SetItems(Challenges);
         }
 

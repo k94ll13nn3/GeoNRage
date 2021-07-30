@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GeoNRage.Shared.Dtos
+namespace GeoNRage.Shared.Dtos.Challenges
 {
     public class ChallengeImportDto
     {

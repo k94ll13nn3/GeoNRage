@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
@@ -65,7 +66,7 @@ namespace GeoNRage.App.Pages
                     .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && (p.GameId != -1 || p.MapIsMapForGame));
 
                 IEnumerable<int> challengesDoneIds = Player.PlayerScores.Where(p => p.Done).Select(p => p.ChallengeId);
-                ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id)).OrderByDescending(c => c.GameDate);
+                ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id));
                 GameHistoric = Player
                     .PlayerScores
                     .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != -1)
