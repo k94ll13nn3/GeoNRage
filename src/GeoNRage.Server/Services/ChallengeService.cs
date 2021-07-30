@@ -71,7 +71,11 @@ namespace GeoNRage.Server.Services
                     c.GameId,
                     c.Game.Name,
                     c.UpdatedAt,
-                    c.Locations.Count == 5 && c.CreatorId != null && c.TimeLimit != null && c.UpdatedAt != DateTime.MinValue
+                    c.Locations.Count == 5
+                        && c.CreatorId != null
+                        && c.TimeLimit != null
+                        && c.UpdatedAt != DateTime.MinValue
+                        && c.PlayerScores.All(p => p.PlayerGuesses.All(g => g.Score != null && g.Distance != null && g.Time != null))
                 ))
                 .ToListAsync();
         }
