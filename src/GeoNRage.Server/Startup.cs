@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,9 +34,11 @@ namespace GeoNRage.Server
             services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
 
             string connectionString = _configuration.GetConnectionString("GeoNRageConnection");
-            services.AddDbContextPool<GeoNRageDbContext>(options => options.UseMySql(
-                connectionString,
-                ServerVersion.AutoDetect(connectionString)));
+            services.AddDbContextPool<GeoNRageDbContext>(options =>
+            {
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                options.ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
+            });
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
 
