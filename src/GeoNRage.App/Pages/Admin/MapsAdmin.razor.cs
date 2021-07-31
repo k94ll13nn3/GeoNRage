@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Maps;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
@@ -23,7 +23,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public MapCreateDto Map { get; set; } = new();
+        public MapEditDto Map { get; set; } = new();
 
         public string? SelectedMapId { get; set; }
 
@@ -35,7 +35,7 @@ namespace GeoNRage.App.Pages.Admin
         {
             Error = null;
             ShowEditForm = true;
-            Map = new MapCreateDto { Name = Maps.First(m => m.Id == mapId).Name, Id = mapId, IsMapForGame = Maps.First(m => m.Id == mapId).IsMapForGame };
+            Map = new MapEditDto { Name = Maps.First(m => m.Id == mapId).Name, IsMapForGame = Maps.First(m => m.Id == mapId).IsMapForGame };
             SelectedMapId = mapId;
         }
 
@@ -53,10 +53,6 @@ namespace GeoNRage.App.Pages.Admin
                 {
                     await MapsApi.UpdateAsync(SelectedMapId, Map);
                 }
-                else
-                {
-                    await MapsApi.CreateAsync(Map);
-                }
 
                 ShowEditForm = false;
                 SelectedMapId = null;
@@ -67,13 +63,6 @@ namespace GeoNRage.App.Pages.Admin
             {
                 Error = $"Error: {e.Content}";
             }
-        }
-
-        public void ShowMapCreation()
-        {
-            Error = null;
-            ShowEditForm = true;
-            Map = new MapCreateDto();
         }
 
         protected override async Task OnInitializedAsync()

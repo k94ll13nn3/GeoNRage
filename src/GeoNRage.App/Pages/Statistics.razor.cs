@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Locations;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages

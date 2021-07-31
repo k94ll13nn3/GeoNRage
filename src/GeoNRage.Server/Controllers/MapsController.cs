@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Maps;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,26 +23,24 @@ namespace GeoNRage.Server.Controllers
             return await _mapService.GetAllAsync();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<MapDto>> PostAsync(MapCreateDto dto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<MapDto>> UpdateAsync(string id, MapEditDto dto)
         {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
             try
             {
-                _ = dto ?? throw new ArgumentNullException(nameof(dto));
-                return await _mapService.CreateAsync(dto);
+                MapDto? updatedMap = await _mapService.UpdateAsync(id, dto);
+                if (updatedMap is null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
             catch (InvalidOperationException e)
             {
                 return BadRequest(e.Message);
             }
-        }
-
-        [HttpPost("{id}")]
-        public async Task<ActionResult<MapDto>> UpdateAsync(string id, MapEditDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            MapDto? updatedMap = await _mapService.UpdateAsync(id, dto);
-            return updatedMap ?? (ActionResult<MapDto>)NotFound();
         }
 
         [HttpDelete("{id}")]

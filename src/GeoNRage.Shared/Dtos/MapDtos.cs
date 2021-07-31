@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GeoNRage.Shared.Dtos
+namespace GeoNRage.Shared.Dtos.Maps
 {
+    public record MapDto(string Id, string Name, bool IsMapForGame);
+
     public class MapEditDto
     {
         [Required]

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Locations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

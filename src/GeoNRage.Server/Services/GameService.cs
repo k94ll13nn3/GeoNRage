@@ -134,6 +134,12 @@ namespace GeoNRage.Server.Services
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
+            Game? game = await GetInternalAsync(id, true);
+            if (game is null)
+            {
+                return null;
+            }
+
             IEnumerable<string> mapIds = dto.Challenges.Select(c => c.MapId);
             if (mapIds.Except(_context.Maps.Select(c => c.Id).AsEnumerable()).Any())
             {
@@ -156,12 +162,6 @@ namespace GeoNRage.Server.Services
             if (playerIds.Except(_context.Players.Select(c => c.Id).AsEnumerable()).Any())
             {
                 throw new InvalidOperationException("One or more players do not exists.");
-            }
-
-            Game? game = await GetInternalAsync(id, true);
-            if (game is null)
-            {
-                return null;
             }
 
             game.Name = dto.Name;

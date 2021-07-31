@@ -36,18 +36,6 @@
                     </tr>
                 </Repeater>
             </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="4" class="has-text-right">
-                        <button class="button is-primary" @onclick="ShowMapCreation">
-                            <span class="icon">
-                                <i class="fas fa-plus"></i>
-                            </span>
-                            <span>Créer</span>
-                        </button>
-                    </th>
-                </tr>
-            </tfoot>
         </table>
     </Container>
 </div>
@@ -68,16 +56,6 @@
                         @Error
                     </div>
                 </Container>
-
-                <div class="field">
-                    <label class="label">Id</label>
-                    <div class="control">
-                        <InputText @bind-Value="Map.Id" placeholder="Id" class="input" />
-                        <p class="help is-danger">
-                            <ValidationMessage For="@(() => Map.Id)"></ValidationMessage>
-                        </p>
-                    </div>
-                </div>
 
                 <div class="field">
                     <label class="label">Nom</label>

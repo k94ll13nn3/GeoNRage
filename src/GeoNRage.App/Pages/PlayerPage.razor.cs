@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos;
 using GeoNRage.Shared.Dtos.Challenges;
+using GeoNRage.Shared.Dtos.Maps;
 using Microsoft.AspNetCore.Components;
 using Refit;
 

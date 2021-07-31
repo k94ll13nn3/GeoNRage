@@ -8,6 +8,7 @@ using GeoNRage.App.Core;
 using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
 using GeoNRage.Shared.Dtos.Games;
+using GeoNRage.Shared.Dtos.Maps;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;

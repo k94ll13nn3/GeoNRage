@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Maps;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GeoNRage.Server.Services
 {
@@ -22,27 +21,6 @@ namespace GeoNRage.Server.Services
                 .AsNoTracking()
                 .Select(m => CreateDto(m))
                 .ToListAsync();
-        }
-
-        public async Task<MapDto> CreateAsync(MapCreateDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-
-            if (await _context.Maps.AnyAsync(m => m.Id == dto.Id))
-            {
-                throw new InvalidOperationException($"Map '{dto.Id}' already exists.");
-            }
-
-            EntityEntry<Map> map = await _context.Maps.AddAsync(new Map
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                IsMapForGame = dto.IsMapForGame,
-            });
-
-            await _context.SaveChangesAsync();
-
-            return (await GetAsync(map.Entity.Id))!;
         }
 
         public async Task<MapDto?> UpdateAsync(string id, MapEditDto dto)
@@ -82,18 +60,19 @@ namespace GeoNRage.Server.Services
             return await _context
                 .Maps
                 .AsNoTracking()
+                .Where(m => m.Id == id)
                 .Select(m => CreateDto(m))
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync();
         }
 
         private static MapDto CreateDto(Map map)
         {
             return new MapDto
-            {
-                Id = map.Id,
-                IsMapForGame = map.IsMapForGame,
-                Name = map.Name,
-            };
+            (
+                map.Id,
+                map.Name,
+                map.IsMapForGame
+            );
         }
     }
 }
