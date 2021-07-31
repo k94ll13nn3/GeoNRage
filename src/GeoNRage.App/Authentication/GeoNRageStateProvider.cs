@@ -17,7 +17,7 @@ namespace GeoNRage.App.Authentication
         public GeoNRageStateProvider(IAuthApi authApi)
         {
             _authApi = authApi;
-            _currentUser = new UserDto { Claims = new(), IsAuthenticated = false, UserName = string.Empty };
+            _currentUser = new UserDto(false, string.Empty, new());
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -36,7 +36,7 @@ namespace GeoNRage.App.Authentication
         public async Task LogoutAsync()
         {
             await _authApi.Logout();
-            _currentUser = new UserDto { Claims = new(), IsAuthenticated = false, UserName = string.Empty };
+            _currentUser = new UserDto(false, string.Empty, new());
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 

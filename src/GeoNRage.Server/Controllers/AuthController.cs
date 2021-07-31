@@ -82,11 +82,11 @@ namespace GeoNRage.Server.Controllers
         public UserDto CurrentUserInfo()
         {
             return new UserDto
-            {
-                IsAuthenticated = User.Identity?.IsAuthenticated ?? false,
-                UserName = User.Identity?.Name ?? string.Empty,
-                Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
-            };
+            (
+                User.Identity?.IsAuthenticated ?? false,
+                User.Identity?.Name ?? string.Empty,
+                User.Claims.ToDictionary(c => c.Type, c => c.Value)
+            );
         }
     }
 }

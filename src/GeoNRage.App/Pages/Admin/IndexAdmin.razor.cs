@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Threading.Tasks;
+using GeoNRage.App.Apis;
+using GeoNRage.Shared.Dtos.Admin;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Admin
 {
     public partial class IndexAdmin
     {
         [Inject]
-        public NavigationManager NavigationManager { get; set; } = null!;
+        public IAdminApi AdminApi { get; set; } = null!;
 
-        protected override void OnInitialized()
+        public AdminInfoDto AdminInfo { get; set; } = null!;
+
+        protected override async Task OnInitializedAsync()
         {
-            NavigationManager.NavigateTo("/admin/maps");
+            AdminInfo = await AdminApi.GetAdminInfoAsync();
         }
     }
 }

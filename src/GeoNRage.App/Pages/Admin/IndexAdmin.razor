@@ -2,4 +2,51 @@
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
+@using Humanizer;
+
 <GeoNRage.App.Components.Admin.AdminMenu />
+
+<Container Condition="AdminInfo is not null">
+    <ChildContent>
+        <div class="container">
+            <h1 class="is-size-4 m-3">Tables</h1>
+            <Table Items="AdminInfo!.Tables"
+                   Headers="@(new TableHeader[]
+                                  {
+                                      new("Nom", false, string.Empty),
+                                      new("Lignes", false, string.Empty)
+                                  })">
+                <RowContent Context="table">
+                    <td>@table.Name</td>
+                    <td>@table.RowCount</td>
+                </RowContent>
+            </Table>
+
+            <h1 class="is-size-4 m-3">Logs</h1>
+            <Table Items="AdminInfo.Logs"
+                   Headers="@(new TableHeader[]
+                                  {
+                                      new("Date/heure", false, string.Empty),
+                                      new("Niveau", false, string.Empty),
+                                      new("Message", false, string.Empty),
+                                      new("Exception", false, string.Empty),
+                                  })"
+                   Paginate="true"
+                   PageSize="15"
+                   IsNarrow="false">
+                <RowContent Context="log">
+                    <td>@log.Timestamp.ToLocalTime().Humanize()</td>
+                    <td class="@(log.Level == "Warn" ? "has-text-warning" : "has-text-danger")">@log.Level</td>
+                    <td title="@log.Message">@log.Message[0..Math.Min(log.Message.Length, 100)]</td>
+                    <td title="@log.Exception">@log.Exception[0..Math.Min(log.Exception.Length, 100)]</td>
+                </RowContent>
+            </Table>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>

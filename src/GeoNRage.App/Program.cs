@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Authentication;
@@ -24,6 +24,7 @@ namespace GeoNRage.App
             builder.Services.AddRefitClient<IAuthApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddRefitClient<IChallengesApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddRefitClient<ILocationsApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddRefitClient<IAdminApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
