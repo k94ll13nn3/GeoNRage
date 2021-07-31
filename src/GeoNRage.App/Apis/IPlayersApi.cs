@@ -15,11 +15,8 @@ namespace GeoNRage.App.Apis
         [Get("/api/players/{id}/full")]
         Task<ApiResponse<PlayerFullDto>> GetFullAsync(string id);
 
-        [Post("/api/players")]
-        Task<PlayerDto> CreateAsync([Body] PlayerCreateDto dto);
-
-        [Post("/api/players/{id}")]
-        Task<PlayerDto> UpdateAsync(string id, [Body] PlayerEditDto dto);
+        [Put("/api/players/{id}")]
+        Task UpdateAsync(string id, [Body] PlayerEditDto dto);
 
         [Delete("/api/players/{id}")]
         Task DeleteAsync(string id);

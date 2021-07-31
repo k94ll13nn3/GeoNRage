@@ -38,26 +38,6 @@ namespace GeoNRage.Server.Services
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<Player> CreateAsync(PlayerCreateDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-
-            if (await _context.Players.AnyAsync(p => p.Id == dto.Id))
-            {
-                throw new InvalidOperationException($"Player '{dto.Id}' already exists.");
-            }
-
-            EntityEntry<Player> player = await _context.Players.AddAsync(new Player
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-            });
-
-            await _context.SaveChangesAsync();
-
-            return player.Entity;
-        }
-
         public async Task<Player?> UpdateAsync(string id, PlayerEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));

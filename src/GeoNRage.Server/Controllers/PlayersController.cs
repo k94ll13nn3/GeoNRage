@@ -48,32 +48,24 @@ namespace GeoNRage.Server.Controllers
             return _mapper.Map<Player, PlayerFullDto>(player);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<PlayerDto>> PostAsync(PlayerCreateDto dto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<PlayerDto>> UpdateAsync(string id, PlayerEditDto dto)
         {
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
             try
             {
-                _ = dto ?? throw new ArgumentNullException(nameof(dto));
-                Player createdPlayer = await _playerService.CreateAsync(dto);
-                return _mapper.Map<Player, PlayerDto>(createdPlayer);
+                Player? updatedPlayer = await _playerService.UpdateAsync(id, dto);
+                if (updatedPlayer is null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
             catch (InvalidOperationException e)
             {
                 return BadRequest(e.Message);
             }
-        }
-
-        [HttpPost("{id}")]
-        public async Task<ActionResult<PlayerDto>> UpdateAsync(string id, PlayerEditDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            Player? updatedPlayer = await _playerService.UpdateAsync(id, dto);
-            if (updatedPlayer == null)
-            {
-                return NotFound();
-            }
-
-            return _mapper.Map<Player, PlayerDto>(updatedPlayer);
         }
 
         [HttpDelete("{id}")]

@@ -23,7 +23,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public bool ShowEditForm { get; set; }
 
-        public PlayerCreateDto Player { get; set; } = new();
+        public PlayerEditDto Player { get; set; } = new();
 
         public string? SelectedPlayerId { get; set; }
 
@@ -35,7 +35,7 @@ namespace GeoNRage.App.Pages.Admin
         {
             Error = null;
             ShowEditForm = true;
-            Player = new PlayerCreateDto { Name = Players.First(m => m.Id == playerId).Name, Id = playerId };
+            Player = new PlayerEditDto { Name = Players.First(m => m.Id == playerId).Name };
             SelectedPlayerId = playerId;
         }
 
@@ -44,7 +44,7 @@ namespace GeoNRage.App.Pages.Admin
             PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId), false);
         }
 
-        public async Task CreateOrUpdatePlayerAsync()
+        public async Task UpdatePlayerAsync()
         {
             try
             {
@@ -52,10 +52,6 @@ namespace GeoNRage.App.Pages.Admin
                 if (SelectedPlayerId is not null)
                 {
                     await PlayersApi.UpdateAsync(SelectedPlayerId, Player);
-                }
-                else
-                {
-                    await PlayersApi.CreateAsync(Player);
                 }
 
                 ShowEditForm = false;
@@ -67,13 +63,6 @@ namespace GeoNRage.App.Pages.Admin
             {
                 Error = $"Error: {e.Content}";
             }
-        }
-
-        public void ShowPlayerCreation()
-        {
-            Error = null;
-            ShowEditForm = true;
-            Player = new PlayerCreateDto();
         }
 
         protected override async Task OnInitializedAsync()
