@@ -140,6 +140,11 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more maps do not exists.");
             }
 
+            if (dto.Challenges.GroupBy(x => x.GeoGuessrId).Any(g => g.Count() > 1))
+            {
+                throw new InvalidOperationException("Two or more challenge GeoGuessr ids are the same.");
+            }
+
             // Check challenge GeoGuessr id for new challenges only.
             IEnumerable<string> geoGuessrIds = dto.Challenges.Where(c => c.Id == 0).Select(c => c.GeoGuessrId);
             if (_context.Challenges.Select(c => c.GeoGuessrId).AsEnumerable().Intersect(geoGuessrIds).Any())
