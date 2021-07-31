@@ -26,6 +26,8 @@ namespace GeoNRage.Server
 
         public DbSet<PlayerGuess> PlayerGuesses { get; set; } = null!;
 
+        public DbSet<Log> Logs { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
@@ -63,6 +65,8 @@ namespace GeoNRage.Server
             builder.Entity<Location>().Property(l => l.Longitude).IsRequired();
 
             builder.Entity<PlayerGuess>().HasKey(p => new { p.ChallengeId, p.PlayerId, p.RoundNumber });
+
+            builder.Entity<Log>().HasKey(p => p.Id);
 
             builder.Entity<Game>().HasData(new Game { Id = -1, CreationDate = DateTime.MinValue, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
 

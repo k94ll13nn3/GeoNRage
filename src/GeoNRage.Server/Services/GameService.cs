@@ -101,6 +101,11 @@ namespace GeoNRage.Server.Services
                 throw new InvalidOperationException("One or more challenge GeoGuessr ids are already registered.");
             }
 
+            if (dto.Challenges.GroupBy(x => x.GeoGuessrId).Any(g => g.Count() > 1))
+            {
+                throw new InvalidOperationException("Two or more challenge GeoGuessr ids are the same.");
+            }
+
             IEnumerable<string> mapIds = dto.Challenges.Select(c => c.MapId);
             if (mapIds.Except(_context.Maps.Select(c => c.Id).AsEnumerable()).Any())
             {
