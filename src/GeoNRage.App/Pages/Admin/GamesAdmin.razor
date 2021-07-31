@@ -25,8 +25,8 @@
                     <td>@game.Id</td>
                     <td>@game.Name</td>
                     <td>@game.Date.ToShortDateString()</td>
-                    <td>@game.Challenges.Count</td>
-                    <td>@game.Players.Count</td>
+                    <td>@game.Challenges.Count()</td>
+                    <td>@game.PlayerIds.Count()</td>
                     <td class="min">
                         <a class="has-text-info" @onclick="(() => EditGame(game.Id))">
                             <span class="icon">

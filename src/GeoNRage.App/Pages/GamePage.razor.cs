@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Games;
 using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Refit;
@@ -15,7 +16,7 @@ namespace GeoNRage.App.Pages
     {
         private HubConnection _hubConnection = null!;
 
-        public GameDto Game { get; set; } = null!;
+        public GameDetailDto Game { get; set; } = null!;
 
         [Parameter]
         public int Id { get; set; }
@@ -50,6 +51,8 @@ namespace GeoNRage.App.Pages
         public bool ShowChart { get; set; }
 
         public bool ShowAddPlayer { get; set; }
+
+        public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = new();
 
         public async ValueTask DisposeAsync()
         {
@@ -87,7 +90,7 @@ namespace GeoNRage.App.Pages
 
             await _hubConnection.StartAsync();
 
-            ApiResponse<GameDto> response = await GamesApi.GetAsync(Id);
+            ApiResponse<GameDetailDto> response = await GamesApi.GetAsync(Id);
             if (!response.IsSuccessStatusCode || response.Content is null)
             {
                 GameFound = false;
@@ -97,6 +100,21 @@ namespace GeoNRage.App.Pages
                 Loaded = true;
                 GameFound = true;
                 Game = response.Content;
+                foreach (GameChallengeDto challenge in Game.Challenges)
+                {
+                    foreach (GamePlayerDto player in Game.Players)
+                    {
+                        GameChallengePlayerScoreDto? playerScore = challenge.PlayerScores.FirstOrDefault(p => p.PlayerId == player.Id);
+                        Scores[(challenge.Id, player.Id, 1)] = playerScore?.Round1;
+                        Scores[(challenge.Id, player.Id, 2)] = playerScore?.Round2;
+                        Scores[(challenge.Id, player.Id, 3)] = playerScore?.Round3;
+                        Scores[(challenge.Id, player.Id, 4)] = playerScore?.Round4;
+                        Scores[(challenge.Id, player.Id, 5)] = playerScore?.Round5;
+                    }
+                }
+
+                Console.WriteLine(Scores.Count);
+
                 await _hubConnection.InvokeAsync("JoinGroup", Id);
                 AvailablePlayers = (await PlayersApi.GetAllAsync()).Where(p => Game.Challenges.FirstOrDefault()?.PlayerScores.Any(gp => gp.PlayerId == p.Id) != true);
                 SelectedPlayerId = AvailablePlayers.FirstOrDefault()?.Id;
@@ -133,7 +151,7 @@ namespace GeoNRage.App.Pages
 
         private async Task HandleReceiveValueAsync(int challengeId, string playerId, int round, int score)
         {
-            Game[challengeId, playerId, round] = score;
+            Scores[(challengeId, playerId, round)] = score;
             if (Chart is not null)
             {
                 await Chart.UpdateAsync(playerId);

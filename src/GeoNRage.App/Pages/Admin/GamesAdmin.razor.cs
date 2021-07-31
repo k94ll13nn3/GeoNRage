@@ -7,7 +7,7 @@ using GeoNRage.App.Components.Shared;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos;
-using GeoNRage.Shared.Dtos.Challenges;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
@@ -32,7 +32,7 @@ namespace GeoNRage.App.Pages.Admin
 
         public IEnumerable<PlayerDto> Players { get; set; } = null!;
 
-        public IEnumerable<GameDto> Games { get; set; } = null!;
+        public IEnumerable<GameAdminViewDto> Games { get; set; } = null!;
 
         public bool ShowEditForm { get; set; }
 
@@ -44,18 +44,18 @@ namespace GeoNRage.App.Pages.Admin
 
         public EditForm Form { get; set; } = null!;
 
-        public Table<GameDto> GamesTable { get; set; } = null!;
+        public Table<GameAdminViewDto> GamesTable { get; set; } = null!;
 
         public void EditGame(int gameId)
         {
             ShowEditForm = true;
-            GameDto gameToEdit = Games.First(m => m.Id == gameId);
+            GameAdminViewDto gameToEdit = Games.First(m => m.Id == gameId);
             Game = new GameCreateOrEditDto
             {
                 Name = gameToEdit.Name,
                 Date = gameToEdit.Date,
                 Challenges = gameToEdit.Challenges.Select(c => new GameChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
-                PlayerIds = gameToEdit.Players.Select(p => p.Id).ToList()
+                PlayerIds = gameToEdit.PlayerIds.ToList()
             };
 
             SelectedGameId = gameId;
@@ -82,7 +82,7 @@ namespace GeoNRage.App.Pages.Admin
 
                 ShowEditForm = false;
                 SelectedGameId = null;
-                Games = await GamesApi.GetAllAsync();
+                await LoadGamesAsync();
                 StateHasChanged();
                 GamesTable.SetItems(Games);
             }
@@ -107,7 +107,7 @@ namespace GeoNRage.App.Pages.Admin
         {
             Maps = (await MapsApi.GetAllAsync()).OrderByDescending(m => m.IsMapForGame);
             Players = await PlayersApi.GetAllAsync();
-            Games = await GamesApi.GetAllAsync();
+            await LoadGamesAsync();
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -120,7 +120,7 @@ namespace GeoNRage.App.Pages.Admin
             try
             {
                 await GamesApi.DeleteAsync(gameId);
-                Games = await GamesApi.GetAllAsync();
+                await LoadGamesAsync();
                 StateHasChanged();
                 GamesTable.SetItems(Games);
             }
@@ -128,6 +128,11 @@ namespace GeoNRage.App.Pages.Admin
             {
                 PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
             }
+        }
+
+        private async Task LoadGamesAsync()
+        {
+            Games = await GamesApi.GetAllAsAdminViewAsync();
         }
     }
 }

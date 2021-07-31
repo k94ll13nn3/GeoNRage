@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AutoMapper;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,46 +16,37 @@ namespace GeoNRage.Server.Controllers
     [AutoConstructor]
     public partial class GamesController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly GameService _gameService;
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<GameDto>> GetAllAsync()
         {
-            IEnumerable<Game> games = await _gameService.GetAllAsync(true);
-            return _mapper.Map<IEnumerable<Game>, IEnumerable<GameDto>>(games);
+            return await _gameService.GetAllAsync();
         }
 
-        [AllowAnonymous]
-        [HttpGet("light")]
-        public async Task<IEnumerable<GameLightDto>> GetAllLightAsync()
+        [HttpGet("admin-view")]
+        public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()
         {
-            IEnumerable<Game> games = await _gameService.GetAllAsync(false);
-            return _mapper.Map<IEnumerable<Game>, IEnumerable<GameLightDto>>(games);
+            return await _gameService.GetAllAsAdminViewAsync();
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<GameDto>> GetAsync(int id)
+        public async Task<ActionResult<GameDetailDto>> GetAsync(int id)
         {
-            Game? game = await _gameService.GetAsync(id);
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return _mapper.Map<Game, GameDto>(game);
+            GameDetailDto? game = await _gameService.GetAsync(id);
+            return game ?? (ActionResult<GameDetailDto>)NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<GameDto>> CreateAsync(GameCreateOrEditDto dto)
+        public async Task<IActionResult> CreateAsync(GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
             try
             {
-                Game createdGame = await _gameService.CreateAsync(dto);
-                return _mapper.Map<Game, GameDto>(createdGame);
+                int gameId = await _gameService.CreateAsync(dto);
+                return CreatedAtAction(nameof(GetAsync), new { id = gameId }, null);
             }
             catch (InvalidOperationException e)
             {
@@ -64,8 +54,8 @@ namespace GeoNRage.Server.Controllers
             }
         }
 
-        [HttpPost("{id}")]
-        public async Task<ActionResult<GameDto>> UpdateAsync(int id, GameCreateOrEditDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
             try
@@ -76,7 +66,7 @@ namespace GeoNRage.Server.Controllers
                     return NotFound();
                 }
 
-                return _mapper.Map<Game, GameDto>(updatedGame);
+                return NoContent();
             }
             catch (InvalidOperationException e)
             {
@@ -85,18 +75,20 @@ namespace GeoNRage.Server.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("{id}/add-player/{playerId}")]
-        public async Task<ActionResult<GameDto>> AddPlayerAsync(int id, string playerId)
+        [HttpPost("{id}/add-player")]
+        public async Task<IActionResult> AddPlayerAsync(int id, [FromBody] string playerId)
         {
             try
             {
-                Game? updatedGame = await _gameService.AddPlayerAsync(id, playerId);
-                if (updatedGame is null)
+                GameDetailDto? game = await _gameService.GetAsync(id);
+                if (game == null)
                 {
                     return NotFound();
                 }
 
-                return _mapper.Map<Game, GameDto>(updatedGame);
+                await _gameService.AddPlayerAsync(id, playerId);
+
+                return NoContent();
             }
             catch (InvalidOperationException e)
             {
@@ -111,12 +103,12 @@ namespace GeoNRage.Server.Controllers
             return NoContent();
         }
 
-        [HttpPost("{id}/import-challenge")]
-        public async Task<IActionResult> ImportChallengeAsync(int id)
+        [HttpPost("{id}/update-challenges")]
+        public async Task<IActionResult> UpdateChallengesAsync(int id)
         {
             try
             {
-                Game? game = await _gameService.GetAsync(id);
+                GameDetailDto? game = await _gameService.GetAsync(id);
                 if (game == null)
                 {
                     return NotFound();

@@ -66,11 +66,11 @@ namespace GeoNRage.App.Pages.Admin
                 Error = null;
                 if (challenge.GameId == -1)
                 {
-                    await ChallengesApi.ImportChallengeAsync(new(challenge.GeoGuessrId, true));
+                    await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
                 }
                 else
                 {
-                    await GamesApi.ImportChallengeAsync(challenge.GameId);
+                    await GamesApi.UpdateChallengesAsync(challenge.GameId);
                 }
             }
             catch (ApiException e)

@@ -1,33 +1,33 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Games;
 using Refit;
 
 namespace GeoNRage.App.Apis
 {
     public interface IGamesApi
     {
+        [Get("/api/games/admin-view")]
+        Task<GameAdminViewDto[]> GetAllAsAdminViewAsync();
+
         [Get("/api/games")]
         Task<GameDto[]> GetAllAsync();
 
-        [Get("/api/games/light")]
-        Task<GameLightDto[]> GetAllLightAsync();
-
         [Get("/api/games/{id}")]
-        Task<ApiResponse<GameDto>> GetAsync(int id);
+        Task<ApiResponse<GameDetailDto>> GetAsync(int id);
 
         [Post("/api/games")]
-        Task<GameDto> CreateAsync([Body] GameCreateOrEditDto dto);
+        Task CreateAsync([Body] GameCreateOrEditDto dto);
 
-        [Post("/api/games/{id}")]
-        Task<GameDto> UpdateAsync(int id, [Body] GameCreateOrEditDto dto);
+        [Put("/api/games/{id}")]
+        Task UpdateAsync(int id, [Body] GameCreateOrEditDto dto);
 
-        [Post("/api/games/{id}/add-player/{playerId}")]
-        Task AddPlayerAsync(int id, string playerId);
+        [Post("/api/games/{id}/add-player")]
+        Task AddPlayerAsync(int id, [Body(BodySerializationMethod.Serialized)] string playerId);
+
+        [Post("/api/games/{id}/update-challenges")]
+        Task UpdateChallengesAsync(int id);
 
         [Delete("/api/games/{id}")]
         Task DeleteAsync(int id);
-
-        [Post("/api/games/{id}/import-challenge")]
-        Task ImportChallengeAsync(int id);
     }
 }

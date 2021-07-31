@@ -49,7 +49,7 @@ namespace GeoNRage.App.Pages
         {
             try
             {
-                await ChallengesApi.ImportChallengeAsync(new(Challenge.GeoGuessrId, true));
+                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
                 ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
                 Challenge = response.Content!;
                 PopupService.HidePopup();

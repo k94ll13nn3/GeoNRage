@@ -4,7 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GeoNRage.Shared.Dtos.Challenges
 {
-    public record ChallengeImportDto([param: Required] string GeoGuessrId, [param: Required] bool OverrideData);
+    public class ChallengeImportDto
+    {
+        [Required]
+        public string GeoGuessrId { get; set; } = null!;
+
+        [Required]
+        public bool OverrideData { get; set; }
+    }
 
     public record ChallengeAdminViewDto(int Id, string MapId, string MapName, string GeoGuessrId, int GameId, string GameName, DateTime LastUpdate, bool UpToDate);
 

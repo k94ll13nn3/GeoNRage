@@ -8,7 +8,7 @@ using ChartJs.Blazor.Common.Axes;
 using ChartJs.Blazor.Common.Enums;
 using ChartJs.Blazor.LineChart;
 using ChartJs.Blazor.Util;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components.Games
@@ -78,11 +78,17 @@ namespace GeoNRage.App.Components.Games
         public Chart Chart { get; set; } = null!;
 
         [Parameter]
-        public GameDto Game { get; set; } = null!;
+        public IEnumerable<GameChallengeDto> Challenges { get; set; } = null!;
+
+        [Parameter]
+        public IEnumerable<GamePlayerDto> Players { get; set; } = null!;
+
+        [Parameter]
+        public IReadOnlyDictionary<(int challengeId, string playerId, int round), int?> Scores { get; set; } = null!;
 
         public async Task UpdateAsync(string playerId)
         {
-            UpdatePlot(Game.Players.First(x => x.Id == playerId));
+            UpdatePlot(Players.First(x => x.Id == playerId));
             await Chart.Update();
         }
 
@@ -93,12 +99,12 @@ namespace GeoNRage.App.Components.Games
 
         private void CreatePlot()
         {
-            foreach (string item in Game.Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.MapName[0]}_R{y}")).Prepend("0"))
+            foreach (string item in Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.MapName[0]}_R{y}")).Prepend("0"))
             {
                 PlotConfig.Data.Labels.Add(item);
             }
 
-            foreach (PlayerDto player in Game.Players)
+            foreach (GamePlayerDto player in Players)
             {
                 IDataset<int> dataset = new LineDataset<int>()
                 {
@@ -113,16 +119,16 @@ namespace GeoNRage.App.Components.Games
             }
         }
 
-        private void UpdatePlot(PlayerDto player)
+        private void UpdatePlot(GamePlayerDto player)
         {
             int sum = 0;
             var scores = new List<int> { 0 };
             var values = new List<int?>();
-            foreach (GameChallengeDto challenge in Game.Challenges)
+            foreach (GameChallengeDto challenge in Challenges)
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    values.Add(Game[challenge.Id, player.Id, i + 1]);
+                    values.Add(Scores[(challenge.Id, player.Id, i + 1)]);
                 }
             }
 

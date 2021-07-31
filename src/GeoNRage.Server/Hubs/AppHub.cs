@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs
@@ -19,7 +19,7 @@ namespace GeoNRage.Server.Hubs
         [HubMethodName("UpdateValue")]
         public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int score)
         {
-            Game? game = await _gameService.GetAsync(gameId);
+            GameDetailDto? game = await _gameService.GetAsync(gameId);
 
             if (game is not null)
             {

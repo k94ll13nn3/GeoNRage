@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -28,7 +28,7 @@ namespace GeoNRage.Server
 
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddSignalR();
-            services.AddControllers();
+            services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
             services.AddRazorPages();
             services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
 

@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos;
 using GeoNRage.Shared.Dtos.Challenges;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Http;
 
 namespace GeoNRage.Server
@@ -29,7 +29,7 @@ namespace GeoNRage.Server
                     string[]? segments = context.Request.Path.Value?.Split('/');
                     if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
                     {
-                        Game? game = await gameService.GetAsync(id);
+                        GameDetailDto? game = await gameService.GetAsync(id);
                         if (game != null)
                         {
                             found = true;

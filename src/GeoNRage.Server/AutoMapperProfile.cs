@@ -15,16 +15,6 @@ namespace GeoNRage.Server
 
             CreateMap<PlayerGuess, PlayerGuessDto>();
 
-            CreateMap<Game, GameDto>()
-                .ForMember(dest => dest.Players, opt => opt.MapFrom(src =>
-                    src.Challenges.Count > 0 ?
-                    src.Challenges.SelectMany(c => c.PlayerScores).DistinctBy(p => p.Player.Id).Select(p => p.Player) :
-                    Enumerable.Empty<Player>()));
-
-            CreateMap<Game, GameLightDto>();
-
-            CreateMap<Challenge, GameChallengeDto>();
-
             CreateMap<PlayerScore, PlayerScoreDto>()
                 .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name))
                 .ForMember(dest => dest.Round1, opt => opt.MapFrom(src => (src.PlayerGuesses.FirstOrDefault(g => g.RoundNumber == 1) ?? new()).Score))

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages
@@ -14,11 +14,11 @@ namespace GeoNRage.App.Pages
         [Inject]
         public IGamesApi GamesApi { get; set; } = null!;
 
-        public IEnumerable<GameLightDto> Games { get; set; } = null!;
+        public IEnumerable<GameDto> Games { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
-            Games = await GamesApi.GetAllLightAsync();
+            Games = await GamesApi.GetAllAsync();
         }
     }
 }

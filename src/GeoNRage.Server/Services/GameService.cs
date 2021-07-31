@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Games;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -15,28 +15,83 @@ namespace GeoNRage.Server.Services
         private readonly GeoNRageDbContext _context;
         private readonly ChallengeService _challengeService;
 
-        public async Task<IEnumerable<Game>> GetAllAsync(bool includeNavigation)
+        public async Task<IEnumerable<GameDto>> GetAllAsync()
         {
-            IQueryable<Game> query = _context.Games.OrderByDescending(g => g.Date).Where(g => g.Id != -1);
-            if (includeNavigation)
-            {
-                query = query
-                    .Include(g => g.Challenges)
-                    .ThenInclude(c => c.Map)
-                    .Include(g => g.Challenges)
-                    .ThenInclude(c => c.PlayerScores)
-                    .ThenInclude(c => c.Player);
-            }
-
-            return await query.AsNoTracking().ToListAsync();
+            return await _context
+                .Games
+                .OrderByDescending(g => g.Date)
+                .Where(g => g.Id != -1)
+                .AsNoTracking()
+                .Select(g => new GameDto
+                (
+                    g.Id,
+                    g.Name,
+                    g.Date
+                ))
+                .ToListAsync();
         }
 
-        public Task<Game?> GetAsync(int id)
+        public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()
         {
-            return GetInternalAsync(id, false);
+            return await _context.Games
+                .AsNoTracking()
+                .OrderByDescending(g => g.Date)
+                .Where(g => g.Id != -1)
+                .Select(g => new GameAdminViewDto
+                (
+                    g.Id,
+                    g.Name,
+                    g.Date,
+                    g.Challenges.Select(c => new GameChallengeInfoDto
+                    (
+                        c.Id,
+                        c.MapId,
+                        c.GeoGuessrId
+                    )),
+                    g.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct()
+                ))
+                .ToListAsync();
         }
 
-        public async Task<Game> CreateAsync(GameCreateOrEditDto dto)
+        public async Task<GameDetailDto?> GetAsync(int id)
+        {
+            return await _context
+                .Games
+                .AsNoTracking()
+                .Where(g => g.Id == id)
+                .Select(g => new GameDetailDto
+                (
+                    g.Id,
+                    g.Name,
+                    g.Date,
+                    g.Challenges.Select(c => new GameChallengeDto
+                    (
+                        c.Id,
+                        c.MapId,
+                        c.GeoGuessrId,
+                        c.Map.Name,
+                        c.PlayerScores.Select(p => new GameChallengePlayerScoreDto
+                        (
+                            p.PlayerId,
+                            p.Player.Name,
+                            p.PlayerGuesses.Any(g => g.RoundNumber == 1) ? p.PlayerGuesses.First(g => g.RoundNumber == 1).Score : null,
+                            p.PlayerGuesses.Any(g => g.RoundNumber == 2) ? p.PlayerGuesses.First(g => g.RoundNumber == 2).Score : null,
+                            p.PlayerGuesses.Any(g => g.RoundNumber == 3) ? p.PlayerGuesses.First(g => g.RoundNumber == 3).Score : null,
+                            p.PlayerGuesses.Any(g => g.RoundNumber == 4) ? p.PlayerGuesses.First(g => g.RoundNumber == 4).Score : null,
+                            p.PlayerGuesses.Any(g => g.RoundNumber == 5) ? p.PlayerGuesses.First(g => g.RoundNumber == 5).Score : null,
+                            p.PlayerGuesses.Sum(g => g.Score)
+                        ))
+                    )),
+                    g.Challenges.SelectMany(c => c.PlayerScores).Select(p => new GamePlayerDto
+                    (
+                        p.PlayerId,
+                        p.Player.Name
+                    )).Distinct()
+                ))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> CreateAsync(GameCreateOrEditDto dto)
         {
             _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
@@ -72,7 +127,7 @@ namespace GeoNRage.Server.Services
             });
             await _context.SaveChangesAsync();
 
-            return (await GetInternalAsync(game.Entity.Id, false))!;
+            return game.Entity.Id;
         }
 
         public async Task<Game?> UpdateAsync(int id, GameCreateOrEditDto dto)
@@ -145,7 +200,7 @@ namespace GeoNRage.Server.Services
             }
         }
 
-        public async Task<Game?> AddPlayerAsync(int gameId, string playerId)
+        public async Task AddPlayerAsync(int gameId, string playerId)
         {
             Game? game = await GetInternalAsync(gameId, true);
             if (game is not null)
@@ -164,8 +219,6 @@ namespace GeoNRage.Server.Services
                     }
                 }
             }
-
-            return await GetInternalAsync(gameId, false);
         }
 
         public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
@@ -193,15 +246,20 @@ namespace GeoNRage.Server.Services
             Game gameForDto = (await GetInternalAsync(id, false))!;
             foreach (Challenge challenge in gameForDto.Challenges)
             {
-                await _challengeService.ImportChallengeAsync(new(challenge.GeoGuessrId, true), id);
+                await _challengeService.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true }, id);
             }
 
             var editDto = new GameCreateOrEditDto
             {
                 Name = gameForDto.Name,
                 Date = gameForDto.Date,
-                Challenges = gameForDto.Challenges.Select(c => new GameChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
-                PlayerIds = gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList()
+                PlayerIds = gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList(),
+                Challenges = gameForDto.Challenges.Select(c => new GameChallengeCreateOrEditDto
+                {
+                    Id = c.Id,
+                    MapId = c.MapId,
+                    GeoGuessrId = c.GeoGuessrId
+                }).ToList()
             };
 
             await UpdateAsync(id, editDto);

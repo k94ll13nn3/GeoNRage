@@ -93,9 +93,9 @@
                                         }
                                         <td>
                                             <NumericInput @key="@key"
-                                                          InitialValue="@Game[challenge.Id, playerScore.PlayerId, round]"
+                                                          InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
                                                           ValueChanged="@(async (e) => { await SendAsync(challenge.Id, playerScore.PlayerId, round, e);})"
-                                                          Class="@(Game[challenge.Id, playerScore.PlayerId, round] == 5000 ? "perfect" : (Game[challenge.Id, playerScore.PlayerId, round] == 4999 ? "almost-perfect" : ""))"
+                                                          Class="@(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "perfect" : (Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "almost-perfect" : ""))"
                                                           TabIndex="@(i + j)"></NumericInput>
                                         </td>
                                         @{ j++; }
@@ -150,7 +150,7 @@
                 <button class="delete" aria-label="close" @onclick="() => ShowChart = false"></button>
             </header>
             <section class="modal-card-body">
-                <GameChart Game="@Game" @ref="Chart"></GameChart>
+                <GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players" @ref="Chart"></GameChart>
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-primary" @onclick="() => ShowChart = false">Fermer</button>
