@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos.Players;
@@ -15,7 +16,7 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
         {
-            IEnumerable<PlayerStatisticDto> players = await _context
+            return await _context
                 .Players
                 .OrderBy(p => p.Name)
                 .AsNoTracking()
@@ -26,35 +27,29 @@ namespace GeoNRage.Server.Services
                     p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
                     p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
                     p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
-                    null,
-                    null,
+                    p
+                        .PlayerScores
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                        .GroupBy(p => p.GameId)
+                        .Where(g => g.Count() == 3)
+                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
+                        .OrderByDescending(g => g.Sum)
+                        .First()
+                        .Sum,
+                    p
+                        .PlayerScores
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                        .GroupBy(p => p.GameId)
+                        .Where(g => g.Count() == 3)
+                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
+                        .OrderByDescending(g => g.Sum)
+                        .First()
+                        .Id,
                     (int)(p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0)
                 ))
                 .ToListAsync();
-
-            return players.Select(player =>
-            {
-                var bestGame = _context
-                    .PlayerScores
-                    .Include(ps => ps.Challenge)
-                    .Include(ps => ps.PlayerGuesses)
-                    .Where(ps => ps.PlayerId == player.Id && ps.Challenge.GameId != -1)
-                    .ToList();
-                if (bestGame.Count > 0)
-                {
-                    var bb = bestGame
-                        .GroupBy(p => p.Challenge.GameId)
-                        .Where(g => g.Count() == 3)
-                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.PlayerGuesses.Sum(g => g.Score)).Sum() })
-                        .OrderByDescending(g => g.Sum)
-                        .First();
-                    return player with { BestGame = bb.Sum, BestGameId = bb.Id };
-                }
-                else
-                {
-                    return player;
-                }
-            });
         }
 
         public async Task<IEnumerable<PlayerDto>> GetAllAsync()
