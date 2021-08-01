@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Players;
 using Refit;
 
 namespace GeoNRage.App.Apis
@@ -9,8 +9,8 @@ namespace GeoNRage.App.Apis
         [Get("/api/players")]
         Task<PlayerDto[]> GetAllAsync();
 
-        [Get("/api/players/full")]
-        Task<PlayerFullDto[]> GetAllFullAsync();
+        [Get("/api/players/statistics")]
+        Task<PlayerStatisticDto[]> GetAllStatisticsAsync();
 
         [Get("/api/players/{id}/full")]
         Task<ApiResponse<PlayerFullDto>> GetFullAsync(string id);

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Shared.Dtos;
 using GeoNRage.Shared.Dtos.Locations;
+using GeoNRage.Shared.Dtos.Players;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages
@@ -22,28 +22,28 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        internal IEnumerable<PlayerStatistic> Players { get; set; } = Enumerable.Empty<PlayerStatistic>();
+        internal IEnumerable<PlayerStatisticDto> Players { get; set; } = Enumerable.Empty<PlayerStatisticDto>();
 
         internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
 
         protected override async Task OnInitializedAsync()
         {
-            Players = (await PlayersApi.GetAllFullAsync()).Select(CreateStatistic).ToList();
+            Players = (await PlayersApi.GetAllStatisticsAsync());
             Locations = await LocationsApi.GetAllAsync();
-            Players = Sort(Players, nameof(PlayerStatistic.PlayerName), true);
+            Players = Sort(Players, nameof(PlayerStatisticDto.Name), true);
             Locations = Sort(Locations, nameof(LocationDto.DisplayName), true);
         }
 
-        private static IEnumerable<PlayerStatistic> Sort(IEnumerable<PlayerStatistic> players, string column, bool ascending)
+        private static IEnumerable<PlayerStatisticDto> Sort(IEnumerable<PlayerStatisticDto> players, string column, bool ascending)
         {
             return column switch
             {
-                nameof(PlayerStatistic.PlayerName) => ascending ? players.OrderBy(p => p.PlayerName) : players.OrderByDescending(p => p.PlayerName),
-                nameof(PlayerStatistic.NumberOf5000) => ascending ? players.OrderBy(p => p.NumberOf5000) : players.OrderByDescending(p => p.NumberOf5000),
-                nameof(PlayerStatistic.NumberOf4999) => ascending ? players.OrderBy(p => p.NumberOf4999) : players.OrderByDescending(p => p.NumberOf4999),
-                nameof(PlayerStatistic.ChallengesCompleted) => ascending ? players.OrderBy(p => p.ChallengesCompleted) : players.OrderByDescending(p => p.ChallengesCompleted),
-                nameof(PlayerStatistic.BestGame) => ascending ? players.OrderBy(p => p.BestGame) : players.OrderByDescending(p => p.BestGame),
-                nameof(PlayerStatistic.RoundAverage) => ascending ? players.OrderBy(p => p.RoundAverage) : players.OrderByDescending(p => p.RoundAverage),
+                nameof(PlayerStatisticDto.Name) => ascending ? players.OrderBy(p => p.Name) : players.OrderByDescending(p => p.Name),
+                nameof(PlayerStatisticDto.NumberOf5000) => ascending ? players.OrderBy(p => p.NumberOf5000) : players.OrderByDescending(p => p.NumberOf5000),
+                nameof(PlayerStatisticDto.NumberOf4999) => ascending ? players.OrderBy(p => p.NumberOf4999) : players.OrderByDescending(p => p.NumberOf4999),
+                nameof(PlayerStatisticDto.ChallengesCompleted) => ascending ? players.OrderBy(p => p.ChallengesCompleted) : players.OrderByDescending(p => p.ChallengesCompleted),
+                nameof(PlayerStatisticDto.BestGame) => ascending ? players.OrderBy(p => p.BestGame) : players.OrderByDescending(p => p.BestGame),
+                nameof(PlayerStatisticDto.RoundAverage) => ascending ? players.OrderBy(p => p.RoundAverage) : players.OrderByDescending(p => p.RoundAverage),
                 _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
             };
         }
@@ -87,34 +87,5 @@ namespace GeoNRage.App.Pages
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
-
-        private PlayerStatistic CreateStatistic(PlayerFullDto player)
-        {
-            IEnumerable<PlayerScoreWithChallengeDto> filteredScores = player
-                .PlayerScores
-                .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && (p.GameId != -1 || p.MapIsMapForGame));
-
-            var results = player
-                  .PlayerScores
-                  .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId != -1)
-                  .GroupBy(p => p.GameId)
-                  .Where(g => g.Count() == 3)
-                  .OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum())
-                  .FirstOrDefault()
-                  ?.OrderBy(c => c.ChallengeId)
-                  .ToList();
-
-            return new(
-                player.Name,
-                player.Id,
-                filteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
-                filteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
-                filteredScores.Count(p => p.Done),
-                results?.Sum(p => p.Sum),
-                results?[0].GameId,
-                (int)(filteredScores.SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0));
-        }
-
-        internal record PlayerStatistic(string PlayerName, string PlayerId, int NumberOf5000, int NumberOf4999, int ChallengesCompleted, int? BestGame, int? BestGameId, int RoundAverage);
     }
 }

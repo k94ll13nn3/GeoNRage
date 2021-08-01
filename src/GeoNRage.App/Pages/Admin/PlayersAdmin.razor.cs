@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
-using GeoNRage.Shared.Dtos;
+using GeoNRage.Shared.Dtos.Players;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;

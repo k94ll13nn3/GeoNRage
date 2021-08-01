@@ -256,7 +256,7 @@
                                                     <tr>
                                                         <td>@score.MapName</td>
                                                         <td>
-                                                            <Container Condition="score.GameId != -1">
+                                                            <Container Condition="score.GameId is not null">
                                                                 <ChildContent>
                                                                     <a href="@NavigationManager.ToAbsoluteUri($"/games/{score.GameId}")">
                                                                         #@score.GameId
