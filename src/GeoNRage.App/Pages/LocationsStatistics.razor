@@ -1,0 +1,44 @@
+﻿@page "/statistics/locations"
+
+<Container Condition="Locations?.Any() == true">
+    <ChildContent>
+        <div class="container">
+            <Table Items="Locations"
+                   Headers="@(new TableHeader[]
+                                  {
+                                      new("Nom", true, nameof(LocationDto.DisplayName)),
+                                      new("Ville", true, nameof(LocationDto.Locality)),
+                                      new("Info niveau 2", true, nameof(LocationDto.AdministrativeAreaLevel2)),
+                                      new("Info niveau 1", true, nameof(LocationDto.AdministrativeAreaLevel1)),
+                                      new("Pays", true, nameof(LocationDto.Country)),
+                                      new("N.", true, nameof(LocationDto.TimesSeen)),
+                                      new("", false, string.Empty)
+                                  })"
+                   Paginate="true"
+                   PageSize="15"
+                   SortFunction="Sort"
+                   CanSearch="true"
+                   FilterFunction="Filter"
+                   ShowRowCount="true">
+                <RowContent Context="location">
+                    <td>@(location.DisplayName ?? "—")</td>
+                    <td>@(location.Locality ?? "—")</td>
+                    <td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
+                    <td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
+                    <td>@(location.Country ?? "—")</td>
+                    <td>@location.TimesSeen</td>
+                    <td class="min">
+                        <ActionIcon Link="@(new Uri($"https://www.google.com/maps/search/?api=1&query={location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},{location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"))"
+                                    Icon="fa-map-marked-alt"
+                                    IsExternal="true" />
+                    </td>
+                </RowContent>
+            </Table>
+        </div>
+    </ChildContent>
+    <ElseContent>
+        <LoadingAnimation>
+            Chargement...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>

@@ -12,7 +12,16 @@
             <div class="navbar-start">
                 <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")">Parties</NavLink>
                 <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/challenges")">Challenges</NavLink>
-                <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics")">Statistiques</NavLink>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Statistiques
+                    </a>
+
+                    <div class="navbar-dropdown">
+                        <NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/players")">Joueurs</NavLink>
+                        <NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/locations")">Lieux</NavLink>
+                    </div>
+                </div>
                 <AuthorizeView>
                     <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active">Administration</NavLink>
                 </AuthorizeView>
