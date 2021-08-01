@@ -19,7 +19,12 @@ namespace GeoNRage.Server.Services
                 .Maps
                 .OrderBy(m => m.Name)
                 .AsNoTracking()
-                .Select(m => CreateDto(m))
+                .Select(m => new MapDto
+                (
+                    m.Id,
+                    m.Name,
+                    m.IsMapForGame
+                ))
                 .ToListAsync();
         }
 
@@ -61,18 +66,13 @@ namespace GeoNRage.Server.Services
                 .Maps
                 .AsNoTracking()
                 .Where(m => m.Id == id)
-                .Select(m => CreateDto(m))
+                .Select(m => new MapDto
+                (
+                    m.Id,
+                    m.Name,
+                    m.IsMapForGame
+                ))
                 .FirstOrDefaultAsync();
-        }
-
-        private static MapDto CreateDto(Map map)
-        {
-            return new MapDto
-            (
-                map.Id,
-                map.Name,
-                map.IsMapForGame
-            );
         }
     }
 }

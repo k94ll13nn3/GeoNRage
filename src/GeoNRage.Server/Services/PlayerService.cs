@@ -63,7 +63,11 @@ namespace GeoNRage.Server.Services
                 .Players
                 .OrderBy(p => p.Name)
                 .AsNoTracking()
-                .Select(p => CreateDto(p))
+                .Select(p => new PlayerDto
+                (
+                    p.Id,
+                    p.Name
+                ))
                 .ToListAsync();
         }
 
@@ -108,7 +112,11 @@ namespace GeoNRage.Server.Services
                 .Players
                 .AsNoTracking()
                 .Where(p => p.Id == id)
-                .Select(p => CreateDto(p))
+                .Select(p => new PlayerDto
+                (
+                    p.Id,
+                    p.Name
+                ))
                 .FirstOrDefaultAsync();
         }
 
@@ -141,15 +149,6 @@ namespace GeoNRage.Server.Services
                 _context.Players.Remove(player);
                 await _context.SaveChangesAsync();
             }
-        }
-
-        private static PlayerDto CreateDto(Player player)
-        {
-            return new PlayerDto
-            (
-                player.Id,
-                player.Name
-            );
         }
     }
 }
