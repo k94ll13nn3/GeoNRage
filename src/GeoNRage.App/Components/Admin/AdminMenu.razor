@@ -3,6 +3,7 @@
         Administration
     </p>
     <ul class="menu-list">
+        <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin")" ActiveClass="is-active">Tableau de bord</NavLink>
         <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/maps")" ActiveClass="is-active">Cartes</NavLink>
         <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/players")" ActiveClass="is-active">Joueurs</NavLink>
         <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/games")" ActiveClass="is-active">Parties</NavLink>
