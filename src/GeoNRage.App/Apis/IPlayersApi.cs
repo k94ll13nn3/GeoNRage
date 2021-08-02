@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos.Players;
 using Refit;
 
@@ -10,6 +11,7 @@ namespace GeoNRage.App.Apis
         Task<PlayerDto[]> GetAllAsync();
 
         [Get("/api/players/statistics")]
+        [Headers($"{MapStatusHandler.HeaderName}:")]
         Task<PlayerStatisticDto[]> GetAllStatisticsAsync();
 
         [Get("/api/players/{id}/full")]

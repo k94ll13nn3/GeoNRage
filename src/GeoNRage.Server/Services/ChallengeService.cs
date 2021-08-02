@@ -35,7 +35,7 @@ namespace GeoNRage.Server.Services
 
             if (onlyMapForGame)
             {
-                query = query.Where(c => c.Map.IsMapForGame && c.TimeLimit == 300);
+                query = query.Where(c => c.Map.IsMapForGame && (c.TimeLimit ?? 300) == 300);
             }
 
             if (playersToExclude?.Any() == true)

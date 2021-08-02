@@ -19,7 +19,7 @@ namespace GeoNRage.Server.Services
 
             if (!takeAllMaps)
             {
-                query = query.Where(l => l.Challenge.TimeLimit == 300 && (l.Challenge.GameId != -1 || l.Challenge.Map.IsMapForGame));
+                query = query.Where(l => (l.Challenge.TimeLimit ?? 300) == 300 && (l.Challenge.GameId != -1 || l.Challenge.Map.IsMapForGame));
             }
 
             return await query

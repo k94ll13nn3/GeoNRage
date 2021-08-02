@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components.Shared;
 using GeoNRage.Shared.Dtos.Players;
 using Microsoft.AspNetCore.Components;
 
@@ -16,12 +17,22 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
+        public Table<PlayerStatisticDto> PlayersTable { get; set; } = null!;
+
         internal IEnumerable<PlayerStatisticDto> Players { get; set; } = Enumerable.Empty<PlayerStatisticDto>();
 
         protected override async Task OnInitializedAsync()
         {
             Players = await PlayersApi.GetAllStatisticsAsync();
-            Players = Sort(Players, nameof(PlayerStatisticDto.Name), true);
+        }
+
+        internal override async void OnMapStatusChanged(object? sender, EventArgs e)
+        {
+            Players = Enumerable.Empty<PlayerStatisticDto>();
+            StateHasChanged();
+            Players = await PlayersApi.GetAllStatisticsAsync();
+            PlayersTable?.SetItems(Players);
+            StateHasChanged();
         }
 
         private static IEnumerable<PlayerStatisticDto> Sort(IEnumerable<PlayerStatisticDto> players, string column, bool ascending)

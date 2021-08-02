@@ -27,7 +27,7 @@ namespace GeoNRage.Server.Controllers
         [HttpGet("statistics")]
         public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
         {
-            return await _playerService.GetAllStatisticsAsync();
+            return await _playerService.GetAllStatisticsAsync(Request.Headers["show-all-maps"] == "True");
         }
 
         [AllowAnonymous]

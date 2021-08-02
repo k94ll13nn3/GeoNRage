@@ -1,9 +1,12 @@
 ﻿@page "/statistics/players"
 
+@inherits MapStatusAwareComponent
+
 <Container Condition="Players?.Any() == true">
     <ChildContent>
         <div class="container">
-            <Table Items="Players"
+            <Table @ref="PlayersTable" 
+                   Items="Players"
                    Headers="@(new TableHeader[]
                                   {
                                       new("Joueur", true, nameof(PlayerStatisticDto.Name)),
