@@ -15,80 +15,40 @@ namespace GeoNRage.Server.Services
 
         public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync(bool takeAllMaps)
         {
-            if (takeAllMaps)
-            {
-                return await _context
-                    .Players
-                    .OrderBy(p => p.Name)
-                    .AsNoTracking()
-                    .Select(p => new PlayerStatisticDto
-                    (
-                        p.Id,
-                        p.Name,
-                        p.PlayerScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
-                        p.PlayerScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
-                        p.PlayerScores.Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
-                        p
-                            .PlayerScores
-                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
-                            .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                            .GroupBy(p => p.GameId)
-                            .Where(g => g.Count() == 3)
-                            .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
-                            .OrderByDescending(g => g.Sum)
-                            .First()
-                            .Sum,
-                        p
-                            .PlayerScores
-                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
-                            .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                            .GroupBy(p => p.GameId)
-                            .Where(g => g.Count() == 3)
-                            .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
-                            .OrderByDescending(g => g.Sum)
-                            .First()
-                            .Id,
-                        (int)(p.PlayerScores.SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0)
-                    ))
-                    .ToListAsync();
-            }
-            else
-            {
-                return await _context
-                    .Players
-                    .OrderBy(p => p.Name)
-                    .AsNoTracking()
-                    .Select(p => new PlayerStatisticDto
-                    (
-                        p.Id,
-                        p.Name,
-                        p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
-                        p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
-                        p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
-                        p
-                            .PlayerScores
-                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
-                            .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                            .GroupBy(p => p.GameId)
-                            .Where(g => g.Count() == 3)
-                            .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
-                            .OrderByDescending(g => g.Sum)
-                            .First()
-                            .Sum,
-                        p
-                            .PlayerScores
-                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
-                            .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                            .GroupBy(p => p.GameId)
-                            .Where(g => g.Count() == 3)
-                            .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
-                            .OrderByDescending(g => g.Sum)
-                            .First()
-                            .Id,
-                        (int)(p.PlayerScores.Where(p => (p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)).SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0)
-                    ))
-                    .ToListAsync();
-            }
+            return await _context
+                .Players
+                .OrderBy(p => p.Name)
+                .AsNoTracking()
+                .Select(p => new PlayerStatisticDto
+                (
+                    p.Id,
+                    p.Name,
+                    p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
+                    p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
+                    p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
+                    p
+                        .PlayerScores
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                        .GroupBy(p => p.GameId)
+                        .Where(g => g.Count() == 3)
+                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
+                        .OrderByDescending(g => g.Sum)
+                        .First()
+                        .Sum,
+                    p
+                        .PlayerScores
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                        .GroupBy(p => p.GameId)
+                        .Where(g => g.Count() == 3)
+                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
+                        .OrderByDescending(g => g.Sum)
+                        .First()
+                        .Id,
+                    (int)(p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0)
+                ))
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<PlayerDto>> GetAllAsync()
@@ -107,15 +67,19 @@ namespace GeoNRage.Server.Services
 
         public async Task<PlayerFullDto?> GetFullAsync(string id, bool takeAllMaps)
         {
-            IEnumerable<PlayerMapDto> mapsSummary = _context.Maps.Select(m => new PlayerMapDto
-             (
-                 m.Name,
-                 m.Challenges.SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).OrderByDescending(s => s).First(),
-                 (int?)m.Challenges.SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).Average()
-             )).AsEnumerable();
+            IEnumerable<PlayerMapDto> mapsSummary = _context
+                .Maps
+                .WhereIf(!takeAllMaps, m => m.IsMapForGame || m.Challenges.Any(c => c.GameId != -1))
+                .Select(m => new PlayerMapDto
+                 (
+                     m.Name,
+                     m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).OrderByDescending(s => s).First(),
+                     (int?)m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).Average()
+                 )).AsEnumerable();
 
             IEnumerable<PlayerChallengeDto> challengesNotDone = _context
                 .Challenges
+                .WhereIf(!takeAllMaps, c => (c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))
                 .Where(c => !c.PlayerScores.Any(ps => ps.PlayerId == id && ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null) && ps.ChallengeId == c.Id))
                 .Select(c => new PlayerChallengeDto
                 (
@@ -132,19 +96,23 @@ namespace GeoNRage.Server.Services
                 (
                     p.Id,
                     p.Name,
-                    p.PlayerScores.Where(ps => ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null)).Select(ps => new PlayerChallengeDto
-                    (
-                        ps.ChallengeId,
-                        ps.Challenge.GameId == -1 ? null : ps.Challenge.GameId,
-                        ps.Challenge.Map.Name,
-                        ps.PlayerGuesses.Sum(g => g.Score)
-                    )),
+                    p
+                        .PlayerScores
+                        .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                        .Where(ps => ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null))
+                        .Select(ps => new PlayerChallengeDto
+                        (
+                            ps.ChallengeId,
+                            ps.Challenge.GameId == -1 ? null : ps.Challenge.GameId,
+                            ps.Challenge.Map.Name,
+                            ps.PlayerGuesses.Sum(g => g.Score)
+                        )),
                     null!,
                     new PlayerFullStatisticDto
                     (
-                        p.PlayerScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
-                        p.PlayerScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
-                        p.PlayerScores.Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
+                        p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
+                        p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
+                        p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
                         p
                             .PlayerScores
                             .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
@@ -165,17 +133,17 @@ namespace GeoNRage.Server.Services
                             .OrderByDescending(g => g.Sum)
                             .First()
                             .Id,
-                        (int)(p.PlayerScores.SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0),
-                        p.PlayerScores.Select(p => p.PlayerGuesses.Sum(g => g.Score)).Count(s => s == 25000),
-                        (int)(p.PlayerScores.Select(p => p.PlayerGuesses.Sum(g => g.Score)).Average() ?? 0),
-                        p.PlayerScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 0)
+                        (int)(p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average() ?? 0),
+                        p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Select(p => p.PlayerGuesses.Sum(g => g.Score)).Count(s => s == 25000),
+                        (int)(p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Select(p => p.PlayerGuesses.Sum(g => g.Score)).Average() ?? 0),
+                        p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 0)
                     ),
                     null!,
                     p
                         .PlayerScores
                         .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
                         .Select(ps => new { ps.Challenge.GameId, ps.Challenge.Game.Date, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                        .GroupBy(p => new { p.GameId, p.Date})
+                        .GroupBy(p => new { p.GameId, p.Date })
                         .Where(g => g.Count() == 3)
                         .OrderBy(g => g.Key.Date)
                         .Select(g => new PlayerGameDto
