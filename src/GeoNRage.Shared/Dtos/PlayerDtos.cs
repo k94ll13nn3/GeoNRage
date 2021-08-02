@@ -35,7 +35,7 @@ namespace GeoNRage.Shared.Dtos.Players
         int NumberOf5000,
         int NumberOf4999,
         int ChallengesCompleted,
-        int? BestGame,
+        int? BestGameSum,
         int? BestGameId,
         int RoundAverage);
 }

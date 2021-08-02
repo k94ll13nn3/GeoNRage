@@ -32,7 +32,7 @@ namespace GeoNRage.App.Pages
                 nameof(PlayerStatisticDto.NumberOf5000) => ascending ? players.OrderBy(p => p.NumberOf5000) : players.OrderByDescending(p => p.NumberOf5000),
                 nameof(PlayerStatisticDto.NumberOf4999) => ascending ? players.OrderBy(p => p.NumberOf4999) : players.OrderByDescending(p => p.NumberOf4999),
                 nameof(PlayerStatisticDto.ChallengesCompleted) => ascending ? players.OrderBy(p => p.ChallengesCompleted) : players.OrderByDescending(p => p.ChallengesCompleted),
-                nameof(PlayerStatisticDto.BestGame) => ascending ? players.OrderBy(p => p.BestGame) : players.OrderByDescending(p => p.BestGame),
+                nameof(PlayerStatisticDto.BestGameSum) => ascending ? players.OrderBy(p => p.BestGameSum) : players.OrderByDescending(p => p.BestGameSum),
                 nameof(PlayerStatisticDto.RoundAverage) => ascending ? players.OrderBy(p => p.RoundAverage) : players.OrderByDescending(p => p.RoundAverage),
                 _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
             };

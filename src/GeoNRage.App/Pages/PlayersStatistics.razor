@@ -11,7 +11,7 @@
                                       new("Nombre de 4999 😏", true, nameof(PlayerStatisticDto.NumberOf4999)),
                                       new("Nombre de carte complétées", true, nameof(PlayerStatisticDto.ChallengesCompleted)),
                                       new("Moyenne par round", true, nameof(PlayerStatisticDto.RoundAverage)),
-                                      new("Meilleure partie", true, nameof(PlayerStatisticDto.BestGame))
+                                      new("Meilleure partie", true, nameof(PlayerStatisticDto.BestGameSum))
                                   })"
                    SortFunction="Sort">
                 <RowContent Context="player">
@@ -21,9 +21,9 @@
                     <td>@player.ChallengesCompleted</td>
                     <td>@player.RoundAverage</td>
                     <td>
-                        <Container Condition="player.BestGame is not null && player.BestGameId is not null">
+                        <Container Condition="player.BestGameSum is not null && player.BestGameId is not null">
                             <ChildContent>
-                                @player.BestGame (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
+                                @player.BestGameSum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
                             </ChildContent>
                             <ElseContent>
                                 —
