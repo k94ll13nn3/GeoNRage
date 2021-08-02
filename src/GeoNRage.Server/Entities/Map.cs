@@ -1,4 +1,6 @@
-﻿namespace GeoNRage.Server.Entities
+﻿using System.Collections.Generic;
+
+namespace GeoNRage.Server.Entities
 {
     public class Map
     {
@@ -7,5 +9,7 @@
         public string Name { get; set; } = null!;
 
         public bool IsMapForGame { get; set; }
+
+        public ICollection<Challenge> Challenges { get; set; } = new HashSet<Challenge>();
     }
 }

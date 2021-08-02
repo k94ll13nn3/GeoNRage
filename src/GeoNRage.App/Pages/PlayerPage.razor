@@ -1,5 +1,7 @@
 ﻿@page "/players/{Id}"
 
+@inherits MapStatusAwareComponent
+
 <Container Condition="Loaded && PlayerFound">
     <ChildContent>
         <div class="container">
@@ -21,40 +23,33 @@
                 </section>
             </div>
 
-            <div class="notification is-warning m-3">
-                Seules les cartes des parties et les cartes principales des challenges sont comptées pour les statistiques.
-            </div>
-
             <h1 class="is-size-4 my-3 mx-6">Statistiques générales</h1>
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 5000</p>
-                        <p class="title">@FilteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000)</p>
+                        <p class="title">@Player.Statistics.NumberOf5000</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 4999</p>
-                        <p class="title">@FilteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999)</p>
+                        <p class="title">@Player.Statistics.NumberOf4999</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de carte complétées</p>
-                        <p class="title">@FilteredScores.Count(p => p.Done)</p>
+                        <p class="title">@Player.Statistics.ChallengesCompleted</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
                         <p class="title">
-                            @{
-                                List<PlayerScoreWithChallengeDto>? results = Player.PlayerScores.Where(p => (p.ChallengeTimeLimit ?? 300) == 300).GroupBy(p => p.GameId).Where(g => g.Count() == 3).OrderByDescending(g => g.OrderBy(c => c.ChallengeId).Select(p => p.Sum).Sum()).FirstOrDefault()?.OrderBy(c => c.ChallengeId).ToList();
-                            }
-                            <Container Condition="results is not null">
+                            <Container Condition="Player.Statistics.BestGameSum is not null">
                                 <ChildContent>
-                                    @results!.Select(p => p.Sum).Sum()
+                                    @Player.Statistics.BestGameSum
                                 </ChildContent>
                                 <ElseContent>
                                     —
@@ -65,87 +60,49 @@
                 </div>
             </nav>
 
-            <h1 class="is-size-4 my-3 mx-6">Meilleur score par carte</h1>
-            <nav class="level mx-3 my-5">
-                <Repeater Items="Maps.Where(m => m.IsMapForGame)" Context="map">
-                    @{
-                        PlayerScoreWithChallengeDto? score = Player.PlayerScores.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum).FirstOrDefault();
-                    }
-                    <div class="level-item has-text-centered">
-                        <div>
-                            <p class="heading">@map.Name</p>
-                            <p class="title">
-                                <Container Condition="score?.Sum is not null">
-                                    @score!.Sum
-                                </Container>
-                                <Container Condition="score?.Sum is null">
-                                    —
-                                </Container>
-                            </p>
-                        </div>
-                    </div>
-                </Repeater>
-            </nav>
-
             <h1 class="is-size-4 my-3 mx-6">Statistiques diverses</h1>
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 25k</p>
-                        <p class="title">@FilteredScores.Count(p => p.Sum == 25000)</p>
+                        <p class="title">@Player.Statistics.NumberOf25000</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Moyenne par carte</p>
-                        <p class="title">@((int)(FilteredScores.Where(p => p.Sum is not null).Average(p => p.Sum) ?? 0))</p>
+                        <p class="title">@Player.Statistics.MapAverage</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Moyenne par round</p>
-                        <p class="title">@((int)(FilteredScores.SelectMany(p => p.PlayerGuesses).Where(g => g.Score is not null).Select(g => g.Score).Average() ?? 0))</p>
+                        <p class="title">@Player.Statistics.RoundAverage</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 0</p>
-                        <p class="title">@FilteredScores.SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 0)</p>
+                        <p class="title">@Player.Statistics.NumberOf0</p>
                     </div>
                 </div>
             </nav>
 
             <div class="columns m-3">
                 <div class="column">
-                    <Container Condition="ChallengesNotDone?.Any() == true">
+                    <Container Condition="Player.ChallengesNotDone?.Any() == true">
                         <ChildContent>
                             <div class="card">
                                 <header class="card-header">
                                     <p class="card-header-title">
                                         Cartes non jouées
                                     </p>
-                                    <div class="card-header-icon">
-                                        <a @onclick="ShowAllMapToggle" title="@(!ShowAllMaps ? "Afficher toutes les cartes" : "Afficher les cartes principales")">
-                                            <Container Condition="ShowAllMaps">
-                                                <ChildContent>
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-minus"></i>
-                                                    </span>
-                                                </ChildContent>
-                                                <ElseContent>
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-plus"></i>
-                                                    </span>
-                                                </ElseContent>
-                                            </Container>
-                                        </a>
-                                    </div>
                                 </header>
                                 <div class="card-table">
                                     <div class="content">
                                         <table class="table table is-striped is-hoverable is-fullwidth">
                                             <tbody>
-                                                <Repeater Items="ChallengesNotDone!.Where(c => ShowAllMaps || MapsForGame.Contains(c.MapId))" Context="challenge">
+                                                <Repeater Items="Player.ChallengesNotDone" Context="challenge">
                                                     <tr>
                                                         <td>@challenge.MapName</td>
                                                         <td>
@@ -156,8 +113,8 @@
                                                                     </a>
                                                                 </ChildContent>
                                                                 <ElseContent>
-                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")">
-                                                                        #@challenge.Id (C)
+                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.ChallengeId}")">
+                                                                        #@challenge.ChallengeId (C)
                                                                     </a>
                                                                 </ElseContent>
                                                             </Container>
@@ -186,7 +143,7 @@
                 </div>
 
                 <div class="column">
-                    <Container Condition="GameHistoric?.Any() == true">
+                    <Container Condition="Player.GameHistory?.Any() == true">
                         <ChildContent>
                             <div class="card">
                                 <header class="card-header">
@@ -207,12 +164,12 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <Repeater Items="GameHistoric" Context="game">
+                                                <Repeater Items="Player.GameHistory" Context="game">
                                                     <tr>
                                                         <th scope="row"></th>
-                                                        <td style="--size: calc(@game.score / 75000);">
+                                                        <td style="--size: calc(@game.Sum / 75000);">
                                                             <span class="data"></span>
-                                                            <span class="tooltip">Partie #@game.id<br />Score @game.score</span>
+                                                            <span class="tooltip">Partie #@game.GameId<br />Score @game.Sum</span>
                                                         </td>
                                                     </tr>
                                                 </Repeater>
@@ -240,7 +197,7 @@
 
             <div class="columns m-3">
                 <div class="column">
-                    <Container Condition="Player?.PlayerScores?.Any() == true">
+                    <Container Condition="Player.ChallengesDone.Any() == true">
                         <ChildContent>
                             <div class="card">
                                 <header class="card-header">
@@ -252,7 +209,7 @@
                                     <div class="content">
                                         <table class="table table is-striped is-hoverable is-fullwidth">
                                             <tbody>
-                                                <Repeater Items="Player!.PlayerScores" Context="score">
+                                                <Repeater Items="Player.ChallengesDone" Context="score">
                                                     <tr>
                                                         <td>@score.MapName</td>
                                                         <td>
@@ -304,16 +261,13 @@
                             <div class="content">
                                 <table class="table table is-striped is-hoverable is-fullwidth">
                                     <tbody>
-                                        <Repeater Items="Maps.OrderByDescending(m => m.IsMapForGame)" Context="map">
-                                            @{
-                                                IEnumerable<PlayerScoreWithChallengeDto> scores = Player!.PlayerScores!.Where(c => c.MapId == map.Id).OrderByDescending(p => p.Sum);
-                                            }
+                                        <Repeater Items="Player.MapsSummary" Context="map">
                                             <tr>
-                                                <td>@map.Name</td>
-                                                <Container Condition="scores.Any()">
+                                                <td>@map.MapName</td>
+                                                <Container Condition="map.Best is not null">
                                                     <ChildContent>
-                                                        <td>@scores.First().Sum</td>
-                                                        <td>@((int?)scores.Average(s => s.Sum))</td>
+                                                        <td>@map.Best</td>
+                                                        <td>@map.Average</td>
                                                     </ChildContent>
                                                     <ElseContent>
                                                         <td>—</td>

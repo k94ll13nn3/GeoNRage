@@ -15,6 +15,7 @@ namespace GeoNRage.App.Apis
         Task<PlayerStatisticDto[]> GetAllStatisticsAsync();
 
         [Get("/api/players/{id}/full")]
+        [Headers($"{MapStatusHandler.HeaderName}:")]
         Task<ApiResponse<PlayerFullDto>> GetFullAsync(string id);
 
         [Put("/api/players/{id}")]

@@ -446,7 +446,7 @@ namespace GeoNRage.Server.Migrations
                         .IsRequired();
 
                     b.HasOne("GeoNRage.Server.Entities.Map", "Map")
-                        .WithMany()
+                        .WithMany("Challenges")
                         .HasForeignKey("MapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -558,6 +558,11 @@ namespace GeoNRage.Server.Migrations
                 });
 
             modelBuilder.Entity("GeoNRage.Server.Entities.Game", b =>
+                {
+                    b.Navigation("Challenges");
+                });
+
+            modelBuilder.Entity("GeoNRage.Server.Entities.Map", b =>
                 {
                     b.Navigation("Challenges");
                 });

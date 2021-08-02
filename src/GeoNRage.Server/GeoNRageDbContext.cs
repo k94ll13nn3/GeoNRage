@@ -50,7 +50,7 @@ namespace GeoNRage.Server
             builder.Entity<Challenge>().Property(g => g.GeoGuessrId).IsRequired();
             builder.Entity<Challenge>().Property(g => g.UpdatedAt).HasDefaultValue(DateTime.MinValue);
             builder.Entity<Challenge>().Property(g => g.Id).UseMySqlIdentityColumn();
-            builder.Entity<Challenge>().HasOne(c => c.Map).WithMany().HasForeignKey(c => c.MapId).IsRequired();
+            builder.Entity<Challenge>().HasOne(c => c.Map).WithMany(m => m.Challenges).HasForeignKey(c => c.MapId).IsRequired();
             builder.Entity<Challenge>().HasMany(c => c.PlayerScores).WithOne(p => p.Challenge).HasForeignKey(p => p.ChallengeId);
             builder.Entity<Challenge>().HasOne(c => c.Creator).WithMany().HasForeignKey(c => c.CreatorId);
 

@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.Shared.Dtos.Challenges;
-using GeoNRage.Shared.Dtos.Maps;
 using GeoNRage.Shared.Dtos.Players;
 using Microsoft.AspNetCore.Components;
 using Refit;
@@ -16,41 +13,20 @@ namespace GeoNRage.App.Pages
         public string Id { get; set; } = null!;
 
         [Inject]
-        public IMapsApi MapsApi { get; set; } = null!;
-
-        [Inject]
         public IPlayersApi PlayersApi { get; set; } = null!;
-
-        [Inject]
-        public IChallengesApi ChallengesApi { get; set; } = null!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        public IEnumerable<MapDto> Maps { get; set; } = null!;
-
-        public IEnumerable<string> MapsForGame { get; set; } = null!;
-
-        public IEnumerable<ChallengeDto> ChallengesNotDone { get; set; } = null!;
-
-        public IEnumerable<(int id, int score)> GameHistoric { get; set; } = null!;
-
         public PlayerFullDto Player { get; set; } = null!;
-
-        public IEnumerable<PlayerScoreWithChallengeDto> FilteredScores { get; set; } = null!;
 
         public bool PlayerFound { get; set; } = true;
 
         public bool Loaded { get; set; }
 
-        public bool ShowAllMaps { get; set; }
-
         protected override async Task OnInitializedAsync()
         {
-            Maps = await MapsApi.GetAllAsync();
-            MapsForGame = Maps.Where(m => m.IsMapForGame).Select(m => m.Id).ToList();
-            ChallengeDto[] challenges = await ChallengesApi.GetAllAsync();
-
+            Loaded = false;
             ApiResponse<PlayerFullDto> response = await PlayersApi.GetFullAsync(Id);
             if (!response.IsSuccessStatusCode || response.Content is null)
             {
@@ -61,29 +37,13 @@ namespace GeoNRage.App.Pages
                 Loaded = true;
                 PlayerFound = true;
                 Player = response.Content;
-
-                FilteredScores = Player
-                    .PlayerScores
-                    .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && (p.GameId is not null || p.MapIsMapForGame));
-
-                IEnumerable<int> challengesDoneIds = Player.PlayerScores.Where(p => p.Done).Select(p => p.ChallengeId);
-                ChallengesNotDone = challenges.Where(c => !challengesDoneIds.Contains(c.Id));
-                GameHistoric = Player
-                    .PlayerScores
-                    .Where(p => (p.ChallengeTimeLimit ?? 300) == 300 && p.GameId is not null)
-                    .GroupBy(p => p.GameId!.Value)
-                    .Where(g => g.Count() == 3)
-                    .OrderBy(g => g.First().GameDate)
-                    .Select(g => (id: g.Key, score: g.Sum(p => p.Sum) ?? 0));
-
                 StateHasChanged();
             }
         }
 
-        private void ShowAllMapToggle()
+        internal override async void OnMapStatusChanged(object? sender, EventArgs e)
         {
-            ShowAllMaps = !ShowAllMaps;
-            StateHasChanged();
+            await OnInitializedAsync();
         }
     }
 }

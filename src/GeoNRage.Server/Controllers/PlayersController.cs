@@ -34,7 +34,7 @@ namespace GeoNRage.Server.Controllers
         [HttpGet("{id}/full")]
         public async Task<ActionResult<PlayerFullDto>> GetFullAsync(string id)
         {
-            PlayerFullDto? player = await _playerService.GetFullAsync(id);
+            PlayerFullDto? player = await _playerService.GetFullAsync(id, Request.Headers["show-all-maps"] == "True");
             return player ?? (ActionResult<PlayerFullDto>)NotFound();
         }
 
