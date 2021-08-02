@@ -1,5 +1,7 @@
 ﻿@page "/statistics/locations"
 
+@inherits MapStatusAwareComponent
+
 <Container Condition="Locations?.Any() == true">
     <ChildContent>
         <div class="container">

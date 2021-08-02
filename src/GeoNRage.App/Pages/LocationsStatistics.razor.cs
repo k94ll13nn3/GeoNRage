@@ -12,18 +12,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class LocationsStatistics : IDisposable
+    public partial class LocationsStatistics
     {
-        private bool _disposedValue;
-
         [Inject]
         public ILocationsApi LocationsApi { get; set; } = null!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
-
-        [Inject]
-        public MapStatusService MapStatusService { get; set; } = null!;
 
         public Table<LocationDto> LocationsTable { get; set; } = null!;
 
@@ -35,27 +30,7 @@ namespace GeoNRage.App.Pages
             MapStatusService.MapStatusChanged += OnMapStatusChanged;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    MapStatusService.MapStatusChanged -= OnMapStatusChanged;
-                }
-
-                _disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        private async void OnMapStatusChanged(object? sender, EventArgs e)
+        internal override async void OnMapStatusChanged(object? sender, EventArgs e)
         {
             Locations = Enumerable.Empty<LocationDto>();
             StateHasChanged();

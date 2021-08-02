@@ -12,10 +12,8 @@ using Refit;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class ChallengesPage : IDisposable
+    public partial class ChallengesPage
     {
-        private bool _disposedValue;
-
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
@@ -27,9 +25,6 @@ namespace GeoNRage.App.Pages
 
         [Inject]
         public PopupService PopupService { get; set; } = null!;
-
-        [Inject]
-        public MapStatusService MapStatusService { get; set; } = null!;
 
         public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
 
@@ -52,24 +47,9 @@ namespace GeoNRage.App.Pages
             MapStatusService.MapStatusChanged += OnMapStatusChanged;
         }
 
-        protected virtual void Dispose(bool disposing)
+        internal override async void OnMapStatusChanged(object? sender, EventArgs e)
         {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    MapStatusService.MapStatusChanged -= OnMapStatusChanged;
-                }
-
-                _disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            await FilterChallengesAsync();
         }
 
         private static IEnumerable<ChallengeDto> Sort(IEnumerable<ChallengeDto> challenges, string column, bool ascending)
@@ -117,11 +97,6 @@ namespace GeoNRage.App.Pages
                 PopupService.HidePopup();
                 StateHasChanged();
             }
-        }
-
-        private async void OnMapStatusChanged(object? sender, EventArgs e)
-        {
-            await FilterChallengesAsync();
         }
     }
 }

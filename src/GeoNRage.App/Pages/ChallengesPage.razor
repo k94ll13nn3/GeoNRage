@@ -1,5 +1,7 @@
 ﻿@page "/challenges"
 
+@inherits MapStatusAwareComponent
+
 <div class="container">
     <Container Condition="!string.IsNullOrWhiteSpace(Error)">
         <div class="notification is-danger m-3">
