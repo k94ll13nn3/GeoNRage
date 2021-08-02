@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using GeoNRage.App.Authentication;
+using GeoNRage.App.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;

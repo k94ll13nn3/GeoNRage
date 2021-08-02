@@ -1,5 +1,4 @@
 ﻿@use 'bulma/sass/utilities/functions' as f;
-@use 'bulma/sass/utilities/derived-variables' as d;
 @use '_theme' as t;
 
 table {
@@ -14,16 +13,6 @@ table {
         overflow: hidden;
         text-overflow: ellipsis;
         background-color: t.$primary;
-
-        ::deep .perfect {
-            background-color: d.$success;
-            color: f.findColorInvert(d.$success);
-        }
-
-        ::deep .almost-perfect {
-            background-color: d.$warning;
-            color: f.findColorInvert(d.$warning);
-        }
     }
 
     th {

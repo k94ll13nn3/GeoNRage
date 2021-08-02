@@ -12,8 +12,10 @@ using Refit;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class ChallengesPage
+    public partial class ChallengesPage : IDisposable
     {
+        private bool _disposedValue;
+
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
@@ -26,6 +28,9 @@ namespace GeoNRage.App.Pages
         [Inject]
         public PopupService PopupService { get; set; } = null!;
 
+        [Inject]
+        public MapStatusService MapStatusService { get; set; } = null!;
+
         public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
 
         public IEnumerable<PlayerDto> Players { get; set; } = null!;
@@ -36,8 +41,6 @@ namespace GeoNRage.App.Pages
 
         public string? Error { get; set; }
 
-        public bool ShowAllMaps { get; set; }
-
         public bool ChallengeImported { get; set; }
 
         public ICollection<string> PlayersToHide { get; } = new List<string>();
@@ -46,6 +49,27 @@ namespace GeoNRage.App.Pages
         {
             await FilterChallengesAsync();
             Players = await PlayersApi.GetAllAsync();
+            MapStatusService.MapStatusChanged += OnMapStatusChanged;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    MapStatusService.MapStatusChanged -= OnMapStatusChanged;
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         private static IEnumerable<ChallengeDto> Sort(IEnumerable<ChallengeDto> challenges, string column, bool ascending)
@@ -63,15 +87,9 @@ namespace GeoNRage.App.Pages
             PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync(), true);
         }
 
-        private async Task ShowAllMapToggleAsync()
-        {
-            ShowAllMaps = !ShowAllMaps;
-            await FilterChallengesAsync();
-        }
-
         private async Task FilterChallengesAsync()
         {
-            Challenges = await ChallengesApi.GetAllAsync(true, !ShowAllMaps, PlayersToHide.ToArray());
+            Challenges = await ChallengesApi.GetAllAsync(true, PlayersToHide.ToArray());
             ChallengesTable?.SetItems(Challenges);
         }
 
@@ -99,6 +117,11 @@ namespace GeoNRage.App.Pages
                 PopupService.HidePopup();
                 StateHasChanged();
             }
+        }
+
+        private async void OnMapStatusChanged(object? sender, EventArgs e)
+        {
+            await FilterChallengesAsync();
         }
     }
 }

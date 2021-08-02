@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.App.Authentication;
+using GeoNRage.App.Core;
 using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -18,24 +18,35 @@ namespace GeoNRage.App
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<Application>("#app");
 
-            builder.Services.AddRefitClient<IGamesApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddRefitClient<IMapsApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddRefitClient<IPlayersApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddRefitClient<IAuthApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddRefitClient<IChallengesApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddRefitClient<ILocationsApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddRefitClient<IAdminApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<GeoNRageStateProvider>();
+            builder.Services.AddScoped<MapStatusHandler>();
             builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<GeoNRageStateProvider>());
 
+            builder.ConfigureRefitClient<IGamesApi>();
+            builder.ConfigureRefitClient<IMapsApi>();
+            builder.ConfigureRefitClient<IPlayersApi>();
+            builder.ConfigureRefitClient<IAuthApi>();
+            builder.ConfigureRefitClient<IChallengesApi>();
+            builder.ConfigureRefitClient<ILocationsApi>();
+            builder.ConfigureRefitClient<IAdminApi>();
+
             builder.Services.AddSingleton(new PopupService());
+            builder.Services.AddSingleton(new MapStatusService());
 
             builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
             await builder.Build().RunAsync();
+        }
+
+        private static void ConfigureRefitClient<T>(this WebAssemblyHostBuilder builder) where T : class
+        {
+            builder
+                .Services
+                .AddRefitClient<T>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+                .AddHttpMessageHandler<MapStatusHandler>();
         }
     }
 }

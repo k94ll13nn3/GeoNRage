@@ -19,9 +19,9 @@ namespace GeoNRage.Server.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame = false, bool onlyMapForGame = false, [FromQuery] string[]? playersToExclude = null)
+        public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame = false, [FromQuery] string[]? playersToExclude = null)
         {
-            return await _challengeService.GetAllAsync(onlyWithoutGame, onlyMapForGame, playersToExclude);
+            return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers["show-all-maps"] != "True", playersToExclude);
         }
 
         [HttpGet("admin-view")]

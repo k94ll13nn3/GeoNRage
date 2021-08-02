@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using GeoNRage.App.Authentication;
+using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Components;
 

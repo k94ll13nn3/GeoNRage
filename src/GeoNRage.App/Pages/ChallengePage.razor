@@ -48,7 +48,7 @@
                                     }
                                     <Container Condition="guess is not null">
                                         <ChildContent>
-                                            <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : ""))">
+                                            <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : "default-score"))">
                                                 @guess!.Score <br />
                                                 <small>@($"{(int?)guess.Distance}m") / @($"{guess.Time}s")</small>
                                             </td>

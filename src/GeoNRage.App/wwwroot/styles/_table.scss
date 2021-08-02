@@ -1,0 +1,14 @@
+﻿.default-score {
+    background-color: $info;
+    color: findColorInvert($info);
+}
+
+.perfect {
+    background-color: $success;
+    color: findColorInvert($success);
+}
+
+.almost-perfect {
+    background-color: $warning;
+    color: findColorInvert($warning);
+}

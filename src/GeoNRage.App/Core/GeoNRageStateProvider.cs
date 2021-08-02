@@ -7,7 +7,7 @@ using GeoNRage.App.Apis;
 using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace GeoNRage.App.Authentication
+namespace GeoNRage.App.Core
 {
     public class GeoNRageStateProvider : AuthenticationStateProvider
     {
