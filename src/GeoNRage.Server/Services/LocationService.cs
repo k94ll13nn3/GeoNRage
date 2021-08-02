@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeoNRage.Server.Entities;
 using GeoNRage.Shared.Dtos.Locations;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,17 @@ namespace GeoNRage.Server.Services
     {
         private readonly GeoNRageDbContext _context;
 
-        public async Task<IEnumerable<LocationDto>> GetAllAsync()
+        public async Task<IEnumerable<LocationDto>> GetAllAsync(bool takeAllMaps)
         {
-            return await _context.Locations
-                .AsNoTracking()
+            IQueryable<Location> query = _context.Locations
+                   .AsNoTracking();
+
+            if (!takeAllMaps)
+            {
+                query = query.Where(l => l.Challenge.TimeLimit == 300 && (l.Challenge.GameId != -1 || l.Challenge.Map.IsMapForGame));
+            }
+
+            return await query
                 .GroupBy(l => new
                 {
                     l.AdministrativeAreaLevel1,

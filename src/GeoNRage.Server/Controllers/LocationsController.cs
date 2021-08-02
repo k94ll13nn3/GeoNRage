@@ -19,7 +19,7 @@ namespace GeoNRage.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<LocationDto>> GetAllAsync()
         {
-            return await _locationService.GetAllAsync();
+            return await _locationService.GetAllAsync(Request.Headers["show-all-maps"] == "True");
         }
     }
 }

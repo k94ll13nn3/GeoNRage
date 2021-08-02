@@ -5,25 +5,63 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components.Shared;
+using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos.Locations;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages
 {
-    public partial class LocationsStatistics
+    public partial class LocationsStatistics : IDisposable
     {
+        private bool _disposedValue;
+
         [Inject]
         public ILocationsApi LocationsApi { get; set; } = null!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
+        [Inject]
+        public MapStatusService MapStatusService { get; set; } = null!;
+
+        public Table<LocationDto> LocationsTable { get; set; } = null!;
+
         internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
 
         protected override async Task OnInitializedAsync()
         {
             Locations = await LocationsApi.GetAllAsync();
-            Locations = Sort(Locations, nameof(LocationDto.DisplayName), true);
+            MapStatusService.MapStatusChanged += OnMapStatusChanged;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    MapStatusService.MapStatusChanged -= OnMapStatusChanged;
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private async void OnMapStatusChanged(object? sender, EventArgs e)
+        {
+            Locations = Enumerable.Empty<LocationDto>();
+            StateHasChanged();
+            Locations = await LocationsApi.GetAllAsync();
+            LocationsTable?.SetItems(Locations);
+            StateHasChanged();
         }
 
         private static IEnumerable<LocationDto> Sort(IEnumerable<LocationDto> locations, string column, bool ascending)
