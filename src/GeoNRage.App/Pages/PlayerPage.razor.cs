@@ -27,6 +27,7 @@ namespace GeoNRage.App.Pages
         protected override async Task OnInitializedAsync()
         {
             Loaded = false;
+            StateHasChanged();
             ApiResponse<PlayerFullDto> response = await PlayersApi.GetFullAsync(Id);
             if (!response.IsSuccessStatusCode || response.Content is null)
             {

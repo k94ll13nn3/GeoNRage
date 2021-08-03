@@ -71,19 +71,73 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Moyenne par carte</p>
-                        <p class="title">@Player.Statistics.MapAverage</p>
+                        <p class="title">@(Player.Statistics.MapAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Moyenne par round</p>
-                        <p class="title">@Player.Statistics.RoundAverage</p>
+                        <p class="title">@(Player.Statistics.RoundAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 0</p>
                         <p class="title">@Player.Statistics.NumberOf0</p>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="level mx-3 my-5">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Temps moyen</p>
+                        <p class="title">@(Player.Statistics.TimeByRoundAverage?.ToString("F1") ?? "—")s</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Distance moyenne</p>
+                        <p class="title">@(Player.Statistics.DistanceAverage?.ToString("F1") ?? "—")m</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Temps total</p>
+                        <p class="title">@(Player.Statistics.TotalTime?.ToString("F1") ?? "—")s</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Distance totale</p>
+                        <p class="title">@(Player.Statistics.TotalDistance?.ToString("F1") ?? "—")m</p>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="level mx-3 my-5">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de time out (sans guess)</p>
+                        <p class="title">@Player.Statistics.NumberOfTimeOut</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Nombre de time out (avec guess)</p>
+                        <p class="title">@Player.Statistics.NumberOfTimeOutWithGuess</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">5000 le plus rapide</p>
+                        <p class="title">@(Player.Statistics.Best5000Time.ToString() ?? "—")s</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">25000 le plus rapide</p>
+                        <p class="title">@(Player.Statistics.Best25000Time.ToString() ?? "—")s</p>
                     </div>
                 </div>
             </nav>
@@ -267,7 +321,7 @@
                                                 <Container Condition="map.Best is not null">
                                                     <ChildContent>
                                                         <td>@map.Best</td>
-                                                        <td>@map.Average</td>
+                                                        <td>@map.Average?.ToString("F1")</td>
                                                     </ChildContent>
                                                     <ElseContent>
                                                         <td>—</td>

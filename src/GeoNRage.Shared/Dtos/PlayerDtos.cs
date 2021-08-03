@@ -20,12 +20,20 @@ namespace GeoNRage.Shared.Dtos.Players
         int ChallengesCompleted,
         int? BestGameSum,
         int? BestGameId,
-        int RoundAverage,
+        double? RoundAverage,
         int NumberOf25000,
-        int MapAverage,
-        int NumberOf0);
+        double? MapAverage,
+        int NumberOf0,
+        double? TimeByRoundAverage,
+        double? DistanceAverage,
+        int NumberOfTimeOut,
+        int NumberOfTimeOutWithGuess,
+        int? TotalTime,
+        double? TotalDistance,
+        int? Best5000Time,
+        int? Best25000Time);
 
-    public record PlayerMapDto(string MapName, int? Best, int? Average);
+    public record PlayerMapDto(string MapName, int? Best, double? Average);
 
     public record PlayerGameDto(int GameId, int Sum, DateTime GameDate);
 
@@ -46,5 +54,5 @@ namespace GeoNRage.Shared.Dtos.Players
         int ChallengesCompleted,
         int? BestGameSum,
         int? BestGameId,
-        int RoundAverage);
+        double? RoundAverage);
 }
