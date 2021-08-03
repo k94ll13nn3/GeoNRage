@@ -70,17 +70,20 @@ namespace GeoNRage.Server.Services
             IEnumerable<PlayerMapDto> mapsSummary = _context
                 .Maps
                 .WhereIf(!takeAllMaps, m => m.IsMapForGame || m.Challenges.Any(c => c.GameId != -1))
+                .AsNoTracking()
                 .Select(m => new PlayerMapDto
                  (
                      m.Name,
                      m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).OrderByDescending(s => s).First(),
                      m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).Average()
-                 )).AsEnumerable();
+                 ))
+                .AsEnumerable();
 
             IEnumerable<PlayerChallengeDto> challengesNotDone = _context
                 .Challenges
                 .WhereIf(!takeAllMaps, c => (c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))
                 .Where(c => !c.PlayerScores.Any(ps => ps.PlayerId == id && ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null) && ps.ChallengeId == c.Id))
+                .AsNoTracking()
                 .Select(c => new PlayerChallengeDto
                 (
                     c.Id,
@@ -92,6 +95,7 @@ namespace GeoNRage.Server.Services
                 .PlayerGuesses
                 .Where(g => g.PlayerId == id)
                 .WhereIf(!takeAllMaps, g => (g.PlayerScore.Challenge.TimeLimit ?? 300) == 300 && (g.PlayerScore.Challenge.GameId != -1 || g.PlayerScore.Challenge.Map.IsMapForGame))
+                .AsNoTracking()
                 .AsEnumerable();
 
             PlayerFullDto? player = await _context
