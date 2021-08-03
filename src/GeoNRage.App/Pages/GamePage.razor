@@ -107,7 +107,7 @@
                             <tr>
                                 <th>Total</th>
                                 <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                    <th>@(playerScore.Sum ?? 0)</th>
+                                    <th>@(Scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
                                 </Repeater>
                             </tr>
                         </Repeater>
@@ -116,7 +116,7 @@
                             <tr class="bordered">
                                 <th>Total global</th>
                                 <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
-                                    <th>@playerScores.Sum(playerScore => playerScore.Sum)</th>
+                                    <th>@(Scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
                                 </Repeater>
                             </tr>
                         </Container>
