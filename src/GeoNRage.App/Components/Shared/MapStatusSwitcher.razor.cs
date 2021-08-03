@@ -25,7 +25,8 @@ namespace GeoNRage.App.Components.Shared
         public async Task ChangeMapStatus(ChangeEventArgs e)
         {
             await JsRuntime.InvokeVoidAsync("localStorage.setItem", MapStatusHandler.HeaderName, e?.Value?.ToString());
-            MapStatusService.SetMapStatus(e?.Value is true);
+            AllMaps = e?.Value is true;
+            MapStatusService.SetMapStatus(AllMaps);
         }
     }
 }

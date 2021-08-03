@@ -1,4 +1,7 @@
-﻿<label class="switch">
+﻿<label class="mr-3">
+    @(AllMaps ? "Toutes cartes" : "Cartes principales")
+</label>
+<label class="switch">
     <input type="checkbox" @onchange="ChangeMapStatus" checked="@AllMaps">
     <span class="slider"></span>
 </label>
