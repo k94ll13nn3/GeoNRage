@@ -92,25 +92,25 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Temps moyen</p>
-                        <p class="title">@(Player.Statistics.TimeByRoundAverage?.ToString("F1") ?? "—")s</p>
+                        <p class="title">@Player.Statistics.TimeByRoundAverage.ToTimeString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Distance moyenne</p>
-                        <p class="title">@(Player.Statistics.DistanceAverage?.ToString("F1") ?? "—")m</p>
+                        <p class="title">@Player.Statistics.DistanceAverage.ToDistanceString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Temps total</p>
-                        <p class="title">@(Player.Statistics.TotalTime?.ToString("F1") ?? "—")s</p>
+                        <p class="title">@Player.Statistics.TotalTime.ToTimeString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Distance totale</p>
-                        <p class="title">@(Player.Statistics.TotalDistance?.ToString("F1") ?? "—")m</p>
+                        <p class="title">@Player.Statistics.TotalDistance.ToDistanceString()</p>
                     </div>
                 </div>
             </nav>
@@ -131,13 +131,13 @@
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">5000 le plus rapide</p>
-                        <p class="title">@(Player.Statistics.Best5000Time.ToString() ?? "—")s</p>
+                        <p class="title">@Player.Statistics.Best5000Time.ToTimeString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">25000 le plus rapide</p>
-                        <p class="title">@(Player.Statistics.Best25000Time.ToString() ?? "—")s</p>
+                        <p class="title">@Player.Statistics.Best25000Time.ToTimeString()</p>
                     </div>
                 </div>
             </nav>

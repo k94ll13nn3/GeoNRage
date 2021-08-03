@@ -50,7 +50,7 @@
                                         <ChildContent>
                                             <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : "default-score"))">
                                                 @guess!.Score <br />
-                                                <small>@($"{(int?)guess.Distance}m") / @($"{guess.Time}s")</small>
+                                                <small>@($"{guess.Distance.ToDistanceString()}") / @($"{guess.Time.ToTimeString()}")</small>
                                             </td>
                                         </ChildContent>
                                         <ElseContent>
@@ -66,7 +66,7 @@
                             <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
                                 <th>
                                     @(playerScore.PlayerGuesses.Sum(g => g.Score) ?? 0) <br />
-                                    <small>@($"{(int?)playerScore.PlayerGuesses.Sum(g => g.Distance)}m") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time)}s")</small>
+                                    <small>@($"{playerScore.PlayerGuesses.Sum(g => g.Distance).ToDistanceString()}") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time).ToTimeString()}")</small>
                                 </th>
                             </Repeater>
                         </tr>
