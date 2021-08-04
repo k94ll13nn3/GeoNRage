@@ -33,7 +33,7 @@ namespace GeoNRage.Shared.Dtos.Players
         int? Best5000Time,
         int? Best25000Time);
 
-    public record PlayerMapDto(string MapName, int? Best, double? Average);
+    public record PlayerMapDto(string MapName, int? Best, double? RoundAverage, double? DistanceAverage, double? TimeAverage);
 
     public record PlayerGameDto(int GameId, int Sum, DateTime GameDate);
 

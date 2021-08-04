@@ -308,7 +308,7 @@
                     <div class="card">
                         <header class="card-header">
                             <p class="card-header-title">
-                                Meilleur score et moyenne par carte
+                                Meilleur score et moyennes par carte (score, distance, temps)
                             </p>
                         </header>
                         <div class="card-table">
@@ -321,9 +321,14 @@
                                                 <Container Condition="map.Best is not null">
                                                     <ChildContent>
                                                         <td>@map.Best</td>
-                                                        <td>@map.Average?.ToString("F1")</td>
+                                                        <td>@map.RoundAverage?.ToString("F1")</td>
+                                                        <td>@map.DistanceAverage.ToDistanceString()</td>
+                                                        <td>@map.TimeAverage.ToTimeString()</td>
                                                     </ChildContent>
                                                     <ElseContent>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
                                                         <td>—</td>
                                                         <td>—</td>
                                                     </ElseContent>
