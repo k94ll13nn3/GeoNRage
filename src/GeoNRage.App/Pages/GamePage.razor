@@ -134,7 +134,7 @@
                 <button class="delete" aria-label="close" @onclick="() => ShowRankings = false"></button>
             </header>
             <section class="modal-card-body">
-                <GameRankings Game="@Game"></GameRankings>
+                <GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-primary" @onclick="() => ShowRankings = false">Fermer</button>

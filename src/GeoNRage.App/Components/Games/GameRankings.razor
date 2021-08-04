@@ -1,17 +1,17 @@
 ﻿@using Humanizer;
 
 <div class="container">
-    <Table Items="Game.Challenges"
-           Headers="@(Enumerable.Range(1, Game.Players.Count()).Select(i => new TableHeader(i.Ordinalize(), false, "")).Prepend(new TableHeader("", false, "")))">
+    <Table Items="Challenges"
+           Headers="@(Enumerable.Range(1, Players.Count()).Select(i => new TableHeader(i.Ordinalize(), false, "")).Prepend(new TableHeader("", false, "")))">
         <RowContent Context="challenge">
             <th>@challenge.MapName</th>
-            <Repeater Items="challenge.PlayerScores.OrderByDescending(p => p.Sum)" Context="player">
-                <td>@(player.PlayerName)<br /><span class="is-size-7">@(player.Sum ?? 0)</span></td>
+            <Repeater Items="Scores.Where(s => s.Key.challengeId == challenge.Id).GroupBy(s => s.Key.playerId).Select(g => (g.Key, Sum:g.Sum(s => s.Value))).OrderByDescending(p => p.Sum)" Context="player">
+                <td>@(GetPlayerName(player.Key))<br /><span class="is-size-7">@(player.Sum ?? 0)</span></td>
             </Repeater>
         </RowContent>
         <FooterContent>
             <th>Général</th>
-            <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(c => c.PlayerId).Select(p => (name: p.First().PlayerName, score: p.Sum(ps => ps.Sum))).OrderByDescending(p => p.score)" Context="player">
+            <Repeater Items="Scores.GroupBy(c => c.Key.playerId).Select(p => (name: GetPlayerName(p.First().Key.playerId), score: p.Sum(ps => ps.Value))).OrderByDescending(p => p.score)" Context="player">
                 <td>@(player.name)<br /><span class="is-size-7">@player.score</span></td>
             </Repeater>
         </FooterContent>
