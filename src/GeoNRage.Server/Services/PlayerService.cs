@@ -28,7 +28,7 @@ namespace GeoNRage.Server.Services
                     p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
                     p
                         .PlayerScores
-                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
                         .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                         .GroupBy(p => p.GameId)
                         .Where(g => g.Count() == 3)
@@ -38,7 +38,7 @@ namespace GeoNRage.Server.Services
                         .Sum,
                     p
                         .PlayerScores
-                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
                         .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                         .GroupBy(p => p.GameId)
                         .Where(g => g.Count() == 3)
@@ -127,7 +127,7 @@ namespace GeoNRage.Server.Services
                         p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
                         p
                             .PlayerScores
-                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
                             .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                             .GroupBy(p => p.GameId)
                             .Where(g => g.Count() == 3)
@@ -137,7 +137,7 @@ namespace GeoNRage.Server.Services
                             .Sum,
                         p
                             .PlayerScores
-                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                            .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
                             .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                             .GroupBy(p => p.GameId)
                             .Where(g => g.Count() == 3)
@@ -166,7 +166,7 @@ namespace GeoNRage.Server.Services
                     null!,
                     p
                         .PlayerScores
-                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1)
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
                         .Select(ps => new { ps.Challenge.GameId, ps.Challenge.Game.Date, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                         .GroupBy(p => new { p.GameId, p.Date })
                         .Where(g => g.Count() == 3)
