@@ -16,13 +16,7 @@ namespace GeoNRage.Server.Models
 
     public record GeoGuessrGameGuess(string Token, decimal Lat, decimal Lng, bool TimedOut);
 
-    public record GeoGuessrScore(int Amount);
-
-    public record GeoGuessrDistanceMeters(double Amount, string Unit);
-
-    public record GeoGuessrDistance(GeoGuessrDistanceMeters Meters);
-
-    public record GeoGuessrGuess(GeoGuessrScore RoundScore, bool TimedOut, bool TimedOutWithGuess, int Time, GeoGuessrDistance Distance);
+    public record GeoGuessrGuess(int RoundScoreInPoints, bool TimedOut, bool TimedOutWithGuess, int Time, double DistanceInMeters);
 
     public record GeoGuessrPlayer(string Id, string Nick, IList<GeoGuessrGuess> Guesses);
 

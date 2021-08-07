@@ -168,12 +168,12 @@ namespace GeoNRage.Server.Services
                     Player = player,
                     PlayerGuesses = geoChallenge.Game.Player.Guesses.Select((p, i) => new PlayerGuess
                     {
-                        Score = p.RoundScore.Amount,
+                        Score = p.RoundScoreInPoints,
                         RoundNumber = i + 1,
                         Time = p.Time,
                         TimedOut = p.TimedOut,
                         TimedOutWithGuess = p.TimedOutWithGuess,
-                        Distance = p.Distance.Meters.Amount * (p.Distance.Meters.Unit == "km" ? 1000 : 1),
+                        Distance = p.DistanceInMeters,
                     }).ToList(),
                 };
                 playerScores.Add(playerScore);
