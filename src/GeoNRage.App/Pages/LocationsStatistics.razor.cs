@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeoNRage.App.Apis;
-using GeoNRage.App.Components.Shared;
 using GeoNRage.App.Services;
 using GeoNRage.Shared.Dtos.Locations;
 using Microsoft.AspNetCore.Components;
@@ -20,8 +19,6 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        public Table<LocationDto> LocationsTable { get; set; } = null!;
-
         internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
 
         protected override async Task OnInitializedAsync()
@@ -35,7 +32,6 @@ namespace GeoNRage.App.Pages
             Locations = Enumerable.Empty<LocationDto>();
             StateHasChanged();
             Locations = await LocationsApi.GetAllAsync();
-            LocationsTable?.SetItems(Locations);
             StateHasChanged();
         }
 

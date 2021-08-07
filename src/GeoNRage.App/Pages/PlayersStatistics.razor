@@ -5,8 +5,7 @@
 <Container Condition="Players?.Any() == true">
     <ChildContent>
         <div class="container">
-            <Table @ref="PlayersTable" 
-                   Items="Players"
+            <Table Items="Players"
                    Headers="@(new TableHeader[]
                                   {
                                       new("Joueur", true, nameof(PlayerStatisticDto.Name)),

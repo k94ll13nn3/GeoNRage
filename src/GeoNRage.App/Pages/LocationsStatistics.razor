@@ -5,8 +5,7 @@
 <Container Condition="Locations?.Any() == true">
     <ChildContent>
         <div class="container">
-            <Table @ref="LocationsTable"
-                   Items="Locations"
+            <Table Items="Locations"
                    Headers="@(new TableHeader[]
                                   {
                                       new("Nom", true, nameof(LocationDto.DisplayName)),
