@@ -9,5 +9,9 @@
         public string GeoGuessrPassword { get; set; } = string.Empty;
 
         public string GoogleApiKey { get; set; } = string.Empty;
+
+        public string SuperAdminPassword { get; set; } = string.Empty;
+
+        public string SuperAdminUserName { get; set; } = string.Empty;
     }
 }

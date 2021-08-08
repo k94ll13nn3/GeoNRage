@@ -44,7 +44,7 @@ namespace GeoNRage.Server
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.HttpOnly = false;
+                options.Cookie.HttpOnly = true;
                 options.Events.OnRedirectToLogin = context =>
                 {
                     context.Response.StatusCode = 401;
@@ -82,7 +82,7 @@ namespace GeoNRage.Server
 
         public void Configure(IApplicationBuilder app, GeoNRageDbContext context)
         {
-            _ = context ?? throw new System.ArgumentNullException(nameof(context));
+            _ = context ?? throw new ArgumentNullException(nameof(context));
 
             context.Database.Migrate();
 

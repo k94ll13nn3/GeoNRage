@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using GeoNRage.Server.Services;
 using GeoNRage.Shared.Dtos.Admin;
+using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Roles.SuperAdmin)]
     [ApiController]
     [Route("api/[controller]")]
     [AutoConstructor]

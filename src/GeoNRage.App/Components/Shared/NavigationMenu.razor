@@ -22,7 +22,7 @@
                         <NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/locations")">Lieux</NavLink>
                     </div>
                 </div>
-                <AuthorizeView>
+                <AuthorizeView Roles="@Roles.SuperAdmin">
                     <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active">Administration</NavLink>
                 </AuthorizeView>
             </div>

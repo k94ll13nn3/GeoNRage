@@ -26,7 +26,7 @@ namespace GeoNRage.App.Core
             UserDto userInfo = await GetCurrentUserAsync();
             if (userInfo.IsAuthenticated)
             {
-                IEnumerable<Claim> claims = new[] { new Claim(ClaimTypes.Name, _currentUser.UserName) }.Concat(_currentUser.Claims.Select(c => new Claim(c.Key, c.Value)));
+                IEnumerable<Claim> claims = _currentUser.Claims.SelectMany(c => c.Value.Select(v => new Claim(c.Key, v)));
                 identity = new ClaimsIdentity(claims, "Server authentication");
             }
 

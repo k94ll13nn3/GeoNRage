@@ -1,6 +1,6 @@
 ﻿@page "/admin/games"
 
-@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.SuperAdmin)]
 
 <GeoNRage.App.Components.Admin.AdminMenu />
 

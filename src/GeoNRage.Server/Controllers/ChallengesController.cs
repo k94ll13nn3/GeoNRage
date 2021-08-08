@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using GeoNRage.Server.Services;
+using GeoNRage.Shared.Dtos.Auth;
 using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace GeoNRage.Server.Controllers
             return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers["show-all-maps"] != "True", playersToExclude);
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpGet("admin-view")]
         public async Task<IEnumerable<ChallengeAdminViewDto>> GetAllAsAdminViewAsync()
         {
@@ -58,6 +60,7 @@ namespace GeoNRage.Server.Controllers
             }
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

@@ -57,7 +57,7 @@ namespace GeoNRage.Server.Controllers
 
             if (!_options.CanRegister)
             {
-                return BadRequest("Registration not enabled.");
+                return NotFound();
             }
 
             var user = new IdentityUser
@@ -85,7 +85,7 @@ namespace GeoNRage.Server.Controllers
             (
                 User.Identity?.IsAuthenticated ?? false,
                 User.Identity?.Name ?? string.Empty,
-                User.Claims.ToDictionary(c => c.Type, c => c.Value)
+                User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value))
             );
         }
     }

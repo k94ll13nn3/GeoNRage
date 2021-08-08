@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
+using GeoNRage.Shared.Dtos.Auth;
 using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@ namespace GeoNRage.Server.Controllers
             return await _gameService.GetAllAsync();
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpGet("admin-view")]
         public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()
         {
@@ -39,6 +41,7 @@ namespace GeoNRage.Server.Controllers
             return game ?? (ActionResult<GameDetailDto>)NotFound();
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpPost]
         public async Task<IActionResult> CreateAsync(GameCreateOrEditDto dto)
         {
@@ -54,6 +57,7 @@ namespace GeoNRage.Server.Controllers
             }
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, GameCreateOrEditDto dto)
         {
@@ -96,6 +100,7 @@ namespace GeoNRage.Server.Controllers
             }
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
@@ -103,6 +108,7 @@ namespace GeoNRage.Server.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpPost("{id}/update-challenges")]
         public async Task<IActionResult> UpdateChallengesAsync(int id)
         {

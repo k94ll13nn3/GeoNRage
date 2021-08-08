@@ -3,7 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GeoNRage.Shared.Dtos.Auth
 {
-    public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, string> Claims);
+    public static class Roles
+    {
+        public const string Member = nameof(Member);
+
+        public const string Admin = nameof(Admin);
+
+        public const string SuperAdmin = nameof(SuperAdmin);
+    }
+
+    public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, IEnumerable<string>> Claims);
 
     public class RegisterDto
     {
