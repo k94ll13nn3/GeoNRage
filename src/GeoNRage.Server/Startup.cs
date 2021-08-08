@@ -80,12 +80,8 @@ namespace GeoNRage.Server
             }
         }
 
-        public void Configure(IApplicationBuilder app, GeoNRageDbContext context)
+        public void Configure(IApplicationBuilder app)
         {
-            _ = context ?? throw new ArgumentNullException(nameof(context));
-
-            context.Database.Migrate();
-
             app.UseResponseCompression();
 
             if (_env.IsDevelopment())

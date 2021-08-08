@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,9 @@ namespace GeoNRage.Server
 
                 using (IServiceScope scope = host.Services.CreateScope())
                 {
+                    GeoNRageDbContext context = scope.ServiceProvider.GetRequiredService<GeoNRageDbContext>();
+                    context.Database.Migrate();
+
                     RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                     UserManager<IdentityUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
                     ApplicationOptions options = (scope.ServiceProvider.GetRequiredService<IOptions<ApplicationOptions>>()).Value;
