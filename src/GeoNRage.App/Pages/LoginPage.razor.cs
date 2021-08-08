@@ -5,20 +5,21 @@ using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Auth
+namespace GeoNRage.App.Pages
 {
-    public partial class Login
+    public partial class LoginPage
     {
         [Inject]
         public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; } = null!;
 
         public LoginDto LoginRequest { get; set; } = new LoginDto { RememberMe = true };
 
         public bool ShowError { get; set; }
 
         public string Error { get; set; } = string.Empty;
-
-        public bool ShowLogin { get; set; }
 
         private async Task OnSubmitAsync()
         {
@@ -36,11 +37,10 @@ namespace GeoNRage.App.Components.Auth
                     Error = "Erreur imprévue";
                 }
             }
-        }
-
-        private void ToggleLoginForm()
-        {
-            ShowLogin = !ShowLogin;
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
         }
     }
 }

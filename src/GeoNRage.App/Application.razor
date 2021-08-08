@@ -1,16 +1,20 @@
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(EmptyLayout)">
             <NotAuthorized>
                 <PageNotFound />
             </NotAuthorized>
             <Authorizing>
+                <LoadingAnimation BigIcon="true" Animated="true">
+                    <span class="logo-text">Geo<span class="logo-text-inner">'N</span> Rage</span>
+                    Lancement !
+                </LoadingAnimation>
             </Authorizing>
         </AuthorizeRouteView>
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
-            <LayoutView Layout="@typeof(MainLayout)">
+            <LayoutView Layout="@typeof(EmptyLayout)">
                 <PageNotFound />
             </LayoutView>
         </CascadingAuthenticationState>

@@ -47,12 +47,22 @@
                     </Authorized>
                     <Authorizing>
                         <span class="navbar-item">
-                            <GeoNRage.App.Components.Auth.Login />
+                            <button class="button is-link" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Connexion</span>
+                            </button>
                         </span>
                     </Authorizing>
                     <NotAuthorized>
                         <span class="navbar-item">
-                            <GeoNRage.App.Components.Auth.Login />
+                            <button class="button is-link" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Connexion</span>
+                            </button>
                         </span>
                     </NotAuthorized>
                 </AuthorizeView>

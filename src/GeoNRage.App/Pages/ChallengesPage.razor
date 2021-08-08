@@ -2,35 +2,35 @@
 
 @inherits MapStatusAwareComponent
 
-<div class="container">
-    <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-        <div class="notification is-danger m-3">
-            @Error
-        </div>
-    </Container>
+<Container Condition="Challenges is not null">
+    <ChildContent>
+        <div class="container">
+            <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                <div class="notification is-danger m-3">
+                    @Error
+                </div>
+            </Container>
 
-    <Container Condition="ChallengeImported">
-        <div class="notification is-success m-3">
-            Import réussi !
-        </div>
-    </Container>
+            <Container Condition="ChallengeImported">
+                <div class="notification is-success m-3">
+                    Import réussi !
+                </div>
+            </Container>
 
-    <div class="field m-3 is-grouped">
-        <p class="control is-expanded">
-            <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
-        </p>
-        <div class="control">
-            <button type="submit" class="button is-primary" @onclick="Import">Importer</button>
-        </div>
-    </div>
-    <article class="message m-3">
-        <div class="message-body">
-            Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
-        </div>
-    </article>
+            <div class="field m-3 is-grouped">
+                <p class="control is-expanded">
+                    <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
+                </p>
+                <div class="control">
+                    <button type="submit" class="button is-primary" @onclick="Import">Importer</button>
+                </div>
+            </div>
+            <article class="message m-3">
+                <div class="message-body">
+                    Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
+                </div>
+            </article>
 
-    <Container Condition="Challenges is not null">
-        <ChildContent>
             <div class="m-3">
                 <Expander IsExpanded="false" Title="Filtrer les joueurs">
                     Cacher les cartes complétées par les joueurs sélectionnés
@@ -73,12 +73,13 @@
                     </td>
                 </RowContent>
             </Table>
-        </ChildContent>
 
-        <ElseContent>
-            <LoadingAnimation Animated="true">
-                Chargement des challenges...
-            </LoadingAnimation>
-        </ElseContent>
-    </Container>
-</div>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des challenges...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>
