@@ -5,7 +5,7 @@ using GeoNRage.App.Core;
 using GeoNRage.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Admin
+namespace GeoNRage.App.Components.Auth
 {
     public partial class Login
     {
