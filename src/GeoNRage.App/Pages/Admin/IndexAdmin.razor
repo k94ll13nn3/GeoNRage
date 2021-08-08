@@ -23,7 +23,7 @@
             </Table>
 
             <h1 class="is-size-4 m-3">Logs</h1>
-            <Table Items="AdminInfo.Logs"
+            <Table Items="AdminInfo.Logs.OrderByDescending(l => l.Timestamp)"
                    Headers="@(new TableHeader[]
                                   {
                                       new("Date/heure", false, string.Empty),
