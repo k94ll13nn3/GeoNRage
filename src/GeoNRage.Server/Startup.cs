@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
+using GeoNRage.Server.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -78,6 +79,10 @@ namespace GeoNRage.Server
             {
                 services.AddSwaggerGen();
             }
+
+            services.AddHostedService<DatabaseMigrationTask>();
+            services.AddHostedService<RoleCreationTask>();
+            services.AddHostedService<SuperAdminCreationTask>();
         }
 
         public void Configure(IApplicationBuilder app)
