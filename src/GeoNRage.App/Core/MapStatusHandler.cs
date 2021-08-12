@@ -1,29 +1,24 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using GeoNRage.App.Services;
+﻿using GeoNRage.App.Services;
 
-namespace GeoNRage.App.Core
+namespace GeoNRage.App.Core;
+
+[AutoConstructor]
+public partial class MapStatusHandler : DelegatingHandler
 {
-    [AutoConstructor]
-    public partial class MapStatusHandler : DelegatingHandler
+    public const string HeaderName = "show-all-maps";
+
+    private readonly MapStatusService _mapStatusService;
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        public const string HeaderName = "show-all-maps";
+        _ = request ?? throw new ArgumentNullException(nameof(request));
 
-        private readonly MapStatusService _mapStatusService;
-
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        if (request.Headers.Contains(HeaderName))
         {
-            _ = request ?? throw new ArgumentNullException(nameof(request));
-
-            if (request.Headers.Contains(HeaderName))
-            {
-                request.Headers.Remove(HeaderName);
-                request.Headers.Add(HeaderName, _mapStatusService.AllMaps.ToString());
-            }
-
-            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            request.Headers.Remove(HeaderName);
+            request.Headers.Add(HeaderName, _mapStatusService.AllMaps.ToString());
         }
+
+        return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }

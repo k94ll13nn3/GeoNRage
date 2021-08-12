@@ -1,75 +1,69 @@
-﻿using System;
-using System.Threading.Tasks;
-using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos.Challenges;
-using GeoNRage.Shared.Dtos.Games;
-using GeoNRage.Shared.Dtos.Players;
-using Microsoft.AspNetCore.Http;
+﻿using GeoNRage.Server.Services;
 
-namespace GeoNRage.Server
+namespace GeoNRage.Server;
+
+[AutoConstructor]
+public partial class GameMetadataMiddleware
 {
-    [AutoConstructor]
-    public partial class GameMetadataMiddleware
+    private readonly RequestDelegate _next;
+
+    public async Task InvokeAsync(HttpContext context, GameService gameService, PlayerService playerService, ChallengeService challengeService)
     {
-        private readonly RequestDelegate _next;
+        _ = context ?? throw new ArgumentNullException(nameof(context));
+        _ = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _ = playerService ?? throw new ArgumentNullException(nameof(playerService));
+        _ = challengeService ?? throw new ArgumentNullException(nameof(challengeService));
 
-        public async Task InvokeAsync(HttpContext context, GameService gameService, PlayerService playerService, ChallengeService challengeService)
+        bool found = false;
+        string name = string.Empty;
+        if (context.Request.Headers["User-Agent"] == "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)")
         {
-            _ = context ?? throw new ArgumentNullException(nameof(context));
-            _ = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _ = playerService ?? throw new ArgumentNullException(nameof(playerService));
-            _ = challengeService ?? throw new ArgumentNullException(nameof(challengeService));
-
-            bool found = false;
-            string name = string.Empty;
-            if (context.Request.Headers["User-Agent"] == "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)")
+            if (context.Request.Path.StartsWithSegments("/games", StringComparison.OrdinalIgnoreCase))
             {
-                if (context.Request.Path.StartsWithSegments("/games", StringComparison.OrdinalIgnoreCase))
+                string[]? segments = context.Request.Path.Value?.Split('/');
+                if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
                 {
-                    string[]? segments = context.Request.Path.Value?.Split('/');
-                    if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
+                    GameDetailDto? game = await gameService.GetAsync(id);
+                    if (game != null)
                     {
-                        GameDetailDto? game = await gameService.GetAsync(id);
-                        if (game != null)
-                        {
-                            found = true;
-                            name = game.Name;
-                        }
-                    }
-                }
-
-                if (context.Request.Path.StartsWithSegments("/challenges", StringComparison.OrdinalIgnoreCase))
-                {
-                    string[]? segments = context.Request.Path.Value?.Split('/');
-                    if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
-                    {
-                        ChallengeDetailDto? challenge = await challengeService.GetAsync(id);
-                        if (challenge != null)
-                        {
-                            found = true;
-                            name = challenge.MapName;
-                        }
-                    }
-                }
-
-                if (context.Request.Path.StartsWithSegments("/players", StringComparison.OrdinalIgnoreCase))
-                {
-                    string[]? segments = context.Request.Path.Value?.Split('/');
-                    if (segments?.Length >= 3)
-                    {
-                        PlayerDto? player = await playerService.GetAsync(segments[2]);
-                        if (player != null)
-                        {
-                            found = true;
-                            name = player.Name;
-                        }
+                        found = true;
+                        name = game.Name;
                     }
                 }
             }
 
-            if (found && !string.IsNullOrWhiteSpace(name))
+            if (context.Request.Path.StartsWithSegments("/challenges", StringComparison.OrdinalIgnoreCase))
             {
-                await context.Response.WriteAsync($@"<!DOCTYPE html>
+                string[]? segments = context.Request.Path.Value?.Split('/');
+                if (segments?.Length >= 3 && int.TryParse(segments[2], out int id))
+                {
+                    ChallengeDetailDto? challenge = await challengeService.GetAsync(id);
+                    if (challenge != null)
+                    {
+                        found = true;
+                        name = challenge.MapName;
+                    }
+                }
+            }
+
+            if (context.Request.Path.StartsWithSegments("/players", StringComparison.OrdinalIgnoreCase))
+            {
+                string[]? segments = context.Request.Path.Value?.Split('/');
+                if (segments?.Length >= 3)
+                {
+                    PlayerDto? player = await playerService.GetAsync(segments[2]);
+                    if (player != null)
+                    {
+                        found = true;
+                        name = player.Name;
+                    }
+                }
+            }
+        }
+
+        if (found && !string.IsNullOrWhiteSpace(name))
+        {
+            await context.Response.WriteAsync($@"<!DOCTYPE html>
 <html>
 <head>
     <title>Geo'N Rage - {name}</title>
@@ -81,11 +75,10 @@ namespace GeoNRage.Server
 </body>
 </html>
 ");
-            }
-            else
-            {
-                await _next(context);
-            }
+        }
+        else
+        {
+            await _next(context);
         }
     }
 }

@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Shared
+namespace GeoNRage.App.Components.Shared;
+
+public partial class Container
 {
-    public partial class Container
-    {
-        [Parameter]
-        public bool Condition { get; set; }
+    [Parameter]
+    public bool Condition { get; set; }
 
-        [Parameter]
-        public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
-        [Parameter]
-        public RenderFragment? ElseContent { get; set; }
-    }
+    [Parameter]
+    public RenderFragment? ElseContent { get; set; }
 }

@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
+﻿namespace GeoNRage.Server.Entities;
 
-namespace GeoNRage.Server.Entities
+public class Map
 {
-    public class Map
-    {
-        public string Id { get; set; } = null!;
+    public string Id { get; set; } = null!;
 
-        public string Name { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-        public bool IsMapForGame { get; set; }
+    public bool IsMapForGame { get; set; }
 
-        public ICollection<Challenge> Challenges { get; set; } = new HashSet<Challenge>();
-    }
+    public ICollection<Challenge> Challenges { get; set; } = new HashSet<Challenge>();
 }

@@ -1,18 +1,15 @@
-﻿using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos.Maps;
-using Refit;
+﻿using Refit;
 
-namespace GeoNRage.App.Apis
+namespace GeoNRage.App.Apis;
+
+public interface IMapsApi
 {
-    public interface IMapsApi
-    {
-        [Get("/api/maps")]
-        Task<MapDto[]> GetAllAsync();
+    [Get("/api/maps")]
+    Task<MapDto[]> GetAllAsync();
 
-        [Put("/api/maps/{id}")]
-        Task UpdateAsync(string id, [Body] MapEditDto dto);
+    [Put("/api/maps/{id}")]
+    Task UpdateAsync(string id, [Body] MapEditDto dto);
 
-        [Delete("/api/maps/{id}")]
-        Task DeleteAsync(string id);
-    }
+    [Delete("/api/maps/{id}")]
+    Task DeleteAsync(string id);
 }

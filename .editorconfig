@@ -289,6 +289,9 @@ dotnet_diagnostic.CA1716.severity = none
 # RS0030: Do not use banned APIs
 dotnet_diagnostic.RS0030.severity = error
 
+# S3903 : Move class to namespace. Not detecting file scoped namespace
+dotnet_diagnostic.S3903.severity=silent
+
 # CA2227: Collection properties should be read only
 [**/Dtos/**.cs]
 dotnet_diagnostic.CA2227.severity = none

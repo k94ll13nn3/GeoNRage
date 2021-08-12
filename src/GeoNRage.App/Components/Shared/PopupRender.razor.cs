@@ -1,68 +1,66 @@
-﻿using System;
-using GeoNRage.App.Services;
+﻿using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Shared
+namespace GeoNRage.App.Components.Shared;
+
+public partial class PopupRender : IDisposable
 {
-    public partial class PopupRender : IDisposable
+    private bool _disposedValue;
+
+    [Inject]
+    public PopupService PopupService { get; set; } = null!;
+
+    public bool ShowProgress { get; set; }
+
+    public bool DisableButtons { get; set; }
+
+    public void Dispose()
     {
-        private bool _disposedValue;
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
-        [Inject]
-        public PopupService PopupService { get; set; } = null!;
-
-        public bool ShowProgress { get; set; }
-
-        public bool DisableButtons { get; set; }
-
-        public void Dispose()
+    protected override void OnInitialized()
+    {
+        if (PopupService is null)
         {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            throw new InvalidOperationException("Cannot start Popup component.");
         }
 
-        protected override void OnInitialized()
+        PopupService.OnPopupUpdated += Update;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            if (PopupService is null)
+            if (disposing && PopupService is not null)
             {
-                throw new InvalidOperationException("Cannot start Popup component.");
+                PopupService.OnPopupUpdated -= Update;
             }
 
-            PopupService.OnPopupUpdated += Update;
+            _disposedValue = true;
         }
+    }
 
-        protected virtual void Dispose(bool disposing)
+    private void Update(object? sender, EventArgs e)
+    {
+        ShowProgress = false;
+        DisableButtons = false;
+        StateHasChanged();
+    }
+
+    private void OnValidate()
+    {
+        PopupService.OnOnClick?.Invoke();
+        if (!PopupService.ShowProgressBar)
         {
-            if (!_disposedValue)
-            {
-                if (disposing && PopupService is not null)
-                {
-                    PopupService.OnPopupUpdated -= Update;
-                }
-
-                _disposedValue = true;
-            }
+            PopupService.HidePopup();
         }
-
-        private void Update(object? sender, EventArgs e)
+        else
         {
-            ShowProgress = false;
-            DisableButtons = false;
-            StateHasChanged();
-        }
-
-        private void OnValidate()
-        {
-            PopupService.OnOnClick?.Invoke();
-            if (!PopupService.ShowProgressBar)
-            {
-                PopupService.HidePopup();
-            }
-            else
-            {
-                ShowProgress = true;
-                DisableButtons = true;
-            }
+            ShowProgress = true;
+            DisableButtons = true;
         }
     }
 }

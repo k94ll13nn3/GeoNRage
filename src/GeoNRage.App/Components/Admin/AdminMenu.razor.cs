@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Admin
+namespace GeoNRage.App.Components.Admin;
+
+public partial class AdminMenu
 {
-    public partial class AdminMenu
-    {
-        [Inject]
-        public NavigationManager NavigationManager { get; set; } = null!;
-    }
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
 }

@@ -1,137 +1,130 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using GeoNRage.Server.Entities;
+﻿using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos.Auth;
-using GeoNRage.Shared.Dtos.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GeoNRage.Server.Controllers
+namespace GeoNRage.Server.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+[AutoConstructor]
+public partial class GamesController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    [AutoConstructor]
-    public partial class GamesController : ControllerBase
+    private readonly GameService _gameService;
+
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<IEnumerable<GameDto>> GetAllAsync()
     {
-        private readonly GameService _gameService;
+        return await _gameService.GetAllAsync();
+    }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IEnumerable<GameDto>> GetAllAsync()
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpGet("admin-view")]
+    public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()
+    {
+        return await _gameService.GetAllAsAdminViewAsync();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GameDetailDto>> GetAsync(int id)
+    {
+        GameDetailDto? game = await _gameService.GetAsync(id);
+        return game ?? (ActionResult<GameDetailDto>)NotFound();
+    }
+
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpPost]
+    public async Task<IActionResult> CreateAsync(GameCreateOrEditDto dto)
+    {
+        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        try
         {
-            return await _gameService.GetAllAsync();
+            int gameId = await _gameService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetAsync), new { id = gameId }, null);
         }
-
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpGet("admin-view")]
-        public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()
+        catch (InvalidOperationException e)
         {
-            return await _gameService.GetAllAsAdminViewAsync();
+            return BadRequest(e.Message);
         }
+    }
 
-        [AllowAnonymous]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GameDetailDto>> GetAsync(int id)
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsync(int id, GameCreateOrEditDto dto)
+    {
+        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        try
         {
-            GameDetailDto? game = await _gameService.GetAsync(id);
-            return game ?? (ActionResult<GameDetailDto>)NotFound();
-        }
-
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpPost]
-        public async Task<IActionResult> CreateAsync(GameCreateOrEditDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            try
+            Game? updatedGame = await _gameService.UpdateAsync(id, dto);
+            if (updatedGame is null)
             {
-                int gameId = await _gameService.CreateAsync(dto);
-                return CreatedAtAction(nameof(GetAsync), new { id = gameId }, null);
+                return NotFound();
             }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
 
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, GameCreateOrEditDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            try
-            {
-                Game? updatedGame = await _gameService.UpdateAsync(id, dto);
-                if (updatedGame is null)
-                {
-                    return NotFound();
-                }
-
-                return NoContent();
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPost("{id}/add-player")]
-        public async Task<IActionResult> AddPlayerAsync(int id, [FromBody] string playerId)
-        {
-            try
-            {
-                GameDetailDto? game = await _gameService.GetAsync(id);
-                if (game == null)
-                {
-                    return NotFound();
-                }
-
-                await _gameService.AddPlayerAsync(id, playerId);
-
-                return NoContent();
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            await _gameService.DeleteAsync(id);
             return NoContent();
         }
-
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpPost("{id}/update-challenges")]
-        public async Task<IActionResult> UpdateChallengesAsync(int id)
+        catch (InvalidOperationException e)
         {
-            try
-            {
-                GameDetailDto? game = await _gameService.GetAsync(id);
-                if (game == null)
-                {
-                    return NotFound();
-                }
+            return BadRequest(e.Message);
+        }
+    }
 
-                await _gameService.ImportChallengeAsync(id);
+    [AllowAnonymous]
+    [HttpPost("{id}/add-player")]
+    public async Task<IActionResult> AddPlayerAsync(int id, [FromBody] string playerId)
+    {
+        try
+        {
+            GameDetailDto? game = await _gameService.GetAsync(id);
+            if (game == null)
+            {
+                return NotFound();
+            }
 
-                return NoContent();
-            }
-            catch (InvalidOperationException e)
+            await _gameService.AddPlayerAsync(id, playerId);
+
+            return NoContent();
+        }
+        catch (InvalidOperationException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+        await _gameService.DeleteAsync(id);
+        return NoContent();
+    }
+
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpPost("{id}/update-challenges")]
+    public async Task<IActionResult> UpdateChallengesAsync(int id)
+    {
+        try
+        {
+            GameDetailDto? game = await _gameService.GetAsync(id);
+            if (game == null)
             {
-                return BadRequest(e.Message);
+                return NotFound();
             }
-            catch (HttpRequestException e)
-            {
-                return BadRequest(e.Message);
-            }
+
+            await _gameService.ImportChallengeAsync(id);
+
+            return NoContent();
+        }
+        catch (InvalidOperationException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (HttpRequestException e)
+        {
+            return BadRequest(e.Message);
         }
     }
 }

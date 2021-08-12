@@ -1,41 +1,39 @@
-﻿using System;
-using GeoNRage.App.Services;
+﻿using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Core
+namespace GeoNRage.App.Core;
+
+public abstract class MapStatusAwareComponent : ComponentBase, IDisposable
 {
-    public abstract class MapStatusAwareComponent : ComponentBase, IDisposable
+    private bool _disposedValue;
+
+    [Inject]
+    protected MapStatusService MapStatusService { get; set; } = null!;
+
+    protected override void OnInitialized()
     {
-        private bool _disposedValue;
+        MapStatusService.MapStatusChanged += OnMapStatusChanged;
+    }
 
-        [Inject]
-        protected MapStatusService MapStatusService { get; set; } = null!;
+    internal abstract void OnMapStatusChanged(object? sender, EventArgs e);
 
-        protected override void OnInitialized()
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            MapStatusService.MapStatusChanged += OnMapStatusChanged;
-        }
-
-        internal abstract void OnMapStatusChanged(object? sender, EventArgs e);
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    MapStatusService.MapStatusChanged -= OnMapStatusChanged;
-                }
-
-                _disposedValue = true;
+                MapStatusService.MapStatusChanged -= OnMapStatusChanged;
             }
-        }
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            _disposedValue = true;
         }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

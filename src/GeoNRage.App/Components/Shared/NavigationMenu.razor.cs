@@ -1,77 +1,74 @@
-﻿using System;
-using System.Security.Principal;
-using System.Threading.Tasks;
+﻿using System.Security.Principal;
 using GeoNRage.App.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;
 
-namespace GeoNRage.App.Components.Shared
+namespace GeoNRage.App.Components.Shared;
+
+public partial class NavigationMenu : IDisposable
 {
-    public partial class NavigationMenu : IDisposable
+    private bool _disposedValue;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+    public string Name { get; set; } = string.Empty;
+
+    [Inject]
+    public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    public bool ShowMenu { get; set; }
+
+    public void Dispose()
     {
-        private bool _disposedValue;
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
-        [CascadingParameter]
-        public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
-
-        public string Name { get; set; } = string.Empty;
-
-        [Inject]
-        public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
-
-        [Inject]
-        public NavigationManager NavigationManager { get; set; } = null!;
-
-        public bool ShowMenu { get; set; }
-
-        public void Dispose()
+    protected override async Task OnParametersSetAsync()
+    {
+        IIdentity? identity = (await AuthenticationState).User.Identity;
+        if (identity is not null)
         {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            Name = identity.Name ?? string.Empty;
         }
+    }
 
-        protected override async Task OnParametersSetAsync()
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += LocationChanged;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            IIdentity? identity = (await AuthenticationState).User.Identity;
-            if (identity is not null)
+            if (disposing)
             {
-                Name = identity.Name ?? string.Empty;
+                NavigationManager.LocationChanged -= LocationChanged;
             }
-        }
 
-        protected override void OnInitialized()
-        {
-            NavigationManager.LocationChanged += LocationChanged;
+            _disposedValue = true;
         }
+    }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    NavigationManager.LocationChanged -= LocationChanged;
-                }
+    private void LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        ShowMenu = false;
+        StateHasChanged();
+    }
 
-                _disposedValue = true;
-            }
-        }
+    private async Task LogoutClickAsync()
+    {
+        await GeoNRageStateProvider.LogoutAsync();
+    }
 
-        private void LocationChanged(object? sender, LocationChangedEventArgs e)
-        {
-            ShowMenu = false;
-            StateHasChanged();
-        }
-
-        private async Task LogoutClickAsync()
-        {
-            await GeoNRageStateProvider.LogoutAsync();
-        }
-
-        private void ToggleMenu()
-        {
-            ShowMenu = !ShowMenu;
-        }
+    private void ToggleMenu()
+    {
+        ShowMenu = !ShowMenu;
     }
 }

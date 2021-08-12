@@ -1,123 +1,113 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
 using GeoNRage.Server.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
-namespace GeoNRage.Server
+namespace GeoNRage.Server;
+
+[AutoConstructor]
+public partial class Startup
 {
-    [AutoConstructor]
-    public partial class Startup
+    private readonly IWebHostEnvironment _env;
+    private readonly IConfiguration _configuration;
+
+    public void ConfigureServices(IServiceCollection services)
     {
-        private readonly IWebHostEnvironment _env;
-        private readonly IConfiguration _configuration;
+        services.Configure<ApplicationOptions>(_configuration.GetSection(nameof(ApplicationOptions)));
 
-        public void ConfigureServices(IServiceCollection services)
+        services.AddRouting(options => options.LowercaseUrls = true);
+        services.AddSignalR();
+        services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
+        services.AddRazorPages();
+        services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
+
+        string connectionString = _configuration.GetConnectionString("GeoNRageConnection");
+        services.AddDbContextPool<GeoNRageDbContext>(options =>
         {
-            services.Configure<ApplicationOptions>(_configuration.GetSection(nameof(ApplicationOptions)));
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            options.ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
+        });
 
-            services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddSignalR();
-            services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
-            services.AddRazorPages();
-            services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
+        services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
 
-            string connectionString = _configuration.GetConnectionString("GeoNRageConnection");
-            services.AddDbContextPool<GeoNRageDbContext>(options =>
+        services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Events.OnRedirectToLogin = context =>
             {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-                options.ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
-            });
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            };
+        });
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
+        services.AddTransient<GameService>();
+        services.AddTransient<MapService>();
+        services.AddTransient<PlayerService>();
+        services.AddTransient<ChallengeService>();
+        services.AddTransient<LocationService>();
+        services.AddTransient<GeoGuessrService>();
+        services.AddTransient<AdminService>();
 
-            services.ConfigureApplicationCookie(options =>
+        var cookieContainer = new CookieContainer();
+        services.AddSingleton(cookieContainer);
+
+        services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"))
+            .ConfigurePrimaryHttpMessageHandler(() =>
             {
-                options.Cookie.HttpOnly = true;
-                options.Events.OnRedirectToLogin = context =>
+                return new HttpClientHandler()
                 {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
+                    CookieContainer = cookieContainer
                 };
             });
 
-            services.AddTransient<GameService>();
-            services.AddTransient<MapService>();
-            services.AddTransient<PlayerService>();
-            services.AddTransient<ChallengeService>();
-            services.AddTransient<LocationService>();
-            services.AddTransient<GeoGuessrService>();
-            services.AddTransient<AdminService>();
+        services.AddHttpClient("google", c => c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/"));
 
-            var cookieContainer = new CookieContainer();
-            services.AddSingleton(cookieContainer);
-
-            services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"))
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                {
-                    return new HttpClientHandler()
-                    {
-                        CookieContainer = cookieContainer
-                    };
-                });
-
-            services.AddHttpClient("google", c => c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/"));
-
-            if (_env.IsDevelopment())
-            {
-                services.AddSwaggerGen();
-            }
-
-            services.AddHostedService<DatabaseMigrationTask>();
-            services.AddHostedService<RoleCreationTask>();
-            services.AddHostedService<SuperAdminCreationTask>();
-        }
-
-        public void Configure(IApplicationBuilder app)
+        if (_env.IsDevelopment())
         {
-            app.UseResponseCompression();
-
-            if (_env.IsDevelopment())
-            {
-                app.UseWebAssemblyDebugging();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API"));
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseBlazorFrameworkFiles();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseMiddleware<GameMetadataMiddleware>();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
-                endpoints.MapHub<AppHub>("/apphub");
-                endpoints.MapFallbackToFile("index.html");
-            });
+            services.AddSwaggerGen();
         }
+
+        services.AddHostedService<DatabaseMigrationTask>();
+        services.AddHostedService<RoleCreationTask>();
+        services.AddHostedService<SuperAdminCreationTask>();
+    }
+
+    public void Configure(IApplicationBuilder app)
+    {
+        app.UseResponseCompression();
+
+        if (_env.IsDevelopment())
+        {
+            app.UseWebAssemblyDebugging();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API"));
+        }
+        else
+        {
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseBlazorFrameworkFiles();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseMiddleware<GameMetadataMiddleware>();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapRazorPages();
+            endpoints.MapControllers();
+            endpoints.MapHub<AppHub>("/apphub");
+            endpoints.MapFallbackToFile("index.html");
+        });
     }
 }

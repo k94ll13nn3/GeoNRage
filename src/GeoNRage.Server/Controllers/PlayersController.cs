@@ -1,78 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GeoNRage.Server.Services;
-using GeoNRage.Shared.Dtos.Auth;
-using GeoNRage.Shared.Dtos.Players;
+﻿using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GeoNRage.Server.Controllers
+namespace GeoNRage.Server.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+[AutoConstructor]
+public partial class PlayersController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    [AutoConstructor]
-    public partial class PlayersController : ControllerBase
+    private readonly PlayerService _playerService;
+
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<IEnumerable<PlayerDto>> GetAllAsync()
     {
-        private readonly PlayerService _playerService;
+        return await _playerService.GetAllAsync();
+    }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IEnumerable<PlayerDto>> GetAllAsync()
-        {
-            return await _playerService.GetAllAsync();
-        }
+    [AllowAnonymous]
+    [HttpGet("statistics")]
+    public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
+    {
+        return await _playerService.GetAllStatisticsAsync(Request.Headers["show-all-maps"] == "True");
+    }
 
-        [AllowAnonymous]
-        [HttpGet("statistics")]
-        public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
-        {
-            return await _playerService.GetAllStatisticsAsync(Request.Headers["show-all-maps"] == "True");
-        }
+    [AllowAnonymous]
+    [HttpGet("{id}/full")]
+    public async Task<ActionResult<PlayerFullDto>> GetFullAsync(string id)
+    {
+        PlayerFullDto? player = await _playerService.GetFullAsync(id, Request.Headers["show-all-maps"] == "True");
+        return player ?? (ActionResult<PlayerFullDto>)NotFound();
+    }
 
-        [AllowAnonymous]
-        [HttpGet("{id}/full")]
-        public async Task<ActionResult<PlayerFullDto>> GetFullAsync(string id)
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsync(string id, PlayerEditDto dto)
+    {
+        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        try
         {
-            PlayerFullDto? player = await _playerService.GetFullAsync(id, Request.Headers["show-all-maps"] == "True");
-            return player ?? (ActionResult<PlayerFullDto>)NotFound();
-        }
-
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(string id, PlayerEditDto dto)
-        {
-            _ = dto ?? throw new ArgumentNullException(nameof(dto));
-            try
+            PlayerDto? updatedPlayer = await _playerService.UpdateAsync(id, dto);
+            if (updatedPlayer is null)
             {
-                PlayerDto? updatedPlayer = await _playerService.UpdateAsync(id, dto);
-                if (updatedPlayer is null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                return NoContent();
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return NoContent();
         }
-
-        [Authorize(Roles = Roles.SuperAdmin)]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(string id)
+        catch (InvalidOperationException e)
         {
-            try
-            {
-                await _playerService.DeleteAsync(id);
-                return NoContent();
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(string id)
+    {
+        try
+        {
+            await _playerService.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (InvalidOperationException e)
+        {
+            return BadRequest(e.Message);
         }
     }
 }

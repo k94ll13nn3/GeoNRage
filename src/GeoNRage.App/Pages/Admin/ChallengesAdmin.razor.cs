@@ -1,89 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GeoNRage.App.Apis;
+﻿using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Shared;
 using GeoNRage.App.Services;
-using GeoNRage.Shared.Dtos.Challenges;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
-namespace GeoNRage.App.Pages.Admin
+namespace GeoNRage.App.Pages.Admin;
+
+public partial class ChallengesAdmin
 {
-    public partial class ChallengesAdmin
+    [Inject]
+    public IGamesApi GamesApi { get; set; } = null!;
+
+    [Inject]
+    public IChallengesApi ChallengesApi { get; set; } = null!;
+
+    [Inject]
+    public PopupService PopupService { get; set; } = null!;
+
+    public IEnumerable<ChallengeAdminViewDto> Challenges { get; set; } = null!;
+
+    public string? Error { get; set; }
+
+    public Table<ChallengeAdminViewDto> ChallengesTable { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
     {
-        [Inject]
-        public IGamesApi GamesApi { get; set; } = null!;
+        Challenges = await ChallengesApi.GetAllAsAdminViewAsync();
+    }
 
-        [Inject]
-        public IChallengesApi ChallengesApi { get; set; } = null!;
+    private void ImportChallenge(ChallengeAdminViewDto challenge)
+    {
+        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge), true);
+    }
 
-        [Inject]
-        public PopupService PopupService { get; set; } = null!;
+    private void DeleteChallenge(int challengeId)
+    {
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du challenge {challengeId} ?", () => OnConfirmDeleteAsync(challengeId), false);
+    }
 
-        public IEnumerable<ChallengeAdminViewDto> Challenges { get; set; } = null!;
-
-        public string? Error { get; set; }
-
-        public Table<ChallengeAdminViewDto> ChallengesTable { get; set; } = null!;
-
-        protected override async Task OnInitializedAsync()
+    private async void OnConfirmDeleteAsync(int challengeId)
+    {
+        try
         {
-            Challenges = await ChallengesApi.GetAllAsAdminViewAsync();
+            await ChallengesApi.DeleteAsync(challengeId);
+            await OnInitializedAsync();
+            ChallengesTable.SetItems(Challenges);
+            StateHasChanged();
         }
-
-        private void ImportChallenge(ChallengeAdminViewDto challenge)
+        catch (ApiException e)
         {
-            PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge), true);
+            PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
         }
+    }
 
-        private void DeleteChallenge(int challengeId)
-        {
-            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du challenge {challengeId} ?", () => OnConfirmDeleteAsync(challengeId), false);
-        }
+    private async Task ImportChallengeAsync(ChallengeAdminViewDto challenge)
+    {
+        _ = challenge ?? throw new ArgumentNullException(nameof(challenge));
 
-        private async void OnConfirmDeleteAsync(int challengeId)
+        try
         {
-            try
+            Error = null;
+            if (challenge.GameId == -1)
             {
-                await ChallengesApi.DeleteAsync(challengeId);
-                await OnInitializedAsync();
-                ChallengesTable.SetItems(Challenges);
-                StateHasChanged();
+                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
             }
-            catch (ApiException e)
+            else
             {
-                PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+                await GamesApi.UpdateChallengesAsync(challenge.GameId);
             }
         }
-
-        private async Task ImportChallengeAsync(ChallengeAdminViewDto challenge)
+        catch (ApiException e)
         {
-            _ = challenge ?? throw new ArgumentNullException(nameof(challenge));
-
-            try
-            {
-                Error = null;
-                if (challenge.GameId == -1)
-                {
-                    await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
-                }
-                else
-                {
-                    await GamesApi.UpdateChallengesAsync(challenge.GameId);
-                }
-            }
-            catch (ApiException e)
-            {
-                Error = $"Error: {e.Content}";
-            }
-            finally
-            {
-                await OnInitializedAsync();
-                ChallengesTable.SetItems(Challenges);
-                PopupService.HidePopup();
-                StateHasChanged();
-            }
+            Error = $"Error: {e.Content}";
+        }
+        finally
+        {
+            await OnInitializedAsync();
+            ChallengesTable.SetItems(Challenges);
+            PopupService.HidePopup();
+            StateHasChanged();
         }
     }
 }

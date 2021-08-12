@@ -1,78 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Services;
-using GeoNRage.Shared.Dtos.Locations;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Pages
+namespace GeoNRage.App.Pages;
+
+public partial class LocationsStatistics
 {
-    public partial class LocationsStatistics
+    [Inject]
+    public ILocationsApi LocationsApi { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
+
+    protected override async Task OnInitializedAsync()
     {
-        [Inject]
-        public ILocationsApi LocationsApi { get; set; } = null!;
+        Locations = await LocationsApi.GetAllAsync();
+        MapStatusService.MapStatusChanged += OnMapStatusChanged;
+    }
 
-        [Inject]
-        public NavigationManager NavigationManager { get; set; } = null!;
+    internal override async void OnMapStatusChanged(object? sender, EventArgs e)
+    {
+        Locations = Enumerable.Empty<LocationDto>();
+        StateHasChanged();
+        Locations = await LocationsApi.GetAllAsync();
+        StateHasChanged();
+    }
 
-        internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
-
-        protected override async Task OnInitializedAsync()
+    private static IEnumerable<LocationDto> Sort(IEnumerable<LocationDto> locations, string column, bool ascending)
+    {
+        return column switch
         {
-            Locations = await LocationsApi.GetAllAsync();
-            MapStatusService.MapStatusChanged += OnMapStatusChanged;
-        }
+            nameof(LocationDto.AdministrativeAreaLevel1) => ascending ? locations.OrderBy(p => p.AdministrativeAreaLevel1) : locations.OrderByDescending(p => p.AdministrativeAreaLevel1),
+            nameof(LocationDto.AdministrativeAreaLevel2) => ascending ? locations.OrderBy(p => p.AdministrativeAreaLevel2) : locations.OrderByDescending(p => p.AdministrativeAreaLevel2),
+            nameof(LocationDto.Country) => ascending ? locations.OrderBy(p => p.Country) : locations.OrderByDescending(p => p.Country),
+            nameof(LocationDto.DisplayName) => ascending ? locations.OrderBy(p => p.DisplayName) : locations.OrderByDescending(p => p.DisplayName),
+            nameof(LocationDto.Locality) => ascending ? locations.OrderBy(p => p.Locality) : locations.OrderByDescending(p => p.Locality),
+            nameof(LocationDto.TimesSeen) => ascending ? locations.OrderBy(p => p.TimesSeen) : locations.OrderByDescending(p => p.TimesSeen),
+            _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
+        };
+    }
 
-        internal override async void OnMapStatusChanged(object? sender, EventArgs e)
-        {
-            Locations = Enumerable.Empty<LocationDto>();
-            StateHasChanged();
-            Locations = await LocationsApi.GetAllAsync();
-            StateHasChanged();
-        }
+    private static IEnumerable<LocationDto> Filter(IEnumerable<LocationDto> locations, string searchTerm)
+    {
+        return locations.Where(x =>
+            RemoveDiacritics(x.AdministrativeAreaLevel1 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            || RemoveDiacritics(x.AdministrativeAreaLevel2 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            || RemoveDiacritics(x.Country ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            || RemoveDiacritics(x.Locality ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+    }
 
-        private static IEnumerable<LocationDto> Sort(IEnumerable<LocationDto> locations, string column, bool ascending)
+    private static string RemoveDiacritics(string text)
+    {
+        string normalizedString = text.Normalize(NormalizationForm.FormD);
+        var stringBuilder = new StringBuilder();
+
+        foreach (char c in normalizedString)
         {
-            return column switch
+            UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+            if (unicodeCategory != UnicodeCategory.NonSpacingMark)
             {
-                nameof(LocationDto.AdministrativeAreaLevel1) => ascending ? locations.OrderBy(p => p.AdministrativeAreaLevel1) : locations.OrderByDescending(p => p.AdministrativeAreaLevel1),
-                nameof(LocationDto.AdministrativeAreaLevel2) => ascending ? locations.OrderBy(p => p.AdministrativeAreaLevel2) : locations.OrderByDescending(p => p.AdministrativeAreaLevel2),
-                nameof(LocationDto.Country) => ascending ? locations.OrderBy(p => p.Country) : locations.OrderByDescending(p => p.Country),
-                nameof(LocationDto.DisplayName) => ascending ? locations.OrderBy(p => p.DisplayName) : locations.OrderByDescending(p => p.DisplayName),
-                nameof(LocationDto.Locality) => ascending ? locations.OrderBy(p => p.Locality) : locations.OrderByDescending(p => p.Locality),
-                nameof(LocationDto.TimesSeen) => ascending ? locations.OrderBy(p => p.TimesSeen) : locations.OrderByDescending(p => p.TimesSeen),
-                _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
-            };
-        }
-
-        private static IEnumerable<LocationDto> Filter(IEnumerable<LocationDto> locations, string searchTerm)
-        {
-            return locations.Where(x =>
-                RemoveDiacritics(x.AdministrativeAreaLevel1 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                || RemoveDiacritics(x.AdministrativeAreaLevel2 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                || RemoveDiacritics(x.Country ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                || RemoveDiacritics(x.Locality ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static string RemoveDiacritics(string text)
-        {
-            string normalizedString = text.Normalize(NormalizationForm.FormD);
-            var stringBuilder = new StringBuilder();
-
-            foreach (char c in normalizedString)
-            {
-                UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-                {
-                    stringBuilder.Append(c);
-                }
+                stringBuilder.Append(c);
             }
-
-            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
+
+        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }
 }

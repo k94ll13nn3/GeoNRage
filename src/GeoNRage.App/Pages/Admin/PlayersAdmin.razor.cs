@@ -1,92 +1,87 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GeoNRage.App.Apis;
+﻿using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
-using GeoNRage.Shared.Dtos.Players;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
 
-namespace GeoNRage.App.Pages.Admin
+namespace GeoNRage.App.Pages.Admin;
+
+public partial class PlayersAdmin
 {
-    public partial class PlayersAdmin
+    [Inject]
+    public IPlayersApi PlayersApi { get; set; } = null!;
+
+    [Inject]
+    public PopupService PopupService { get; set; } = null!;
+
+    public IEnumerable<PlayerDto> Players { get; set; } = null!;
+
+    public bool ShowEditForm { get; set; }
+
+    public PlayerEditDto Player { get; set; } = new();
+
+    public string? SelectedPlayerId { get; set; }
+
+    public EditForm Form { get; set; } = null!;
+
+    public string? Error { get; set; }
+
+    public void EditPlayer(string playerId)
     {
-        [Inject]
-        public IPlayersApi PlayersApi { get; set; } = null!;
+        Error = null;
+        ShowEditForm = true;
+        Player = new PlayerEditDto { Name = Players.First(m => m.Id == playerId).Name };
+        SelectedPlayerId = playerId;
+    }
 
-        [Inject]
-        public PopupService PopupService { get; set; } = null!;
+    public void DeletePlayer(string playerId)
+    {
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId), false);
+    }
 
-        public IEnumerable<PlayerDto> Players { get; set; } = null!;
-
-        public bool ShowEditForm { get; set; }
-
-        public PlayerEditDto Player { get; set; } = new();
-
-        public string? SelectedPlayerId { get; set; }
-
-        public EditForm Form { get; set; } = null!;
-
-        public string? Error { get; set; }
-
-        public void EditPlayer(string playerId)
+    public async Task UpdatePlayerAsync()
+    {
+        try
         {
             Error = null;
-            ShowEditForm = true;
-            Player = new PlayerEditDto { Name = Players.First(m => m.Id == playerId).Name };
-            SelectedPlayerId = playerId;
-        }
-
-        public void DeletePlayer(string playerId)
-        {
-            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId), false);
-        }
-
-        public async Task UpdatePlayerAsync()
-        {
-            try
+            if (SelectedPlayerId is not null)
             {
-                Error = null;
-                if (SelectedPlayerId is not null)
-                {
-                    await PlayersApi.UpdateAsync(SelectedPlayerId, Player);
-                }
-
-                ShowEditForm = false;
-                SelectedPlayerId = null;
-                Players = await PlayersApi.GetAllAsync();
-                StateHasChanged();
+                await PlayersApi.UpdateAsync(SelectedPlayerId, Player);
             }
-            catch (ApiException e)
-            {
-                Error = $"Error: {e.Content}";
-            }
-        }
 
-        protected override async Task OnInitializedAsync()
-        {
+            ShowEditForm = false;
+            SelectedPlayerId = null;
             Players = await PlayersApi.GetAllAsync();
+            StateHasChanged();
         }
-
-        protected override void OnAfterRender(bool firstRender)
+        catch (ApiException e)
         {
-            Form?.EditContext?.UpdateCssClassProvider();
+            Error = $"Error: {e.Content}";
         }
+    }
 
-        private async void OnConfirmDeleteAsync(string playerId)
+    protected override async Task OnInitializedAsync()
+    {
+        Players = await PlayersApi.GetAllAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Form?.EditContext?.UpdateCssClassProvider();
+    }
+
+    private async void OnConfirmDeleteAsync(string playerId)
+    {
+        try
         {
-            try
-            {
-                await PlayersApi.DeleteAsync(playerId);
-                Players = await PlayersApi.GetAllAsync();
-                StateHasChanged();
-            }
-            catch (ApiException e)
-            {
-                PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
-            }
+            await PlayersApi.DeleteAsync(playerId);
+            Players = await PlayersApi.GetAllAsync();
+            StateHasChanged();
+        }
+        catch (ApiException e)
+        {
+            PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
         }
     }
 }

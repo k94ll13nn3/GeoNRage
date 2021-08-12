@@ -1,26 +1,23 @@
-﻿using System.Threading.Tasks;
-using GeoNRage.App.Core;
-using GeoNRage.Shared.Dtos.Challenges;
+﻿using GeoNRage.App.Core;
 using Refit;
 
-namespace GeoNRage.App.Apis
+namespace GeoNRage.App.Apis;
+
+public interface IChallengesApi
 {
-    public interface IChallengesApi
-    {
-        [Get("/api/challenges")]
-        [Headers($"{MapStatusHandler.HeaderName}:")]
-        Task<ChallengeDto[]> GetAllAsync(bool onlyWithoutGame = false, [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
+    [Get("/api/challenges")]
+    [Headers($"{MapStatusHandler.HeaderName}:")]
+    Task<ChallengeDto[]> GetAllAsync(bool onlyWithoutGame = false, [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
 
-        [Get("/api/challenges/admin-view")]
-        Task<ChallengeAdminViewDto[]> GetAllAsAdminViewAsync();
+    [Get("/api/challenges/admin-view")]
+    Task<ChallengeAdminViewDto[]> GetAllAsAdminViewAsync();
 
-        [Get("/api/challenges/{id}")]
-        Task<ApiResponse<ChallengeDetailDto>> GetAsync(int id);
+    [Get("/api/challenges/{id}")]
+    Task<ApiResponse<ChallengeDetailDto>> GetAsync(int id);
 
-        [Post("/api/challenges/import")]
-        Task<int> ImportChallengeAsync([Body] ChallengeImportDto dto);
+    [Post("/api/challenges/import")]
+    Task<int> ImportChallengeAsync([Body] ChallengeImportDto dto);
 
-        [Delete("/api/challenges/{id}")]
-        Task DeleteAsync(int id);
-    }
+    [Delete("/api/challenges/{id}")]
+    Task DeleteAsync(int id);
 }

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Shared
+namespace GeoNRage.App.Components.Shared;
+
+public partial class PageNotFound
 {
-    public partial class PageNotFound
-    {
-        [Inject]
-        public NavigationManager NavigationManager { get; set; } = null!;
-    }
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
 }

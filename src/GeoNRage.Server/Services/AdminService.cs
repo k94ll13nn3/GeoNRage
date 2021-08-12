@@ -1,30 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos.Admin;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace GeoNRage.Server.Services
+namespace GeoNRage.Server.Services;
+
+[AutoConstructor]
+public partial class AdminService
 {
-    [AutoConstructor]
-    public partial class AdminService
+    private readonly GeoNRageDbContext _context;
+
+    public async Task<AdminInfoDto> GetAdminInfoAsync()
     {
-        private readonly GeoNRageDbContext _context;
+        List<LogEntryDto> logs = await _context.Logs
+            .AsNoTracking()
+            .Select(l => new LogEntryDto
+            (
+                l.Message,
+                l.Level,
+                l.Timestamp,
+                l.Exception
+            ))
+            .ToListAsync();
 
-        public async Task<AdminInfoDto> GetAdminInfoAsync()
-        {
-            List<LogEntryDto> logs = await _context.Logs
-                .AsNoTracking()
-                .Select(l => new LogEntryDto
-                (
-                    l.Message,
-                    l.Level,
-                    l.Timestamp,
-                    l.Exception
-                ))
-                .ToListAsync();
-
-            var tables = new List<TableInfoDto>
+        var tables = new List<TableInfoDto>
             {
                 new (nameof(GeoNRageDbContext.Games), _context.Games.Count()),
                 new (nameof(GeoNRageDbContext.Maps), _context.Maps.Count()),
@@ -43,7 +39,6 @@ namespace GeoNRage.Server.Services
                 new (nameof(GeoNRageDbContext.UserTokens), _context.UserTokens.Count()),
             };
 
-            return new AdminInfoDto(tables, logs);
-        }
+        return new AdminInfoDto(tables, logs);
     }
 }

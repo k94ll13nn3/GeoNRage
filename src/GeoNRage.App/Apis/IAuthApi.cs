@@ -1,19 +1,15 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos.Auth;
-using Refit;
+﻿using Refit;
 
-namespace GeoNRage.App.Apis
+namespace GeoNRage.App.Apis;
+
+public interface IAuthApi
 {
-    public interface IAuthApi
-    {
-        [Post("/api/auth/login")]
-        Task<HttpResponseMessage> Login(LoginDto loginRequest);
+    [Post("/api/auth/login")]
+    Task<HttpResponseMessage> Login(LoginDto loginRequest);
 
-        [Post("/api/auth/logout")]
-        Task Logout();
+    [Post("/api/auth/logout")]
+    Task Logout();
 
-        [Get("/api/auth/user")]
-        Task<UserDto> CurrentUserInfo();
-    }
+    [Get("/api/auth/user")]
+    Task<UserDto> CurrentUserInfo();
 }

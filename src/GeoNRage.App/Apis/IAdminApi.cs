@@ -1,12 +1,9 @@
-﻿using System.Threading.Tasks;
-using GeoNRage.Shared.Dtos.Admin;
-using Refit;
+﻿using Refit;
 
-namespace GeoNRage.App.Apis
+namespace GeoNRage.App.Apis;
+
+public interface IAdminApi
 {
-    public interface IAdminApi
-    {
-        [Get("/api/admin/info")]
-        Task<AdminInfoDto> GetAdminInfoAsync();
-    }
+    [Get("/api/admin/info")]
+    Task<AdminInfoDto> GetAdminInfoAsync();
 }

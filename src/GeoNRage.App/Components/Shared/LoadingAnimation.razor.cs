@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Shared
+namespace GeoNRage.App.Components.Shared;
+
+public partial class LoadingAnimation
 {
-    public partial class LoadingAnimation
-    {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; } = null!;
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
 
-        [Parameter]
-        public bool Animated { get; set; } = true;
+    [Parameter]
+    public bool Animated { get; set; } = true;
 
-        [Parameter]
-        public bool BigIcon { get; set; }
-    }
+    [Parameter]
+    public bool BigIcon { get; set; }
 }
