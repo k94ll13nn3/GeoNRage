@@ -4,11 +4,11 @@ using Microsoft.Extensions.Options;
 namespace GeoNRage.Server.Tasks;
 
 [AutoConstructor]
-public partial class SuperAdminCreationTask : IHostedService
+public partial class SuperAdminCreationTask : IStartupTask
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
         using IServiceScope scope = _serviceProvider.CreateScope();
         UserManager<IdentityUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
@@ -25,6 +25,4 @@ public partial class SuperAdminCreationTask : IHostedService
             await userManager.AddToRolesAsync(user, new[] { Roles.Admin, Roles.SuperAdmin, Roles.Member });
         }
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }

@@ -3,11 +3,11 @@
 namespace GeoNRage.Server.Tasks;
 
 [AutoConstructor]
-public partial class RoleCreationTask : IHostedService
+public partial class RoleCreationTask : IStartupTask
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
         using IServiceScope scope = _serviceProvider.CreateScope();
         RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -19,6 +19,4 @@ public partial class RoleCreationTask : IHostedService
             }
         }
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
