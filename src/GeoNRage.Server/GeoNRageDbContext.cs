@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace GeoNRage.Server;
 
@@ -30,6 +31,8 @@ public class GeoNRageDbContext : IdentityDbContext<IdentityUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         _ = builder ?? throw new ArgumentNullException(nameof(builder));
+
+        builder.HasCharSet(CharSet.Utf8Mb4, true).UseCollation("utf8mb4_general_ci");
 
         builder.Entity<Game>().HasKey(g => g.Id);
         builder.Entity<Game>().Property(g => g.Id).UseMySqlIdentityColumn();
