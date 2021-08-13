@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using GeoNRage.Server;
+using GeoNRage.Server.Entities;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
 using GeoNRage.Server.Tasks;
@@ -33,7 +34,7 @@ builder.Services.AddDbContextPool<GeoNRageDbContext>(options =>
     options.ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
 });
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

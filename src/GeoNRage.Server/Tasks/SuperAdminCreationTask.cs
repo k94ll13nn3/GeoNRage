@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GeoNRage.Server.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Tasks;
@@ -11,12 +12,12 @@ public partial class SuperAdminCreationTask : IStartupTask
     public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
         using IServiceScope scope = _serviceProvider.CreateScope();
-        UserManager<IdentityUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        UserManager<User> userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         ApplicationOptions options = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
-        IdentityUser user = await userManager.FindByNameAsync(options.SuperAdminUserName);
+        User user = await userManager.FindByNameAsync(options.SuperAdminUserName);
         if (user == null)
         {
-            user = new IdentityUser
+            user = new User
             {
                 UserName = options.SuperAdminUserName
             };

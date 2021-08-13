@@ -1,12 +1,11 @@
 ﻿using GeoNRage.Server.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace GeoNRage.Server;
 
-public class GeoNRageDbContext : IdentityDbContext<IdentityUser>
+public class GeoNRageDbContext : IdentityDbContext<User>
 {
     public GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : base(options)
     {
@@ -73,5 +72,8 @@ public class GeoNRageDbContext : IdentityDbContext<IdentityUser>
         builder.Entity<Game>().HasData(new Game { Id = -1, CreationDate = DateTime.MinValue, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
 
         base.OnModelCreating(builder);
+
+        builder.Entity<User>().Property(u => u.DisplayName).IsRequired();
+        builder.Entity<User>().HasOne(u => u.Player).WithOne().HasForeignKey<User>(u => u.PlayerId).IsRequired(false);
     }
 }

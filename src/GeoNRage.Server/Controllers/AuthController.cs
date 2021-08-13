@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GeoNRage.Server.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -10,8 +11,8 @@ namespace GeoNRage.Server.Controllers;
 [AutoConstructor]
 public partial class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
     [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
     private readonly ApplicationOptions _options;
@@ -21,7 +22,7 @@ public partial class AuthController : ControllerBase
     {
         _ = request ?? throw new ArgumentNullException(nameof(request));
 
-        IdentityUser user = await _userManager.FindByNameAsync(request.UserName);
+        User user = await _userManager.FindByNameAsync(request.UserName);
         if (user == null)
         {
             return BadRequest("Invalid password or user.");
@@ -56,7 +57,7 @@ public partial class AuthController : ControllerBase
             return NotFound();
         }
 
-        var user = new IdentityUser
+        var user = new User
         {
             UserName = parameters.UserName
         };
