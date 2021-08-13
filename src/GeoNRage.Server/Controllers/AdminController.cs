@@ -13,6 +13,7 @@ public partial class AdminController : ControllerBase
     private readonly AdminService _adminService;
 
     [HttpGet("info")]
+    [Authorize(Roles = Roles.Admin)]
     public async Task<AdminInfoDto> GetAdminInfoAsync()
     {
         return await _adminService.GetAdminInfoAsync();

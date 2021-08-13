@@ -19,7 +19,7 @@ public partial class MapsController : ControllerBase
         return await _mapService.GetAllAsync();
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id}")]
     public async Task<ActionResult<MapDto>> UpdateAsync(string id, MapEditDto dto)
     {
@@ -40,7 +40,7 @@ public partial class MapsController : ControllerBase
         }
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {

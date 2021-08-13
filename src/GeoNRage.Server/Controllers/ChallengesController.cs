@@ -19,7 +19,7 @@ public partial class ChallengesController : ControllerBase
         return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers["show-all-maps"] != "True", playersToExclude);
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpGet("admin-view")]
     public async Task<IEnumerable<ChallengeAdminViewDto>> GetAllAsAdminViewAsync()
     {
@@ -54,7 +54,7 @@ public partial class ChallengesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {

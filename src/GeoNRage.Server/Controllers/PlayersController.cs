@@ -34,7 +34,7 @@ public partial class PlayersController : ControllerBase
         return player ?? (ActionResult<PlayerFullDto>)NotFound();
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(string id, PlayerEditDto dto)
     {
@@ -55,7 +55,7 @@ public partial class PlayersController : ControllerBase
         }
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {

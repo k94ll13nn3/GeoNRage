@@ -20,7 +20,7 @@ public partial class GamesController : ControllerBase
         return await _gameService.GetAllAsync();
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpGet("admin-view")]
     public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()
     {
@@ -35,7 +35,7 @@ public partial class GamesController : ControllerBase
         return game ?? (ActionResult<GameDetailDto>)NotFound();
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     public async Task<IActionResult> CreateAsync(GameCreateOrEditDto dto)
     {
@@ -51,7 +51,7 @@ public partial class GamesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(int id, GameCreateOrEditDto dto)
     {
@@ -94,7 +94,7 @@ public partial class GamesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
@@ -102,7 +102,7 @@ public partial class GamesController : ControllerBase
         return NoContent();
     }
 
-    [Authorize(Roles = Roles.SuperAdmin)]
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost("{id}/update-challenges")]
     public async Task<IActionResult> UpdateChallengesAsync(int id)
     {
