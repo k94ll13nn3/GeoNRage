@@ -1,11 +1,21 @@
 ﻿using GeoNRage.Server.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace GeoNRage.Server;
 
-public class GeoNRageDbContext : IdentityDbContext<User>
+public class GeoNRageDbContext : IdentityDbContext<
+        User,
+        IdentityRole,
+        string,
+        IdentityUserClaim<string>,
+        UserRole,
+        IdentityUserLogin<string>,
+        IdentityRoleClaim<string>,
+        IdentityUserToken<string>
+    >
 {
     public GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : base(options)
     {
@@ -74,5 +84,8 @@ public class GeoNRageDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
 
         builder.Entity<User>().HasOne(u => u.Player).WithOne().HasForeignKey<User>(u => u.PlayerId).IsRequired(false);
+
+        builder.Entity<UserRole>().HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleId);
+        builder.Entity<UserRole>().HasOne(ur => ur.User).WithMany(r => r.UserRoles).HasForeignKey(ur => ur.UserId);
     }
 }

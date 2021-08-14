@@ -11,7 +11,7 @@ public partial class RoleCreationTask : IStartupTask
     {
         using IServiceScope scope = _serviceProvider.CreateScope();
         RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        foreach (string role in new[] { Roles.Admin, Roles.SuperAdmin, Roles.Member })
+        foreach (string role in Roles.All)
         {
             if (!await roleManager.RoleExistsAsync(role))
             {

@@ -2,16 +2,19 @@
 @typeparam TId
 
 <div class="field">
-    <Repeater Items="Data" Context="item">
-        @{
-            var value = IdSelector(item);
-        }
+	<Container Condition="Label is not null">
+		<label class="label">@Label</label>
+	</Container>
+	<Repeater Items="Data" Context="item">
+		@{
+			var value = IdSelector(item);
+		}
 
-        <div class="control">
-            <label class="checkbox">
-                <input type="checkbox" checked=@SelectedIds.Contains(value) @onchange="eventArgs => { CheckboxClicked(value, eventArgs.Value); }" />
-                @LabelSelector(item)
-            </label>
-        </div>
-    </Repeater>
+		<div class="control">
+			<label class="checkbox">
+				<input type="checkbox" checked=@SelectedIds.Contains(value) @onchange="eventArgs => { CheckboxClicked(value, eventArgs.Value); }" />
+				@LabelSelector(item)
+			</label>
+		</div>
+	</Repeater>
 </div>

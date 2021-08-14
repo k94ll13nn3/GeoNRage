@@ -41,4 +41,16 @@ public partial class AdminService
 
         return new AdminInfoDto(tables, logs);
     }
+
+    public async Task<IEnumerable<UserAminViewDto>> GetAllUsersAsAdminViewAsync()
+    {
+        return await _context.Users
+            .Select(u => new UserAminViewDto(
+                u.UserName,
+                u.PlayerId,
+                u.Player != null ? u.Player.Name : null,
+                u.UserRoles.Select(ur => ur.Role.Name)
+            ))
+            .ToListAsync();
+    }
 }

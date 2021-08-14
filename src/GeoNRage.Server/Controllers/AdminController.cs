@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers;
 
-[Authorize(Roles = Roles.SuperAdmin)]
+[Authorize(Roles = Roles.Admin)]
 [ApiController]
 [Route("api/[controller]")]
 [AutoConstructor]
@@ -13,9 +13,15 @@ public partial class AdminController : ControllerBase
     private readonly AdminService _adminService;
 
     [HttpGet("info")]
-    [Authorize(Roles = Roles.Admin)]
     public async Task<AdminInfoDto> GetAdminInfoAsync()
     {
         return await _adminService.GetAdminInfoAsync();
+    }
+
+    [HttpGet("users")]
+    [Authorize(Roles = Roles.SuperAdmin)]
+    public async Task<IEnumerable<UserAminViewDto>> GetAllUsersAsAdminViewAsync()
+    {
+        return await _adminService.GetAllUsersAsAdminViewAsync();
     }
 }

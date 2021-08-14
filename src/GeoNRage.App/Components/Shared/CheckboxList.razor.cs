@@ -16,6 +16,9 @@ public partial class CheckboxList<TItem, TId>
     [Parameter]
     public ICollection<TId> SelectedIds { get; set; } = Array.Empty<TId>();
 
+    [Parameter]
+    public string Label { get; set; } = null!;
+
     public void CheckboxClicked(TId selectedId, object? value)
     {
         if ((bool?)value == true)

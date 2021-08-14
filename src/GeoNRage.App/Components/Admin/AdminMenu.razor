@@ -1,12 +1,15 @@
 ﻿<aside class="menu is-radiusless box">
-    <p class="menu-label">
-        Administration
-    </p>
-    <ul class="menu-list">
-        <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin")" ActiveClass="is-active">Tableau de bord</NavLink>
-        <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/maps")" ActiveClass="is-active">Cartes</NavLink>
-        <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/players")" ActiveClass="is-active">Joueurs</NavLink>
-        <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/games")" ActiveClass="is-active">Parties</NavLink>
-        <NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/challenges")" ActiveClass="is-active">Challenges</NavLink>
-    </ul>
+	<p class="menu-label">
+		Administration
+	</p>
+	<ul class="menu-list">
+		<NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin")" ActiveClass="is-active">Tableau de bord</NavLink>
+		<NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/maps")" ActiveClass="is-active">Cartes</NavLink>
+		<NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/players")" ActiveClass="is-active">Joueurs</NavLink>
+		<NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/games")" ActiveClass="is-active">Parties</NavLink>
+		<NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/challenges")" ActiveClass="is-active">Challenges</NavLink>
+		<AuthorizeView Roles="@Roles.SuperAdmin">
+			<NavLink Match="NavLinkMatch.All" href="@NavigationManager.ToAbsoluteUri("/admin/users")" ActiveClass="is-active">Utilisateurs</NavLink>
+		</AuthorizeView>
+	</ul>
 </aside>

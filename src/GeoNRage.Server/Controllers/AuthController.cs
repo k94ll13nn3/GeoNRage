@@ -1,4 +1,5 @@
 ﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ public partial class AuthController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly PlayerService _playerService;
 
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto request)
@@ -60,11 +62,13 @@ public partial class AuthController : ControllerBase
             return BadRequest(result.Errors.FirstOrDefault()?.Description);
         }
 
-        return await LoginAsync(new LoginDto
+        result = await _userManager.AddToRolesAsync(user, new[] { Roles.Member });
+        if (!result.Succeeded)
         {
-            UserName = parameters.UserName,
-            Password = parameters.Password
-        });
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+        return Ok();
     }
 
     [Authorize]
@@ -102,10 +106,52 @@ public partial class AuthController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpPost("edit/admin")]
+    public async Task<IActionResult> EditByAdminAsync(UserEditAdminDto parameters)
+    {
+        _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
+
+        User user = await _userManager.FindByNameAsync(parameters.UserName);
+        if (user is null)
+        {
+            return BadRequest("Invalid user.");
+        }
+
+        if (parameters.PlayerId is not null && await _playerService.GetAsync(parameters.PlayerId) is null)
+        {
+            return BadRequest("Invalid player id.");
+        }
+
+        IdentityResult result;
+
+        user.PlayerId = parameters.PlayerId;
+
+        result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+        result = await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+        result = await _userManager.AddToRolesAsync(user, parameters.Roles);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+        return Ok();
+    }
+
     [HttpGet("user")]
     public async Task<UserDto> CurrentUserInfo()
     {
-        User user = await _userManager.FindByNameAsync(User.Identity?.Name ?? "");
+        User user = await _userManager.GetUserAsync(User);
         return new UserDto
         (
             User.Identity?.IsAuthenticated ?? false,

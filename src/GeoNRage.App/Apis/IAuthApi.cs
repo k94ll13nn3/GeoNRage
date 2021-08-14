@@ -15,4 +15,10 @@ public interface IAuthApi
 
     [Post("/api/auth/edit")]
     Task EditAsync(UserEditDto parameters);
+
+    [Post("/api/auth/edit/admin")]
+    Task EditByAdminAsync(UserEditAdminDto parameters);
+
+    [Post("/api/auth/register")]
+    Task RegisterAsync(RegisterDto parameters);
 }

@@ -9,6 +9,8 @@ public static class Roles
     public const string Admin = nameof(Admin);
 
     public const string SuperAdmin = nameof(SuperAdmin);
+
+    public static IEnumerable<string> All => new[] { Admin, SuperAdmin, Member };
 }
 
 public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, IEnumerable<string>> Claims, string? PlayerId);
@@ -34,6 +36,17 @@ public class UserEditDto
 
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
     public string? PasswordConfirm { get; set; }
+}
+
+public class UserEditAdminDto
+{
+    [Required]
+    public string UserName { get; set; } = string.Empty;
+
+    public string? PlayerId { get; set; }
+
+    [Required]
+    public ICollection<string> Roles { get; set; } = new HashSet<string>();
 }
 
 public class LoginDto

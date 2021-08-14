@@ -23,7 +23,7 @@ public partial class SuperAdminCreationTask : IStartupTask
             };
 
             await userManager.CreateAsync(user, options.SuperAdminPassword);
-            await userManager.AddToRolesAsync(user, new[] { Roles.Admin, Roles.SuperAdmin, Roles.Member });
+            await userManager.AddToRolesAsync(user, Roles.All);
         }
     }
 }
