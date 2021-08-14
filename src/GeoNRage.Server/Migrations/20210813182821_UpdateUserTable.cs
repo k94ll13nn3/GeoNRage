@@ -37,7 +37,7 @@ namespace GeoNRage.Server.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
-            migrationBuilder.Sql("UPDATE AspNetUsers SET DisplayName = UserName");
+            migrationBuilder.Sql("DELETE FROM AspNetUsers");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
