@@ -11,7 +11,7 @@ public static class Roles
     public const string SuperAdmin = nameof(SuperAdmin);
 }
 
-public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, IEnumerable<string>> Claims);
+public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, IEnumerable<string>> Claims, string? PlayerId);
 
 public class RegisterDto
 {
@@ -34,8 +34,6 @@ public class UserEditDto
 
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
     public string? PasswordConfirm { get; set; }
-
-    public string? PlayerId { get; set; }
 }
 
 public class LoginDto

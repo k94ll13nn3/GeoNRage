@@ -1,5 +1,4 @@
 ﻿using GeoNRage.Server.Entities;
-using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,6 @@ public partial class AuthController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly PlayerService _playerService;
 
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto request)
@@ -81,15 +79,6 @@ public partial class AuthController : ControllerBase
             return BadRequest("Invalid user.");
         }
 
-        if (parameters.PlayerId is not null)
-        {
-            PlayerDto? player = await _playerService.GetAsync(parameters.PlayerId);
-            if (player is null)
-            {
-                return BadRequest("Invalid playerId.");
-            }
-        }
-
         IdentityResult result;
         if (parameters.Password is not null)
         {
@@ -102,7 +91,6 @@ public partial class AuthController : ControllerBase
         }
 
         user.UserName = parameters.UserName;
-        user.PlayerId = parameters.PlayerId;
 
         result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
@@ -115,13 +103,15 @@ public partial class AuthController : ControllerBase
     }
 
     [HttpGet("user")]
-    public UserDto CurrentUserInfo()
+    public async Task<UserDto> CurrentUserInfo()
     {
+        User user = await _userManager.FindByNameAsync(User.Identity?.Name);
         return new UserDto
         (
             User.Identity?.IsAuthenticated ?? false,
             User.Identity?.Name ?? string.Empty,
-            User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value))
+            User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value)),
+            user?.PlayerId
         );
     }
 }
