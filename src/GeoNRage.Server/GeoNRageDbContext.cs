@@ -73,7 +73,6 @@ public class GeoNRageDbContext : IdentityDbContext<User>
 
         base.OnModelCreating(builder);
 
-        builder.Entity<User>().Property(u => u.DisplayName).IsRequired();
         builder.Entity<User>().HasOne(u => u.Player).WithOne().HasForeignKey<User>(u => u.PlayerId).IsRequired(false);
     }
 }
