@@ -65,6 +65,7 @@ public partial class NavigationMenu : IDisposable
     private async Task LogoutClickAsync()
     {
         await GeoNRageStateProvider.LogoutAsync();
+        NavigationManager.NavigateTo("/");
     }
 
     private void ToggleMenu()

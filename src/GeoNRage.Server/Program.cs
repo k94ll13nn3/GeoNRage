@@ -34,7 +34,9 @@ builder.Services.AddDbContextPool<GeoNRageDbContext>(options =>
     options.ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
 });
 
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<GeoNRageDbContext>();
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<GeoNRageDbContext>()
+    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

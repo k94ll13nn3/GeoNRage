@@ -26,6 +26,18 @@ public class RegisterDto
     public string PasswordConfirm { get; set; } = string.Empty;
 }
 
+public class UserEditDto
+{
+    public string? UserName { get; set; }
+
+    public string? Password { get; set; }
+
+    [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
+    public string? PasswordConfirm { get; set; }
+
+    public string? PlayerId { get; set; }
+}
+
 public class LoginDto
 {
     [Required]

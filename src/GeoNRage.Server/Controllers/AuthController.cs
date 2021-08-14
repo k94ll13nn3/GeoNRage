@@ -1,8 +1,8 @@
 ﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Controllers;
 
@@ -13,9 +13,7 @@ public partial class AuthController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-
-    [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
-    private readonly ApplicationOptions _options;
+    private readonly PlayerService _playerService;
 
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto request)
@@ -47,15 +45,11 @@ public partial class AuthController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = Roles.SuperAdmin)]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterAsync(RegisterDto parameters)
     {
         _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
-
-        if (!_options.CanRegister)
-        {
-            return NotFound();
-        }
 
         var user = new User
         {
@@ -73,6 +67,51 @@ public partial class AuthController : ControllerBase
             UserName = parameters.UserName,
             Password = parameters.Password
         });
+    }
+
+    [Authorize]
+    [HttpPost("edit")]
+    public async Task<IActionResult> EditAsync(UserEditDto parameters)
+    {
+        _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
+
+        User user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        if (user is null)
+        {
+            return BadRequest("Invalid user.");
+        }
+
+        if (parameters.PlayerId is not null)
+        {
+            PlayerDto? player = await _playerService.GetAsync(parameters.PlayerId);
+            if (player is null)
+            {
+                return BadRequest("Invalid playerId.");
+            }
+        }
+
+        IdentityResult result;
+        if (parameters.Password is not null)
+        {
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            result = await _userManager.ResetPasswordAsync(user, token, parameters.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Description);
+            }
+        }
+
+        user.UserName = parameters.UserName;
+        user.PlayerId = parameters.PlayerId;
+
+        result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+        await _signInManager.SignInAsync(user, true);
+        return Ok();
     }
 
     [HttpGet("user")]

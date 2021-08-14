@@ -1,0 +1,47 @@
+﻿@page "/profile"
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Member)]
+
+<div class="container">
+	<EditForm Model="User" OnSubmit="UpdateUserAsync" @ref="Form" autocomplete="off">
+		<DataAnnotationsValidator />
+
+		<Container Condition="!string.IsNullOrWhiteSpace(Error)">
+			<div class="notification is-danger">
+				@Error
+			</div>
+		</Container>
+
+		<div class="field">
+			<label class="label">Nom d'utilidsateur</label>
+			<div class="control">
+				<InputText @bind-Value="User.UserName" placeholder="Nom d'utilisateur" class="input" />
+				<p class="help is-danger">
+					<ValidationMessage For="@(() => User.UserName)"></ValidationMessage>
+				</p>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Mot de passe</label>
+			<div class="control">
+				<InputText @bind-Value="User.Password" placeholder="Mot de passe" class="input" type="password" />
+				<p class="help is-danger">
+					<ValidationMessage For="@(() => User.Password)"></ValidationMessage>
+				</p>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Confirmation mot de passe</label>
+			<div class="control">
+				<InputText @bind-Value="User.PasswordConfirm" placeholder="Confirmation mot de passe" class="input" type="password" />
+				<p class="help is-danger">
+					<ValidationMessage For="@(() => User.PasswordConfirm)"></ValidationMessage>
+				</p>
+			</div>
+		</div>
+
+		<button class="button is-primary" type="submit">Valider</button>
+	</EditForm>
+</div>

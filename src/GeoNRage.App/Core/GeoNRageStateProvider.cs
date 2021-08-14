@@ -4,24 +4,18 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace GeoNRage.App.Core;
 
-public class GeoNRageStateProvider : AuthenticationStateProvider
+[AutoConstructor]
+public partial class GeoNRageStateProvider : AuthenticationStateProvider
 {
     private readonly IAuthApi _authApi;
-    private UserDto _currentUser;
-
-    public GeoNRageStateProvider(IAuthApi authApi)
-    {
-        _authApi = authApi;
-        _currentUser = new UserDto(false, string.Empty, new());
-    }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var identity = new ClaimsIdentity();
-        UserDto userInfo = await GetCurrentUserAsync();
+        UserDto userInfo = await _authApi.CurrentUserInfo();
         if (userInfo.IsAuthenticated)
         {
-            IEnumerable<Claim> claims = _currentUser.Claims.SelectMany(c => c.Value.Select(v => new Claim(c.Key, v)));
+            IEnumerable<Claim> claims = userInfo.Claims.SelectMany(c => c.Value.Select(v => new Claim(c.Key, v)));
             identity = new ClaimsIdentity(claims, "Server authentication");
         }
 
@@ -31,7 +25,6 @@ public class GeoNRageStateProvider : AuthenticationStateProvider
     public async Task LogoutAsync()
     {
         await _authApi.Logout();
-        _currentUser = new UserDto(false, string.Empty, new());
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
@@ -46,14 +39,8 @@ public class GeoNRageStateProvider : AuthenticationStateProvider
         return response;
     }
 
-    private async Task<UserDto> GetCurrentUserAsync()
+    public void NotifyUpdate()
     {
-        if (_currentUser.IsAuthenticated)
-        {
-            return _currentUser;
-        }
-
-        _currentUser = await _authApi.CurrentUserInfo();
-        return _currentUser;
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 }

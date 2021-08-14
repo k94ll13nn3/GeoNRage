@@ -12,4 +12,7 @@ public interface IAuthApi
 
     [Get("/api/auth/user")]
     Task<UserDto> CurrentUserInfo();
+
+    [Post("/api/auth/edit")]
+    Task EditAsync(UserEditDto parameters);
 }
