@@ -105,7 +105,7 @@ public partial class AuthController : ControllerBase
     [HttpGet("user")]
     public async Task<UserDto> CurrentUserInfo()
     {
-        User user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        User user = await _userManager.FindByNameAsync(User.Identity?.Name ?? "");
         return new UserDto
         (
             User.Identity?.IsAuthenticated ?? false,
