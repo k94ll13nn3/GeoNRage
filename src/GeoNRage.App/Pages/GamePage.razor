@@ -2,6 +2,10 @@
 
 @using GeoNRage.App.Components.Games
 
+<Container Condition="Loaded && GameFound">
+	<PageTitle>@Game.Name</PageTitle>
+</Container>
+
 <Container Condition="HubClosed">
 	<div class="notification is-danger error-alert">
 		Connexion avec le serveur perdue, reconnexion echouée.

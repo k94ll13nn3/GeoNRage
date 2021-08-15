@@ -3,6 +3,10 @@
 @inherits MapStatusAwareComponent
 
 <Container Condition="Loaded && PlayerFound">
+	<PageTitle>@Player.Name</PageTitle>
+</Container>
+
+<Container Condition="Loaded && PlayerFound">
     <ChildContent>
         <div class="container">
             <div class="m-3">

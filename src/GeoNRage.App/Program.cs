@@ -3,6 +3,7 @@ using GeoNRage.App.Apis;
 using GeoNRage.App.Core;
 using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
 
@@ -27,6 +28,8 @@ builder.Services.AddSingleton(new PopupService());
 builder.Services.AddSingleton(new MapStatusService());
 
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
+
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
 await builder.Build().RunAsync();
 
