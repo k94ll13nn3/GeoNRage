@@ -22,6 +22,9 @@ public partial class GamePage : IAsyncDisposable
     public IGamesApi GamesApi { get; set; } = null!;
 
     [Inject]
+    public IAuthApi AuthApi { get; set; } = null!;
+
+    [Inject]
     public IPlayersApi PlayersApi { get; set; } = null!;
 
     public GameChart? Chart { get; set; } = null!;
@@ -36,17 +39,13 @@ public partial class GamePage : IAsyncDisposable
 
     public bool HubReconnected { get; set; }
 
-    public IEnumerable<PlayerDto> AvailablePlayers { get; set; } = Enumerable.Empty<PlayerDto>();
-
-    public string? SelectedPlayerId { get; set; }
-
     public bool ShowRankings { get; set; }
 
     public bool ShowChart { get; set; }
 
-    public bool ShowAddPlayer { get; set; }
-
     public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = new();
+
+    public UserDto User { get; set; } = null!;
 
     public async ValueTask DisposeAsync()
     {
@@ -59,7 +58,6 @@ public partial class GamePage : IAsyncDisposable
 
     public async Task ReloadPageAsync()
     {
-        ShowAddPlayer = false;
         ShowChart = false;
         ShowRankings = false;
         HubClosed = false;
@@ -107,11 +105,8 @@ public partial class GamePage : IAsyncDisposable
                 }
             }
 
-            Console.WriteLine(Scores.Count);
-
             await _hubConnection.InvokeAsync("JoinGroup", Id);
-            AvailablePlayers = (await PlayersApi.GetAllAsync()).Where(p => Game.Challenges.FirstOrDefault()?.PlayerScores.Any(gp => gp.PlayerId == p.Id) != true);
-            SelectedPlayerId = AvailablePlayers.FirstOrDefault()?.Id;
+            User = await AuthApi.CurrentUserInfo();
             StateHasChanged();
         }
     }
@@ -154,18 +149,23 @@ public partial class GamePage : IAsyncDisposable
         StateHasChanged();
     }
 
-    private async Task SendAsync(int challengeId, string playerId, int round, int? score)
+    private async Task SendAsync(int challengeId, int round, int? score)
     {
+        if (User.PlayerId is null)
+        {
+            return;
+        }
+
         int clampedValue = Math.Clamp(score ?? 0, 0, 5000);
-        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, playerId, round, clampedValue);
-        await HandleReceiveValueAsync(challengeId, playerId, round, clampedValue);
+        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
+        await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
     }
 
     private async Task AddPlayerAsync()
     {
-        if (Game is not null && SelectedPlayerId is not null)
+        if (Game is not null && User.PlayerId is not null && !Game.Players.Any(p => p.Id == User.PlayerId))
         {
-            await GamesApi.AddPlayerAsync(Game.Id, SelectedPlayerId);
+            await GamesApi.AddPlayerAsync(Game.Id, User.PlayerId);
             await ReloadPageAsync();
         }
     }
