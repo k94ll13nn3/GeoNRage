@@ -14,31 +14,36 @@ namespace GeoNRage.App.Pages
         [Inject]
         public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
 
-        public UserEditDto User { get; set; } = new();
+        [Inject]
+        public NavigationManager NavigationManager { get; set; } = null!;
+
+        public UserEditDto UserEdit { get; set; } = new();
 
         public EditForm Form { get; set; } = null!;
 
         public string? Error { get; set; }
+
+        public UserDto User { get; set; } = null!;
 
         public async Task UpdateUserAsync(EditContext editContext)
         {
             try
             {
                 Error = null;
-                if (string.IsNullOrWhiteSpace(User.Password))
+                if (string.IsNullOrWhiteSpace(UserEdit.Password))
                 {
-                    User.Password = null;
+                    UserEdit.Password = null;
                 }
 
-                if (string.IsNullOrWhiteSpace(User.PasswordConfirm))
+                if (string.IsNullOrWhiteSpace(UserEdit.PasswordConfirm))
                 {
-                    User.PasswordConfirm = null;
+                    UserEdit.PasswordConfirm = null;
                 }
 
                 bool formIsValid = editContext.Validate();
                 if (formIsValid)
                 {
-                    await AuthApi.EditAsync(User);
+                    await AuthApi.EditAsync(UserEdit);
                     GeoNRageStateProvider.NotifyUpdate();
                 }
             }
@@ -46,6 +51,11 @@ namespace GeoNRage.App.Pages
             {
                 Error = $"Error: {e.Content}";
             }
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            User = await AuthApi.CurrentUserInfo();
         }
 
         protected override void OnAfterRender(bool firstRender)
