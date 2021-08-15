@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [AutoConstructor]
@@ -12,7 +11,6 @@ public partial class MapsController : ControllerBase
 {
     private readonly MapService _mapService;
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IEnumerable<MapDto>> GetAllAsync()
     {

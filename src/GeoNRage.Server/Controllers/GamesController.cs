@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [AutoConstructor]
@@ -13,7 +12,6 @@ public partial class GamesController : ControllerBase
 {
     private readonly GameService _gameService;
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IEnumerable<GameDto>> GetAllAsync()
     {
@@ -27,7 +25,6 @@ public partial class GamesController : ControllerBase
         return await _gameService.GetAllAsAdminViewAsync();
     }
 
-    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<GameDetailDto>> GetAsync(int id)
     {
@@ -72,7 +69,6 @@ public partial class GamesController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
     [HttpPost("{id}/add-player")]
     public async Task<IActionResult> AddPlayerAsync(int id, [FromBody] string playerId)
     {

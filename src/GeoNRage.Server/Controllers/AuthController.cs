@@ -71,7 +71,7 @@ public partial class AuthController : ControllerBase
         return Ok();
     }
 
-    [Authorize]
+    [Authorize(Roles = Roles.Member)]
     [HttpPost("edit")]
     public async Task<IActionResult> EditAsync(UserEditDto parameters)
     {

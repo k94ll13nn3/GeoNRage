@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [AutoConstructor]
@@ -12,21 +11,18 @@ public partial class PlayersController : ControllerBase
 {
     private readonly PlayerService _playerService;
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IEnumerable<PlayerDto>> GetAllAsync()
     {
         return await _playerService.GetAllAsync();
     }
 
-    [AllowAnonymous]
     [HttpGet("statistics")]
     public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
     {
         return await _playerService.GetAllStatisticsAsync(Request.Headers["show-all-maps"] == "True");
     }
 
-    [AllowAnonymous]
     [HttpGet("{id}/full")]
     public async Task<ActionResult<PlayerFullDto>> GetFullAsync(string id)
     {
