@@ -15,6 +15,10 @@ public partial class GamePage : IAsyncDisposable
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public bool HideScores { get; set; }
+
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 

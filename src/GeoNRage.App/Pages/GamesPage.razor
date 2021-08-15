@@ -1,34 +1,40 @@
 ﻿@page "/games"
 
 <Container Condition="Games?.Any() == true">
-    <ChildContent>
-        <div class="container">
-            <Table Items="Games"
-                   Headers="@(new TableHeader[]
+	<ChildContent>
+		<div class="container">
+			<Table Items="Games"
+				   Headers="@(new TableHeader[]
                                   {
                                       new("Nom", false, string.Empty),
                                       new("Date", false, string.Empty),
                                       new("", false, string.Empty),
+                                      new("", false, string.Empty),
                                   })"
-                   Paginate="true"
-                   PageSize="15"
-                   IsNarrow="false">
-                <RowContent Context="game">
-                    <td>@game.Name</td>
-                    <td>@game.Date.ToShortDateString()</td>
-                    <td class="min">
-                        <ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")"
-                                    Icon="fa-external-link-alt"
-                                    Tooltip="Ouvrir" />
-                    </td>
-                </RowContent>
-            </Table>
-        </div>
-    </ChildContent>
+				   Paginate="true"
+				   PageSize="15"
+				   IsNarrow="false">
+				<RowContent Context="game">
+					<td>@game.Name</td>
+					<td>@game.Date.ToShortDateString()</td>
+					<td class="min">
+						<ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}")"
+									Icon="fa-external-link-alt"
+									Tooltip="Ouvrir" />
+					</td>
+					<td class="min">
+						<ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/games/{game.Id}?hideScores=true")"
+									Icon="fa-eye-slash"
+									Tooltip="Ouvrir sans afficher les scores" />
+					</td>
+				</RowContent>
+			</Table>
+		</div>
+	</ChildContent>
 
-    <ElseContent>
-        <LoadingAnimation Animated="true">
-            Chargement des parties...
-        </LoadingAnimation>
-    </ElseContent>
+	<ElseContent>
+		<LoadingAnimation Animated="true">
+			Chargement des parties...
+		</LoadingAnimation>
+	</ElseContent>
 </Container>
