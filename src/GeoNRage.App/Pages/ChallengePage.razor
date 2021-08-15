@@ -1,5 +1,7 @@
 ﻿@page "/challenges/{Id:int}"
 
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Member)]
+
 <Container Condition="Loaded && ChallengeFound">
     <div class="container is-fluid is-flex is-align-items-center is-align-self-center is-justify-content-center">
         <div class="card m-3">

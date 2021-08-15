@@ -19,7 +19,6 @@ public partial class LocationsStatistics
     protected override async Task OnInitializedAsync()
     {
         Locations = await LocationsApi.GetAllAsync();
-        MapStatusService.MapStatusChanged += OnMapStatusChanged;
     }
 
     internal override async void OnMapStatusChanged(object? sender, EventArgs e)

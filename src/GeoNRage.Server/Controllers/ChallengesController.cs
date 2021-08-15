@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Controllers;
 
-[Authorize]
+[Authorize(Roles = Roles.Member)]
 [ApiController]
 [Route("api/[controller]")]
 [AutoConstructor]
@@ -12,7 +12,6 @@ public partial class ChallengesController : ControllerBase
 {
     private readonly ChallengeService _challengeService;
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame = false, [FromQuery] string[]? playersToExclude = null)
     {
@@ -26,7 +25,6 @@ public partial class ChallengesController : ControllerBase
         return await _challengeService.GetAllAsAdminViewAsync();
     }
 
-    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<ChallengeDetailDto>> GetAsync(int id)
     {
@@ -34,7 +32,6 @@ public partial class ChallengesController : ControllerBase
         return challenge ?? (ActionResult<ChallengeDetailDto>)NotFound();
     }
 
-    [AllowAnonymous]
     [HttpPost("import")]
     public async Task<ActionResult<int>> ImportChallengeAsync(ChallengeImportDto dto)
     {

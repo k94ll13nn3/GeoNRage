@@ -15,14 +15,12 @@ public partial class ChallengesPage
     public IChallengesApi ChallengesApi { get; set; } = null!;
 
     [Inject]
-    public IPlayersApi PlayersApi { get; set; } = null!;
+    public IAuthApi AuthApi { get; set; } = null!;
 
     [Inject]
     public PopupService PopupService { get; set; } = null!;
 
     public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
-
-    public IEnumerable<PlayerDto> Players { get; set; } = null!;
 
     public string GeoGuessrId { get; set; } = null!;
 
@@ -32,18 +30,19 @@ public partial class ChallengesPage
 
     public bool ChallengeImported { get; set; }
 
-    public ICollection<string> PlayersToHide { get; } = new List<string>();
+    public bool DisplayAll { get; set; }
+
+    public UserDto User { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await FilterChallengesAsync();
-        Players = await PlayersApi.GetAllAsync();
-        MapStatusService.MapStatusChanged += OnMapStatusChanged;
+        User = await AuthApi.CurrentUserInfo();
+        await FilterChallengesAsync(DisplayAll);
     }
 
     internal override async void OnMapStatusChanged(object? sender, EventArgs e)
     {
-        await FilterChallengesAsync();
+        await FilterChallengesAsync(DisplayAll);
     }
 
     private static IEnumerable<ChallengeDto> Sort(IEnumerable<ChallengeDto> challenges, string column, bool ascending)
@@ -61,9 +60,16 @@ public partial class ChallengesPage
         PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync(), true);
     }
 
-    private async Task FilterChallengesAsync()
+    private async Task FilterChallengesAsync(bool displayAll)
     {
-        Challenges = await ChallengesApi.GetAllAsync(true, PlayersToHide.ToArray());
+        DisplayAll = displayAll;
+        string[] playersToHide = Array.Empty<string>();
+        if (!DisplayAll && User.PlayerId is not null)
+        {
+            playersToHide = new[] { User.PlayerId };
+        }
+
+        Challenges = await ChallengesApi.GetAllAsync(true, playersToHide);
         ChallengesTable?.SetItems(Challenges);
     }
 
@@ -74,7 +80,7 @@ public partial class ChallengesPage
             Error = null;
             ChallengeImported = false;
             await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
-            await FilterChallengesAsync();
+            await FilterChallengesAsync(DisplayAll);
             GeoGuessrId = string.Empty;
             ChallengeImported = true;
         }

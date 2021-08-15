@@ -8,7 +8,10 @@ public class MapStatusService
 
     public void SetMapStatus(bool status)
     {
-        AllMaps = status;
-        MapStatusChanged?.Invoke(this, EventArgs.Empty);
+        if (AllMaps != status)
+        {
+            AllMaps = status;
+            MapStatusChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
