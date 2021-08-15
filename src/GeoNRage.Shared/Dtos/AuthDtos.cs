@@ -17,44 +17,45 @@ public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, 
 
 public class RegisterDto
 {
-    [Required]
+    [Required(ErrorMessage = "Le champ 'Nom d'utilisateur' est requis.")]
     public string UserName { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Le champ 'Mot de passe' est requis.")]
     public string Password { get; set; } = string.Empty;
 
-    [Required]
-    [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
+    [Required(ErrorMessage = "Le champ 'Confirmation mot de passe' est requis.")]
+    [Compare(nameof(Password), ErrorMessage = "Les mots de passes ne correspondent pas.")]
     public string PasswordConfirm { get; set; } = string.Empty;
 }
 
 public class UserEditDto
 {
-    public string? UserName { get; set; }
+    [Required(ErrorMessage = "Le champ 'Nom d'utilisateur' est requis.")]
+    public string UserName { get; set; } = null!;
 
     public string? Password { get; set; }
 
-    [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
+    [Compare(nameof(Password), ErrorMessage = "Les mots de passes ne correspondent pas.")]
     public string? PasswordConfirm { get; set; }
 }
 
 public class UserEditAdminDto
 {
-    [Required]
+    [Required(ErrorMessage = "Le champ 'Nom d'utilisateur' est requis.")]
     public string UserName { get; set; } = string.Empty;
 
     public string? PlayerId { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Le champ 'Roles' est requis.")]
     public ICollection<string> Roles { get; set; } = new HashSet<string>();
 }
 
 public class LoginDto
 {
-    [Required]
+    [Required(ErrorMessage = "Le champ 'Nom d'utilisateur' est requis.")]
     public string UserName { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Le champ 'Mot de passe' est requis.")]
     public string Password { get; set; } = string.Empty;
 
     public bool RememberMe { get; set; }

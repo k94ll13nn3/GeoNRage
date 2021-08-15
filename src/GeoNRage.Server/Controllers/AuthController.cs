@@ -23,13 +23,13 @@ public partial class AuthController : ControllerBase
         User user = await _userManager.FindByNameAsync(request.UserName);
         if (user == null)
         {
-            return BadRequest("Invalid password or user.");
+            return BadRequest("Utilisateur ou mot de passe invalide.");
         }
 
         Microsoft.AspNetCore.Identity.SignInResult singInResult = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!singInResult.Succeeded)
         {
-            return BadRequest("Invalid password or user.");
+            return BadRequest("Utilisateur ou mot de passe invalide.");
         }
 
         await _signInManager.SignInAsync(user, request.RememberMe);
@@ -80,7 +80,7 @@ public partial class AuthController : ControllerBase
         User user = await _userManager.FindByNameAsync(User.Identity?.Name);
         if (user is null)
         {
-            return BadRequest("Invalid user.");
+            return BadRequest("Utilisateur invalide.");
         }
 
         IdentityResult result;
@@ -115,12 +115,12 @@ public partial class AuthController : ControllerBase
         User user = await _userManager.FindByNameAsync(parameters.UserName);
         if (user is null)
         {
-            return BadRequest("Invalid user.");
+            return BadRequest("Utilisateur invalide.");
         }
 
         if (parameters.PlayerId is not null && await _playerService.GetAsync(parameters.PlayerId) is null)
         {
-            return BadRequest("Invalid player id.");
+            return BadRequest("L'id de joueur est invalide.");
         }
 
         IdentityResult result;

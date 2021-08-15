@@ -36,7 +36,8 @@ builder.Services.AddDbContextPool<GeoNRageDbContext>(options =>
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<GeoNRageDbContext>()
-    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
+    .AddErrorDescriber<FrenchIdentityErrorDescriber>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

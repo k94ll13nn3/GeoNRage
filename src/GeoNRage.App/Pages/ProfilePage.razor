@@ -3,7 +3,7 @@
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Member)]
 
 <div class="container">
-	<EditForm Model="User" OnSubmit="UpdateUserAsync" @ref="Form" autocomplete="off">
+	<EditForm Model="User" OnSubmit="UpdateUserAsync" @ref="Form" autocomplete="off" class="my-3">
 		<DataAnnotationsValidator />
 
 		<Container Condition="!string.IsNullOrWhiteSpace(Error)">

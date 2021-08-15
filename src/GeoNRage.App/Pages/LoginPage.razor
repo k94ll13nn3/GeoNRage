@@ -3,53 +3,53 @@
 @layout EmptyLayout
 
 <div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column" style="width:100%">
-    <div class="columns is-centered" style="width:100%">
-        <div class="column is-5-tablet is-4-desktop is-3-widescreen box">
-            <div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column m-3">
-                <span class="logo-text">Geo<span class="logo-text-inner">'N</span> Rage</span>
-            </div>
-            <EditForm OnValidSubmit="OnSubmitAsync" Model="LoginRequest">
-                <div class="field">
-                    <label class="label">Nom d'utilisateur</label>
-                    <p class="control has-icons-left">
-                        <InputText id="inputUsername" @bind-Value="LoginRequest.UserName" placeholder="Nom d'utilisateur" class="@(ShowError ? "input is-danger" : "input")" />
-                        <Container Condition="!ShowError">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-user"></i>
-                            </span>
-                        </Container>
-                        <Container Condition="ShowError">
-                            <span class="icon is-small is-left" title="@Error">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </span>
-                        </Container>
-                    </p>
-                </div>
+	<div class="columns is-centered" style="width:100%">
+		<div class="column is-5-tablet is-4-desktop is-3-widescreen box">
+			<div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column m-3">
+				<span class="logo-text">Geo<span class="logo-text-inner">'N</span> Rage</span>
+			</div>
+			<EditForm OnValidSubmit="OnSubmitAsync" Model="LoginRequest">
+				<div class="field">
+					<label class="label">Nom d'utilisateur</label>
+					<p class="control has-icons-left">
+						<InputText id="inputUsername" @bind-Value="LoginRequest.UserName" placeholder="Nom d'utilisateur" class="@(ShowError ? "input is-danger" : "input")" />
+						<Container Condition="!ShowError">
+							<span class="icon is-small is-left">
+								<i class="fas fa-user"></i>
+							</span>
+						</Container>
+						<Container Condition="ShowError">
+							<span class="icon is-small is-left">
+								<i class="fas fa-exclamation-triangle"></i>
+							</span>
+						</Container>
+					</p>
+				</div>
 
-                <div class="field">
-                    <label class="label">Mot de passe</label>
-                    <p class="control has-icons-left">
-                        <InputText type="password" id="inputPassword" @bind-Value="LoginRequest.Password" class="@(ShowError ? "input is-danger" : "input")" placeholder="Mot de passe" />
-                        <Container Condition="!ShowError">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-key"></i>
-                            </span>
-                        </Container>
-                        <Container Condition="ShowError">
-                            <span class="icon is-small is-left" title="@Error">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </span>
-                        </Container>
-                    </p>
-                </div>
+				<div class="field">
+					<label class="label">Mot de passe</label>
+					<p class="control has-icons-left">
+						<InputText type="password" id="inputPassword" @bind-Value="LoginRequest.Password" class="@(ShowError ? "input is-danger" : "input")" placeholder="Mot de passe" />
+						<Container Condition="!ShowError">
+							<span class="icon is-small is-left">
+								<i class="fas fa-key"></i>
+							</span>
+						</Container>
+						<Container Condition="ShowError">
+							<span class="icon is-small is-left">
+								<i class="fas fa-exclamation-triangle"></i>
+							</span>
+						</Container>
+					</p>
+				</div>
 
-                <button class="button is-link" type="submit">
-                    <span class="icon">
-                        <i class="fas fa-sign-in-alt"></i>
-                    </span>
-                    <span>Se connecter</span>
-                </button>
-            </EditForm>
-        </div>
-    </div>
+				<button class="button is-link" type="submit">
+					<span class="icon">
+						<i class="fas fa-sign-in-alt"></i>
+					</span>
+					<span>Se connecter</span>
+				</button>
+			</EditForm>
+		</div>
+	</div>
 </div>
