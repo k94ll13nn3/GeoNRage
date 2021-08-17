@@ -1,0 +1,13 @@
+﻿.toast-container {
+    width: 500px;
+    position: fixed;
+    z-index: 1000;
+    right: 30px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-end;
+}

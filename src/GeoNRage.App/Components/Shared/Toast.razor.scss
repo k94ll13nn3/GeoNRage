@@ -1,0 +1,18 @@
+﻿.toast {
+    display: none;
+    flex: 0 1 auto;
+    align-self: auto;
+    width: 100%;
+    animation: fadein 1s;
+    display: block;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

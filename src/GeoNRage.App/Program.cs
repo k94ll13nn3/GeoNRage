@@ -26,6 +26,7 @@ ConfigureRefitClient<IAdminApi>(builder);
 
 builder.Services.AddSingleton(new PopupService());
 builder.Services.AddSingleton(new MapStatusService());
+builder.Services.AddSingleton(new ToastService());
 
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
