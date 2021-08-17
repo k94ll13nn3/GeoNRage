@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace GeoNRage.App.Components.Shared;
 
-public record ToastData(Guid Id, string Message);
-
 public partial class ToastRender : IDisposable
 {
     private bool _disposedValue;
@@ -49,9 +47,9 @@ public partial class ToastRender : IDisposable
         }
     }
 
-    private void AddToast(object? sender, string e)
+    private void AddToast(object? sender, ToastData toast)
     {
-        Toasts.Add(new(Guid.NewGuid(), e));
+        Toasts.Add(toast);
         StateHasChanged();
     }
 
