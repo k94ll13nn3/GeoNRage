@@ -26,6 +26,12 @@
 	</div>
 </Container>
 
+<Container Condition="Loaded && GameFound && (User.PlayerId is null || !Game.Players.Any(p => p.Id == User.PlayerId))">
+	<div class="notification is-warning error-alert">
+		Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mise à jour en temps réél.
+	</div>
+</Container>
+
 <Container Condition="Loaded && GameFound">
 	<div class="container is-fluid is-flex is-align-items-center is-align-self-center is-justify-content-center">
 		<div class="card m-3">
