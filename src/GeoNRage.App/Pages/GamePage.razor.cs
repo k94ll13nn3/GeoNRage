@@ -1,5 +1,6 @@
 ﻿using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Games;
+using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Refit;
@@ -21,6 +22,9 @@ public partial class GamePage : IAsyncDisposable
 
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
 
     [Inject]
     public IGamesApi GamesApi { get; set; } = null!;
@@ -79,6 +83,7 @@ public partial class GamePage : IAsyncDisposable
             .Build();
 
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValueAsync);
+        _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -161,6 +166,11 @@ public partial class GamePage : IAsyncDisposable
         }
 
         int clampedValue = Math.Clamp(score ?? 0, 0, 5000);
+        if (clampedValue == 5000)
+        {
+            ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(3000));
+        }
+
         await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
         await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
     }
@@ -170,6 +180,7 @@ public partial class GamePage : IAsyncDisposable
         if (Game is not null && User.PlayerId is not null && !Game.Players.Any(p => p.Id == User.PlayerId))
         {
             await GamesApi.AddPlayerAsync(Game.Id, User.PlayerId);
+            await _hubConnection.InvokeAsync("NotifyNewPlayer", Id);
             await ReloadPageAsync();
         }
     }

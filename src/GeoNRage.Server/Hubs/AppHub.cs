@@ -22,6 +22,17 @@ public partial class AppHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, $"group-${gameId}");
     }
 
+    [HubMethodName("NotifyNewPlayer")]
+    public async Task NotifyNewPlayerAsync(int gameId)
+    {
+        if (!await UserInGame(gameId))
+        {
+            return;
+        }
+
+        await Clients.OthersInGroup($"group-${gameId}").SendAsync("NewPlayerAdded");
+    }
+
     [HubMethodName("UpdateValue")]
     public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int score)
     {
