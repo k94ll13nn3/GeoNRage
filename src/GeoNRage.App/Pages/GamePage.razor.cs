@@ -83,7 +83,7 @@ public partial class GamePage : IAsyncDisposable
             .Build();
 
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValueAsync);
-        _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information));
+        _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -169,12 +169,12 @@ public partial class GamePage : IAsyncDisposable
         await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
         if (clampedValue == 5000)
         {
-            ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(2500), ToastType.Success);
+            ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(2500), ToastType.Success, "toast-5000");
         }
 
         if (clampedValue == 4999)
         {
-            ToastService.DisplayToast(SoCloseFragment, TimeSpan.FromMilliseconds(2500), ToastType.Warning);
+            ToastService.DisplayToast(SoCloseFragment, TimeSpan.FromMilliseconds(2500), ToastType.Warning, "toast-4999");
         }
 
         await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
