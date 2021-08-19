@@ -1,5 +1,5 @@
 ﻿<div class="toast-container">
 	<Repeater Items="Toasts" Context="toast">
-		<Toast @key="@toast.Id" Message="@toast.Message" OnCloseCallback="() => RemoveToast(toast)" Duration="@toast.Duration" Type="@toast.ToastType" />
+		<Toast @key="@toast.Id" Content="@toast.Content" OnCloseCallback="() => RemoveToast(toast)" Duration="@toast.Duration" Type="@toast.ToastType"></Toast>
 	</Repeater>
 </div>

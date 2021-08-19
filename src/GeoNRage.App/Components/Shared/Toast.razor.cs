@@ -8,9 +8,6 @@ public partial class Toast
     private readonly CancellationTokenSource _tokenSource = new();
 
     [Parameter]
-    public string Message { get; set; } = null!;
-
-    [Parameter]
     public TimeSpan? Duration { get; set; }
 
     [Parameter]
@@ -18,6 +15,9 @@ public partial class Toast
 
     [Parameter]
     public ToastType Type { get; set; }
+
+    [Parameter]
+    public RenderFragment Content { get; set; } = null!;
 
     public string NotificationClass { get; set; } = null!;
 

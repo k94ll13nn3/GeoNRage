@@ -171,6 +171,11 @@ public partial class GamePage : IAsyncDisposable
             ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(3000), ToastType.Success);
         }
 
+        if (clampedValue == 4999)
+        {
+            ToastService.DisplayToast("4999 ! Pas loin !", TimeSpan.FromMilliseconds(3000), ToastType.Warning);
+        }
+
         await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
         await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
     }

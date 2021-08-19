@@ -1,6 +1,8 @@
-﻿namespace GeoNRage.App.Services;
+﻿using Microsoft.AspNetCore.Components;
 
-public record ToastData(Guid Id, string Message, TimeSpan? Duration, ToastType ToastType);
+namespace GeoNRage.App.Services;
+
+public record ToastData(Guid Id, RenderFragment Content, TimeSpan? Duration, ToastType ToastType);
 
 public enum ToastType
 {
@@ -18,6 +20,6 @@ public class ToastService
 
     public void DisplayToast(string message = "", TimeSpan? duration = null, ToastType toastType = ToastType.Primary)
     {
-        OnToastRequested?.Invoke(this, new(Guid.NewGuid(), message, duration, toastType));
+        OnToastRequested?.Invoke(this, new(Guid.NewGuid(), builder => builder.AddContent(1, message), duration, toastType));
     }
 }
