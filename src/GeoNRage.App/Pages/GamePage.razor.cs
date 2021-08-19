@@ -166,9 +166,10 @@ public partial class GamePage : IAsyncDisposable
         }
 
         int clampedValue = Math.Clamp(score ?? 0, 0, 5000);
+        await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
         if (clampedValue == 5000)
         {
-            ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(3000), ToastType.Success);
+            ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(2500), ToastType.Success);
         }
 
         if (clampedValue == 4999)
@@ -177,7 +178,6 @@ public partial class GamePage : IAsyncDisposable
         }
 
         await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
-        await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
     }
 
     private async Task AddPlayerAsync()
