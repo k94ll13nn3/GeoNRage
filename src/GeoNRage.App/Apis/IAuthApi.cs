@@ -21,4 +21,7 @@ public interface IAuthApi
 
     [Post("/api/auth/register")]
     Task RegisterAsync(RegisterDto parameters);
+
+    [Delete("/api/auth/{userName}")]
+    Task DeleteUserAsync(string userName);
 }

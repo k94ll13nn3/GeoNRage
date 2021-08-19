@@ -12,7 +12,8 @@
 					<th>Nom</th>
 					<th>Joueur</th>
 					<th>Roles</th>
-					<th>Actions</th>
+					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -34,12 +35,19 @@
 								</span>
 							</a>
 						</td>
+						<td class="min">
+							<a class="has-text-danger" @onclick="(() => DeleteUser(user.UserName))">
+								<span class="icon">
+									<i class="fas fa-trash-alt"></i>
+								</span>
+							</a>
+						</td>
 					</tr>
 				</Repeater>
 			</tbody>
 			<tfoot>
 				<tr>
-					<th colspan="4" class="has-text-right">
+					<th colspan="5" class="has-text-right">
 						<button class="button is-primary" @onclick="ShowUserCreation">
 							<span class="icon">
 								<i class="fas fa-plus"></i>

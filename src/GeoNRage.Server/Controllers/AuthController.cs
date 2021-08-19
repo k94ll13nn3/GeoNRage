@@ -160,4 +160,17 @@ public partial class AuthController : ControllerBase
             user?.PlayerId
         );
     }
+
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpDelete("{userName}")]
+    public async Task<IActionResult> DeleteUserAsync(string userName)
+    {
+        User user = await _userManager.FindByNameAsync(userName);
+        if (user is not null)
+        {
+            await _userManager.DeleteAsync(user);
+        }
+
+        return NoContent();
+    }
 }

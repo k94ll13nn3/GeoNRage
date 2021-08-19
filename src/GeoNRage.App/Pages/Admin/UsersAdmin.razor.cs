@@ -89,6 +89,11 @@ namespace GeoNRage.App.Pages.Admin
             UserRegister = new RegisterDto();
         }
 
+        public void DeleteUser(string userName)
+        {
+            PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {userName} ?", () => OnConfirmDeleteAsync(userName), false);
+        }
+
         protected override async Task OnInitializedAsync()
         {
             Users = await AdminApi.GetAllUsersAsAdminViewAsync();
@@ -98,6 +103,20 @@ namespace GeoNRage.App.Pages.Admin
         protected override void OnAfterRender(bool firstRender)
         {
             Form?.EditContext?.UpdateCssClassProvider();
+        }
+
+        private async void OnConfirmDeleteAsync(string userName)
+        {
+            try
+            {
+                await AuthApi.DeleteUserAsync(userName);
+                Users = await AdminApi.GetAllUsersAsAdminViewAsync();
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            }
         }
     }
 }
