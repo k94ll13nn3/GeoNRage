@@ -94,11 +94,15 @@
 								</Repeater>
 							</tr>
 
-							@{ var i = 1; }
+							@{
+								var i = 1; 
+							}
 							<Repeater Items="Enumerable.Range(1, 5)" Context="round">
 								<tr>
 									<th>Round @round</th>
-									@{ var j = 1; }
+									@{
+										var j = 1; 
+									}
 									<Repeater Items="challenge.PlayerScores" Context="playerScore">
 										@{
 											var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
@@ -122,9 +126,13 @@
 												</ElseContent>
 											</Container>
 										</td>
-										@{ j++; }
+										@{
+											j++; 
+										}
 									</Repeater>
-									@{ i += 100; }
+									@{
+										i += 100; 
+									}
 								</tr>
 							</Repeater>
 
@@ -192,3 +200,7 @@
 <Container Condition="!GameFound">
 	<PageNotFound />
 </Container>
+
+@code {
+	public RenderFragment SoCloseFragment => @<figure class="image is-square"><img src="img/so-close.webp"></figure>;
+}

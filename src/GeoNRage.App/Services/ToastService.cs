@@ -18,8 +18,13 @@ public class ToastService
 {
     public event EventHandler<ToastData>? OnToastRequested;
 
-    public void DisplayToast(string message = "", TimeSpan? duration = null, ToastType toastType = ToastType.Primary)
+    public void DisplayToast(string message, TimeSpan? duration = null, ToastType toastType = ToastType.Primary)
     {
         OnToastRequested?.Invoke(this, new(Guid.NewGuid(), builder => builder.AddContent(1, message), duration, toastType));
+    }
+
+    public void DisplayToast(RenderFragment content, TimeSpan? duration = null, ToastType toastType = ToastType.Primary)
+    {
+        OnToastRequested?.Invoke(this, new(Guid.NewGuid(), content, duration, toastType));
     }
 }

@@ -173,7 +173,7 @@ public partial class GamePage : IAsyncDisposable
 
         if (clampedValue == 4999)
         {
-            ToastService.DisplayToast("4999 ! Pas loin !", TimeSpan.FromMilliseconds(3000), ToastType.Warning);
+            ToastService.DisplayToast(SoCloseFragment, TimeSpan.FromMilliseconds(2500), ToastType.Warning);
         }
 
         await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
