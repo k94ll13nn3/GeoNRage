@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages;
 
-public partial class PlayersStatistics
+public partial class PlayersStatisticsPage
 {
     [Inject]
     public IPlayersApi PlayersApi { get; set; } = null!;

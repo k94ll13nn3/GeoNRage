@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages;
 
-public partial class LocationsStatistics
+public partial class LocationsStatisticsPage
 {
     [Inject]
     public ILocationsApi LocationsApi { get; set; } = null!;
