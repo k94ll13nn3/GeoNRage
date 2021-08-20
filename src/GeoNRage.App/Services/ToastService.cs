@@ -2,18 +2,6 @@
 
 namespace GeoNRage.App.Services;
 
-public record ToastData(string Id, RenderFragment Content, TimeSpan? Duration, ToastType ToastType);
-
-public enum ToastType
-{
-    Primary = 0,
-    Information,
-    Link,
-    Success,
-    Warning,
-    Error,
-}
-
 public class ToastService
 {
     public event EventHandler<ToastData>? OnToastRequested;

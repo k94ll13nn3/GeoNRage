@@ -1,5 +1,4 @@
-﻿using GeoNRage.App.Core;
-using Refit;
+﻿using Refit;
 
 namespace GeoNRage.App.Apis;
 

@@ -1,6 +1,4 @@
-﻿using GeoNRage.App.Core;
-using GeoNRage.App.Services;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
 namespace GeoNRage.App.Components.Shared;

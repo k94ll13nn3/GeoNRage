@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using GeoNRage.App.Apis;
-using GeoNRage.App.Core;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages;

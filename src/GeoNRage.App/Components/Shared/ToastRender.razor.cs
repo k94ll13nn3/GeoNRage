@@ -1,5 +1,4 @@
-﻿using GeoNRage.App.Services;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace GeoNRage.App.Components.Shared;

@@ -135,5 +135,3 @@ public partial class Table<T>
         StateHasChanged();
     }
 }
-
-public record TableHeader(string Title, bool CanSort, string Property);

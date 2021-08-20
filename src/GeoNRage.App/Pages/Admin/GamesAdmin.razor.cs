@@ -1,7 +1,5 @@
 ﻿using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Shared;
-using GeoNRage.App.Core;
-using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;

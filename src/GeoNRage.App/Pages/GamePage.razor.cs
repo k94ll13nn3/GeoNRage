@@ -1,6 +1,5 @@
 ﻿using GeoNRage.App.Apis;
 using GeoNRage.App.Components.Games;
-using GeoNRage.App.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Refit;
