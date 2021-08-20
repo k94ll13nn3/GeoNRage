@@ -1,6 +1,6 @@
 <Router AppAssembly="@typeof(Application).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(EmptyLayout)">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(GeoNRage.App.Layouts.EmptyLayout)">
             <NotAuthorized>
                 <PageNotFound />
             </NotAuthorized>
@@ -14,7 +14,7 @@
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
-            <LayoutView Layout="@typeof(EmptyLayout)">
+            <LayoutView Layout="@typeof(GeoNRage.App.Layouts.EmptyLayout)">
                 <PageNotFound />
             </LayoutView>
         </CascadingAuthenticationState>

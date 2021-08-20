@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Layouts;
+namespace GeoNRage.App.Layouts.Main;
 
 public partial class MainLayout
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace GeoNRage.App.Components;
+namespace GeoNRage.App.Layouts.Main;
 
 public partial class MapStatusSwitcher
 {

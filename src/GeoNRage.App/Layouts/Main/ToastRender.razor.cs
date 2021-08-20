@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
-namespace GeoNRage.App.Components;
+namespace GeoNRage.App.Layouts.Main;
 
 public partial class ToastRender : IDisposable
 {
