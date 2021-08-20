@@ -35,7 +35,14 @@
 
 				<AuthorizeView>
 					<Authorized>
-						<NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">@Name</NavLink>
+						<NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
+							<span class="icon-text">
+								<span class="icon">
+									<i class="fas fa-user"></i>
+								</span>
+								<span>@Name</span>
+							</span>
+						</NavLink>
 						<span class="navbar-item">
 							<button class="button is-link" @onclick="@LogoutClickAsync">
 								<span class="icon">
