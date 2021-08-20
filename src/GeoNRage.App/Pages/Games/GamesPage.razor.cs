@@ -1,7 +1,7 @@
 ﻿using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Pages;
+namespace GeoNRage.App.Pages.Games;
 
 public partial class GamesPage
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Games;
+namespace GeoNRage.App.Pages.Games;
 
 public partial class GameRankings
 {

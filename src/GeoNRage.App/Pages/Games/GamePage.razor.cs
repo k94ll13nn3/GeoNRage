@@ -1,10 +1,9 @@
 ﻿using GeoNRage.App.Apis;
-using GeoNRage.App.Components.Games;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Refit;
 
-namespace GeoNRage.App.Pages;
+namespace GeoNRage.App.Pages.Games;
 
 public partial class GamePage : IAsyncDisposable
 {

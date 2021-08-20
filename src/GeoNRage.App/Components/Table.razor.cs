@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Components.Shared;
+namespace GeoNRage.App.Components;
 
 public partial class Table<T>
 {
