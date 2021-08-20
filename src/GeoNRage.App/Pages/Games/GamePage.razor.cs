@@ -187,4 +187,9 @@ public partial class GamePage : IAsyncDisposable
             await ReloadPageAsync();
         }
     }
+
+    private void Taunt(string playerId)
+    {
+        ToastService.DisplayToast(TauntFragment, TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt");
+    }
 }

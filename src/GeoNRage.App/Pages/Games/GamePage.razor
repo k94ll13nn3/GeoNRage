@@ -90,18 +90,32 @@
 									</a>
 								</th>
 								<Repeater Items="challenge.PlayerScores" Context="playerScore">
-									<th>@playerScore.PlayerName</th>
+									<th>
+										<Container Condition="User.PlayerId is not null && Game.Players.Any(p => p.Id == User.PlayerId) && playerScore.PlayerId != User.PlayerId">
+											<ChildContent>
+												<span class="icon-text">
+													<span class="icon is-clickable" @onclick="(() => Taunt(playerScore.PlayerId))">
+														<i class="fas fa-hand-middle-finger"></i>
+													</span>
+													<span>@playerScore.PlayerName</span>
+												</span>
+											</ChildContent>
+											<ElseContent>
+												@playerScore.PlayerName
+											</ElseContent>
+										</Container>
+									</th>
 								</Repeater>
 							</tr>
 
 							@{
-								var i = 1; 
+								var i = 1;
 							}
 							<Repeater Items="Enumerable.Range(1, 5)" Context="round">
 								<tr>
 									<th>Round @round</th>
 									@{
-										var j = 1; 
+										var j = 1;
 									}
 									<Repeater Items="challenge.PlayerScores" Context="playerScore">
 										@{
@@ -127,11 +141,11 @@
 											</Container>
 										</td>
 										@{
-											j++; 
+											j++;
 										}
 									</Repeater>
 									@{
-										i += 100; 
+										i += 100;
 									}
 								</tr>
 							</Repeater>
@@ -203,4 +217,5 @@
 
 @code {
 	public RenderFragment SoCloseFragment => @<figure class="image is-square"><img src="img/so-close.webp"></figure>;
+	public RenderFragment TauntFragment => @<figure class="image is-square"><img src="img/noob.webp"></figure>;
 }

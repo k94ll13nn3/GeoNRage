@@ -24,7 +24,7 @@ public partial class Toast
     {
         NotificationClass = Type switch
         {
-            ToastType.Error => "error",
+            ToastType.Error => "danger",
             ToastType.Information => "info",
             ToastType.Link => "link",
             ToastType.Warning => "warning",
