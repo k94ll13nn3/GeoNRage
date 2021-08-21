@@ -4,6 +4,9 @@ using GeoNRage.Server.Entities;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Services;
 using GeoNRage.Server.Tasks;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +41,9 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<GeoNRageDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
     .AddErrorDescriber<FrenchIdentityErrorDescriber>();
+
+builder.Services.AddDataProtection().PersistKeysToDbContext<GeoNRageDbContext>();
+builder.Services.Configure<KeyManagementOptions>(options => options.XmlEncryptor = new NullXmlEncryptor());
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -89,13 +95,13 @@ if (app.Environment.IsDevelopment())
     app.UseWebAssemblyDebugging();
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API"));
+    app.UseHttpsRedirection();
 }
 else
 {
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 

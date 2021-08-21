@@ -1,4 +1,5 @@
 ﻿using GeoNRage.Server.Entities;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ public class GeoNRageDbContext : IdentityDbContext<
         IdentityUserLogin<string>,
         IdentityRoleClaim<string>,
         IdentityUserToken<string>
-    >
+    >, IDataProtectionKeyContext
 {
     public GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : base(options)
     {
@@ -36,6 +37,8 @@ public class GeoNRageDbContext : IdentityDbContext<
     public DbSet<PlayerGuess> PlayerGuesses { get; set; } = null!;
 
     public DbSet<Log> Logs { get; set; } = null!;
+
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -87,5 +90,7 @@ public class GeoNRageDbContext : IdentityDbContext<
 
         builder.Entity<UserRole>().HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleId);
         builder.Entity<UserRole>().HasOne(ur => ur.User).WithMany(r => r.UserRoles).HasForeignKey(ur => ur.UserId);
+
+        builder.Entity<DataProtectionKey>().HasKey(d => d.Id);
     }
 }
