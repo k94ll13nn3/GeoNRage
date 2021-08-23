@@ -94,7 +94,7 @@
 										<Container Condition="User.PlayerId is not null && Game.Players.Any(p => p.Id == User.PlayerId) && playerScore.PlayerId != User.PlayerId">
 											<ChildContent>
 												<span class="icon-text">
-													<span class="icon is-clickable" @onclick="(() => Taunt(playerScore.PlayerId))">
+													<span class="icon is-clickable" @onclick="(() => TauntAsync(playerScore.PlayerId))">
 														<i class="fas fa-hand-middle-finger"></i>
 													</span>
 													<span>@playerScore.PlayerName</span>

@@ -1,6 +1,5 @@
-﻿using GeoNRage.Server.Entities;
+﻿using System.Security.Claims;
 using GeoNRage.Server.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs;
@@ -9,7 +8,6 @@ namespace GeoNRage.Server.Hubs;
 public partial class AppHub : Hub
 {
     private readonly GameService _gameService;
-    private readonly UserManager<User> _userManager;
 
     [HubMethodName("JoinGroup")]
     public async Task JoinGroupAsync(int gameId)
@@ -20,6 +18,10 @@ public partial class AppHub : Hub
         }
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"group-${gameId}");
+        if (GetPlayerIdForCurrentUser() is string playerId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{playerId}");
+        }
     }
 
     [HubMethodName("NotifyNewPlayer")]
@@ -31,6 +33,17 @@ public partial class AppHub : Hub
         }
 
         await Clients.OthersInGroup($"group-${gameId}").SendAsync("NewPlayerAdded");
+    }
+
+    [HubMethodName("TauntPlayer")]
+    public async Task TauntPlayerAsync(int gameId, string playerId)
+    {
+        if (!await UserInGame(gameId))
+        {
+            return;
+        }
+
+        await Clients.Group($"user_{playerId}").SendAsync("Taunted");
     }
 
     [HubMethodName("UpdateValue")]
@@ -51,13 +64,18 @@ public partial class AppHub : Hub
         }
     }
 
+    private string? GetPlayerIdForCurrentUser()
+    {
+        return Context.User.FindFirstValue("PlayerId");
+    }
+
     private async Task<bool> UserInGame(int gameId)
     {
         if (Context.User?.IsInRole(Roles.Member) == true)
         {
             GameDetailDto? game = await _gameService.GetAsync(gameId);
-            User user = await _userManager.GetUserAsync(Context.User);
-            if (game?.Players.Any(p => p.Id == user.PlayerId) == true)
+            string? playerId = GetPlayerIdForCurrentUser();
+            if (game?.Players.Any(p => p.Id == playerId) == true)
             {
                 return true;
             }

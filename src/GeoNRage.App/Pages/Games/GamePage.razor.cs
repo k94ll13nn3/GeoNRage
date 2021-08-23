@@ -82,6 +82,7 @@ public partial class GamePage : IAsyncDisposable
 
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValueAsync);
         _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
+        _hubConnection.On("Taunted", () => ToastService.DisplayToast(TauntFragment, TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt"));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -188,8 +189,8 @@ public partial class GamePage : IAsyncDisposable
         }
     }
 
-    private void Taunt(string playerId)
+    private async Task TauntAsync(string playerId)
     {
-        ToastService.DisplayToast(TauntFragment, TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt");
+        await _hubConnection.InvokeAsync("TauntPlayer", Id, playerId);
     }
 }

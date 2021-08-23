@@ -40,7 +40,8 @@ builder.Services.AddDbContextPool<GeoNRageDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<GeoNRageDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
-    .AddErrorDescriber<FrenchIdentityErrorDescriber>();
+    .AddErrorDescriber<FrenchIdentityErrorDescriber>()
+    .AddClaimsPrincipalFactory<GeoNRageUserClaimsPrincipalFactory>();
 
 builder.Services.AddDataProtection().PersistKeysToDbContext<GeoNRageDbContext>();
 builder.Services.Configure<KeyManagementOptions>(options => options.XmlEncryptor = new NullXmlEncryptor());
