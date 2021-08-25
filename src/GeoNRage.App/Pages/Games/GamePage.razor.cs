@@ -1,5 +1,7 @@
-﻿using GeoNRage.App.Apis;
+﻿using System.Security.Claims;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Refit;
 
@@ -27,8 +29,8 @@ public partial class GamePage : IAsyncDisposable
     [Inject]
     public IGamesApi GamesApi { get; set; } = null!;
 
-    [Inject]
-    public IAuthApi AuthApi { get; set; } = null!;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
     public IPlayersApi PlayersApi { get; set; } = null!;
@@ -51,7 +53,7 @@ public partial class GamePage : IAsyncDisposable
 
     public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = new();
 
-    public UserDto User { get; set; } = null!;
+    public ClaimsPrincipal User { get; set; } = null!;
 
     public async ValueTask DisposeAsync()
     {
@@ -114,7 +116,7 @@ public partial class GamePage : IAsyncDisposable
             }
 
             await _hubConnection.InvokeAsync("JoinGroup", Id);
-            User = await AuthApi.CurrentUserInfo();
+            User = (await AuthenticationState).User;
             StateHasChanged();
         }
     }
@@ -159,13 +161,13 @@ public partial class GamePage : IAsyncDisposable
 
     private async Task SendAsync(int challengeId, int round, int? score)
     {
-        if (User.PlayerId is null)
+        if (User.PlayerId() is not string playerId)
         {
             return;
         }
 
         int clampedValue = Math.Clamp(score ?? 0, 0, 5000);
-        await HandleReceiveValueAsync(challengeId, User.PlayerId, round, clampedValue);
+        await HandleReceiveValueAsync(challengeId, playerId, round, clampedValue);
         if (clampedValue == 5000)
         {
             ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(2500), ToastType.Success, "toast-5000");
@@ -176,14 +178,14 @@ public partial class GamePage : IAsyncDisposable
             ToastService.DisplayToast(SoCloseFragment, TimeSpan.FromMilliseconds(2500), ToastType.Warning, "toast-4999");
         }
 
-        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId, round, clampedValue);
+        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId(), round, clampedValue);
     }
 
     private async Task AddPlayerAsync()
     {
-        if (Game is not null && User.PlayerId is not null && !Game.Players.Any(p => p.Id == User.PlayerId))
+        if (Game is not null && User.PlayerId() is string playerId && !Game.Players.Any(p => p.Id == User.PlayerId()))
         {
-            await GamesApi.AddPlayerAsync(Game.Id, User.PlayerId);
+            await GamesApi.AddPlayerAsync(Game.Id, playerId);
             await _hubConnection.InvokeAsync("NotifyNewPlayer", Id);
             await ReloadPageAsync();
         }

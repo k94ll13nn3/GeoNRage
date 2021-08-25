@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace GeoNRage.App.Pages;
 
@@ -12,8 +13,8 @@ public partial class LoginPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
-    [Inject]
-    public IAuthApi AuthApi { get; set; } = null!;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     public LoginDto LoginRequest { get; set; } = new LoginDto { RememberMe = true };
 
@@ -25,7 +26,7 @@ public partial class LoginPage
 
     protected override async Task OnInitializedAsync()
     {
-        if ((await AuthApi.CurrentUserInfo()).IsAuthenticated)
+        if ((await AuthenticationState).User.Identity?.IsAuthenticated == true)
         {
             NavigationManager.NavigateTo("/");
         }

@@ -1,5 +1,7 @@
-﻿using GeoNRage.App.Apis;
+﻿using System.Security.Claims;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
 
@@ -9,6 +11,9 @@ namespace GeoNRage.App.Pages
     {
         [Inject]
         public IAuthApi AuthApi { get; set; } = null!;
+
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
         [Inject]
         public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
@@ -22,7 +27,7 @@ namespace GeoNRage.App.Pages
 
         public string? Error { get; set; }
 
-        public UserDto User { get; set; } = null!;
+        public ClaimsPrincipal User { get; set; } = null!;
 
         public async Task UpdateUserAsync(EditContext editContext)
         {
@@ -54,7 +59,7 @@ namespace GeoNRage.App.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            User = await AuthApi.CurrentUserInfo();
+            User = (await AuthenticationState).User;
         }
 
         protected override void OnAfterRender(bool firstRender)

@@ -26,7 +26,7 @@
 	</div>
 </Container>
 
-<Container Condition="Loaded && GameFound && (User.PlayerId is null || !Game.Players.Any(p => p.Id == User.PlayerId))">
+<Container Condition="Loaded && GameFound && (User.PlayerId() is null || !Game.Players.Any(p => p.Id == User.PlayerId()))">
 	<div class="notification is-warning error-alert">
 		Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mises à jour en temps réel.
 	</div>
@@ -42,7 +42,7 @@
 				</div>
 				<div class="card-header-icon">
 					<div class="field has-addons">
-						<Container Condition="User.PlayerId is not null && !Game.Players.Any(p => p.Id == User.PlayerId)">
+						<Container Condition="User.PlayerId() is not null && !Game.Players.Any(p => p.Id == User.PlayerId())">
 							<p class="control">
 								<button class="button" @onclick="AddPlayerAsync">
 									<span class="is-hidden-touch"></span>
@@ -91,7 +91,7 @@
 								</th>
 								<Repeater Items="challenge.PlayerScores" Context="playerScore">
 									<th>
-										<Container Condition="User.PlayerId is not null && Game.Players.Any(p => p.Id == User.PlayerId) && playerScore.PlayerId != User.PlayerId">
+										<Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId()) && playerScore.PlayerId != User.PlayerId()">
 											<ChildContent>
 												<span class="icon-text">
 													<span class="icon is-clickable" @onclick="(() => TauntAsync(playerScore.PlayerId))">
@@ -122,14 +122,14 @@
 											var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
 										}
 										<td>
-											<Container Condition="User.PlayerId == playerScore.PlayerId || !HideScores">
+											<Container Condition="User.PlayerId() == playerScore.PlayerId || !HideScores">
 												<ChildContent>
 													<NumericInput @key="@key"
 																  InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
 																  ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
-																  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "perfect" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "almost-perfect" : "")} {(User.PlayerId != playerScore.PlayerId ? "default-score" : "")}")"
+																  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "perfect" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "almost-perfect" : "")} {(User.PlayerId() != playerScore.PlayerId ? "default-score" : "")}")"
 																  TabIndex="@(i + j)"
-																  Disabled="User.PlayerId != playerScore.PlayerId"></NumericInput>
+																  Disabled="User.PlayerId() != playerScore.PlayerId"></NumericInput>
 												</ChildContent>
 												<ElseContent>
 													<NumericInput @key="@key"

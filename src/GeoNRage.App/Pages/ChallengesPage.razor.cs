@@ -1,6 +1,8 @@
-﻿using GeoNRage.App.Apis;
+﻿using System.Security.Claims;
+using GeoNRage.App.Apis;
 using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 
 namespace GeoNRage.App.Pages;
@@ -13,8 +15,8 @@ public partial class ChallengesPage
     [Inject]
     public IChallengesApi ChallengesApi { get; set; } = null!;
 
-    [Inject]
-    public IAuthApi AuthApi { get; set; } = null!;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
     public PopupService PopupService { get; set; } = null!;
@@ -31,11 +33,11 @@ public partial class ChallengesPage
 
     public bool DisplayAll { get; set; }
 
-    public UserDto User { get; set; } = null!;
+    public ClaimsPrincipal User { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        User = await AuthApi.CurrentUserInfo();
+        User = (await AuthenticationState).User;
         await FilterChallengesAsync(DisplayAll);
     }
 
@@ -63,9 +65,9 @@ public partial class ChallengesPage
     {
         DisplayAll = displayAll;
         string[] playersToHide = Array.Empty<string>();
-        if (!DisplayAll && User.PlayerId is not null)
+        if (!DisplayAll && User.PlayerId() is string playerId)
         {
-            playersToHide = new[] { User.PlayerId };
+            playersToHide = new[] { playerId };
         }
 
         Challenges = await ChallengesApi.GetAllAsync(true, playersToHide);

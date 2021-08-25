@@ -7,18 +7,18 @@
 		<section class="hero is-primary is-small">
 			<div class="hero-body">
 				<p class="title">
-					@User?.UserName
+					@User.Identity?.Name
 				</p>
-				<Container Condition="User?.PlayerId is not null">
+				<Container Condition="User.PlayerId() is not null">
 					<p class="subtitle">
-						<a href="https://www.geoguessr.com/user/@User?.PlayerId" target="_blank">
+						<a href="https://www.geoguessr.com/user/@User.PlayerId()" target="_blank">
 							<span class="icon is-small">
 								<i class="fas fa-map-marker-alt"></i>
 							</span>
 							<span>Profil GeoGuessr</span>
 						</a>
 						<br />
-						<a href="@NavigationManager.ToAbsoluteUri($"/players/{User?.PlayerId}")">
+						<a href="@NavigationManager.ToAbsoluteUri($"/players/{User.PlayerId()}")">
 							<span class="icon is-small">
 								<i class="fas fa-gamepad"></i>
 							</span>
