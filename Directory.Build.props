@@ -6,12 +6,6 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
 
-  <!-- https://github.com/dotnet/roslyn/issues/37876#issuecomment-738042719 -->
-  <!-- https://github.com/dotnet/roslyn/issues/51602 -->
-  <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1014;AD0001</NoWarn>
-  </PropertyGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="../../BannedSymbols.txt" Visible="false" />
   </ItemGroup>
