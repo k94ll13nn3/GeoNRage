@@ -21,15 +21,14 @@ public partial class ChallengesPage
     [Inject]
     public PopupService PopupService { get; set; } = null!;
 
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
+
     public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
 
     public string GeoGuessrId { get; set; } = null!;
 
     public Table<ChallengeDto> ChallengesTable { get; set; } = null!;
-
-    public string? Error { get; set; }
-
-    public bool ChallengeImported { get; set; }
 
     public bool DisplayAll { get; set; }
 
@@ -78,20 +77,19 @@ public partial class ChallengesPage
     {
         try
         {
-            Error = null;
-            ChallengeImported = false;
             await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
             await FilterChallengesAsync(DisplayAll);
             GeoGuessrId = string.Empty;
-            ChallengeImported = true;
+            ToastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
         }
         catch (ValidationApiException e)
         {
-            Error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
+            string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
+            ToastService.DisplayToast(error, null, ToastType.Error);
         }
         catch (ApiException e)
         {
-            Error = e.Content;
+            ToastService.DisplayToast(e.Content ?? string.Empty, null, ToastType.Error);
         }
         finally
         {
