@@ -5,7 +5,7 @@ namespace GeoNRage.App.Apis;
 public interface IChallengesApi
 {
     [Get("/api/challenges")]
-    [Headers($"{MapStatusHandler.HeaderName}:")]
+    [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<ChallengeDto[]> GetAllAsync(bool onlyWithoutGame = false, [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
 
     [Get("/api/challenges/admin-view")]

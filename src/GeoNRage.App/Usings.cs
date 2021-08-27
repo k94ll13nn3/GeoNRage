@@ -1,6 +1,7 @@
 ﻿global using GeoNRage.App.Core;
 global using GeoNRage.App.Models;
 global using GeoNRage.App.Services;
+global using GeoNRage.Shared;
 global using GeoNRage.Shared.Dtos.Admin;
 global using GeoNRage.Shared.Dtos.Auth;
 global using GeoNRage.Shared.Dtos.Challenges;

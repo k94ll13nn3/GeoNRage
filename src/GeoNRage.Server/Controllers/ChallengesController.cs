@@ -15,7 +15,7 @@ public partial class ChallengesController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame = false, [FromQuery] string[]? playersToExclude = null)
     {
-        return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers["show-all-maps"] != "True", playersToExclude);
+        return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers[Constants.MapStatusHeaderName] != "True", playersToExclude);
     }
 
     [Authorize(Roles = Roles.Admin)]

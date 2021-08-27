@@ -5,6 +5,6 @@ namespace GeoNRage.App.Apis;
 public interface ILocationsApi
 {
     [Get("/api/locations")]
-    [Headers($"{MapStatusHandler.HeaderName}:")]
+    [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<LocationDto[]> GetAllAsync();
 }

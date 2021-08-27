@@ -22,9 +22,9 @@ builder.AddRefitClient<IChallengesApi>();
 builder.AddRefitClient<ILocationsApi>();
 builder.AddRefitClient<IAdminApi>();
 
-builder.Services.AddSingleton(new PopupService());
-builder.Services.AddSingleton(new MapStatusService());
-builder.Services.AddSingleton(new ToastService());
+builder.Services.AddSingleton<PopupService>();
+builder.Services.AddSingleton<UserSettingsService>();
+builder.Services.AddSingleton<ToastService>();
 
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 

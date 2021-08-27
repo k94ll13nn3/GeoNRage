@@ -18,7 +18,7 @@ public partial class PlayersStatisticsPage
         Players = await PlayersApi.GetAllStatisticsAsync();
     }
 
-    internal override async void OnMapStatusChanged(object? sender, EventArgs e)
+    internal override async void OnSettingsChanged(object? sender, EventArgs e)
     {
         Players = Enumerable.Empty<PlayerStatisticDto>();
         StateHasChanged();

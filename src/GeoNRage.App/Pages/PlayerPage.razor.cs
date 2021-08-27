@@ -39,7 +39,7 @@ public partial class PlayerPage
         }
     }
 
-    internal override async void OnMapStatusChanged(object? sender, EventArgs e)
+    internal override async void OnSettingsChanged(object? sender, EventArgs e)
     {
         await OnInitializedAsync();
     }

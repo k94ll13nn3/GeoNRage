@@ -2,19 +2,19 @@
 
 namespace GeoNRage.App.Core;
 
-public abstract class MapStatusAwareComponent : ComponentBase, IDisposable
+public abstract class UserSettingsAwareComponent : ComponentBase, IDisposable
 {
     private bool _disposedValue;
 
     [Inject]
-    protected MapStatusService MapStatusService { get; set; } = null!;
+    protected UserSettingsService UserSettingsService { get; set; } = null!;
 
     protected override void OnInitialized()
     {
-        MapStatusService.MapStatusChanged += OnMapStatusChanged;
+        UserSettingsService.SettingsChanged += OnSettingsChanged;
     }
 
-    internal abstract void OnMapStatusChanged(object? sender, EventArgs e);
+    internal abstract void OnSettingsChanged(object? sender, EventArgs e);
 
     protected virtual void Dispose(bool disposing)
     {
@@ -22,7 +22,7 @@ public abstract class MapStatusAwareComponent : ComponentBase, IDisposable
         {
             if (disposing)
             {
-                MapStatusService.MapStatusChanged -= OnMapStatusChanged;
+                UserSettingsService.SettingsChanged -= OnSettingsChanged;
             }
 
             _disposedValue = true;
@@ -31,7 +31,6 @@ public abstract class MapStatusAwareComponent : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }

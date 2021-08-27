@@ -13,6 +13,6 @@ public partial class LocationsController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<LocationDto>> GetAllAsync()
     {
-        return await _locationService.GetAllAsync(Request.Headers["show-all-maps"] == "True");
+        return await _locationService.GetAllAsync(Request.Headers[Constants.MapStatusHeaderName] == "True");
     }
 }

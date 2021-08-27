@@ -20,13 +20,13 @@ public partial class PlayersController : ControllerBase
     [HttpGet("statistics")]
     public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
     {
-        return await _playerService.GetAllStatisticsAsync(Request.Headers["show-all-maps"] == "True");
+        return await _playerService.GetAllStatisticsAsync(Request.Headers[Constants.MapStatusHeaderName] == "True");
     }
 
     [HttpGet("{id}/full")]
     public async Task<ActionResult<PlayerFullDto>> GetFullAsync(string id)
     {
-        PlayerFullDto? player = await _playerService.GetFullAsync(id, Request.Headers["show-all-maps"] == "True");
+        PlayerFullDto? player = await _playerService.GetFullAsync(id, Request.Headers[Constants.MapStatusHeaderName] == "True");
         return player ?? (ActionResult<PlayerFullDto>)NotFound();
     }
 

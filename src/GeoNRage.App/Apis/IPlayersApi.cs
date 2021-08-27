@@ -8,11 +8,11 @@ public interface IPlayersApi
     Task<PlayerDto[]> GetAllAsync();
 
     [Get("/api/players/statistics")]
-    [Headers($"{MapStatusHandler.HeaderName}:")]
+    [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<PlayerStatisticDto[]> GetAllStatisticsAsync();
 
     [Get("/api/players/{id}/full")]
-    [Headers($"{MapStatusHandler.HeaderName}:")]
+    [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<ApiResponse<PlayerFullDto>> GetFullAsync(string id);
 
     [Put("/api/players/{id}")]

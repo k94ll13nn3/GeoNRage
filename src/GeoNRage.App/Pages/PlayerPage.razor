@@ -1,6 +1,6 @@
 ﻿@page "/players/{Id}"
 
-@inherits MapStatusAwareComponent
+@inherits UserSettingsAwareComponent
 
 <Container Condition="Loaded && PlayerFound">
 	<PageTitle>@Player.Name</PageTitle>
