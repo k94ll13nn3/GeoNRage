@@ -36,12 +36,6 @@
 			<EditForm Model="UserEdit" OnSubmit="UpdateUserAsync" @ref="Form" autocomplete="off" class="my-3">
 				<DataAnnotationsValidator />
 
-				<Container Condition="!string.IsNullOrWhiteSpace(Error)">
-					<div class="notification is-danger">
-						@Error
-					</div>
-				</Container>
-
 				<div class="field">
 					<label class="label">Nom d'utilisateur</label>
 					<div class="control">

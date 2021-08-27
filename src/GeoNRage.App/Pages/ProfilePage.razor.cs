@@ -21,11 +21,12 @@ namespace GeoNRage.App.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
+        [Inject]
+        public ToastService ToastService { get; set; } = null!;
+
         public UserEditDto UserEdit { get; set; } = new();
 
         public EditForm Form { get; set; } = null!;
-
-        public string? Error { get; set; }
 
         public ClaimsPrincipal User { get; set; } = null!;
 
@@ -33,7 +34,6 @@ namespace GeoNRage.App.Pages
         {
             try
             {
-                Error = null;
                 if (string.IsNullOrWhiteSpace(UserEdit.Password))
                 {
                     UserEdit.Password = null;
@@ -53,7 +53,7 @@ namespace GeoNRage.App.Pages
             }
             catch (ApiException e)
             {
-                Error = $"Error: {e.Content}";
+                ToastService.DisplayToast($"Error: {e.Content}", null, ToastType.Error);
             }
         }
 
