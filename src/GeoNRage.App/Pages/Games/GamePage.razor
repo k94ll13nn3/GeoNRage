@@ -6,26 +6,6 @@
 	<PageTitle>@Game.Name</PageTitle>
 </Container>
 
-<Container Condition="HubClosed">
-	<div class="notification is-danger error-alert">
-		Connexion avec le serveur perdue, reconnexion echouée.
-	</div>
-</Container>
-
-<Container Condition="HubReconnecting">
-	<div class="notification is-warning error-alert">
-		Connexion avec le serveur perdue, tentative de reconnexion...
-	</div>
-</Container>
-
-<Container Condition="HubReconnected">
-	<div class="notification is-info error-alert">
-		Connexion avec le serveur rétablie. Vous pouvez à nouveau envoyer et recevoir des données, cependant les données reçues
-		pendant la tentative de reconnexion ne seront pas mise à jour.
-		<a @onclick="ReloadPageAsync">Rafraichir la page</a>
-	</div>
-</Container>
-
 <Container Condition="Loaded && GameFound && (User.PlayerId() is null || !Game.Players.Any(p => p.Id == User.PlayerId()))">
 	<div class="notification is-warning error-alert">
 		Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mises à jour en temps réel.

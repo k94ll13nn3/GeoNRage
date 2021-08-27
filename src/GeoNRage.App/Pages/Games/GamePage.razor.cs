@@ -41,12 +41,6 @@ public partial class GamePage : IAsyncDisposable
 
     public bool Loaded { get; set; }
 
-    public bool HubClosed { get; set; }
-
-    public bool HubReconnecting { get; set; }
-
-    public bool HubReconnected { get; set; }
-
     public bool ShowRankings { get; set; }
 
     public bool ShowChart { get; set; }
@@ -68,9 +62,6 @@ public partial class GamePage : IAsyncDisposable
     {
         ShowChart = false;
         ShowRankings = false;
-        HubClosed = false;
-        HubReconnected = false;
-        HubReconnecting = false;
         Loaded = false;
         await OnInitializedAsync();
     }
@@ -123,28 +114,34 @@ public partial class GamePage : IAsyncDisposable
 
     private Task OnHubConnectionReconnected(string? arg)
     {
-        HubClosed = false;
-        HubReconnected = true;
-        HubReconnecting = false;
-        StateHasChanged();
+        ToastService.DisplayToast(
+            "Connexion avec le serveur rétablie. Vous pouvez à nouveau envoyer et recevoir des données, cependant les données reçues pendant la tentative de reconnexion ne seront pas mise à jour.",
+            null,
+            ToastType.Information,
+            "signalr-connection",
+            true);
         return Task.FromResult(0);
     }
 
     private Task OnHubConnectionReconnecting(Exception? arg)
     {
-        HubClosed = false;
-        HubReconnected = false;
-        HubReconnecting = true;
-        StateHasChanged();
+        ToastService.DisplayToast(
+            "Connexion avec le serveur perdue, tentative de reconnexion...",
+            null,
+            ToastType.Warning,
+            "signalr-connection",
+            true);
         return Task.FromResult(0);
     }
 
     private Task OnHubConnectionClosed(Exception? arg)
     {
-        HubClosed = true;
-        HubReconnected = false;
-        HubReconnecting = false;
-        StateHasChanged();
+        ToastService.DisplayToast(
+            "Connexion avec le serveur perdue, reconnexion echouée.",
+            null,
+            ToastType.Error,
+            "signalr-connection",
+            true);
         return Task.FromResult(0);
     }
 

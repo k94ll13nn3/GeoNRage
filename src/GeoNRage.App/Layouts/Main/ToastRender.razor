@@ -1,6 +1,6 @@
 ﻿<div class="toast-container">
 	@foreach (var toast in Toasts)
 	{
-		<Toast @key="@toast.Id" Content="@toast.Content" OnCloseCallback="() => RemoveToast(toast)" Duration="@toast.Duration" Type="@toast.ToastType"></Toast>
+		<Toast @key="@((toast.Id, toast.UniqueId))" Content="@toast.Content" OnCloseCallback="() => RemoveToast(toast)" Duration="@toast.Duration" Type="@toast.ToastType"></Toast>
 	}
 </div>

@@ -6,13 +6,13 @@ public class ToastService
 {
     public event EventHandler<ToastData>? OnToastRequested;
 
-    public void DisplayToast(string message, TimeSpan? duration = null, ToastType toastType = ToastType.Primary, string id = "")
+    public void DisplayToast(string message, TimeSpan? duration = null, ToastType toastType = ToastType.Primary, string id = "", bool overrideSameId = false)
     {
-        DisplayToast(builder => builder.AddContent(1, message), duration, toastType, id);
+        DisplayToast(builder => builder.AddContent(1, message), duration, toastType, id, overrideSameId);
     }
 
-    public void DisplayToast(RenderFragment content, TimeSpan? duration = null, ToastType toastType = ToastType.Primary, string id = "")
+    public void DisplayToast(RenderFragment content, TimeSpan? duration = null, ToastType toastType = ToastType.Primary, string id = "", bool overrideSameId = false)
     {
-        OnToastRequested?.Invoke(this, new(string.IsNullOrWhiteSpace(id) ? Guid.NewGuid().ToString() : id, content, duration, toastType));
+        OnToastRequested?.Invoke(this, new(id, Guid.NewGuid(), content, duration, toastType, overrideSameId));
     }
 }
