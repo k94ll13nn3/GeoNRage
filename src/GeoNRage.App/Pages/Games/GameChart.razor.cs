@@ -1,77 +1,22 @@
-﻿using System.Drawing;
-using ChartJs.Blazor;
-using ChartJs.Blazor.Common;
-using ChartJs.Blazor.Common.Axes;
-using ChartJs.Blazor.Common.Enums;
-using ChartJs.Blazor.LineChart;
-using ChartJs.Blazor.Util;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Plotly.Blazor;
+using Plotly.Blazor.ConfigLib;
+using Plotly.Blazor.LayoutLib;
+using Plotly.Blazor.LayoutLib.LegendLib;
+using Plotly.Blazor.Traces;
+using Plotly.Blazor.Traces.ScatterLib;
 
 namespace GeoNRage.App.Pages.Games;
 
 public partial class GameChart
 {
-    private readonly List<Color> _colors = new()
-    {
-        Color.Aqua,
-        Color.BlueViolet,
-        Color.Chartreuse,
-        Color.DarkGoldenrod,
-        Color.DarkOrange,
-        Color.HotPink,
-        Color.Lime,
-        Color.RoyalBlue,
-        Color.Salmon,
-        Color.Snow,
-    };
+    public PlotlyChart? Chart { get; set; } = null!;
 
-    public LineConfig PlotConfig { get; set; } = new LineConfig
-    {
-        Options = new LineOptions
-        {
-            Responsive = true,
-            Title = new OptionsTitle
-            {
-                Display = true,
-                Text = "Scores"
-            },
-            Tooltips = new Tooltips
-            {
-                Mode = InteractionMode.Nearest,
-                Intersect = true
-            },
-            Hover = new Hover
-            {
-                Mode = InteractionMode.Nearest,
-                Intersect = true
-            },
-            Scales = new Scales
-            {
-                XAxes = new List<CartesianAxis>
-                    {
-                        new CategoryAxis
-                        {
-                            ScaleLabel = new ScaleLabel
-                            {
-                                LabelString = "Round"
-                            }
-                        }
-                    },
-                YAxes = new List<CartesianAxis>
-                    {
-                        new LinearCartesianAxis
-                        {
-                            ScaleLabel = new ScaleLabel
-                            {
-                                LabelString = "Score"
-                            }
-                        }
-                    }
-            }
-        }
-    };
+    public Config Config { get; set; } = new();
 
-    public Chart Chart { get; set; } = null!;
+    public Layout Layout { get; set; } = new();
+
+    public IList<ITrace> Data { get; set; } = new List<ITrace>();
 
     [Parameter]
     public IEnumerable<GameChallengeDto> Challenges { get; set; } = null!;
@@ -82,12 +27,6 @@ public partial class GameChart
     [Parameter]
     public IReadOnlyDictionary<(int challengeId, string playerId, int round), int?> Scores { get; set; } = null!;
 
-    public async Task UpdateAsync(string playerId)
-    {
-        UpdatePlot(Players.First(x => x.Id == playerId));
-        await Chart.Update();
-    }
-
     protected override void OnInitialized()
     {
         CreatePlot();
@@ -95,30 +34,51 @@ public partial class GameChart
 
     private void CreatePlot()
     {
-        foreach (string item in Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(y => $"{x.MapName[0]}_R{y}")).Prepend("0"))
+        Config = new Config
         {
-            PlotConfig.Data.Labels.Add(item);
+            DisplayLogo = false,
+            ModeBarButtonsToRemove = new[] { "toImage", "zoom", "pan", "select", "zoomIn", "zoomOut", "autoScale", "resetScale", "lasso2d" },
+            ScrollZoom = ScrollZoomFlag.False
+        };
+        Layout = new Layout
+        {
+            PaperBgColor = "#00000000",
+            PlotBgColor = "#00000000",
+            Height = 600,
+            Width = 750,
+            XAxis = new List<XAxis> { new XAxis { GridColor = "#444444" } },
+            YAxis = new List<YAxis> { new YAxis { GridColor = "#444444" } },
+            Legend = new Legend
+            {
+                YAnchor = YAnchorEnum.Top,
+                Y = 0.99m,
+                XAnchor = XAnchorEnum.Left,
+                X = 0.01m,
+                BgColor = "#eeeeee",
+                Font = new Plotly.Blazor.LayoutLib.LegendLib.Font { Color = "#444444" }
+            },
+            Font = new Plotly.Blazor.LayoutLib.Font { Color = "#eeeeee" }
+        };
+
+        Data = new List<ITrace>();
+
+        var labels = new List<object>();
+        int i = 1;
+        foreach (string item in Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(_ => $"{x.MapName[0]}_R{i++}")).Prepend("0"))
+        {
+            labels.Add(item);
         }
 
         foreach (GamePlayerDto player in Players)
         {
-            IDataset<int> dataset = new LineDataset<int>()
-            {
-                Label = player.Name,
-                BackgroundColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
-                BorderColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
-                Fill = FillingMode.Disabled
-            };
-
-            PlotConfig.Data.Datasets.Add(dataset);
-            UpdatePlot(player);
+            UpdatePlot(player, labels);
         }
     }
 
-    private void UpdatePlot(GamePlayerDto player)
+    private void UpdatePlot(GamePlayerDto player, List<object> labels)
     {
         int sum = 0;
-        var scores = new List<int> { 0 };
+        var scores = new List<object> { 0 };
         var values = new List<int?>();
         foreach (GameChallengeDto challenge in Challenges)
         {
@@ -134,20 +94,16 @@ public partial class GameChart
             scores.Add(sum);
         }
 
-        if (PlotConfig.Data.Datasets.FirstOrDefault(x => (x as LineDataset<int>)?.Label == player.Name) is not Dataset<int> dataset)
+        var dataset = new Scatter
         {
-            dataset = new LineDataset<int>()
-            {
-                Label = player.Name,
-                BackgroundColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
-                BorderColor = ColorUtil.FromDrawingColor(_colors[PlotConfig.Data.Datasets.Count % _colors.Count]),
-                Fill = FillingMode.Disabled
-            };
+            Name = player.Name,
+            Mode = ModeFlag.Lines | ModeFlag.Markers,
+            X = labels,
+            Y = scores,
+            Line = new Line { Width = 4 },
+            Marker = new Marker { Size = 8 }
+        };
 
-            PlotConfig.Data.Datasets.Add(dataset);
-        }
-
-        dataset.Clear();
-        dataset.AddRange(scores);
+        Data.Add(dataset);
     }
 }

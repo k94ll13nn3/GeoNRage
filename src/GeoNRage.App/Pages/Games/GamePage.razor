@@ -168,21 +168,23 @@
 		</div>
 	</div>
 
-	<div class="modal @(ShowChart ? "is-active" : "")">
-		<div class="modal-background"></div>
-		<div class="modal-card">
-			<header class="modal-card-head">
-				<p class="modal-card-title">Graphique</p>
-				<button class="delete" aria-label="close" @onclick="() => ShowChart = false"></button>
-			</header>
-			<section class="modal-card-body">
-				<GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players" @ref="Chart"></GameChart>
-			</section>
-			<footer class="modal-card-foot">
-				<button class="button is-primary" @onclick="() => ShowChart = false">Fermer</button>
-			</footer>
+	<Container Condition="ShowChart">
+		<div class="modal is-active">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+				<header class="modal-card-head">
+					<p class="modal-card-title">Graphique</p>
+					<button class="delete" aria-label="close" @onclick="() => ShowChart = false"></button>
+				</header>
+				<section class="modal-card-body">
+					<GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameChart>
+				</section>
+				<footer class="modal-card-foot">
+					<button class="button is-primary" @onclick="() => ShowChart = false">Fermer</button>
+				</footer>
+			</div>
 		</div>
-	</div>
+	</Container>
 </Container>
 
 <Container Condition="!Loaded && GameFound">
@@ -197,5 +199,6 @@
 
 @code {
 	public RenderFragment SoCloseFragment => @<figure class="image is-square"><img src="img/so-close.webp"></figure>;
+
 	public RenderFragment TauntFragment => @<figure class="image is-square"><img src="img/noob.webp"></figure>;
 }

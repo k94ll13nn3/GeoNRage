@@ -35,8 +35,6 @@ public partial class GamePage : IAsyncDisposable
     [Inject]
     public IPlayersApi PlayersApi { get; set; } = null!;
 
-    public GameChart? Chart { get; set; } = null!;
-
     public bool GameFound { get; set; } = true;
 
     public bool Loaded { get; set; }
@@ -73,7 +71,7 @@ public partial class GamePage : IAsyncDisposable
             .WithAutomaticReconnect()
             .Build();
 
-        _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValueAsync);
+        _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValue);
         _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
         _hubConnection.On("Taunted", () => ToastService.DisplayToast(TauntFragment, TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt"));
 
@@ -145,14 +143,9 @@ public partial class GamePage : IAsyncDisposable
         return Task.FromResult(0);
     }
 
-    private async Task HandleReceiveValueAsync(int challengeId, string playerId, int round, int score)
+    private void HandleReceiveValue(int challengeId, string playerId, int round, int score)
     {
         Scores[(challengeId, playerId, round)] = score;
-        if (Chart is not null)
-        {
-            await Chart.UpdateAsync(playerId);
-        }
-
         StateHasChanged();
     }
 
@@ -164,7 +157,7 @@ public partial class GamePage : IAsyncDisposable
         }
 
         int clampedValue = Math.Clamp(score ?? 0, 0, 5000);
-        await HandleReceiveValueAsync(challengeId, playerId, round, clampedValue);
+        HandleReceiveValue(challengeId, playerId, round, clampedValue);
         if (clampedValue == 5000)
         {
             ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(2500), ToastType.Success, "toast-5000");
