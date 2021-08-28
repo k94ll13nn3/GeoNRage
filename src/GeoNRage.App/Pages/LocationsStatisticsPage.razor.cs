@@ -2,6 +2,9 @@
 using System.Text;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
+using Plotly.Blazor;
+using Plotly.Blazor.Traces;
+using Plotly.Blazor.Traces.TreeMapLib;
 
 namespace GeoNRage.App.Pages;
 
@@ -13,19 +16,51 @@ public partial class LocationsStatisticsPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
+    public bool ShowCountryChart { get; set; }
+
     internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
+
+    public PlotlyChart? Chart { get; set; } = null!;
+
+    public Config Config { get; set; } = new();
+
+    public Layout Layout { get; set; } = new();
+
+    public IList<ITrace> Data { get; set; } = new List<ITrace>();
 
     protected override async Task OnInitializedAsync()
     {
         Locations = await LocationsApi.GetAllAsync();
+        GenerateCountryChart();
+        StateHasChanged();
     }
 
     internal override async void OnSettingsChanged(object? sender, EventArgs e)
     {
         Locations = Enumerable.Empty<LocationDto>();
+        ShowCountryChart = false;
+        Chart = null;
         StateHasChanged();
         Locations = await LocationsApi.GetAllAsync();
+        GenerateCountryChart();
         StateHasChanged();
+    }
+
+    private async Task ShowCountryChartAsync(bool show)
+    {
+        ShowCountryChart = show;
+        if (ShowCountryChart)
+        {
+            ShowCountryChart = true;
+            if (Chart is not null)
+            {
+                await Chart.React();
+            }
+        }
+        else
+        {
+            Chart = null;
+        }
     }
 
     private static IEnumerable<LocationDto> Sort(IEnumerable<LocationDto> locations, string column, bool ascending)
@@ -66,5 +101,50 @@ public partial class LocationsStatisticsPage
         }
 
         return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+    }
+
+    private void GenerateCountryChart()
+    {
+        Config = new Config { DisplayLogo = false, ModeBarButtonsToRemove = new[] { "toImage" } };
+        Layout = new Layout { PaperBgColor = "#00000000", Height = 800 };
+
+        var labels = new List<object> { "Tout" };
+        var values = new List<object> { "" };
+        var parents = new List<object> { "" };
+        int sum = 0;
+        foreach (IGrouping<string, LocationDto> country in Locations.GroupBy(l => l.Country ?? "-").OrderByDescending(g => g.Count()).Take(15))
+        {
+            labels.Add(country.Key);
+            values.Add(country.Count().ToString());
+            parents.Add("Tout");
+            sum += country.Count();
+            foreach (IGrouping<string, LocationDto> level1 in country.GroupBy(l => l.AdministrativeAreaLevel1 ?? $"- ({country.Key})"))
+            {
+                labels.Add(level1.Key);
+                values.Add(level1.Count().ToString());
+                parents.Add(country.Key);
+                foreach (IGrouping<string, LocationDto> level2 in level1.GroupBy(l => l.AdministrativeAreaLevel2 ?? $"- ({level1.Key})"))
+                {
+                    labels.Add($"{level2.Key} ({level1.Key})");
+                    values.Add(level2.Count().ToString());
+                    parents.Add(level1.Key);
+                }
+            }
+        }
+
+        values[0] = sum.ToString(); // Set total count to visited countries
+
+        Data = new List<ITrace>
+        {
+            new TreeMap
+            {
+                Name = "TreeMap",
+                Labels = labels,
+                Parents = parents,
+                TextInfo = TextInfoFlag.Label | TextInfoFlag.Value,
+                Values = values,
+                BranchValues = BranchValuesEnum.Total
+            }
+        };
     }
 }
