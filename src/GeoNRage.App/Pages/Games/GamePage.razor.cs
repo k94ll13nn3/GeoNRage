@@ -9,6 +9,7 @@ namespace GeoNRage.App.Pages.Games;
 
 public partial class GamePage : IAsyncDisposable
 {
+    private readonly CancellationTokenSource _cancellationToken = new();
     private HubConnection _hubConnection = null!;
 
     public GameDetailDto Game { get; set; } = null!;
@@ -49,6 +50,7 @@ public partial class GamePage : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        _cancellationToken.Cancel();
         _hubConnection.Closed -= OnHubConnectionClosed;
         _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
         _hubConnection.Reconnected -= OnHubConnectionReconnected;
@@ -79,7 +81,7 @@ public partial class GamePage : IAsyncDisposable
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
         _hubConnection.Reconnected += OnHubConnectionReconnected;
 
-        await _hubConnection.StartAsync();
+        await _hubConnection.StartAsync(_cancellationToken.Token);
 
         ApiResponse<GameDetailDto> response = await GamesApi.GetAsync(Id);
         if (!response.IsSuccessStatusCode || response.Content is null)
@@ -104,7 +106,7 @@ public partial class GamePage : IAsyncDisposable
                 }
             }
 
-            await _hubConnection.InvokeAsync("JoinGroup", Id);
+            await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
             User = (await AuthenticationState).User;
             StateHasChanged();
         }

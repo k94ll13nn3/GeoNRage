@@ -6,7 +6,7 @@ namespace GeoNRage.App.Core
     {
         public static string? PlayerId(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue("PlayerId");
+            return user?.FindFirstValue("PlayerId");
         }
     }
 }

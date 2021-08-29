@@ -34,31 +34,11 @@ public partial class GameChart
 
     private void CreatePlot()
     {
-        Config = new Config
-        {
-            DisplayLogo = false,
-            ModeBarButtonsToRemove = new[] { "toImage", "zoom", "pan", "select", "zoomIn", "zoomOut", "autoScale", "resetScale", "lasso2d" },
-            ScrollZoom = ScrollZoomFlag.False
-        };
-        Layout = new Layout
-        {
-            PaperBgColor = "#00000000",
-            PlotBgColor = "#00000000",
-            Height = 600,
-            Width = 750,
-            XAxis = new List<XAxis> { new XAxis { GridColor = "#444444" } },
-            YAxis = new List<YAxis> { new YAxis { GridColor = "#444444" } },
-            Legend = new Legend
-            {
-                YAnchor = YAnchorEnum.Top,
-                Y = 0.99m,
-                XAnchor = XAnchorEnum.Left,
-                X = 0.01m,
-                BgColor = "#eeeeee",
-                Font = new Plotly.Blazor.LayoutLib.LegendLib.Font { Color = "#444444" }
-            },
-            Font = new Plotly.Blazor.LayoutLib.Font { Color = "#eeeeee" }
-        };
+        Config = new PlotlyConfig().Config;
+
+        Layout = new PlotlyConfig().Layout;
+        Layout.Height = 600;
+        Layout.Width = 750;
 
         Data = new List<ITrace>();
 

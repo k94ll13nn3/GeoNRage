@@ -3,6 +3,7 @@ using System.Text;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
+using Plotly.Blazor.LayoutLib;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.TreeMapLib;
 
@@ -105,8 +106,11 @@ public partial class LocationsStatisticsPage
 
     private void GenerateCountryChart()
     {
-        Config = new Config { DisplayLogo = false, ModeBarButtonsToRemove = new[] { "toImage" } };
-        Layout = new Layout { PaperBgColor = "#00000000", Height = 800 };
+        Config = new PlotlyConfig().Config;
+
+        Layout = new PlotlyConfig().Layout;
+        Layout.Height = 800;
+        Layout.Margin = new Margin { B = 0, T = 20, L = 0, R = 0 };
 
         var labels = new List<object> { "Tout" };
         var values = new List<object> { "" };

@@ -1,5 +1,7 @@
 ﻿@page "/players/{Id}"
 
+@using Plotly.Blazor
+
 @inherits UserSettingsAwareComponent
 
 <Container Condition="Loaded && PlayerFound">
@@ -209,31 +211,8 @@
                                         Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
                                     </p>
                                 </header>
-                                <div class="card-content py-0">
-                                    <div class="container is-flex is-justify-content-center is-align-items-center m-0" style="max-height:250px;height:250px;">
-                                        <table class="charts-css column show-labels show-primary-axis show-data-axes show-5-secondary-axes">
-                                            <caption>
-                                                Historique des parties
-                                            </caption>
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Partie</th>
-                                                    <th scope="col">Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <Repeater Items="Player.GameHistory" Context="game">
-                                                    <tr>
-                                                        <th scope="row"></th>
-                                                        <td style="--size: calc(@game.Sum / 75000);">
-                                                            <span class="data"></span>
-                                                            <span class="tooltip">Partie #@game.GameId<br />Score @game.Sum</span>
-                                                        </td>
-                                                    </tr>
-                                                </Repeater>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="card-content">
+									<PlotlyChart Config="Config" Layout="Layout" Data="Data" @ref="Chart" style="" />
                                 </div>
                             </div>
                         </ChildContent>
