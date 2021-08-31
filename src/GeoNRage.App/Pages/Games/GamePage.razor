@@ -33,6 +33,17 @@
 								</button>
 							</p>
 						</Container>
+						<Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId())">
+							<p class="control">
+								<button class="button" @onclick="() => ShowTaunt = true">
+									<span class="is-hidden-touch"></span>
+									<span class="icon is-small">
+										<i class="fas fa-hand-middle-finger"></i>
+									</span>
+									<span class="is-hidden-touch">Taunter</span>
+								</button>
+							</p>
+						</Container>
 						<Container Condition="!HideScores">
 							<p class="control">
 								<button class="button" @onclick="() => ShowChart = true">
@@ -70,21 +81,7 @@
 									</a>
 								</th>
 								<Repeater Items="challenge.PlayerScores" Context="playerScore">
-									<th>
-										<Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId()) && playerScore.PlayerId != User.PlayerId()">
-											<ChildContent>
-												<span class="icon-text">
-													<span class="icon is-clickable" @onclick="(() => TauntAsync(playerScore.PlayerId))">
-														<i class="fas fa-hand-middle-finger"></i>
-													</span>
-													<span>@playerScore.PlayerName</span>
-												</span>
-											</ChildContent>
-											<ElseContent>
-												@playerScore.PlayerName
-											</ElseContent>
-										</Container>
-									</th>
+									<th>@playerScore.PlayerName</th>
 								</Repeater>
 							</tr>
 
@@ -187,6 +184,35 @@
 			</div>
 		</div>
 	</Container>
+
+	<Container Condition="ShowTaunt">
+		<div class="modal is-active">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+				<header class="modal-card-head">
+					<p class="modal-card-title">Taunt</p>
+					<button class="delete" aria-label="close" @onclick="() => ShowTaunt = false"></button>
+				</header>
+				<section class="modal-card-body">
+					<div class="is-flex is-flex-direction-row">
+						<div class="select">
+							<select @bind="@SelectedPlayerId">
+								<option value="@((string?)null)">—</option>
+								@foreach (var player in Game.Players.Where(p => p.Id != User.PlayerId()))
+								{
+									<option value="@player.Id">@player.Name</option>
+								}
+							</select>
+						</div>
+						<button @onclick="TauntAsync" class="ml-3 button is-primary">Go !</button>
+					</div>
+				</section>
+				<footer class="modal-card-foot">
+					<button class="button is-primary" @onclick="() => ShowTaunt = false">Fermer</button>
+				</footer>
+			</div>
+		</div>
+	</Container>
 </Container>
 
 <Container Condition="!Loaded">
@@ -200,7 +226,10 @@
 </Container>
 
 @code {
-	public RenderFragment SoCloseFragment => @<figure class="image is-square"><img src="img/so-close.webp"></figure>;
-
-	public RenderFragment TauntFragment => @<figure class="image is-square"><img src="img/noob.webp"></figure>;
+	public static RenderFragment<string> ImageFragment = image => __builder =>
+	{
+		<figure class="image is-square">
+			<img src="@image">
+		</figure>
+	};
 }

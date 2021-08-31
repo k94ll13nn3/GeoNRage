@@ -44,9 +44,13 @@ public partial class GamePage : IAsyncDisposable
 
     public bool ShowChart { get; set; }
 
+    public bool ShowTaunt { get; set; }
+
     public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = new();
 
     public ClaimsPrincipal User { get; set; } = null!;
+
+    public string? SelectedPlayerId { get; set; }
 
     public async ValueTask DisposeAsync()
     {
@@ -75,7 +79,7 @@ public partial class GamePage : IAsyncDisposable
 
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValue);
         _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
-        _hubConnection.On("Taunted", () => ToastService.DisplayToast(TauntFragment, TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt"));
+        _hubConnection.On("Taunted", () => ToastService.DisplayToast(ImageFragment("img/noob.webp"), TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt"));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -167,7 +171,7 @@ public partial class GamePage : IAsyncDisposable
 
         if (clampedValue == 4999)
         {
-            ToastService.DisplayToast(SoCloseFragment, TimeSpan.FromMilliseconds(2500), ToastType.Warning, "toast-4999");
+            ToastService.DisplayToast(ImageFragment("img/so-close.webp"), TimeSpan.FromMilliseconds(2500), ToastType.Warning, "toast-4999");
         }
 
         await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId(), round, clampedValue);
@@ -183,8 +187,11 @@ public partial class GamePage : IAsyncDisposable
         }
     }
 
-    private async Task TauntAsync(string playerId)
+    private async Task TauntAsync()
     {
-        await _hubConnection.InvokeAsync("TauntPlayer", Id, playerId);
+        if (SelectedPlayerId is not null)
+        {
+            await _hubConnection.InvokeAsync("TauntPlayer", Id, SelectedPlayerId);
+        }
     }
 }
