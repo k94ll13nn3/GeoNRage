@@ -12,8 +12,6 @@ public partial class GamePage : IAsyncDisposable
     private readonly CancellationTokenSource _cancellationToken = new();
     private HubConnection _hubConnection = null!;
 
-    public GameDetailDto Game { get; set; } = null!;
-
     [Parameter]
     public int Id { get; set; }
 
@@ -37,6 +35,8 @@ public partial class GamePage : IAsyncDisposable
     public IPlayersApi PlayersApi { get; set; } = null!;
 
     public bool GameFound { get; set; } = true;
+
+    public GameDetailDto Game { get; set; } = null!;
 
     public bool Loaded { get; set; }
 

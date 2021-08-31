@@ -152,21 +152,23 @@
 		</div>
 	</div>
 
-	<div class="modal @(ShowRankings ? "is-active" : "")">
-		<div class="modal-background"></div>
-		<div class="modal-card">
-			<header class="modal-card-head">
-				<p class="modal-card-title">Tableau des scores</p>
-				<button class="delete" aria-label="close" @onclick="() => ShowRankings = false"></button>
-			</header>
-			<section class="modal-card-body">
-				<GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
-			</section>
-			<footer class="modal-card-foot">
-				<button class="button is-primary" @onclick="() => ShowRankings = false">Fermer</button>
-			</footer>
+	<Container Condition="ShowRankings">
+		<div class="modal is-active">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+				<header class="modal-card-head">
+					<p class="modal-card-title">Tableau des scores</p>
+					<button class="delete" aria-label="close" @onclick="() => ShowRankings = false"></button>
+				</header>
+				<section class="modal-card-body">
+					<GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
+				</section>
+				<footer class="modal-card-foot">
+					<button class="button is-primary" @onclick="() => ShowRankings = false">Fermer</button>
+				</footer>
+			</div>
 		</div>
-	</div>
+	</Container>
 
 	<Container Condition="ShowChart">
 		<div class="modal is-active">
@@ -187,7 +189,7 @@
 	</Container>
 </Container>
 
-<Container Condition="!Loaded && GameFound">
+<Container Condition="!Loaded">
 	<LoadingAnimation>
 		Chargement de la partie @(Id)...
 	</LoadingAnimation>
