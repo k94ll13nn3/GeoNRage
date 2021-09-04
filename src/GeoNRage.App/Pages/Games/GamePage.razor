@@ -38,7 +38,7 @@
 								<button class="button" @onclick="() => ShowTaunt = true">
 									<span class="is-hidden-touch"></span>
 									<span class="icon is-small">
-										<i class="fas fa-hand-middle-finger"></i>
+										<i class="fas fa-angry"></i>
 									</span>
 									<span class="is-hidden-touch">Taunter</span>
 								</button>
@@ -194,17 +194,32 @@
 					<button class="delete" aria-label="close" @onclick="() => ShowTaunt = false"></button>
 				</header>
 				<section class="modal-card-body">
-					<div class="is-flex is-flex-direction-row">
-						<div class="select">
-							<select @bind="@SelectedPlayerId">
-								<option value="@((string?)null)">—</option>
-								@foreach (var player in Game.Players.Where(p => p.Id != User.PlayerId()))
-								{
-									<option value="@player.Id">@player.Name</option>
-								}
-							</select>
+					<div class="columns">
+						<div class="column is-two-fifths">
+							<div class="select w-100">
+								<select @bind="@SelectedPlayerId" class="w-100">
+									<option value="@((string?)null)">—</option>
+									@foreach (var player in Game.Players.Where(p => p.Id != User.PlayerId()))
+									{
+										<option value="@player.Id">@player.Name</option>
+									}
+								</select>
+							</div>
 						</div>
-						<button @onclick="TauntAsync" class="ml-3 button is-primary">Go !</button>
+						<div class="column is-two-fifths">
+							<div class="select w-100">
+								<select  @bind="@SelectedImageId"class="w-100">
+									<option value="@((string?)null)">—</option>
+									@foreach (var image in Images)
+									{
+										<option value="@image.Key">@image.Key</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="column is-one-fifth">
+							<button @onclick="TauntAsync" class="button is-primary w-100" disabled="@(SelectedPlayerId is null || SelectedImageId is null)">Go !</button>
+						</div>
 					</div>
 				</section>
 				<footer class="modal-card-foot">

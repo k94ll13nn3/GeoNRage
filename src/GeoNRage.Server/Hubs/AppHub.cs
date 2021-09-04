@@ -36,14 +36,14 @@ public partial class AppHub : Hub
     }
 
     [HubMethodName("TauntPlayer")]
-    public async Task TauntPlayerAsync(int gameId, string playerId)
+    public async Task TauntPlayerAsync(int gameId, string playerId, string imageId)
     {
         if (!await UserInGame(gameId))
         {
             return;
         }
 
-        await Clients.Group($"user_{playerId}").SendAsync("Taunted");
+        await Clients.Group($"user_{playerId}").SendAsync("Taunted", imageId, Context.User?.Identity?.Name);
     }
 
     [HubMethodName("UpdateValue")]

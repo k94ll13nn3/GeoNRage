@@ -52,6 +52,10 @@ public partial class GamePage : IAsyncDisposable
 
     public string? SelectedPlayerId { get; set; }
 
+    public string? SelectedImageId { get; set; }
+
+    public Dictionary<string, string> Images { get; set; } = new();
+
     public async ValueTask DisposeAsync()
     {
         _cancellationToken.Cancel();
@@ -79,7 +83,7 @@ public partial class GamePage : IAsyncDisposable
 
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValue);
         _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
-        _hubConnection.On("Taunted", () => ToastService.DisplayToast(ImageFragment("img/noob.webp"), TimeSpan.FromMilliseconds(2000), ToastType.Error, "toast-taunt"));
+        _hubConnection.On<string, string>("Taunted", (imageId, user) => ToastService.DisplayToast(ImageFragment(Images.GetValueOrDefault(imageId, "img/noob.webp")), null, ToastType.Error, "toast-taunt", title: $"@{user}"));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -111,6 +115,10 @@ public partial class GamePage : IAsyncDisposable
             }
 
             await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
+            Images["Noob"] = "img/noob.webp";
+            Images["Nlm"] = "img/finger.webp";
+            Images["Tech Genus"] = "img/shut-up.webp";
+            Images["Pignouf"] = "img/pignouf.webp";
             User = (await AuthenticationState).User;
             StateHasChanged();
         }
@@ -191,7 +199,8 @@ public partial class GamePage : IAsyncDisposable
     {
         if (SelectedPlayerId is not null)
         {
-            await _hubConnection.InvokeAsync("TauntPlayer", Id, SelectedPlayerId);
+            await _hubConnection.InvokeAsync("TauntPlayer", Id, SelectedPlayerId, SelectedImageId);
+            ToastService.DisplayToast("Envoyé !", TimeSpan.FromMilliseconds(1500), ToastType.Success, "toast-sent");
         }
     }
 }

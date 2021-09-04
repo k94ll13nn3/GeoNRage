@@ -18,6 +18,9 @@ public partial class Toast
     [Parameter]
     public RenderFragment Content { get; set; } = null!;
 
+    [Parameter]
+    public string? Title { get; set; }
+
     public string NotificationClass { get; set; } = null!;
 
     protected override void OnInitialized()

@@ -1,4 +1,8 @@
 ﻿<div class="notification is-@(NotificationClass) toast">
 	<button class="delete" @onclick="@CloseToastAsync"></button>
+	@if (Title is not null)
+	{
+		<span class="is-size-5 has-text-weight-semibold">@Title</span><br />
+	}
 	@Content
 </div>
