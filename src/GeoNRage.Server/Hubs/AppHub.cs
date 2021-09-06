@@ -64,6 +64,35 @@ public partial class AppHub : Hub
         }
     }
 
+    [HubMethodName("ShowReadyCheck")]
+    public async Task LaunchReadyCheckAsync(int gameId, bool show)
+    {
+        if (!await UserInGame(gameId))
+        {
+            return;
+        }
+
+        if (show)
+        {
+            await Clients.Group($"group-${gameId}").SendAsync("OpenReadyCheck");
+        }
+        else
+        {
+            await Clients.Group($"group-${gameId}").SendAsync("CloseReadyCheck");
+        }
+    }
+
+    [HubMethodName("SendReady")]
+    public async Task SendReadyAsync(int gameId)
+    {
+        if (!await UserInGame(gameId))
+        {
+            return;
+        }
+
+        await Clients.Group($"group-${gameId}").SendAsync("UserReady", GetPlayerIdForCurrentUser());
+    }
+
     private string? GetPlayerIdForCurrentUser()
     {
         return Context.User.FindFirstValue("PlayerId");

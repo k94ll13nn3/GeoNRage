@@ -46,6 +46,8 @@ public partial class GamePage : IAsyncDisposable
 
     public bool ShowTaunt { get; set; }
 
+    public bool ShowReadyCheck { get; set; }
+
     public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = new();
 
     public ClaimsPrincipal User { get; set; } = null!;
@@ -54,7 +56,9 @@ public partial class GamePage : IAsyncDisposable
 
     public string? SelectedImageId { get; set; }
 
-    public Dictionary<string, string> Images { get; set; } = new();
+    public Dictionary<string, string> Images { get; } = new();
+
+    public Dictionary<string, bool> PlayerStatuses { get; } = new();
 
     public async ValueTask DisposeAsync()
     {
@@ -84,6 +88,9 @@ public partial class GamePage : IAsyncDisposable
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValue);
         _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
         _hubConnection.On<string, string>("Taunted", (imageId, user) => ToastService.DisplayToast(ImageFragment(Images.GetValueOrDefault(imageId, "img/noob.webp")), null, ToastType.Error, "toast-taunt", title: $"@{user}"));
+        _hubConnection.On("OpenReadyCheck", () => RunActionWithStateHasChanged(() => ShowReadyCheck = true));
+        _hubConnection.On("CloseReadyCheck", CloseReadyCheck);
+        _hubConnection.On<string>("UserReady", (playerId) => RunActionWithStateHasChanged(() => PlayerStatuses[playerId] = true));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -120,6 +127,11 @@ public partial class GamePage : IAsyncDisposable
             Images["Tech Genus"] = "img/shut-up.webp";
             Images["Pignouf"] = "img/pignouf.webp";
             User = (await AuthenticationState).User;
+            foreach (GamePlayerDto player in Game.Players)
+            {
+                PlayerStatuses[player.Id] = false;
+            }
+
             StateHasChanged();
         }
     }
@@ -202,5 +214,37 @@ public partial class GamePage : IAsyncDisposable
             await _hubConnection.InvokeAsync("TauntPlayer", Id, SelectedPlayerId, SelectedImageId);
             ToastService.DisplayToast("Envoyé !", TimeSpan.FromMilliseconds(1500), ToastType.Success, "toast-sent");
         }
+    }
+
+    private async Task LaunchReadyCheckAsync()
+    {
+        await _hubConnection.InvokeAsync("ShowReadyCheck", Id, true);
+    }
+
+    private async Task CloseReadyCheckAsync()
+    {
+        await _hubConnection.InvokeAsync("ShowReadyCheck", Id, false);
+    }
+
+    private async Task SendReadyAsync()
+    {
+        await _hubConnection.InvokeAsync("SendReady", Id);
+    }
+
+    private void RunActionWithStateHasChanged(Action action)
+    {
+        action();
+        StateHasChanged();
+    }
+
+    private void CloseReadyCheck()
+    {
+        ShowReadyCheck = false;
+        foreach (string key in PlayerStatuses.Keys)
+        {
+            PlayerStatuses[key] = false;
+        }
+
+        StateHasChanged();
     }
 }
