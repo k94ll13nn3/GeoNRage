@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Layouts.Main;
 
@@ -32,7 +32,8 @@ public partial class Toast
             ToastType.Link => "link",
             ToastType.Warning => "warning",
             ToastType.Success => "success",
-            _ => "primary",
+            ToastType.Primary => "primary",
+            _ => "none",
         };
     }
 

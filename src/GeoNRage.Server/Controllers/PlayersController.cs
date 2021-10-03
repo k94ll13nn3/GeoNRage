@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Services;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,12 +38,9 @@ public partial class PlayersController : ControllerBase
         try
         {
             PlayerDto? updatedPlayer = await _playerService.UpdateAsync(id, dto);
-            if (updatedPlayer is null)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            return updatedPlayer is not null
+                ? NoContent()
+                : NotFound();
         }
         catch (InvalidOperationException e)
         {

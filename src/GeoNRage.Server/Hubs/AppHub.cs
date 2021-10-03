@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.SignalR;
 
@@ -12,7 +12,7 @@ public partial class AppHub : Hub
     [HubMethodName("JoinGroup")]
     public async Task JoinGroupAsync(int gameId)
     {
-        if (!await UserInGame(gameId))
+        if (!await UserInGameAsync(gameId))
         {
             return;
         }
@@ -27,7 +27,7 @@ public partial class AppHub : Hub
     [HubMethodName("NotifyNewPlayer")]
     public async Task NotifyNewPlayerAsync(int gameId)
     {
-        if (!await UserInGame(gameId))
+        if (!await UserInGameAsync(gameId))
         {
             return;
         }
@@ -38,7 +38,7 @@ public partial class AppHub : Hub
     [HubMethodName("TauntPlayer")]
     public async Task TauntPlayerAsync(int gameId, string playerId, string imageId)
     {
-        if (!await UserInGame(gameId))
+        if (!await UserInGameAsync(gameId))
         {
             return;
         }
@@ -49,7 +49,7 @@ public partial class AppHub : Hub
     [HubMethodName("UpdateValue")]
     public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int score)
     {
-        if (!await UserInGame(gameId))
+        if (!await UserInGameAsync(gameId))
         {
             return;
         }
@@ -67,7 +67,7 @@ public partial class AppHub : Hub
     [HubMethodName("ShowReadyCheck")]
     public async Task LaunchReadyCheckAsync(int gameId, bool show)
     {
-        if (!await UserInGame(gameId))
+        if (!await UserInGameAsync(gameId))
         {
             return;
         }
@@ -85,7 +85,7 @@ public partial class AppHub : Hub
     [HubMethodName("SendReady")]
     public async Task SendReadyAsync(int gameId)
     {
-        if (!await UserInGame(gameId))
+        if (!await UserInGameAsync(gameId))
         {
             return;
         }
@@ -98,7 +98,7 @@ public partial class AppHub : Hub
         return Context.User.FindFirstValue("PlayerId");
     }
 
-    private async Task<bool> UserInGame(int gameId)
+    private async Task<bool> UserInGameAsync(int gameId)
     {
         if (Context.User?.IsInRole(Roles.Member) == true)
         {

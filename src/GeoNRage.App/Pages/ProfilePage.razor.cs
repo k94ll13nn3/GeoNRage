@@ -5,66 +5,65 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
 
-namespace GeoNRage.App.Pages
+namespace GeoNRage.App.Pages;
+
+public partial class ProfilePage
 {
-    public partial class ProfilePage
+    [Inject]
+    public IAuthApi AuthApi { get; set; } = null!;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+    [Inject]
+    public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
+
+    public UserEditDto UserEdit { get; set; } = new();
+
+    public EditForm Form { get; set; } = null!;
+
+    public ClaimsPrincipal User { get; set; } = null!;
+
+    public async Task UpdateUserAsync(EditContext editContext)
     {
-        [Inject]
-        public IAuthApi AuthApi { get; set; } = null!;
-
-        [CascadingParameter]
-        public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
-
-        [Inject]
-        public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
-
-        [Inject]
-        public NavigationManager NavigationManager { get; set; } = null!;
-
-        [Inject]
-        public ToastService ToastService { get; set; } = null!;
-
-        public UserEditDto UserEdit { get; set; } = new();
-
-        public EditForm Form { get; set; } = null!;
-
-        public ClaimsPrincipal User { get; set; } = null!;
-
-        public async Task UpdateUserAsync(EditContext editContext)
+        try
         {
-            try
+            if (string.IsNullOrWhiteSpace(UserEdit.Password))
             {
-                if (string.IsNullOrWhiteSpace(UserEdit.Password))
-                {
-                    UserEdit.Password = null;
-                }
-
-                if (string.IsNullOrWhiteSpace(UserEdit.PasswordConfirm))
-                {
-                    UserEdit.PasswordConfirm = null;
-                }
-
-                bool formIsValid = editContext.Validate();
-                if (formIsValid)
-                {
-                    await AuthApi.EditAsync(UserEdit);
-                    GeoNRageStateProvider.NotifyUpdate();
-                }
+                UserEdit.Password = null;
             }
-            catch (ApiException e)
+
+            if (string.IsNullOrWhiteSpace(UserEdit.PasswordConfirm))
             {
-                ToastService.DisplayToast($"Error: {e.Content}", null, ToastType.Error);
+                UserEdit.PasswordConfirm = null;
+            }
+
+            bool formIsValid = editContext.Validate();
+            if (formIsValid)
+            {
+                await AuthApi.EditAsync(UserEdit);
+                GeoNRageStateProvider.NotifyUpdate();
             }
         }
-
-        protected override async Task OnInitializedAsync()
+        catch (ApiException e)
         {
-            User = (await AuthenticationState).User;
+            ToastService.DisplayToast($"Error: {e.Content}", null, ToastType.Error);
         }
+    }
 
-        protected override void OnAfterRender(bool firstRender)
-        {
-            Form?.EditContext?.UpdateCssClassProvider();
-        }
+    protected override async Task OnInitializedAsync()
+    {
+        User = (await AuthenticationState).User;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Form?.EditContext?.UpdateCssClassProvider();
     }
 }

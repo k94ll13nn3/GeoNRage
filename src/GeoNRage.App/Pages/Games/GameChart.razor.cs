@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
-using Plotly.Blazor.ConfigLib;
-using Plotly.Blazor.LayoutLib;
-using Plotly.Blazor.LayoutLib.LegendLib;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.ScatterLib;
 

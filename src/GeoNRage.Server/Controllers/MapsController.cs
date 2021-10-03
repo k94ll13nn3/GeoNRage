@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Services;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,12 +25,9 @@ public partial class MapsController : ControllerBase
         try
         {
             MapDto? updatedMap = await _mapService.UpdateAsync(id, dto);
-            if (updatedMap is null)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            return updatedMap is not null
+                ? (ActionResult<MapDto>)NoContent()
+                : NotFound();
         }
         catch (InvalidOperationException e)
         {

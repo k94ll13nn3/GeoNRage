@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
@@ -119,24 +119,24 @@ public partial class LocationsStatisticsPage
         foreach (IGrouping<string, LocationDto> country in Locations.GroupBy(l => l.Country ?? "-").OrderByDescending(g => g.Count()).Take(15))
         {
             labels.Add(country.Key);
-            values.Add(country.Count().ToString());
+            values.Add(country.Count().ToString(CultureInfo.InvariantCulture));
             parents.Add("Tout");
             sum += country.Count();
             foreach (IGrouping<string, LocationDto> level1 in country.GroupBy(l => l.AdministrativeAreaLevel1 ?? $"- ({country.Key})"))
             {
                 labels.Add(level1.Key);
-                values.Add(level1.Count().ToString());
+                values.Add(level1.Count().ToString(CultureInfo.InvariantCulture));
                 parents.Add(country.Key);
                 foreach (IGrouping<string, LocationDto> level2 in level1.GroupBy(l => l.AdministrativeAreaLevel2 ?? $"- ({level1.Key})"))
                 {
                     labels.Add($"{level2.Key} ({level1.Key})");
-                    values.Add(level2.Count().ToString());
+                    values.Add(level2.Count().ToString(CultureInfo.InvariantCulture));
                     parents.Add(level1.Key);
                 }
             }
         }
 
-        values[0] = sum.ToString(); // Set total count to visited countries
+        values[0] = sum.ToString(CultureInfo.InvariantCulture); // Set total count to visited countries
 
         Data = new List<ITrace>
         {

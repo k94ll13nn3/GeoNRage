@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components;
 
@@ -28,12 +28,9 @@ public partial class CheckboxList<TItem, TId>
                 SelectedIds.Add(selectedId);
             }
         }
-        else
+        else if (SelectedIds.Contains(selectedId))
         {
-            if (SelectedIds.Contains(selectedId))
-            {
-                SelectedIds.Remove(selectedId);
-            }
+            SelectedIds.Remove(selectedId);
         }
 
         StateHasChanged();

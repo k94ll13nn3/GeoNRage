@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Microsoft.JSInterop;
 
 namespace GeoNRage.App.Services;
@@ -12,13 +12,13 @@ public partial class UserSettingsService
 
     public event EventHandler? SettingsChanged;
 
-    public async Task<UserSettings> Get()
+    public async Task<UserSettings> GetAsync()
     {
         string str = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", KeyName);
         return str != null ? JsonSerializer.Deserialize<UserSettings>(str) ?? new UserSettings(false) : new UserSettings(false);
     }
 
-    public async Task Save(UserSettings settings)
+    public async Task SaveAsync(UserSettings settings)
     {
         string json = JsonSerializer.Serialize(settings);
         await _jsRuntime.InvokeVoidAsync("localStorage.setItem", KeyName, json);

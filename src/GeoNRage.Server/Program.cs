@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using GeoNRage.Server;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Hubs;
@@ -32,10 +32,9 @@ builder.Services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompres
 
 string connectionString = builder.Configuration.GetConnectionString("GeoNRageConnection");
 builder.Services.AddDbContextPool<GeoNRageDbContext>(options =>
-{
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-    options.ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
-});
+    options
+        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+        .ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning)));
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<GeoNRageDbContext>()

@@ -2,6 +2,6 @@
     @(AllMaps ? "Toutes cartes" : "Cartes principales")
 </label>
 <label class="switch">
-    <input type="checkbox" @onchange="ChangeMapStatus" checked="@AllMaps">
+    <input type="checkbox" @onchange="ChangeMapStatusAsync" checked="@AllMaps">
     <span class="slider"></span>
 </label>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Layouts.Main;
 
@@ -11,12 +11,12 @@ public partial class MapStatusSwitcher
 
     protected override async Task OnInitializedAsync()
     {
-        AllMaps = (await UserSettingsService.Get()).AllMaps;
+        AllMaps = (await UserSettingsService.GetAsync()).AllMaps;
     }
 
-    public async Task ChangeMapStatus(ChangeEventArgs e)
+    public async Task ChangeMapStatusAsync(ChangeEventArgs e)
     {
         AllMaps = e?.Value is true;
-        await UserSettingsService.Save(await UserSettingsService.Get() with { AllMaps = AllMaps });
+        await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { AllMaps = AllMaps });
     }
 }

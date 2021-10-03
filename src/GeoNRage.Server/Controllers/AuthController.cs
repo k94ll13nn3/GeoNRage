@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -63,12 +63,9 @@ public partial class AuthController : ControllerBase
         }
 
         result = await _userManager.AddToRolesAsync(user, new[] { Roles.Member });
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors.FirstOrDefault()?.Description);
-        }
-
-        return Ok();
+        return result.Succeeded
+            ? Ok()
+            : BadRequest(result.Errors.FirstOrDefault()?.Description);
     }
 
     [Authorize(Roles = Roles.Member)]
@@ -140,16 +137,13 @@ public partial class AuthController : ControllerBase
         }
 
         result = await _userManager.AddToRolesAsync(user, parameters.Roles);
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors.FirstOrDefault()?.Description);
-        }
-
-        return Ok();
+        return result.Succeeded
+            ? Ok()
+            : BadRequest(result.Errors.FirstOrDefault()?.Description);
     }
 
     [HttpGet("user")]
-    public async Task<UserDto> CurrentUserInfo()
+    public async Task<UserDto> CurrentUserInfoAsync()
     {
         User user = await _userManager.GetUserAsync(User);
         return new UserDto

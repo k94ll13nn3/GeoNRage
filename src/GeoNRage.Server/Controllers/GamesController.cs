@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,12 +56,9 @@ public partial class GamesController : ControllerBase
         try
         {
             Game? updatedGame = await _gameService.UpdateAsync(id, dto);
-            if (updatedGame is null)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            return updatedGame is not null
+                ? NoContent()
+                : NotFound();
         }
         catch (InvalidOperationException e)
         {

@@ -1,7 +1,6 @@
-﻿namespace GeoNRage.Shared
+﻿namespace GeoNRage.Shared;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string MapStatusHeaderName = "show-all-maps";
-    }
+    public const string MapStatusHeaderName = "show-all-maps";
 }

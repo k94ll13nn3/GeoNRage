@@ -1,5 +1,4 @@
-﻿using System.Net;
-using GeoNRage.App.Apis;
+using System.Net;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -43,14 +42,9 @@ public partial class LoginPage
         if (!response.IsSuccessStatusCode)
         {
             ShowError = true;
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                Error = await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                Error = "Erreur imprévue";
-            }
+            Error = response.StatusCode == HttpStatusCode.BadRequest
+                ? await response.Content.ReadAsStringAsync()
+                : "Erreur imprévue";
         }
         else
         {
