@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace GeoNRage.App.Layouts.Main;
@@ -6,6 +6,7 @@ namespace GeoNRage.App.Layouts.Main;
 public partial class ToastRender : IDisposable
 {
     private bool _disposedValue;
+    private readonly List<ToastEventArgs> _toasts = new();
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
@@ -13,7 +14,7 @@ public partial class ToastRender : IDisposable
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
-    public List<ToastData> Toasts { get; set; } = new();
+    public IEnumerable<ToastEventArgs> Toasts => _toasts.AsEnumerable();
 
     public void Dispose()
     {
@@ -46,25 +47,25 @@ public partial class ToastRender : IDisposable
         }
     }
 
-    private void AddToast(object? sender, ToastData toast)
+    private void AddToast(object? sender, ToastEventArgs toast)
     {
-        if (!Toasts.Any(t => !string.IsNullOrWhiteSpace(t.Id) && t.Id == toast.Id) || toast.OverrideSameId)
+        if (!_toasts.Any(t => !string.IsNullOrWhiteSpace(t.Id) && t.Id == toast.Id) || toast.OverrideSameId)
         {
-            Toasts.RemoveAll(t => t.Id == toast.Id);
-            Toasts.Add(toast);
+            _toasts.RemoveAll(t => t.Id == toast.Id);
+            _toasts.Add(toast);
             StateHasChanged();
         }
     }
 
-    private void RemoveToast(ToastData toast)
+    private void RemoveToast(ToastEventArgs toast)
     {
-        Toasts.Remove(toast);
+        _toasts.Remove(toast);
         StateHasChanged();
     }
 
     private void ClearToasts(object? sender, LocationChangedEventArgs args)
     {
-        Toasts.Clear();
+        _toasts.Clear();
         StateHasChanged();
     }
 }

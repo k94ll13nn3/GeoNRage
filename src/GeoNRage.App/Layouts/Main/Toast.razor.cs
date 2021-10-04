@@ -41,7 +41,7 @@ public partial class Toast
     {
         if (firstRender && Duration is not null)
         {
-            var timer = new PeriodicTimer(Duration.Value);
+            using var timer = new PeriodicTimer(Duration.Value);
             await timer.WaitForNextTickAsync(_tokenSource.Token);
             if (!_tokenSource.Token.IsCancellationRequested)
             {

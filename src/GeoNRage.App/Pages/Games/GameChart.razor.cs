@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.ScatterLib;
@@ -13,7 +13,7 @@ public partial class GameChart
 
     public Layout Layout { get; set; } = new();
 
-    public IList<ITrace> Data { get; set; } = new List<ITrace>();
+    public IList<ITrace> Data { get; } = new List<ITrace>();
 
     [Parameter]
     public IEnumerable<GameChallengeDto> Challenges { get; set; } = null!;
@@ -37,7 +37,7 @@ public partial class GameChart
         Layout.Height = 600;
         Layout.Width = 750;
 
-        Data = new List<ITrace>();
+        Data.Clear();
 
         var labels = new List<object>();
         int i = 1;

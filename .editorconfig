@@ -176,28 +176,6 @@ csharp_space_between_square_brackets = false
 # Custom diagnostic severities #
 ################################
 
-# See https://github.com/dotnet/roslyn/issues/47832
-dotnet_diagnostic.IDE0058.severity = none
-
-# CA2007/RCS1090: Call ConfigureAwait
-dotnet_diagnostic.CA2007.severity = none
-dotnet_diagnostic.RCS1090.severity = none
-
-# S1075: Refactor your code not to use hardcoded absolute paths or URIs
-dotnet_diagnostic.S1075.severity = none
-
-# CA1716: Identifiers should not match keywords
-dotnet_diagnostic.CA1716.severity = none
-
-# RS0030: Do not use banned APIs
-dotnet_diagnostic.RS0030.severity = error
-
-# S3903 : Move class to namespace. Not detecting file scoped namespace
-dotnet_diagnostic.S3903.severity=silent
-
-# IDE0161 : Use file scoped namespace
-dotnet_diagnostic.IDE0161.severity = warning
-
 # CA2227: Collection properties should be read only
 [**/Dtos/**.cs]
 dotnet_diagnostic.CA2227.severity = none
@@ -210,3 +188,6 @@ dotnet_diagnostic.CA2227.severity = none
 
 [**/GeoNRage.Shared/**.cs]
 dotnet_diagnostic.IDE0130.severity = none
+
+[Program.cs]
+dotnet_diagnostic.CA1812.severity = none

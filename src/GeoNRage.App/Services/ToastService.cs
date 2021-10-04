@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Services;
 
 public class ToastService
 {
-    public event EventHandler<ToastData>? OnToastRequested;
+    public event EventHandler<ToastEventArgs>? OnToastRequested;
 
     public void DisplayToast(
         string message,

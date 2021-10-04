@@ -27,7 +27,7 @@ public partial class LocationsStatisticsPage
 
     public Layout Layout { get; set; } = new();
 
-    public IList<ITrace> Data { get; set; } = new List<ITrace>();
+    public IList<ITrace> Data { get; } = new List<ITrace>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -138,17 +138,15 @@ public partial class LocationsStatisticsPage
 
         values[0] = sum.ToString(CultureInfo.InvariantCulture); // Set total count to visited countries
 
-        Data = new List<ITrace>
+        Data.Clear();
+        Data.Add(new TreeMap
         {
-            new TreeMap
-            {
-                Name = "TreeMap",
-                Labels = labels,
-                Parents = parents,
-                TextInfo = TextInfoFlag.Label | TextInfoFlag.Value,
-                Values = values,
-                BranchValues = BranchValuesEnum.Total
-            }
-        };
+            Name = "TreeMap",
+            Labels = labels,
+            Parents = parents,
+            TextInfo = TextInfoFlag.Label | TextInfoFlag.Value,
+            Values = values,
+            BranchValues = BranchValuesEnum.Total
+        });
     }
 }

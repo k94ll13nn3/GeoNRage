@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -32,6 +32,8 @@ public partial class ProfilePage
 
     public async Task UpdateUserAsync(EditContext editContext)
     {
+        ArgumentNullException.ThrowIfNull(editContext);
+
         try
         {
             if (string.IsNullOrWhiteSpace(UserEdit.Password))

@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -63,6 +63,7 @@ public partial class GamePage : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _cancellationToken.Cancel();
+        _cancellationToken?.Dispose();
         _hubConnection.Closed -= OnHubConnectionClosed;
         _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
         _hubConnection.Reconnected -= OnHubConnectionReconnected;

@@ -1,4 +1,4 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
 using Plotly.Blazor.Traces;
@@ -29,7 +29,7 @@ public partial class PlayerPage
 
     public Layout Layout { get; set; } = new();
 
-    public IList<ITrace> Data { get; set; } = new List<ITrace>();
+    public IList<ITrace> Data { get; } = new List<ITrace>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,14 +62,12 @@ public partial class PlayerPage
         Layout = new PlotlyConfig().Layout;
         Layout.Height = 250;
 
-        Data = new List<ITrace>
+        Data.Clear();
+        Data.Add(new Bar
         {
-            new Bar
-            {
-                X = Player.GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object).ToList(),
-                Y = Player.GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
-                Name = "SF Zoo"
-            },
-        };
+            X = Player.GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object).ToList(),
+            Y = Player.GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
+            Name = "SF Zoo"
+        });
     }
 }

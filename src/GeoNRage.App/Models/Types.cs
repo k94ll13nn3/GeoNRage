@@ -16,4 +16,30 @@ public enum ToastType
     Error = 5,
 }
 
-public record ToastData(string Id, Guid UniqueId, RenderFragment Content, TimeSpan? Duration, ToastType ToastType, bool OverrideSameId, string? Title);
+public class ToastEventArgs : EventArgs
+{
+    public ToastEventArgs(string id, Guid uniqueId, RenderFragment content, TimeSpan? duration, ToastType toastType, bool overrideSameId, string? title)
+    {
+        Id = id;
+        UniqueId = uniqueId;
+        Content = content;
+        Duration = duration;
+        ToastType = toastType;
+        OverrideSameId = overrideSameId;
+        Title = title;
+    }
+
+    public string Id { get; set; }
+
+    public Guid UniqueId { get; set; }
+
+    public RenderFragment Content { get; set; }
+
+    public TimeSpan? Duration { get; set; }
+
+    public ToastType ToastType { get; set; }
+
+    public bool OverrideSameId { get; set; }
+
+    public string? Title { get; set; }
+}

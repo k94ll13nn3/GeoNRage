@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
 
 namespace GeoNRage.App.Core;
 
-public static class BuilderExtensions
+internal static class BuilderExtensions
 {
     public static void AddRefitClient<T>(this WebAssemblyHostBuilder builder) where T : class
     {

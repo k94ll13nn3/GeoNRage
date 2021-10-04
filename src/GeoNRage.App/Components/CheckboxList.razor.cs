@@ -14,6 +14,7 @@ public partial class CheckboxList<TItem, TId>
     public Func<TItem, TId> IdSelector { get; set; } = null!;
 
     [Parameter]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227", Justification = "Setter needed as it is a parameter")]
     public ICollection<TId> SelectedIds { get; set; } = Array.Empty<TId>();
 
     [Parameter]
