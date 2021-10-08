@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace GeoNRage.Server.Hubs;
 
 [AutoConstructor]
-public partial class AppHub : Hub
+public partial class AppHub : Hub<IAppHub>
 {
     private readonly GameService _gameService;
 
@@ -32,7 +32,7 @@ public partial class AppHub : Hub
             return;
         }
 
-        await Clients.OthersInGroup($"group-${gameId}").SendAsync("NewPlayerAdded");
+        await Clients.OthersInGroup($"group-${gameId}").NewPlayerAdded();
     }
 
     [HubMethodName("TauntPlayer")]
@@ -43,7 +43,7 @@ public partial class AppHub : Hub
             return;
         }
 
-        await Clients.Group($"user_{playerId}").SendAsync("Taunted", imageId, Context.User?.Identity?.Name);
+        await Clients.Group($"user_{playerId}").Taunted(imageId, Context.User?.Identity?.Name);
     }
 
     [HubMethodName("UpdateValue")]
@@ -60,7 +60,7 @@ public partial class AppHub : Hub
         {
             await _gameService.UpdateValueAsync(gameId, challengeId, playerId, round, score);
 
-            await Clients.OthersInGroup($"group-${gameId}").SendAsync("ReceiveValue", challengeId, playerId, round, score);
+            await Clients.OthersInGroup($"group-${gameId}").ReceiveValue(challengeId, playerId, round, score);
         }
     }
 
@@ -74,11 +74,11 @@ public partial class AppHub : Hub
 
         if (show)
         {
-            await Clients.Group($"group-${gameId}").SendAsync("OpenReadyCheck");
+            await Clients.Group($"group-${gameId}").OpenReadyCheck();
         }
         else
         {
-            await Clients.Group($"group-${gameId}").SendAsync("CloseReadyCheck");
+            await Clients.Group($"group-${gameId}").CloseReadyCheck();
         }
     }
 
@@ -90,7 +90,7 @@ public partial class AppHub : Hub
             return;
         }
 
-        await Clients.Group($"group-${gameId}").SendAsync("UserReady", GetPlayerIdForCurrentUser());
+        await Clients.Group($"group-${gameId}").UserReady(GetPlayerIdForCurrentUser());
     }
 
     private string? GetPlayerIdForCurrentUser()
