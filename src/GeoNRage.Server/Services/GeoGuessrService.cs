@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GeoNRage.Server.Models;
@@ -45,7 +45,6 @@ public partial class GeoGuessrService
             throw new InvalidOperationException("Cannot import data.");
         }
 
-        var results = new List<GeoGuessrChallengeResult>();
         GeoGuessrChallengeResult[]? challengeResults;
         try
         {
@@ -90,8 +89,6 @@ public partial class GeoGuessrService
             throw new InvalidOperationException("At least one player must play the challenge.");
         }
 
-        results = challengeResults.Where(r => r.Game.Player.Id != profile.Id).ToList();
-
-        return (challenge, results);
+        return (challenge, results: challengeResults.Where(r => r.Game.Player.Id != profile.Id).ToList());
     }
 }

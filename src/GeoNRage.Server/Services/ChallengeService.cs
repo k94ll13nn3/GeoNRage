@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Models;
 using Microsoft.EntityFrameworkCore;
@@ -147,19 +147,19 @@ public partial class ChallengeService
         }
 
         var playerScores = new List<PlayerScore>();
-        foreach (GeoGuessrChallengeResult geoChallenge in results)
+        foreach (GeoGuessrPlayer geoChallengeGamePlayer in results.Select(g => g.Game.Player))
         {
-            Player player = await _context.Players.FindAsync(geoChallenge.Game.Player.Id) ?? new Player
+            Player player = await _context.Players.FindAsync(geoChallengeGamePlayer.Id) ?? new Player
             {
-                Id = geoChallenge.Game.Player.Id,
-                Name = geoChallenge.Game.Player.Nick,
+                Id = geoChallengeGamePlayer.Id,
+                Name = geoChallengeGamePlayer.Nick,
             };
 
             var playerScore = new PlayerScore
             {
                 PlayerId = player.Id,
                 Player = player,
-                PlayerGuesses = geoChallenge.Game.Player.Guesses.Select((p, i) => new PlayerGuess
+                PlayerGuesses = geoChallengeGamePlayer.Guesses.Select((p, i) => new PlayerGuess
                 {
                     Score = p.RoundScoreInPoints,
                     RoundNumber = i + 1,

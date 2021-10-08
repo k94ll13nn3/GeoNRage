@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace GeoNRage.App.Core;
 
@@ -9,7 +9,7 @@ public static class EditContextExtensions
         context?.SetFieldCssClassProvider(new CustomFieldClassProvider());
     }
 
-    private class CustomFieldClassProvider : FieldCssClassProvider
+    private sealed class CustomFieldClassProvider : FieldCssClassProvider
     {
         public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
         {

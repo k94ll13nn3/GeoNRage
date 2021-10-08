@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -215,11 +215,11 @@ public partial class GameService
                 throw new InvalidOperationException($"No player with id '{playerId}' exists");
             }
 
-            foreach (Challenge challenge in game.Challenges)
+            foreach (ICollection<PlayerScore> playerScores in game.Challenges.Select(c => c.PlayerScores))
             {
-                if (!challenge.PlayerScores.Select(p => p.PlayerId).Contains(playerId))
+                if (!playerScores.Select(p => p.PlayerId).Contains(playerId))
                 {
-                    challenge.PlayerScores.Add(new PlayerScore { PlayerId = playerId });
+                    playerScores.Add(new PlayerScore { PlayerId = playerId });
                     await _context.SaveChangesAsync();
                 }
             }

@@ -111,14 +111,14 @@ public partial class GamePage : IAsyncDisposable
             Game = response.Content;
             foreach (GameChallengeDto challenge in Game.Challenges)
             {
-                foreach (GamePlayerDto player in Game.Players)
+                foreach (string playerId in Game.Players.Select(p => p.Id))
                 {
-                    GameChallengePlayerScoreDto? playerScore = challenge.PlayerScores.FirstOrDefault(p => p.PlayerId == player.Id);
-                    Scores[(challenge.Id, player.Id, 1)] = playerScore?.Round1;
-                    Scores[(challenge.Id, player.Id, 2)] = playerScore?.Round2;
-                    Scores[(challenge.Id, player.Id, 3)] = playerScore?.Round3;
-                    Scores[(challenge.Id, player.Id, 4)] = playerScore?.Round4;
-                    Scores[(challenge.Id, player.Id, 5)] = playerScore?.Round5;
+                    GameChallengePlayerScoreDto? playerScore = challenge.PlayerScores.FirstOrDefault(p => p.PlayerId == playerId);
+                    Scores[(challenge.Id, playerId, 1)] = playerScore?.Round1;
+                    Scores[(challenge.Id, playerId, 2)] = playerScore?.Round2;
+                    Scores[(challenge.Id, playerId, 3)] = playerScore?.Round3;
+                    Scores[(challenge.Id, playerId, 4)] = playerScore?.Round4;
+                    Scores[(challenge.Id, playerId, 5)] = playerScore?.Round5;
                 }
             }
 
