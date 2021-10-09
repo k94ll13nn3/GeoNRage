@@ -15,7 +15,7 @@ public partial class CheckboxList<TItem, TId>
 
     [Parameter]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227", Justification = "Setter needed as it is a parameter")]
-    public ICollection<TId> SelectedIds { get; set; } = Array.Empty<TId>();
+    public ICollection<TId> SelectedIds { get; set; } = new List<TId>();
 
     [Parameter]
     public string Label { get; set; } = null!;

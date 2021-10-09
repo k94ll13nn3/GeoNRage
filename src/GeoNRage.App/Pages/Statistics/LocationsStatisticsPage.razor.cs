@@ -7,7 +7,7 @@ using Plotly.Blazor.LayoutLib;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.TreeMapLib;
 
-namespace GeoNRage.App.Pages;
+namespace GeoNRage.App.Pages.Statistics;
 
 public partial class LocationsStatisticsPage
 {

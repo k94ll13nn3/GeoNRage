@@ -27,7 +27,12 @@ public partial class PlayersController : ControllerBase
     public async Task<ActionResult<PlayerFullDto>> GetFullAsync(string id)
     {
         PlayerFullDto? player = await _playerService.GetFullAsync(id, Request.Headers[Constants.MapStatusHeaderName] == "True");
-        return player ?? (ActionResult<PlayerFullDto>)NotFound();
+        if (player is null)
+        {
+            return NotFound();
+        }
+
+        return player;
     }
 
     [Authorize(Roles = Roles.Admin)]
@@ -38,9 +43,12 @@ public partial class PlayersController : ControllerBase
         try
         {
             PlayerDto? updatedPlayer = await _playerService.UpdateAsync(id, dto);
-            return updatedPlayer is not null
-                ? NoContent()
-                : NotFound();
+            if (updatedPlayer is null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
         catch (InvalidOperationException e)
         {

@@ -1,7 +1,7 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 
-namespace GeoNRage.App.Pages;
+namespace GeoNRage.App.Pages.Statistics;
 
 public partial class PlayersStatisticsPage
 {
@@ -10,6 +10,17 @@ public partial class PlayersStatisticsPage
 
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    public PopupService PopupService { get; set; } = null!;
+
+    public IList<string> SelectedPlayerIds { get; } = new List<string>();
+
+    public bool ShowComparison { get; set; }
+
+    public PlayerFullDto Player1 { get; set; } = null!;
+
+    public PlayerFullDto Player2 { get; set; } = null!;
 
     internal IEnumerable<PlayerStatisticDto> Players { get; set; } = Enumerable.Empty<PlayerStatisticDto>();
 
@@ -38,5 +49,34 @@ public partial class PlayersStatisticsPage
             nameof(PlayerStatisticDto.RoundAverage) => ascending ? players.OrderBy(p => p.RoundAverage) : players.OrderByDescending(p => p.RoundAverage),
             _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
         };
+    }
+
+    private async Task CompareAsync()
+    {
+        Player1 = (await PlayersApi.GetFullAsync(SelectedPlayerIds[0])).Content!;
+        Player2 = (await PlayersApi.GetFullAsync(SelectedPlayerIds[1])).Content!;
+        ShowComparison = true;
+    }
+
+    private bool CanCompare()
+    {
+        return SelectedPlayerIds.Count == 2;
+    }
+
+    private void PlayerChecked(string selectedId, object? value)
+    {
+        if ((bool?)value == true)
+        {
+            if (!SelectedPlayerIds.Contains(selectedId))
+            {
+                SelectedPlayerIds.Add(selectedId);
+            }
+        }
+        else if (SelectedPlayerIds.Contains(selectedId))
+        {
+            SelectedPlayerIds.Remove(selectedId);
+        }
+
+        StateHasChanged();
     }
 }

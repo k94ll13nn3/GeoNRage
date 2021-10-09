@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.App.Services;
+namespace GeoNRage.App.Services;
 
 public class PopupService
 {

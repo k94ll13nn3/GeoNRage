@@ -1,0 +1,13 @@
+<Table Items="PlayersComparisons"
+	   Headers="@(new TableHeader[]
+					{
+						new("Statistique", false, string.Empty),
+						new(Player1.Name, false, string.Empty),
+						new(Player2.Name, false, string.Empty),
+					})">
+	<RowContent Context="comparison">
+		<td>@comparison.statistic</td>
+		<td class="@(comparison.comparison == 1 ? "has-text-success" : "")">@comparison.player1</td>
+		<td class="@(comparison.comparison == -1 ? "has-text-success" : "")">@comparison.player2</td>
+	</RowContent>
+</Table>
