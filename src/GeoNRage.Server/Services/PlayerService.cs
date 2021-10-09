@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Services;
@@ -191,8 +191,8 @@ public partial class PlayerService
                     NumberOfTimeOutWithGuess = playerGuesses.Count(g => g.TimedOutWithGuess),
                     DistanceAverage = playerGuesses.Average(g => g.Distance),
                     TimeByRoundAverage = playerGuesses.Average(g => g.Time),
-                    TotalTime = playerGuesses.Sum(g => g.Time),
-                    TotalDistance = playerGuesses.Sum(g => g.Distance),
+                    TotalTime = playerGuesses.Any() ? playerGuesses.Sum(g => g.Time) : null,
+                    TotalDistance = playerGuesses.Any() ? playerGuesses.Sum(g => g.Distance) : null,
                     Best5000Time = playerGuesses.Where(g => g.Score == 5000 && g.Time is not null).Min(g => g.Time)
                 }
             };
