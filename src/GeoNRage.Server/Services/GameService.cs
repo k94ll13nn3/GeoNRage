@@ -86,6 +86,14 @@ public partial class GameService
             .FirstOrDefaultAsync();
     }
 
+    public bool Exists(int gameId)
+    {
+        return _context
+            .Games
+            .AsNoTracking()
+            .Any(g => g.Id == gameId);
+    }
+
     public async Task<int> CreateAsync(GameCreateOrEditDto dto)
     {
         _ = dto ?? throw new ArgumentNullException(nameof(dto));
@@ -134,12 +142,12 @@ public partial class GameService
     {
         _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
-        Game? game = await GetInternalAsync(id, true);
-        if (game is null)
+        if (!Exists(id))
         {
             return null;
         }
 
+        Game game = await GetInternalAsync(id, true);
         IEnumerable<string> mapIds = dto.Challenges.Select(c => c.MapId);
         if (mapIds.Except(_context.Maps.Select(c => c.Id).AsEnumerable()).Any())
         {
@@ -192,7 +200,7 @@ public partial class GameService
 
         _context.Games.Update(game);
         await _context.SaveChangesAsync();
-        return (await GetInternalAsync(game.Id, false))!;
+        return await GetInternalAsync(game.Id, false);
     }
 
     public async Task DeleteAsync(int id)
@@ -207,9 +215,9 @@ public partial class GameService
 
     public async Task AddPlayerAsync(int gameId, string playerId)
     {
-        Game? game = await GetInternalAsync(gameId, true);
-        if (game is not null)
+        if (Exists(gameId))
         {
+            Game game = await GetInternalAsync(gameId, true);
             if (!await _context.Players.AnyAsync(p => p.Id == playerId))
             {
                 throw new InvalidOperationException($"No player with id '{playerId}' exists");
@@ -228,9 +236,9 @@ public partial class GameService
 
     public async Task UpdateValueAsync(int gameId, int challengeId, string playerId, int round, int newScore)
     {
-        Game? game = await GetInternalAsync(gameId, true);
-        if (game is not null)
+        if (Exists(gameId))
         {
+            Game? game = await GetInternalAsync(gameId, true);
             PlayerScore playerScore = game.Challenges.First(c => c.Id == challengeId).PlayerScores.First(p => p.PlayerId == playerId);
             PlayerGuess? existingRound = playerScore.PlayerGuesses.SingleOrDefault(g => g.RoundNumber == round);
             if (existingRound is not null)
@@ -248,12 +256,14 @@ public partial class GameService
 
     public async Task ImportChallengeAsync(int id)
     {
-        Game gameForDto = (await GetInternalAsync(id, false))!;
+        Game gameForDto = await GetInternalAsync(id, false);
         foreach (Challenge challenge in gameForDto.Challenges)
         {
             await _challengeService.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true }, id);
         }
 
+        // Update the dto with the updated challenges
+        gameForDto = await GetInternalAsync(id, false);
         var editDto = new GameCreateOrEditDto
         {
             Name = gameForDto.Name,
@@ -270,7 +280,7 @@ public partial class GameService
         await UpdateAsync(id, editDto);
     }
 
-    private async Task<Game?> GetInternalAsync(int id, bool tracking)
+    private async Task<Game> GetInternalAsync(int id, bool tracking)
     {
         IQueryable<Game> query = _context
             .Games
@@ -283,7 +293,12 @@ public partial class GameService
             query = query.AsNoTracking();
         }
 
-        return await query
-            .FirstOrDefaultAsync(g => g.Id != -1 && g.Id == id);
+        Game? game = await query.FirstOrDefaultAsync(g => g.Id != -1 && g.Id == id);
+        if (game is null)
+        {
+            throw new InvalidOperationException($"Game with id {id} does not exists?");
+        }
+
+        return game;
     }
 }

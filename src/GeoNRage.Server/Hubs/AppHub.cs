@@ -54,9 +54,7 @@ public partial class AppHub : Hub<IAppHub>
             return;
         }
 
-        GameDetailDto? game = await _gameService.GetAsync(gameId);
-
-        if (game is not null)
+        if (_gameService.Exists(gameId))
         {
             await _gameService.UpdateValueAsync(gameId, challengeId, playerId, round, score);
 

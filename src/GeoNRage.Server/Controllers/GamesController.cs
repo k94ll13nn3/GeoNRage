@@ -56,9 +56,12 @@ public partial class GamesController : ControllerBase
         try
         {
             Game? updatedGame = await _gameService.UpdateAsync(id, dto);
-            return updatedGame is not null
-                ? NoContent()
-                : NotFound();
+            if (updatedGame is null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
         catch (InvalidOperationException e)
         {
@@ -71,8 +74,7 @@ public partial class GamesController : ControllerBase
     {
         try
         {
-            GameDetailDto? game = await _gameService.GetAsync(id);
-            if (game == null)
+            if (!_gameService.Exists(id))
             {
                 return NotFound();
             }
@@ -101,8 +103,7 @@ public partial class GamesController : ControllerBase
     {
         try
         {
-            GameDetailDto? game = await _gameService.GetAsync(id);
-            if (game == null)
+            if (!_gameService.Exists(id))
             {
                 return NotFound();
             }
