@@ -22,14 +22,14 @@ public partial class ComparisonTable
         AddElement(p => p.Statistics.MapAverage, "Moyenne par carte", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.RoundAverage, "Moyenne par round", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.NumberOf0, "Nombre de 0", (i, j) => j.CompareTo(i));
-        AddElement(p => p.Statistics.TimeByRoundAverage, "Temps moyen", (i, j) => NullableComparer(j, i), x => x.ToTimeString());
-        AddElement(p => p.Statistics.DistanceAverage, "Distance moyenne", (i, j) => NullableComparer(j, i), x => x.ToDistanceString());
-        AddElement(p => p.Statistics.TotalTime, "Temps total", (i, j) => NullableComparer(j, i), x => x.ToTimeString());
-        AddElement(p => p.Statistics.TotalDistance, "Distance totale", (i, j) => NullableComparer(j, i), x => x.ToDistanceString());
+        AddElement(p => p.Statistics.TimeByRoundAverage, "Temps moyen", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.DistanceAverage, "Distance moyenne", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
+        AddElement(p => p.Statistics.TotalTime, "Temps total", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.TotalDistance, "Distance totale", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
         AddElement(p => p.Statistics.NumberOfTimeOut, "Nombre de time out (sans guess)", (i, j) => j.CompareTo(i));
         AddElement(p => p.Statistics.NumberOfTimeOutWithGuess, "Nombre de time out (avec guess)", (i, j) => j.CompareTo(i));
-        AddElement(p => p.Statistics.Best5000Time, "5000 le plus rapide", (i, j) => NullableComparer(j, i), x => x.ToTimeString());
-        AddElement(p => p.Statistics.Best25000Time, "25000 le plus rapide", (i, j) => NullableComparer(j, i), x => x.ToTimeString());
+        AddElement(p => p.Statistics.Best5000Time, "5000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.Best25000Time, "25000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
     }
 
     private void AddElement<T>(Func<PlayerFullDto, T> selector, string title, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)
@@ -41,9 +41,14 @@ public partial class ComparisonTable
 
     private static int NullableComparer<T>(T? firstValue, T? secondValue) where T : struct, IComparable
     {
+        return NullableComparer(firstValue, secondValue, false);
+    }
+
+    private static int NullableComparer<T>(T? firstValue, T? secondValue, bool invert) where T : struct, IComparable
+    {
         return (firstValue.HasValue, secondValue.HasValue) switch
         {
-            (true, true) => firstValue!.Value.CompareTo(secondValue!.Value),
+            (true, true) => !invert ? firstValue!.Value.CompareTo(secondValue!.Value) : secondValue!.Value.CompareTo(firstValue!.Value),
             (true, false) => 1,
             (false, true) => -1,
             _ => 0,
