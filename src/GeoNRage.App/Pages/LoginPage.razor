@@ -1,4 +1,4 @@
-﻿@page "/login"
+@page "/login"
 
 @layout GeoNRage.App.Layouts.EmptyLayout
 
@@ -6,7 +6,7 @@
 	<ChildContent>
 		<div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column" style="width:100%">
 			<div class="columns is-centered" style="width:100%">
-				<div class="column is-5-tablet is-4-desktop is-3-widescreen box">
+				<div class="column is-5-tablet is-4-desktop is-4-widescreen box">
 					<div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column m-3">
 						<span class="logo-text">Geo<span class="logo-text-inner">'N</span> Rage</span>
 					</div>
@@ -45,12 +45,21 @@
 							</p>
 						</div>
 
-						<button class="button is-link" type="submit">
-							<span class="icon">
-								<i class="fas fa-sign-in-alt"></i>
-							</span>
-							<span>Se connecter</span>
-						</button>
+						<div class="field is-grouped is-grouped-right">
+							<p class="control">
+								<button class="button is-link" type="submit">
+									<span class="icon">
+										<i class="fas fa-sign-in-alt"></i>
+									</span>
+									<span>Se connecter</span>
+								</button>
+							</p>
+							<p class="control">
+								<a class="button" href="@NavigationManager.ToAbsoluteUri("/")">
+									Retour
+								</a>
+							</p>
+						</div>
 					</EditForm>
 				</div>
 			</div>
