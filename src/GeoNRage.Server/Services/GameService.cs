@@ -125,7 +125,6 @@ public partial class GameService
         {
             Name = dto.Name,
             Date = dto.Date,
-            CreationDate = DateTime.UtcNow,
             Challenges = dto.Challenges.Select(x => new Challenge
             {
                 GeoGuessrId = x.GeoGuessrId,

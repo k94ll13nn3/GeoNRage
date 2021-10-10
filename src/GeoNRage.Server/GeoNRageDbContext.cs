@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -49,7 +49,6 @@ public class GeoNRageDbContext : IdentityDbContext<
         builder.Entity<Game>().HasKey(g => g.Id);
         builder.Entity<Game>().Property(g => g.Id).UseMySqlIdentityColumn();
         builder.Entity<Game>().Property(g => g.Name).IsRequired();
-        builder.Entity<Game>().Property(g => g.CreationDate).IsRequired();
         builder.Entity<Game>().Property(g => g.Date).IsRequired();
         builder.Entity<Game>().HasMany(g => g.Challenges).WithOne(c => c.Game).HasForeignKey(c => c.GameId);
 
@@ -82,7 +81,7 @@ public class GeoNRageDbContext : IdentityDbContext<
 
         builder.Entity<Log>().HasKey(p => p.Id);
 
-        builder.Entity<Game>().HasData(new Game { Id = -1, CreationDate = DateTime.MinValue, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
+        builder.Entity<Game>().HasData(new Game { Id = -1, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
 
         base.OnModelCreating(builder);
 
