@@ -1,4 +1,4 @@
-﻿@page "/admin"
+@page "/admin"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Admin)]
 
@@ -40,6 +40,13 @@
                     <td title="@log.Message">@log.Message[0..Math.Min(log.Message.Length, 100)]</td>
                     <td title="@log.Exception">@log.Exception[0..Math.Min(log.Exception.Length, 100)]</td>
                 </RowContent>
+                <FooterContent>
+                    <th colspan="4" class="has-text-right">
+                        <button class="button is-primary" @onclick="ClearLogsAsync">
+                            <span>Vider</span>
+                        </button>
+                    </th>
+                </FooterContent>
             </Table>
         </div>
     </ChildContent>

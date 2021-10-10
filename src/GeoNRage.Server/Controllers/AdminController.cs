@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Services;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +16,13 @@ public partial class AdminController : ControllerBase
     public async Task<AdminInfoDto> GetAdminInfoAsync()
     {
         return await _adminService.GetAdminInfoAsync();
+    }
+
+    [HttpPost("clear-logs")]
+    public async Task<IActionResult> ClearLogsAsync()
+    {
+        await _adminService.ClearLogsAsync();
+        return NoContent();
     }
 
     [HttpGet("users")]

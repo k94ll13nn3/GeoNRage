@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using GeoNRage.Server.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Services;
 
@@ -40,6 +41,13 @@ public partial class AdminService
             };
 
         return new AdminInfoDto(tables, logs);
+    }
+
+    public async Task ClearLogsAsync()
+    {
+        IEnumerable<Log> logsToRemove = _context.Logs.Where(c => EF.Functions.DateDiffDay(c.Timestamp, DateTime.UtcNow) > 30).ToList();
+        _context.Logs.RemoveRange(logsToRemove);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<UserAminViewDto>> GetAllUsersAsAdminViewAsync()

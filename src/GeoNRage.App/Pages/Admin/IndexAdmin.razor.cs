@@ -1,4 +1,4 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Admin;
@@ -13,5 +13,12 @@ public partial class IndexAdmin
     protected override async Task OnInitializedAsync()
     {
         AdminInfo = await AdminApi.GetAdminInfoAsync();
+    }
+
+    private async Task ClearLogsAsync()
+    {
+        await AdminApi.ClearLogsAsync();
+        AdminInfo = await AdminApi.GetAdminInfoAsync();
+        StateHasChanged();
     }
 }
