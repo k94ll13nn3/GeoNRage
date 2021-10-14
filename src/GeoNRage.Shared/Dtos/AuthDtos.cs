@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace GeoNRage.Shared.Dtos.Auth;
 
@@ -9,6 +9,11 @@ public static class Roles
     public const string Admin = nameof(Admin);
 
     public const string SuperAdmin = nameof(SuperAdmin);
+
+    /// <summary>
+    /// Reserved for disabling features.
+    /// </summary>
+    public const string None = nameof(None);
 
     public static IEnumerable<string> All => new[] { Admin, SuperAdmin, Member };
 }
