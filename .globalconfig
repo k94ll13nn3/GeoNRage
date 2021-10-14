@@ -24,4 +24,5 @@ dotnet_diagnostic.S3903.severity = silent
 # IDE0161 : Use file scoped namespace
 dotnet_diagnostic.IDE0161.severity = warning
 
+dotnet_diagnostic.IDE0045.severity = refactoring
 dotnet_diagnostic.IDE0046.severity = refactoring

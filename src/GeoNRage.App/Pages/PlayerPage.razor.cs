@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
@@ -8,6 +9,8 @@ namespace GeoNRage.App.Pages;
 
 public partial class PlayerPage
 {
+    private static readonly Regex NumericFilterRegex = new(@"^(?<map>.*?)\s*(?<operator>[><]?[=]?)\s*(?<value>\d{1,5})$", RegexOptions.Compiled);
+
     [Parameter]
     public string Id { get; set; } = null!;
 
@@ -77,7 +80,28 @@ public partial class PlayerPage
     private void FilterChallengesDone(ChangeEventArgs args)
     {
         string search = args?.Value as string ?? string.Empty;
-        ChallengesDone = Player.ChallengesDone.Where(c => c.MapName.Contains(search, StringComparison.OrdinalIgnoreCase));
+        Match match = NumericFilterRegex.Match(search);
+        if (match.Success && int.TryParse(match.Groups["value"].Value, out int value))
+        {
+            IEnumerable<PlayerChallengeDto> challenges = Player.ChallengesDone
+                .Where(c => c.MapName.Contains(match.Groups["map"].Value, StringComparison.OrdinalIgnoreCase));
+            challenges = match.Groups["operator"].Value switch
+            {
+                ">=" => challenges.Where(c => c.Sum >= value),
+                "<=" => challenges.Where(c => c.Sum <= value),
+                ">" => challenges.Where(c => c.Sum > value),
+                "<" => challenges.Where(c => c.Sum < value),
+                "=" => challenges.Where(c => c.Sum == value),
+                _ => challenges,
+            };
+
+            ChallengesDone = challenges.ToList();
+        }
+        else
+        {
+            ChallengesDone = Player.ChallengesDone.Where(c => c.MapName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
         StateHasChanged();
     }
 }
