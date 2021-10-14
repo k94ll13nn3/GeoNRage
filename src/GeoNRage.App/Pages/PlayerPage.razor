@@ -9,333 +9,341 @@
 </Container>
 
 <Container Condition="Loaded && PlayerFound">
-    <ChildContent>
-        <div class="container">
-            <div class="m-3">
-                <section class="hero is-primary is-small">
-                    <div class="hero-body">
-                        <p class="title">
-                            @Player.Name
-                        </p>
-                        <p class="subtitle">
-                            <a href="https://www.geoguessr.com/user/@Player.Id" target="_blank">
-                                <span class="icon is-small">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </span>
-                                <span>Profil GeoGuessr</span>
-                            </a>
-                        </p>
-                    </div>
-                </section>
-            </div>
+	<ChildContent>
+		<div class="container">
+			<div class="m-3">
+				<section class="hero is-primary is-small">
+					<div class="hero-body">
+						<p class="title">
+							@Player.Name
+						</p>
+						<p class="subtitle">
+							<a href="https://www.geoguessr.com/user/@Player.Id" target="_blank">
+								<span class="icon is-small">
+									<i class="fas fa-map-marker-alt"></i>
+								</span>
+								<span>Profil GeoGuessr</span>
+							</a>
+						</p>
+					</div>
+				</section>
+			</div>
 
-            <h1 class="is-size-4 my-3 mx-6">Statistiques générales</h1>
-            <nav class="level mx-3 my-5">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de 5000</p>
-                        <p class="title">@Player.Statistics.NumberOf5000</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de 4999</p>
-                        <p class="title">@Player.Statistics.NumberOf4999</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de carte complétées</p>
-                        <p class="title">@Player.Statistics.ChallengesCompleted</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
-                        <p class="title">
-                            <Container Condition="Player.Statistics.BestGameSum is not null">
-                                <ChildContent>
-                                    @Player.Statistics.BestGameSum
-                                </ChildContent>
-                                <ElseContent>
-                                    —
-                                </ElseContent>
-                            </Container>
-                        </p>
-                    </div>
-                </div>
-            </nav>
+			<h1 class="is-size-4 my-3 mx-6">Statistiques générales</h1>
+			<nav class="level mx-3 my-5">
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de 5000</p>
+						<p class="title">@Player.Statistics.NumberOf5000</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de 4999</p>
+						<p class="title">@Player.Statistics.NumberOf4999</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de carte complétées</p>
+						<p class="title">@Player.Statistics.ChallengesCompleted</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
+						<p class="title">
+							<Container Condition="Player.Statistics.BestGameSum is not null">
+								<ChildContent>
+									@Player.Statistics.BestGameSum
+								</ChildContent>
+								<ElseContent>
+									—
+								</ElseContent>
+							</Container>
+						</p>
+					</div>
+				</div>
+			</nav>
 
-            <h1 class="is-size-4 my-3 mx-6">Statistiques diverses</h1>
-            <nav class="level mx-3 my-5">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de 25k</p>
-                        <p class="title">@Player.Statistics.NumberOf25000</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Moyenne par carte</p>
-                        <p class="title">@(Player.Statistics.MapAverage?.ToString("F1") ?? "—")</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Moyenne par round</p>
-                        <p class="title">@(Player.Statistics.RoundAverage?.ToString("F1") ?? "—")</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de 0</p>
-                        <p class="title">@Player.Statistics.NumberOf0</p>
-                    </div>
-                </div>
-            </nav>
+			<h1 class="is-size-4 my-3 mx-6">Statistiques diverses</h1>
+			<nav class="level mx-3 my-5">
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de 25k</p>
+						<p class="title">@Player.Statistics.NumberOf25000</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Moyenne par carte</p>
+						<p class="title">@(Player.Statistics.MapAverage?.ToString("F1") ?? "—")</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Moyenne par round</p>
+						<p class="title">@(Player.Statistics.RoundAverage?.ToString("F1") ?? "—")</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de 0</p>
+						<p class="title">@Player.Statistics.NumberOf0</p>
+					</div>
+				</div>
+			</nav>
 
-            <nav class="level mx-3 my-5">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Temps moyen</p>
-                        <p class="title">@Player.Statistics.TimeByRoundAverage.ToTimeString()</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Distance moyenne</p>
-                        <p class="title">@Player.Statistics.DistanceAverage.ToDistanceString()</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Temps total</p>
-                        <p class="title">@Player.Statistics.TotalTime.ToTimeString()</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Distance totale</p>
-                        <p class="title">@Player.Statistics.TotalDistance.ToDistanceString()</p>
-                    </div>
-                </div>
-            </nav>
+			<nav class="level mx-3 my-5">
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Temps moyen</p>
+						<p class="title">@Player.Statistics.TimeByRoundAverage.ToTimeString()</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Distance moyenne</p>
+						<p class="title">@Player.Statistics.DistanceAverage.ToDistanceString()</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Temps total</p>
+						<p class="title">@Player.Statistics.TotalTime.ToTimeString()</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Distance totale</p>
+						<p class="title">@Player.Statistics.TotalDistance.ToDistanceString()</p>
+					</div>
+				</div>
+			</nav>
 
-            <nav class="level mx-3 my-5">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de time out (sans guess)</p>
-                        <p class="title">@Player.Statistics.NumberOfTimeOut</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Nombre de time out (avec guess)</p>
-                        <p class="title">@Player.Statistics.NumberOfTimeOutWithGuess</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">5000 le plus rapide</p>
-                        <p class="title">@Player.Statistics.Best5000Time.ToTimeString()</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">25000 le plus rapide</p>
-                        <p class="title">@Player.Statistics.Best25000Time.ToTimeString()</p>
-                    </div>
-                </div>
-            </nav>
+			<nav class="level mx-3 my-5">
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de time out (sans guess)</p>
+						<p class="title">@Player.Statistics.NumberOfTimeOut</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">Nombre de time out (avec guess)</p>
+						<p class="title">@Player.Statistics.NumberOfTimeOutWithGuess</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">5000 le plus rapide</p>
+						<p class="title">@Player.Statistics.Best5000Time.ToTimeString()</p>
+					</div>
+				</div>
+				<div class="level-item has-text-centered">
+					<div>
+						<p class="heading">25000 le plus rapide</p>
+						<p class="title">@Player.Statistics.Best25000Time.ToTimeString()</p>
+					</div>
+				</div>
+			</nav>
 
-            <div class="columns m-3">
-                <div class="column">
-                    <Container Condition="Player.ChallengesNotDone?.Any() == true">
-                        <ChildContent>
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Cartes non jouées
-                                    </p>
-                                </header>
-                                <div class="card-table">
-                                    <div class="content">
-                                        <table class="table table is-striped is-hoverable is-fullwidth">
-                                            <tbody>
-                                                <Repeater Items="Player.ChallengesNotDone" Context="challenge">
-                                                    <tr>
-                                                        <td>@challenge.MapName</td>
-                                                        <td>
-                                                            <Container Condition="challenge.GameId is not null">
-                                                                <ChildContent>
-                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
-                                                                        #@challenge.GameId
-                                                                    </a>
-                                                                </ChildContent>
-                                                                <ElseContent>
-                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.ChallengeId}")">
-                                                                        #@challenge.ChallengeId (C)
-                                                                    </a>
-                                                                </ElseContent>
-                                                            </Container>
-                                                        </td>
-                                                    </tr>
-                                                </Repeater>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </ChildContent>
-                        <ElseContent>
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Cartes non jouées
-                                    </p>
-                                </header>
-                                <div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
-                                    Toutes les cartes disponibles ont été jouées !
-                                </div>
-                            </div>
-                        </ElseContent>
-                    </Container>
-                </div>
+			<div class="columns m-3">
+				<div class="column">
+					<Container Condition="Player.ChallengesNotDone?.Any() == true">
+						<ChildContent>
+							<div class="card">
+								<header class="card-header">
+									<p class="card-header-title">
+										Cartes non jouées
+									</p>
+								</header>
+								<div class="card-table">
+									<div class="content">
+										<table class="table table is-striped is-hoverable is-fullwidth">
+											<tbody>
+												<Repeater Items="Player.ChallengesNotDone" Context="challenge">
+													<tr>
+														<td>@challenge.MapName</td>
+														<td>
+															<Container Condition="challenge.GameId is not null">
+																<ChildContent>
+																	<a href="@NavigationManager.ToAbsoluteUri($"/games/{challenge.GameId}")">
+																		#@challenge.GameId
+																	</a>
+																</ChildContent>
+																<ElseContent>
+																	<a href="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.ChallengeId}")">
+																		#@challenge.ChallengeId (C)
+																	</a>
+																</ElseContent>
+															</Container>
+														</td>
+													</tr>
+												</Repeater>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</ChildContent>
+						<ElseContent>
+							<div class="card">
+								<header class="card-header">
+									<p class="card-header-title">
+										Cartes non jouées
+									</p>
+								</header>
+								<div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
+									Toutes les cartes disponibles ont été jouées !
+								</div>
+							</div>
+						</ElseContent>
+					</Container>
+				</div>
 
-                <div class="column">
-                    <Container Condition="Player.GameHistory?.Any() == true">
-                        <ChildContent>
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
-                                    </p>
-                                </header>
-                                <div class="card-content">
+				<div class="column">
+					<Container Condition="Player.GameHistory?.Any() == true">
+						<ChildContent>
+							<div class="card">
+								<header class="card-header">
+									<p class="card-header-title">
+										Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
+									</p>
+								</header>
+								<div class="card-content">
 									<PlotlyChart Config="Config" Layout="Layout" Data="Data" @ref="Chart" style="" />
-                                </div>
-                            </div>
-                        </ChildContent>
-                        <ElseContent>
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Historique des parties
-                                    </p>
-                                </header>
-                                <div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
-                                    Aucune partie jouées
-                                </div>
-                            </div>
-                        </ElseContent>
-                    </Container>
-                </div>
-            </div>
+								</div>
+							</div>
+						</ChildContent>
+						<ElseContent>
+							<div class="card">
+								<header class="card-header">
+									<p class="card-header-title">
+										Historique des parties
+									</p>
+								</header>
+								<div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
+									Aucune partie jouées
+								</div>
+							</div>
+						</ElseContent>
+					</Container>
+				</div>
+			</div>
 
-            <div class="columns m-3">
-                <div class="column">
-                    <Container Condition="Player.ChallengesDone.Any() == true">
-                        <ChildContent>
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Cartes jouées
-                                    </p>
-                                </header>
-                                <div class="card-table">
-                                    <div class="content">
-                                        <table class="table table is-striped is-hoverable is-fullwidth">
-                                            <tbody>
-                                                <Repeater Items="Player.ChallengesDone" Context="score">
-                                                    <tr>
-                                                        <td>@score.MapName</td>
-                                                        <td>
-                                                            <Container Condition="score.GameId is not null">
-                                                                <ChildContent>
-                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/games/{score.GameId}")">
-                                                                        #@score.GameId
-                                                                    </a>
-                                                                </ChildContent>
-                                                                <ElseContent>
-                                                                    <a href="@NavigationManager.ToAbsoluteUri($"/challenges/{score.ChallengeId}")">
-                                                                        #@score.ChallengeId (C)
-                                                                    </a>
-                                                                </ElseContent>
-                                                            </Container>
-                                                        </td>
-                                                        <td>@score.Sum</td>
-                                                    </tr>
-                                                </Repeater>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </ChildContent>
-                        <ElseContent>
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Cartes jouées
-                                    </p>
-                                </header>
-                                <div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
-                                    Aucune carte jouée.
-                                </div>
-                            </div>
-                        </ElseContent>
-                    </Container>
-                </div>
+			<div class="columns m-3">
+				<div class="column">
+					<Container Condition="Player.ChallengesDone.Any() == true">
+						<ChildContent>
+							<div class="card">
+								<header class="card-header">
+									<p class="card-header-title">
+										Cartes jouées
+									</p>
+								</header>
+								<div class="card-table">
+									<div class="field">
+										<p class="control has-icons-right">
+											<input class="input" type="text" placeholder="Rechercher" @oninput="FilterChallengesDone">
+											<span class="icon is-small is-right">
+												<i class="fas fa-search"></i>
+											</span>
+										</p>
+									</div>
+									<div class="content small-table">
+										<table class="table table is-striped is-hoverable is-fullwidth">
+											<tbody>
+												<Repeater Items="ChallengesDone" Context="score">
+													<tr>
+														<td>@score.MapName</td>
+														<td>
+															<Container Condition="score.GameId is not null">
+																<ChildContent>
+																	<a href="@NavigationManager.ToAbsoluteUri($"/games/{score.GameId}")">
+																		#@score.GameId
+																	</a>
+																</ChildContent>
+																<ElseContent>
+																	<a href="@NavigationManager.ToAbsoluteUri($"/challenges/{score.ChallengeId}")">
+																		#@score.ChallengeId (C)
+																	</a>
+																</ElseContent>
+															</Container>
+														</td>
+														<td>@score.Sum</td>
+													</tr>
+												</Repeater>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</ChildContent>
+						<ElseContent>
+							<div class="card">
+								<header class="card-header">
+									<p class="card-header-title">
+										Cartes jouées
+									</p>
+								</header>
+								<div class="no-challenges is-flex is-align-content-center is-align-items-center is-justify-content-center">
+									Aucune carte jouée.
+								</div>
+							</div>
+						</ElseContent>
+					</Container>
+				</div>
 
-                <div class="column">
-                    <div class="card">
-                        <header class="card-header">
-                            <p class="card-header-title">
-                                Meilleur score et moyennes par carte (score, distance, temps)
-                            </p>
-                        </header>
-                        <div class="card-table">
-                            <div class="content">
-                                <table class="table table is-striped is-hoverable is-fullwidth">
-                                    <tbody>
-                                        <Repeater Items="Player.MapsSummary" Context="map">
-                                            <tr>
-                                                <td>@map.MapName</td>
-                                                <Container Condition="map.Best is not null">
-                                                    <ChildContent>
-                                                        <td>@map.Best</td>
-                                                        <td>@map.RoundAverage?.ToString("F1")</td>
-                                                        <td>@map.DistanceAverage.ToDistanceString()</td>
-                                                        <td>@map.TimeAverage.ToTimeString()</td>
-                                                    </ChildContent>
-                                                    <ElseContent>
-                                                        <td>—</td>
-                                                        <td>—</td>
-                                                        <td>—</td>
-                                                        <td>—</td>
-                                                    </ElseContent>
-                                                </Container>
-                                            </tr>
-                                        </Repeater>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </ChildContent>
+				<div class="column">
+					<div class="card">
+						<header class="card-header">
+							<p class="card-header-title">
+								Meilleur score et moyennes par carte (score, distance, temps)
+							</p>
+						</header>
+						<div class="card-table">
+							<div class="content">
+								<table class="table table is-striped is-hoverable is-fullwidth">
+									<tbody>
+										<Repeater Items="Player.MapsSummary" Context="map">
+											<tr>
+												<td>@map.MapName</td>
+												<Container Condition="map.Best is not null">
+													<ChildContent>
+														<td>@map.Best</td>
+														<td>@map.RoundAverage?.ToString("F1")</td>
+														<td>@map.DistanceAverage.ToDistanceString()</td>
+														<td>@map.TimeAverage.ToTimeString()</td>
+													</ChildContent>
+													<ElseContent>
+														<td>—</td>
+														<td>—</td>
+														<td>—</td>
+														<td>—</td>
+													</ElseContent>
+												</Container>
+											</tr>
+										</Repeater>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ChildContent>
 
-    <ElseContent>
-        <Container Condition="!Loaded && PlayerFound">
-            <LoadingAnimation>
-                Chargement du joueur @(Id)...
-            </LoadingAnimation>
-        </Container>
+	<ElseContent>
+		<Container Condition="!Loaded && PlayerFound">
+			<LoadingAnimation>
+				Chargement du joueur @(Id)...
+			</LoadingAnimation>
+		</Container>
 
-        <Container Condition="!PlayerFound">
-            <PageNotFound />
-        </Container>
-    </ElseContent>
+		<Container Condition="!PlayerFound">
+			<PageNotFound />
+		</Container>
+	</ElseContent>
 </Container>

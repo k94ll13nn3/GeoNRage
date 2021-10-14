@@ -31,6 +31,8 @@ public partial class PlayerPage
 
     public IList<ITrace> Data { get; } = new List<ITrace>();
 
+    public IEnumerable<PlayerChallengeDto> ChallengesDone { get; set; } = new List<PlayerChallengeDto>();
+
     protected override async Task OnInitializedAsync()
     {
         Loaded = false;
@@ -45,6 +47,7 @@ public partial class PlayerPage
             Loaded = true;
             PlayerFound = true;
             Player = response.Content;
+            ChallengesDone = Player.ChallengesDone;
             CreatePlot();
             StateHasChanged();
         }
@@ -69,5 +72,12 @@ public partial class PlayerPage
             Y = Player.GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
             Name = "Historique des parties"
         });
+    }
+
+    private void FilterChallengesDone(ChangeEventArgs args)
+    {
+        string search = args?.Value as string ?? string.Empty;
+        ChallengesDone = Player.ChallengesDone.Where(c => c.MapName.Contains(search, StringComparison.OrdinalIgnoreCase));
+        StateHasChanged();
     }
 }
