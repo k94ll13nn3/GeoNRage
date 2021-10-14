@@ -26,14 +26,14 @@ public partial class PlayersStatisticsPage
 
     protected override async Task OnInitializedAsync()
     {
-        Players = await PlayersApi.GetAllStatisticsAsync();
+        Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();
     }
 
     internal override async void OnSettingsChanged(object? sender, EventArgs e)
     {
         Players = Enumerable.Empty<PlayerStatisticDto>();
         StateHasChanged();
-        Players = await PlayersApi.GetAllStatisticsAsync();
+        Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();
         StateHasChanged();
     }
 
