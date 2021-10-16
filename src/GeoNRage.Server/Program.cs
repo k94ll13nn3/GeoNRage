@@ -88,7 +88,6 @@ builder.Services.AddStartupTask<SuperAdminCreationTask>();
 
 WebApplication app = builder.Build();
 
-app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment())
 {
@@ -99,6 +98,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    // Prevent Hot reload if used in dev, see https://github.com/dotnet/aspnetcore/issues/28293.
+    app.UseResponseCompression();
     app.UseHsts();
 }
 
