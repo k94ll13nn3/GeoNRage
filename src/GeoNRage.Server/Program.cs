@@ -88,7 +88,6 @@ builder.Services.AddStartupTask<SuperAdminCreationTask>();
 
 WebApplication app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
