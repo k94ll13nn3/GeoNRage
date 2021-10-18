@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using System.Timers;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
@@ -10,10 +9,7 @@ namespace GeoNRage.App.Pages;
 
 public partial class PlayerPage
 {
-    private bool _disposedValue;
-    private static readonly Regex NumericFilterRegex = new(@"^(?<map>.*?)\s*(?<operator>[><]?[=]?)\s*(?<value>\d{1,5})$", RegexOptions.Compiled);
-    private System.Timers.Timer? _filterTimer;
-    private string _filterContent = string.Empty;
+    private static readonly Regex NumericFilterRegex = new(@"^(?<map>.*?)\s*(?<operator>[><]=?|=){1}\s*(?<value>\d{1,5})$", RegexOptions.Compiled);
 
     [Parameter]
     public string Id { get; set; } = null!;
@@ -40,21 +36,9 @@ public partial class PlayerPage
 
     public IEnumerable<PlayerChallengeDto> ChallengesDone { get; set; } = new List<PlayerChallengeDto>();
 
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
+    public string Filter { get; set; } = string.Empty;
 
-        if (!_disposedValue)
-        {
-            if (_filterTimer is not null)
-            {
-                _filterTimer.Elapsed -= OnUserFinish;
-                _filterTimer.Dispose();
-            }
-
-            _disposedValue = true;
-        }
-    }
+    public bool ShowWarning { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,9 +55,6 @@ public partial class PlayerPage
             PlayerFound = true;
             Player = response.Content;
             ChallengesDone = Player.ChallengesDone;
-            _filterTimer = new(500);
-            _filterTimer.Elapsed += OnUserFinish;
-            _filterTimer.AutoReset = false;
             CreatePlot();
             StateHasChanged();
         }
@@ -100,24 +81,10 @@ public partial class PlayerPage
         });
     }
 
-    private void OnFilterInput(ChangeEventArgs args)
-    {
-        if (_filterTimer is not null)
-        {
-            _filterTimer.Stop();
-            _filterTimer.Start();
-            _filterContent = args?.Value as string ?? string.Empty;
-        }
-    }
-
-    private void OnUserFinish(object? source, ElapsedEventArgs e)
-    {
-        InvokeAsync(() => FilterChallengesDone());
-    }
-
     private void FilterChallengesDone()
     {
-        Match match = NumericFilterRegex.Match(_filterContent);
+        ShowWarning = false;
+        Match match = NumericFilterRegex.Match(Filter);
         if (match.Success && int.TryParse(match.Groups["value"].Value, out int value))
         {
             IEnumerable<PlayerChallengeDto> challenges = Player.ChallengesDone
@@ -136,7 +103,13 @@ public partial class PlayerPage
         }
         else
         {
-            ChallengesDone = Player.ChallengesDone.Where(c => c.MapName.Contains(_filterContent, StringComparison.OrdinalIgnoreCase)).ToList();
+            ChallengesDone = Player.ChallengesDone.Where(c => $"{c.MapName}{c.Sum}".Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (!ChallengesDone.Any())
+        {
+            ChallengesDone = Player.ChallengesDone.ToList();
+            ShowWarning = true;
         }
 
         StateHasChanged();
