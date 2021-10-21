@@ -43,12 +43,7 @@ public partial class DiscordService : BackgroundService
         }
 
         Snowflake applicationId = getApplication.Entity.ID;
-
-        if (!Snowflake.TryParse(_options.DiscordDevServerId, out Snowflake? guild))
-        {
-            _logger.LogWarning($"Failed to parse '{nameof(ApplicationOptions.DiscordDevServerId)}'");
-            return;
-        }
+        _ = Snowflake.TryParse(_options.DiscordDevServerId, out Snowflake? guild);
 
         Result<IReadOnlyList<IApplicationCommand>> globalCommands = await _discordRestApplicationAPI.GetGlobalApplicationCommandsAsync(applicationId, stoppingToken);
         foreach (IApplicationCommand command in globalCommands.Entity)
@@ -60,13 +55,16 @@ public partial class DiscordService : BackgroundService
             }
         }
 
-        Result<IReadOnlyList<IApplicationCommand>> guildCommands = await _discordRestApplicationAPI.GetGuildApplicationCommandsAsync(applicationId, guild.Value, stoppingToken);
-        foreach (IApplicationCommand? guildCommand in guildCommands.Entity)
+        if (guild.HasValue)
         {
-            Result deleteResult = await _discordRestApplicationAPI.DeleteGuildApplicationCommandAsync(applicationId, guild.Value, guildCommand.ID, stoppingToken);
-            if (!deleteResult.IsSuccess)
+            Result<IReadOnlyList<IApplicationCommand>> guildCommands = await _discordRestApplicationAPI.GetGuildApplicationCommandsAsync(applicationId, guild.Value, stoppingToken);
+            foreach (IApplicationCommand? guildCommand in guildCommands.Entity)
             {
-                _logger.LogWarning("Failed to delete global command: {Reason}", deleteResult.Error.Message);
+                Result deleteResult = await _discordRestApplicationAPI.DeleteGuildApplicationCommandAsync(applicationId, guild.Value, guildCommand.ID, stoppingToken);
+                if (!deleteResult.IsSuccess)
+                {
+                    _logger.LogWarning("Failed to delete global command: {Reason}", deleteResult.Error.Message);
+                }
             }
         }
 
