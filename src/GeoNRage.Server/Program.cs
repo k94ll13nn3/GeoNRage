@@ -86,6 +86,8 @@ builder.Services.AddStartupTask<DatabaseMigrationTask>();
 builder.Services.AddStartupTask<RoleCreationTask>();
 builder.Services.AddStartupTask<SuperAdminCreationTask>();
 
+builder.Services.AddDiscordBot(builder.Configuration);
+
 WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())

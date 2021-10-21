@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Server;
+namespace GeoNRage.Server;
 
 public class ApplicationOptions
 {
@@ -11,4 +11,10 @@ public class ApplicationOptions
     public string SuperAdminPassword { get; set; } = string.Empty;
 
     public string SuperAdminUserName { get; set; } = string.Empty;
+
+    public string DiscordBotToken { get; set; } = string.Empty;
+
+    public string DiscordDevServerId { get; set; } = string.Empty;
+
+    public Uri GeoNRageUrl { get; set; } = null!;
 }
