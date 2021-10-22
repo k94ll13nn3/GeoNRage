@@ -20,12 +20,12 @@ public partial class PresenceService : BackgroundService
         MapService mapService = scope.ServiceProvider.GetRequiredService<MapService>();
 
         _activities.Add((ActivityType.Game, "GeoGuessr"));
-        foreach (MapDto map in await mapService.GetAllAsync())
+        foreach (MapDto map in (await mapService.GetAllAsync()).Where(m => m.IsMapForGame))
         {
             _activities.Add((ActivityType.Game, map.Name));
         }
 
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(30));
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(30));
         while (!stoppingToken.IsCancellationRequested)
         {
             await timer.WaitForNextTickAsync(stoppingToken);
