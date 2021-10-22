@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDiscordBot(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<DiscordService>();
+        services.AddHostedService<PresenceService>();
 
         services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]);
         services.AddDiscordCommands(true);
