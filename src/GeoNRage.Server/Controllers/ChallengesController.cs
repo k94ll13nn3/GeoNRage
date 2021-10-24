@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Services;
+using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using GeoNRage.App.Apis;
 using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;

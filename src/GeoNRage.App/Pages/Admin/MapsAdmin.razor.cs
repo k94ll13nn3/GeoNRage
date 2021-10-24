@@ -1,4 +1,4 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
@@ -12,6 +12,9 @@ public partial class MapsAdmin
 
     [Inject]
     public PopupService PopupService { get; set; } = null!;
+
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
 
     public IEnumerable<MapDto> Maps { get; set; } = null!;
 
@@ -79,7 +82,7 @@ public partial class MapsAdmin
         }
         catch (ApiException e)
         {
-            PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "map-delete", true);
         }
     }
 }

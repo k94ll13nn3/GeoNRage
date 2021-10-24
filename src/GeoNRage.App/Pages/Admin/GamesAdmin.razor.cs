@@ -1,4 +1,4 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -19,6 +19,9 @@ public partial class GamesAdmin
 
     [Inject]
     public PopupService PopupService { get; set; } = null!;
+
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
 
     public IEnumerable<MapDto> Maps { get; set; } = null!;
 
@@ -118,7 +121,7 @@ public partial class GamesAdmin
         }
         catch (ApiException e)
         {
-            PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "game-delete", true);
         }
     }
 

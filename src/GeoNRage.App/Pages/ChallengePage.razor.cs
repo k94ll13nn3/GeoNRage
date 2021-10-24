@@ -1,4 +1,4 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
@@ -14,6 +14,9 @@ public partial class ChallengePage
 
     [Inject]
     public PopupService PopupService { get; set; } = null!;
+
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
 
     public bool ChallengeFound { get; set; } = true;
 
@@ -49,12 +52,15 @@ public partial class ChallengePage
             await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
             ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
             Challenge = response.Content!;
-            PopupService.HidePopup();
-            StateHasChanged();
         }
         catch (ApiException e)
         {
-            PopupService.DisplayPopup("Erreur", e.Content ?? "Echec de l'opération");
+            ToastService.DisplayToast(e.Content ?? "Echec de l'opération", null, ToastType.Error, "challenge-refresh", true);
+        }
+        finally
+        {
+            PopupService.HidePopup();
+            StateHasChanged();
         }
     }
 }

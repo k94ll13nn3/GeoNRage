@@ -16,15 +16,6 @@ public class PopupService
 
     public Action? OnOnClick { get; private set; }
 
-    public void DisplayPopup(string title, string message)
-    {
-        IsOkCancel = false;
-        IsOpen = true;
-        Title = title;
-        Message = message;
-        OnPopupUpdated?.Invoke(this, EventArgs.Empty);
-    }
-
     public void DisplayOkCancelPopup(string title, string message, Action onOkClick, bool showProgressBar)
     {
         IsOkCancel = true;

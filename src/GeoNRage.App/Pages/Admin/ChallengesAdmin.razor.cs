@@ -1,4 +1,4 @@
-﻿using GeoNRage.App.Apis;
+using GeoNRage.App.Apis;
 using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
 using Refit;
@@ -15,6 +15,9 @@ public partial class ChallengesAdmin
 
     [Inject]
     public PopupService PopupService { get; set; } = null!;
+
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
 
     public IEnumerable<ChallengeAdminViewDto> Challenges { get; set; } = null!;
 
@@ -48,7 +51,7 @@ public partial class ChallengesAdmin
         }
         catch (ApiException e)
         {
-            PopupService.DisplayPopup("Erreur", e.Content ?? string.Empty);
+            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "challenge-delete", true);
         }
     }
 
