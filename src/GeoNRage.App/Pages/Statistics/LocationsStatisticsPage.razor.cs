@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
@@ -81,27 +80,10 @@ public partial class LocationsStatisticsPage
     private static IEnumerable<LocationDto> Filter(IEnumerable<LocationDto> locations, string searchTerm)
     {
         return locations.Where(x =>
-            RemoveDiacritics(x.AdministrativeAreaLevel1 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-            || RemoveDiacritics(x.AdministrativeAreaLevel2 ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-            || RemoveDiacritics(x.Country ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-            || RemoveDiacritics(x.Locality ?? "—").Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-    }
-
-    private static string RemoveDiacritics(string text)
-    {
-        string normalizedString = text.Normalize(NormalizationForm.FormD);
-        var stringBuilder = new StringBuilder();
-
-        foreach (char c in normalizedString)
-        {
-            UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-            if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-            {
-                stringBuilder.Append(c);
-            }
-        }
-
-        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+            x.AdministrativeAreaLevel1.FormatNullWithDash().RemoveDiacritics().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            || x.AdministrativeAreaLevel2.FormatNullWithDash().RemoveDiacritics().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            || x.Country.FormatNullWithDash().RemoveDiacritics().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            || x.Locality.FormatNullWithDash().RemoveDiacritics().Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
     }
 
     private void GenerateCountryChart()
