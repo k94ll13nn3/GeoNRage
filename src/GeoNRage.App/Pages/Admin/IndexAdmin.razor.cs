@@ -8,6 +8,9 @@ public partial class IndexAdmin
     [Inject]
     public IAdminApi AdminApi { get; set; } = null!;
 
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
+
     public AdminInfoDto AdminInfo { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
@@ -19,6 +22,7 @@ public partial class IndexAdmin
     {
         await AdminApi.ClearLogsAsync();
         AdminInfo = await AdminApi.GetAdminInfoAsync();
+        ToastService.DisplayToast("Logs vidés.", TimeSpan.FromSeconds(3), ToastType.Success, "clear-logs-admin", true);
         StateHasChanged();
     }
 }
