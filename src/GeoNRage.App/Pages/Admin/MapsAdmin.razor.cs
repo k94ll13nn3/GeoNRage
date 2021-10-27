@@ -38,7 +38,7 @@ public partial class MapsAdmin
 
     public void DeleteMap(string mapId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la carte {mapId} ?", () => OnConfirmDeleteAsync(mapId), false);
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la carte {mapId} ?", () => OnConfirmDeleteAsync(mapId));
     }
 
     public async Task UpdateMapAsync()

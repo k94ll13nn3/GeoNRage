@@ -32,12 +32,12 @@ public partial class ChallengesAdmin
 
     private void ImportChallenge(ChallengeAdminViewDto challenge)
     {
-        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge), true);
+        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge));
     }
 
     private void DeleteChallenge(int challengeId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du challenge {challengeId} ?", () => OnConfirmDeleteAsync(challengeId), false);
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du challenge {challengeId} ?", () => OnConfirmDeleteAsync(challengeId));
     }
 
     private async void OnConfirmDeleteAsync(int challengeId)
@@ -58,6 +58,8 @@ public partial class ChallengesAdmin
     private async Task ImportChallengeAsync(ChallengeAdminViewDto challenge)
     {
         _ = challenge ?? throw new ArgumentNullException(nameof(challenge));
+
+        PopupService.DisplayLoader("Restoration");
 
         try
         {

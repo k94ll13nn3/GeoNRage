@@ -42,13 +42,14 @@ public partial class ChallengePage
 
     private void Refresh()
     {
-        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await RefreshAsync(), true);
+        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await RefreshAsync());
     }
 
     private async Task RefreshAsync()
     {
         try
         {
+            PopupService.DisplayLoader("Restoration");
             await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
             ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
             Challenge = response.Content!;

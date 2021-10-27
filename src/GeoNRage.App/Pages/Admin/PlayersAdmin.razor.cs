@@ -38,7 +38,7 @@ public partial class PlayersAdmin
 
     public void DeletePlayer(string playerId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId), false);
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId));
     }
 
     public async Task UpdatePlayerAsync()

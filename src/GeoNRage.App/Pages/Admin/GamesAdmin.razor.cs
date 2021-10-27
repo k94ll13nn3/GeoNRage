@@ -58,7 +58,7 @@ public partial class GamesAdmin
 
     public void DeleteGame(int gameId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la partie {gameId} ?", () => OnConfirmDeleteAsync(gameId), false);
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la partie {gameId} ?", () => OnConfirmDeleteAsync(gameId));
     }
 
     public async Task CreateOrUpdateGameAsync()

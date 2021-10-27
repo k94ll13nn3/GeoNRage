@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Layouts.Main;
 
@@ -9,9 +9,11 @@ public partial class PopupRender : IDisposable
     [Inject]
     public PopupService PopupService { get; set; } = null!;
 
-    public bool ShowProgress { get; set; }
-
     public bool DisableButtons { get; set; }
+
+    public PopupEventArgs Args { get; set; } = null!;
+
+    public bool IsOpen { get; set; }
 
     public void Dispose()
     {
@@ -27,8 +29,8 @@ public partial class PopupRender : IDisposable
         }
 
         PopupService.OnPopupUpdated += Update;
+        PopupService.OnPopupHidden += OnPopupHidden;
     }
-
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -36,30 +38,35 @@ public partial class PopupRender : IDisposable
             if (disposing && PopupService is not null)
             {
                 PopupService.OnPopupUpdated -= Update;
+                PopupService.OnPopupHidden -= OnPopupHidden;
             }
 
             _disposedValue = true;
         }
     }
 
-    private void Update(object? sender, EventArgs e)
+    private void Update(object? sender, PopupEventArgs e)
     {
-        ShowProgress = false;
         DisableButtons = false;
+        Args = e;
+        IsOpen = true;
         StateHasChanged();
     }
 
     private void OnValidate()
     {
-        PopupService.OnOnClick?.Invoke();
-        if (!PopupService.ShowProgressBar)
-        {
-            PopupService.HidePopup();
-        }
-        else
-        {
-            ShowProgress = true;
-            DisableButtons = true;
-        }
+        HidePopup();
+        Args.OnOnClick?.Invoke();
+    }
+
+    private void HidePopup()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+
+    private void OnPopupHidden(object? sender, EventArgs e)
+    {
+        HidePopup();
     }
 }

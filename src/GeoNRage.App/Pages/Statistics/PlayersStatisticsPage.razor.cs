@@ -53,8 +53,10 @@ public partial class PlayersStatisticsPage
 
     private async Task CompareAsync()
     {
+        PopupService.DisplayLoader("Chargement...");
         Player1 = (await PlayersApi.GetFullAsync(SelectedPlayerIds[0])).Content!;
         Player2 = (await PlayersApi.GetFullAsync(SelectedPlayerIds[1])).Content!;
+        PopupService.HidePopup();
         ShowComparison = true;
     }
 

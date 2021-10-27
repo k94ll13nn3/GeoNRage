@@ -57,7 +57,7 @@ public partial class ChallengesPage
 
     private void Import()
     {
-        PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync(), true);
+        PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync());
     }
 
     private async Task FilterChallengesAsync(bool displayAll)
@@ -77,6 +77,7 @@ public partial class ChallengesPage
     {
         try
         {
+            PopupService.DisplayLoader("Importation");
             await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
             await FilterChallengesAsync(DisplayAll);
             GeoGuessrId = string.Empty;

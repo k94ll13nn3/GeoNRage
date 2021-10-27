@@ -16,6 +16,9 @@ public partial class LocationsStatisticsPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    public PopupService PopupService { get; set; } = null!;
+
     public bool ShowCountryChart { get; set; }
 
     internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();

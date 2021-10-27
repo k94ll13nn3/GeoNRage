@@ -92,7 +92,7 @@ public partial class UsersAdmin
 
     public void DeleteUser(string userName)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {userName} ?", () => OnConfirmDeleteAsync(userName), false);
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {userName} ?", () => OnConfirmDeleteAsync(userName));
     }
 
     protected override async Task OnInitializedAsync()

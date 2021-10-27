@@ -2,38 +2,24 @@ namespace GeoNRage.App.Services;
 
 public class PopupService
 {
-    public event EventHandler? OnPopupUpdated;
+    public event EventHandler<PopupEventArgs>? OnPopupUpdated;
 
-    public bool IsOpen { get; private set; }
+    public event EventHandler? OnPopupHidden;
 
-    public bool IsOkCancel { get; private set; }
-
-    public bool ShowProgressBar { get; set; }
-
-    public string Title { get; private set; } = string.Empty;
-
-    public string Message { get; private set; } = string.Empty;
-
-    public Action? OnOnClick { get; private set; }
-
-    public void DisplayOkCancelPopup(string title, string message, Action onOkClick, bool showProgressBar)
+    public void DisplayOkCancelPopup(string title, string message, Action onOkClick)
     {
-        IsOkCancel = true;
-        IsOpen = true;
-        ShowProgressBar = showProgressBar;
-        Title = title;
-        Message = message;
-        OnOnClick = onOkClick;
-        OnPopupUpdated?.Invoke(this, EventArgs.Empty);
+        var args = new PopupEventArgs(true, false, title, message, onOkClick);
+        OnPopupUpdated?.Invoke(this, args);
+    }
+
+    public void DisplayLoader(string title)
+    {
+        var args = new PopupEventArgs(true, true, title, string.Empty, null);
+        OnPopupUpdated?.Invoke(this, args);
     }
 
     public void HidePopup()
     {
-        IsOkCancel = false;
-        IsOpen = false;
-        Title = string.Empty;
-        Message = string.Empty;
-        OnOnClick = null;
-        OnPopupUpdated?.Invoke(this, EventArgs.Empty);
+        OnPopupHidden?.Invoke(this, new());
     }
 }
