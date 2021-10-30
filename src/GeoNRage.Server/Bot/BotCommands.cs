@@ -6,6 +6,7 @@ using Remora.Commands.Groups;
 using Remora.Discord.API.Abstractions.Objects;
 using Remora.Discord.API.Abstractions.Rest;
 using Remora.Discord.API.Objects;
+using Remora.Discord.Commands.Attributes;
 using Remora.Discord.Commands.Contexts;
 using Remora.Discord.Commands.Feedback.Services;
 using Remora.Results;
@@ -37,7 +38,7 @@ public partial class BotCommands : CommandGroup
 
     [Command("player")]
     [Description("Affiche les stats du joueur")]
-    public async Task<IRemoraResult> GetPlayerStatisticsAsync(string playerName)
+    public async Task<IRemoraResult> GetPlayerStatisticsAsync([AutocompleteProvider(nameof(PlayerNameAutocompleteProvider))] string playerName)
     {
         IEnumerable<PlayerDto> players = await _playerService.GetAllAsync();
 

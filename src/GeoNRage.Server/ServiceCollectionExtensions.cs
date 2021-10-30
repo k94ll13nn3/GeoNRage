@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]);
         services.AddDiscordCommands(true);
         services.AddCommandGroup<BotCommands>();
+        services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
 
         services.Configure<DiscordGatewayClientOptions>(opt => opt.Presence = new UpdatePresence(
             ClientStatus.Online,

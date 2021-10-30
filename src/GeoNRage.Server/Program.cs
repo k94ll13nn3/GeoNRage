@@ -55,6 +55,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
+builder.Services.AddMemoryCache(o => o.SizeLimit = 100);
+
 builder.Services.AddTransient<GameService>();
 builder.Services.AddTransient<MapService>();
 builder.Services.AddTransient<PlayerService>();
@@ -94,7 +96,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API"));
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API");
+        c.DisplayRequestDuration();
+    });
     app.UseHttpsRedirection();
 }
 else

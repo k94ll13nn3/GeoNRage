@@ -3,6 +3,7 @@ using GeoNRage.Server.Entities;
 using GeoNRage.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Services;
@@ -12,11 +13,11 @@ public partial class ChallengeService
 {
     private readonly GeoNRageDbContext _context;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly GeoGuessrService _geoGuessrService;
+    private readonly IMemoryCache _cache;
 
     [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
     private readonly ApplicationOptions _options;
-
-    private readonly GeoGuessrService _geoGuessrService;
 
     public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame, bool onlyMapForGame, string[]? playersToExclude)
     {
@@ -234,6 +235,7 @@ public partial class ChallengeService
             challengeId = newChallengeEntity.Entity.Id;
         }
 
+        _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
         return challengeId;
     }
 }

@@ -1,5 +1,6 @@
 using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace GeoNRage.Server.Services;
 
@@ -7,6 +8,7 @@ namespace GeoNRage.Server.Services;
 public partial class PlayerService
 {
     private readonly GeoNRageDbContext _context;
+    private readonly IMemoryCache _cache;
 
     public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync(bool takeAllMaps)
     {
@@ -48,16 +50,27 @@ public partial class PlayerService
 
     public async Task<IEnumerable<PlayerDto>> GetAllAsync()
     {
-        return await _context
-            .Players
-            .OrderBy(p => p.Name)
-            .AsNoTracking()
-            .Select(p => new PlayerDto
-            (
-                p.Id,
-                p.Name
-            ))
-            .ToListAsync();
+        if (!_cache.TryGetValue(CacheKeys.PlayerServiceGetAllAsync, out List<PlayerDto> players))
+        {
+            players = await _context
+                           .Players
+                           .OrderBy(p => p.Name)
+                           .AsNoTracking()
+                           .Select(p => new PlayerDto
+                           (
+                               p.Id,
+                               p.Name
+                           ))
+                           .ToListAsync();
+
+            MemoryCacheEntryOptions? cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromDays(1))
+                .SetSize(players.Count);
+
+            _cache.Set(CacheKeys.PlayerServiceGetAllAsync, players, cacheEntryOptions);
+        }
+
+        return players;
     }
 
     public async Task<PlayerFullDto?> GetFullAsync(string id, bool takeAllMaps)
@@ -226,6 +239,7 @@ public partial class PlayerService
 
             _context.Players.Update(player);
             await _context.SaveChangesAsync();
+            _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
         }
 
         return await GetAsync(id);
@@ -243,6 +257,7 @@ public partial class PlayerService
 
             _context.Players.Remove(player);
             await _context.SaveChangesAsync();
+            _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
         }
     }
 }
