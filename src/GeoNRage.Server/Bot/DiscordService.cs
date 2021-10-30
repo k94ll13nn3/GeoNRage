@@ -46,25 +46,39 @@ public partial class DiscordService : BackgroundService
         _ = Snowflake.TryParse(_options.DiscordDevServerId, out Snowflake? guild);
 
         Result<IReadOnlyList<IApplicationCommand>> globalCommands = await _discordRestApplicationAPI.GetGlobalApplicationCommandsAsync(applicationId, stoppingToken);
-        foreach (IApplicationCommand command in globalCommands.Entity)
+        if (globalCommands.IsSuccess)
         {
-            Result deleteResult = await _discordRestApplicationAPI.DeleteGlobalApplicationCommandAsync(applicationId, command.ID, stoppingToken);
-            if (!deleteResult.IsSuccess)
+            foreach (IApplicationCommand command in globalCommands.Entity)
             {
-                _logger.LogWarning("Failed to delete global command: {Reason}", deleteResult.Error.Message);
+                Result deleteResult = await _discordRestApplicationAPI.DeleteGlobalApplicationCommandAsync(applicationId, command.ID, stoppingToken);
+                if (!deleteResult.IsSuccess)
+                {
+                    _logger.LogWarning("Failed to delete global command: {Reason}", deleteResult.Error.Message);
+                }
             }
+        }
+        else
+        {
+            _logger.LogWarning("Failed to get global command: {Reason}", globalCommands.Error.Message);
         }
 
         if (guild.HasValue)
         {
             Result<IReadOnlyList<IApplicationCommand>> guildCommands = await _discordRestApplicationAPI.GetGuildApplicationCommandsAsync(applicationId, guild.Value, stoppingToken);
-            foreach (IApplicationCommand? guildCommand in guildCommands.Entity)
+            if (guildCommands.IsSuccess)
             {
-                Result deleteResult = await _discordRestApplicationAPI.DeleteGuildApplicationCommandAsync(applicationId, guild.Value, guildCommand.ID, stoppingToken);
-                if (!deleteResult.IsSuccess)
+                foreach (IApplicationCommand? guildCommand in guildCommands.Entity)
                 {
-                    _logger.LogWarning("Failed to delete global command: {Reason}", deleteResult.Error.Message);
+                    Result deleteResult = await _discordRestApplicationAPI.DeleteGuildApplicationCommandAsync(applicationId, guild.Value, guildCommand.ID, stoppingToken);
+                    if (!deleteResult.IsSuccess)
+                    {
+                        _logger.LogWarning("Failed to delete guild command: {Reason}", deleteResult.Error.Message);
+                    }
                 }
+            }
+            else
+            {
+                _logger.LogWarning("Failed to get global guild: {Reason}", guildCommands.Error.Message);
             }
         }
 
