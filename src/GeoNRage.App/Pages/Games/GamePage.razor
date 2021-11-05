@@ -1,302 +1,244 @@
-﻿@page "/games/{Id:int}"
+@page "/games/{Id:int}"
 
 @using GeoNRage.App.Pages.Games
 
 <Container Condition="Loaded && GameFound">
-	<PageTitle>@Game.Name</PageTitle>
+    <PageTitle>@Game.Name</PageTitle>
 </Container>
 
 <Container Condition="Loaded && GameFound && (User.PlayerId() is null || !Game.Players.Any(p => p.Id == User.PlayerId()))">
-	<div class="notification is-warning error-alert">
-		Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mises à jour en temps réel.
-	</div>
+    <div class="notification is-warning error-alert">
+        Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mises à jour en temps réel.
+    </div>
 </Container>
 
 <Container Condition="Loaded && GameFound">
-	<div class="container is-fluid is-flex is-align-items-center is-align-self-center is-justify-content-center">
-		<div class="card m-3">
-			<header class="card-header">
-				<div class="card-header-title is-size-3 game-title" style="display: block">
-					<h1 class="title">@Game.Name</h1>
-					<h2 class="subtitle">@Game.Date.ToShortDateString()</h2>
-				</div>
-				<div class="card-header-icon">
-					<div class="field has-addons">
-						<Container Condition="User.PlayerId() is not null && !Game.Players.Any(p => p.Id == User.PlayerId())">
-							<p class="control">
-								<button class="button" @onclick="AddPlayerAsync">
-									<span class="is-hidden-touch"></span>
-									<span class="icon is-small">
-										<i class="fas fa-plus"></i>
-									</span>
-									<span class="is-hidden-touch">Jouer la partie</span>
-								</button>
-							</p>
-						</Container>
-						<AuthorizeView Roles="@Roles.None">
-							<p class="control">
-								<button class="button" @onclick="LaunchReadyCheckAsync">
-									<span class="icon is-small">
-										<i class="fas fa-check-double"></i>
-									</span>
-								</button>
-							</p>
-						</AuthorizeView>
-						<Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId())">
-							<p class="control">
-								<button class="button" @onclick="() => ShowTaunt = true">
-									<span class="icon is-small">
-										<i class="fas fa-angry"></i>
-									</span>
-								</button>
-							</p>
-						</Container>
-						<Container Condition="!HideScores">
-							<p class="control">
-								<button class="button" @onclick="() => ShowChart = true">
-									<span class="icon is-small">
-										<i class="fas fa-chart-line"></i>
-									</span>
-								</button>
-							</p>
-							<p class="control">
-								<button class="button" @onclick="() => ShowRankings = true">
-									<span class="icon is-small">
-										<i class="fas fa-table"></i>
-									</span>
-								</button>
-							</p>
-						</Container>
-					</div>
-				</div>
-			</header>
-			<div class="card-content">
-				<div class="table-container">
-					<table>
-						<Repeater Items="Game.Challenges" Context="challenge">
-							<tr>
-								<th>
-									@challenge.MapName
-									<a href="https://www.geoguessr.com/challenge/@challenge.GeoGuessrId" target="_blank" class="action-button">
-										<span class="icon">
-											<i class="fas fa-link" aria-hidden="true"></i>
-										</span>
-									</a>
-								</th>
-								<Repeater Items="challenge.PlayerScores" Context="playerScore">
-									<th>@playerScore.PlayerName</th>
-								</Repeater>
-							</tr>
+    <div class="container is-fluid is-flex is-align-items-center is-align-self-center is-justify-content-center">
+        <div class="card m-3">
+            <header class="card-header">
+                <div class="card-header-title is-size-3 game-title" style="display: block">
+                    <h1 class="title">@Game.Name</h1>
+                    <h2 class="subtitle">@Game.Date.ToShortDateString()</h2>
+                </div>
+                <div class="card-header-icon">
+                    <div class="field has-addons">
+                        <Container Condition="User.PlayerId() is not null && !Game.Players.Any(p => p.Id == User.PlayerId())">
+                            <p class="control">
+                                <button class="button" @onclick="AddPlayerAsync">
+                                    <span class="is-hidden-touch"></span>
+                                    <span class="icon is-small">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span class="is-hidden-touch">Jouer la partie</span>
+                                </button>
+                            </p>
+                        </Container>
+                        <Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId())">
+                            <p class="control">
+                                <button class="button" @onclick="() => ShowTaunt = true">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-angry"></i>
+                                    </span>
+                                </button>
+                            </p>
+                        </Container>
+                        <Container Condition="!HideScores">
+                            <p class="control">
+                                <button class="button" @onclick="() => ShowChart = true">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-chart-line"></i>
+                                    </span>
+                                </button>
+                            </p>
+                            <p class="control">
+                                <button class="button" @onclick="() => ShowRankings = true">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-table"></i>
+                                    </span>
+                                </button>
+                            </p>
+                        </Container>
+                    </div>
+                </div>
+            </header>
+            <div class="card-content">
+                <div class="table-container">
+                    <table>
+                        <Repeater Items="Game.Challenges" Context="challenge">
+                            <tr>
+                                <th>
+                                    @challenge.MapName
+                                    <a href="https://www.geoguessr.com/challenge/@challenge.GeoGuessrId" target="_blank" class="action-button">
+                                        <span class="icon">
+                                            <i class="fas fa-link" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
+                                </th>
+                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                    <th>@playerScore.PlayerName</th>
+                                </Repeater>
+                            </tr>
 
-							@{
-								var i = 1;
-							}
-							<Repeater Items="Enumerable.Range(1, 5)" Context="round">
-								<tr>
-									<th>Round @round</th>
-									@{
-										var j = 1;
-									}
-									<Repeater Items="challenge.PlayerScores" Context="playerScore">
-										@{
-											var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
-										}
-										<td>
-											<Container Condition="User.PlayerId() == playerScore.PlayerId || !HideScores">
-												<ChildContent>
-													<NumericInput @key="@key"
-																  InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
-																  ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
-																  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "perfect" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "almost-perfect" : "")} {(User.PlayerId() != playerScore.PlayerId ? "default-score" : "")}")"
-																  TabIndex="@(i + j)"
-																  Disabled="User.PlayerId() != playerScore.PlayerId"></NumericInput>
-												</ChildContent>
-												<ElseContent>
-													<NumericInput @key="@key"
-																  InitialValue="0"
-																  Class="default-score"
-																  TabIndex="@(i + j)"
-																  Disabled="true"></NumericInput>
-												</ElseContent>
-											</Container>
-										</td>
-										@{
-											j++;
-										}
-									</Repeater>
-									@{
-										i += 100;
-									}
-								</tr>
-							</Repeater>
+                            @{
+                                var i = 1;
+                            }
+                            <Repeater Items="Enumerable.Range(1, 5)" Context="round">
+                                <tr>
+                                    <th>Round @round</th>
+                                    @{
+                                        var j = 1;
+                                    }
+                                    <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                        @{
+                                            var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
+                                        }
+                                        <td>
+                                            <Container Condition="User.PlayerId() == playerScore.PlayerId || !HideScores">
+                                                <ChildContent>
+                                                    <NumericInput @key="@key"
+                                                                  InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
+                                                                  ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
+                                                                  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "perfect" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "almost-perfect" : "")} {(User.PlayerId() != playerScore.PlayerId ? "default-score" : "")}")"
+                                                                  TabIndex="@(i + j)"
+                                                                  Disabled="User.PlayerId() != playerScore.PlayerId"></NumericInput>
+                                                </ChildContent>
+                                                <ElseContent>
+                                                    <NumericInput @key="@key"
+                                                                  InitialValue="0"
+                                                                  Class="default-score"
+                                                                  TabIndex="@(i + j)"
+                                                                  Disabled="true"></NumericInput>
+                                                </ElseContent>
+                                            </Container>
+                                        </td>
+                                        @{
+                                            j++;
+                                        }
+                                    </Repeater>
+                                    @{
+                                        i += 100;
+                                    }
+                                </tr>
+                            </Repeater>
 
-							<tr>
-								<th>Total</th>
-								<Repeater Items="challenge.PlayerScores" Context="playerScore">
-									<th>@(Scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
-								</Repeater>
-							</tr>
-						</Repeater>
+                            <tr>
+                                <th>Total</th>
+                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                    <th>@(Scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
+                                </Repeater>
+                            </tr>
+                        </Repeater>
 
-						<Container Condition="Game.Challenges.Any()">
-							<tr class="bordered">
-								<th>Total global</th>
-								<Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
-									<th>@(Scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
-								</Repeater>
-							</tr>
-						</Container>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <Container Condition="Game.Challenges.Any()">
+                            <tr class="bordered">
+                                <th>Total global</th>
+                                <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
+                                    <th>@(Scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
+                                </Repeater>
+                            </tr>
+                        </Container>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<Container Condition="ShowRankings">
-		<div class="modal is-active">
-			<div class="modal-background"></div>
-			<div class="modal-card">
-				<header class="modal-card-head">
-					<p class="modal-card-title">Tableau des scores</p>
-					<button class="delete" aria-label="close" @onclick="() => ShowRankings = false"></button>
-				</header>
-				<section class="modal-card-body">
-					<GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
-				</section>
-				<footer class="modal-card-foot">
-					<button class="button is-primary" @onclick="() => ShowRankings = false">Fermer</button>
-				</footer>
-			</div>
-		</div>
-	</Container>
+    <Container Condition="ShowRankings">
+        <div class="modal is-active">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Tableau des scores</p>
+                    <button class="delete" aria-label="close" @onclick="() => ShowRankings = false"></button>
+                </header>
+                <section class="modal-card-body">
+                    <GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-primary" @onclick="() => ShowRankings = false">Fermer</button>
+                </footer>
+            </div>
+        </div>
+    </Container>
 
-	<Container Condition="ShowChart">
-		<div class="modal is-active">
-			<div class="modal-background"></div>
-			<div class="modal-card">
-				<header class="modal-card-head">
-					<p class="modal-card-title">Graphique</p>
-					<button class="delete" aria-label="close" @onclick="() => ShowChart = false"></button>
-				</header>
-				<section class="modal-card-body">
-					<GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameChart>
-				</section>
-				<footer class="modal-card-foot">
-					<button class="button is-primary" @onclick="() => ShowChart = false">Fermer</button>
-				</footer>
-			</div>
-		</div>
-	</Container>
+    <Container Condition="ShowChart">
+        <div class="modal is-active">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Graphique</p>
+                    <button class="delete" aria-label="close" @onclick="() => ShowChart = false"></button>
+                </header>
+                <section class="modal-card-body">
+                    <GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameChart>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-primary" @onclick="() => ShowChart = false">Fermer</button>
+                </footer>
+            </div>
+        </div>
+    </Container>
 
-	<Container Condition="ShowReadyCheck">
-		<div class="modal is-active">
-			<div class="modal-background"></div>
-			<div class="modal-card">
-				<header class="modal-card-head">
-					<p class="modal-card-title">Ready check</p>
-				</header>
-				<section class="modal-card-body">
-					<div class="columns is-multiline">
-						<Repeater Items="Game.Players" Context="player">
-							<Container Condition="player.Id == User.PlayerId()">
-								<ChildContent>
-									<div class="column is-flex is-align-items-center is-justify-content-center">
-										<button class="button @(PlayerStatuses[player.Id] ? "is-success" : "is-danger") is-rounded" @onclick="SendReadyAsync">
-											<span class="icon">
-												<i class="fas fa-check"></i>
-											</span>
-											<span>@player.Name</span>
-										</button>
-									</div>
-								</ChildContent>
-								<ElseContent>
-									<div class="column is-flex is-align-items-center is-justify-content-center">
-										<button class="button @(PlayerStatuses[player.Id] ? "is-success" : "is-danger") is-rounded" disabled>
-											<span class="icon">
-												<i class="fas fa-check"></i>
-											</span>
-											<span>@player.Name</span>
-										</button>
-									</div>
-								</ElseContent>
-							</Container>
-						</Repeater>
-					</div>
-				</section>
-				<footer class="modal-card-foot">
-					<AuthorizeView Roles="@Roles.Admin">
-						<Authorized>
-							<button class="button is-primary" @onclick="CloseReadyCheckAsync" disabled="@PlayerStatuses.Any(p => !p.Value)">Lancer</button>
-						</Authorized>
-						<NotAuthorized>
-							En attente des joueurs...
-						</NotAuthorized>
-					</AuthorizeView>
-				</footer>
-			</div>
-		</div>
-	</Container>
-
-	<Container Condition="ShowTaunt">
-		<div class="modal is-active">
-			<div class="modal-background"></div>
-			<div class="modal-card">
-				<header class="modal-card-head">
-					<p class="modal-card-title">Taunt</p>
-					<button class="delete" aria-label="close" @onclick="() => ShowTaunt = false"></button>
-				</header>
-				<section class="modal-card-body">
-					<div class="columns">
-						<div class="column is-two-fifths">
-							<div class="select w-100">
-								<select @bind="@SelectedPlayerId" class="w-100">
-									<option value="@((string?)null)">—</option>
-									@foreach (var player in Game.Players.Where(p => p.Id != User.PlayerId()))
-									{
-										<option value="@player.Id">@player.Name</option>
-									}
-								</select>
-							</div>
-						</div>
-						<div class="column is-two-fifths">
-							<div class="select w-100">
-								<select @bind="@SelectedImageId" class="w-100">
-									<option value="@((string?)null)">—</option>
-									@foreach (var image in Images)
-									{
-										<option value="@image.Key">@image.Key</option>
-									}
-								</select>
-							</div>
-						</div>
-						<div class="column is-one-fifth">
-							<button @onclick="TauntAsync" class="button is-primary w-100" disabled="@(SelectedPlayerId is null || SelectedImageId is null)">Go !</button>
-						</div>
-					</div>
-				</section>
-				<footer class="modal-card-foot">
-					<button class="button is-primary" @onclick="() => ShowTaunt = false">Fermer</button>
-				</footer>
-			</div>
-		</div>
-	</Container>
+    <Container Condition="ShowTaunt">
+        <div class="modal is-active">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Taunt</p>
+                    <button class="delete" aria-label="close" @onclick="() => ShowTaunt = false"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="columns">
+                        <div class="column is-two-fifths">
+                            <div class="select w-100">
+                                <select @bind="@SelectedPlayerId" class="w-100">
+                                    <option value="@((string?)null)">—</option>
+                                    @foreach (var player in Game.Players.Where(p => p.Id != User.PlayerId()))
+                                    {
+                                        <option value="@player.Id">@player.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="column is-two-fifths">
+                            <div class="select w-100">
+                                <select @bind="@SelectedImageId" class="w-100">
+                                    <option value="@((string?)null)">—</option>
+                                    @foreach (var image in Images)
+                                    {
+                                        <option value="@image.Key">@image.Key</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="column is-one-fifth">
+                            <button @onclick="TauntAsync" class="button is-primary w-100" disabled="@(SelectedPlayerId is null || SelectedImageId is null)">Go !</button>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-primary" @onclick="() => ShowTaunt = false">Fermer</button>
+                </footer>
+            </div>
+        </div>
+    </Container>
 </Container>
 
 <Container Condition="!Loaded">
-	<LoadingAnimation>
-		Chargement de la partie @(Id)...
-	</LoadingAnimation>
+    <LoadingAnimation>
+        Chargement de la partie @(Id)...
+    </LoadingAnimation>
 </Container>
 
 <Container Condition="!GameFound">
-	<PageNotFound />
+    <PageNotFound />
 </Container>
 
 @code {
-	public static RenderFragment<string> ImageFragment = image => __builder =>
-		{
-		<figure class="image is-square">
-			<img src="@image">
-		</figure>
-		};
+    public static RenderFragment<string> ImageFragment = image => __builder =>
+    {
+        <figure class="image is-square">
+            <img src="@image">
+        </figure>
+    };
 }

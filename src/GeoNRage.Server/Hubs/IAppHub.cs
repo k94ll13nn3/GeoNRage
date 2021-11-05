@@ -7,10 +7,4 @@ public interface IAppHub
     Task Taunted(string imageId, string? name);
 
     Task ReceiveValue(int challengeId, string playerId, int round, int score);
-
-    Task OpenReadyCheck();
-
-    Task CloseReadyCheck();
-
-    Task UserReady(string? playerId);
 }
