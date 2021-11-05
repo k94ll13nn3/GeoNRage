@@ -25,6 +25,10 @@ public partial class PresenceService : BackgroundService
             _activities.Add((ActivityType.Game, map.Name));
         }
 
+        // Wait a little to be sure that the bot is started.
+        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+        UpdatePresence();
+
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(30));
         while (!stoppingToken.IsCancellationRequested)
         {

@@ -1,16 +1,7 @@
-using System.Net;
 using GeoNRage.Server;
-using GeoNRage.Server.Entities;
 using GeoNRage.Server.Hubs;
-using GeoNRage.Server.Services;
 using GeoNRage.Server.Tasks;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.DataProtection.XmlEncryption;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using NLog;
 using NLog.Web;
 
@@ -29,66 +20,17 @@ builder.Services.AddSignalR();
 builder.Services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
 builder.Services.AddRazorPages();
 builder.Services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
-
-string connectionString = builder.Configuration.GetConnectionString("GeoNRageConnection");
-builder.Services.AddDbContextPool<GeoNRageDbContext>(options =>
-    options
-        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-        .ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning)));
-
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<GeoNRageDbContext>()
-    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
-    .AddErrorDescriber<FrenchIdentityErrorDescriber>()
-    .AddClaimsPrincipalFactory<GeoNRageUserClaimsPrincipalFactory>();
-
-builder.Services.AddDataProtection().PersistKeysToDbContext<GeoNRageDbContext>();
-builder.Services.Configure<KeyManagementOptions>(options => options.XmlEncryptor = new NullXmlEncryptor());
-
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.StatusCode = 401;
-        return Task.CompletedTask;
-    };
-});
-
 builder.Services.AddMemoryCache(o => o.SizeLimit = 100);
-
-builder.Services.AddTransient<GameService>();
-builder.Services.AddTransient<MapService>();
-builder.Services.AddTransient<PlayerService>();
-builder.Services.AddTransient<ChallengeService>();
-builder.Services.AddTransient<LocationService>();
-builder.Services.AddTransient<GeoGuessrService>();
-builder.Services.AddTransient<AdminService>();
-
-var cookieContainer = new CookieContainer();
-builder.Services.AddSingleton(cookieContainer);
-
-builder.Services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"))
-    .ConfigurePrimaryHttpMessageHandler(() =>
-    {
-        return new HttpClientHandler()
-        {
-            CookieContainer = cookieContainer
-        };
-    });
-
-builder.Services.AddHttpClient("google", c => c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/"));
+builder.Services.AddDatabaseAndIdentity(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddHttpClients();
+builder.Services.AddDiscordBot(builder.Configuration);
+builder.Services.AddStartupTasks();
 
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSwaggerGen();
 }
-
-builder.Services.AddStartupTask<DatabaseMigrationTask>();
-builder.Services.AddStartupTask<RoleCreationTask>();
-builder.Services.AddStartupTask<SuperAdminCreationTask>();
-
-builder.Services.AddDiscordBot(builder.Configuration);
 
 WebApplication app = builder.Build();
 
@@ -112,12 +54,9 @@ else
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapRazorPages();
 app.MapControllers();
 app.MapHub<AppHub>("/apphub");
