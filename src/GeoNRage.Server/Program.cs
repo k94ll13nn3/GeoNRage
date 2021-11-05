@@ -118,8 +118,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<GameMetadataMiddleware>();
-
 app.MapRazorPages();
 app.MapControllers();
 app.MapHub<AppHub>("/apphub");
