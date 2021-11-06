@@ -176,7 +176,22 @@ public partial class GamePage : IAsyncDisposable
         HandleReceiveValue(challengeId, playerId, round, clampedValue);
         if (clampedValue == 5000)
         {
-            ToastService.DisplayToast("5000 ! Quel talent !", TimeSpan.FromMilliseconds(2500), ToastType.Success, "toast-5000");
+            int numberOfPerfectBefore = Scores
+                .Where(p => p.Key.playerId == playerId)
+                .TakeWhile(p => !(p.Key.challengeId == challengeId && p.Key.round == round))
+                .Reverse()
+                .TakeWhile(s => s.Value == 5000)
+                .Count();
+
+            string message = numberOfPerfectBefore switch
+            {
+                0 => "5000 ! Pas mal !",
+                < 4 => $"{numberOfPerfectBefore + 1} fois 5000 à la suite ! Quel talent !",
+                4 => "5 fois 5000 ! C'est le 25k !",
+                _ => "Quel série de 5000 ! O.M.G.",
+            };
+
+            ToastService.DisplayToast(message, TimeSpan.FromMilliseconds(2500), ToastType.Success, "toast-5000");
         }
 
         if (clampedValue == 4999)
