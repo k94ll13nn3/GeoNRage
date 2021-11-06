@@ -26,19 +26,14 @@ public partial class DiscordService : BackgroundService
         Result checkSlashSupport = _slashService.SupportsSlashCommands();
         if (!checkSlashSupport.IsSuccess)
         {
-            _logger.LogWarning
-            (
-                "The registered commands of the bot don't support slash commands: {Reason}",
-                checkSlashSupport.Error.Message
-            );
-
+            LogSlashCommandsNotSupported(checkSlashSupport.Error.Message);
             return;
         }
 
         Result<IApplication> getApplication = await _oauth2API.GetCurrentBotApplicationInformationAsync(stoppingToken);
         if (!getApplication.IsSuccess)
         {
-            _logger.LogWarning("Failed to get application: {Reason}", getApplication.Error.Message);
+            LogApplicationFetchError(getApplication.Error.Message);
             return;
         }
 
@@ -53,13 +48,13 @@ public partial class DiscordService : BackgroundService
                 Result deleteResult = await _discordRestApplicationAPI.DeleteGlobalApplicationCommandAsync(applicationId, command.ID, stoppingToken);
                 if (!deleteResult.IsSuccess)
                 {
-                    _logger.LogWarning("Failed to delete global command: {Reason}", deleteResult.Error.Message);
+                    LogGlobalCommandsDeleteError(deleteResult.Error.Message);
                 }
             }
         }
         else
         {
-            _logger.LogWarning("Failed to get global command: {Reason}", globalCommands.Error.Message);
+            LogGlobalCommandsGetError(globalCommands.Error.Message);
         }
 
         if (guild.HasValue)
@@ -72,20 +67,20 @@ public partial class DiscordService : BackgroundService
                     Result deleteResult = await _discordRestApplicationAPI.DeleteGuildApplicationCommandAsync(applicationId, guild.Value, guildCommand.ID, stoppingToken);
                     if (!deleteResult.IsSuccess)
                     {
-                        _logger.LogWarning("Failed to delete guild command: {Reason}", deleteResult.Error.Message);
+                        LogGuildCommandsDeleteError(deleteResult.Error.Message);
                     }
                 }
             }
             else
             {
-                _logger.LogWarning("Failed to get global guild: {Reason}", guildCommands.Error.Message);
+                LogGuildCommandsGetError(guildCommands.Error.Message);
             }
         }
 
         Result updateSlash = await _slashService.UpdateSlashCommandsAsync(guild, stoppingToken);
         if (!updateSlash.IsSuccess)
         {
-            _logger.LogWarning("Failed to update slash commands: {Reason}", updateSlash.Error.Message);
+            LogSlashCommandsUpdateError(updateSlash.Error.Message);
             return;
         }
 
@@ -95,18 +90,48 @@ public partial class DiscordService : BackgroundService
             switch (runResult.Error)
             {
                 case ExceptionError exe:
-                    _logger.LogError(exe.Exception, "Exception during gateway connection: {ExceptionMessage}", exe.Message);
+                    LogGatewayConnectionException(exe.Exception, exe.Message);
                     break;
 
                 case GatewayWebSocketError:
                 case GatewayDiscordError:
-                    _logger.LogError("Gateway error: {Message}", runResult.Error.Message);
+                    LogGatewayError(runResult.Error.Message);
                     break;
 
                 default:
-                    _logger.LogError("Unknown error: {Message}", runResult.Error.Message);
+                    LogUnknownError(runResult.Error.Message);
                     break;
             }
         }
     }
+
+    [LoggerMessage(0, LogLevel.Error, "The registered commands of the bot don't support slash commands: {Reason}")]
+    partial void LogSlashCommandsNotSupported(string reason);
+
+    [LoggerMessage(1, LogLevel.Error, "Failed to get application: {Reason}")]
+    partial void LogApplicationFetchError(string reason);
+
+    [LoggerMessage(2, LogLevel.Warning, "Failed to get global commands: {Reason}")]
+    partial void LogGlobalCommandsGetError(string reason);
+
+    [LoggerMessage(3, LogLevel.Warning, "Failed to delete global commands: {Reason}")]
+    partial void LogGlobalCommandsDeleteError(string reason);
+
+    [LoggerMessage(4, LogLevel.Warning, "Failed to get guild commands: {Reason}")]
+    partial void LogGuildCommandsGetError(string reason);
+
+    [LoggerMessage(5, LogLevel.Warning, "Failed to delete guild commands: {Reason}")]
+    partial void LogGuildCommandsDeleteError(string reason);
+
+    [LoggerMessage(6, LogLevel.Error, "Failed to update slash commands: {Reason}")]
+    partial void LogSlashCommandsUpdateError(string reason);
+
+    [LoggerMessage(7, LogLevel.Error, "Exception during gateway connection: {ExceptionMessage}")]
+    partial void LogGatewayConnectionException(Exception ex, string exceptionMessage);
+
+    [LoggerMessage(8, LogLevel.Error, "Gateway error: {Reason}")]
+    partial void LogGatewayError(string reason);
+
+    [LoggerMessage(9, LogLevel.Error, "Unknown error: {Reason}")]
+    partial void LogUnknownError(string reason);
 }
