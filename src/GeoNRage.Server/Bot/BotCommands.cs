@@ -31,9 +31,38 @@ public partial class BotCommands : CommandGroup
     [Description("Recupère la dernière game créée")]
     public async Task<IRemoraResult> GetLastGameAsync()
     {
-        IEnumerable<GameDto> games = await _gameService.GetAllAsync();
+        Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
+        if (!bot.IsSuccess || bot.Entity.Icon is null)
+        {
+            return await ReplyAsync("Erreur inconnue");
+        }
 
-        return await ReplyAsync(new Uri(_options.GeoNRageUrl, $"/games/{games.OrderByDescending(g => g.Date).First().Id}").ToString());
+        IEnumerable<GameDto> games = await _gameService.GetAllAsync();
+        GameDetailDto? game = await _gameService.GetAsync(games.OrderByDescending(g => g.Date).First().Id);
+        if (game is null)
+        {
+            return await ReplyAsync("Erreur inconnue");
+        }
+
+        var fields = new List<EmbedField>()
+        {
+            new ("Cartes", string.Join(", ", game.Challenges.Select(c => c.MapName))),
+            new ("Joueurs", string.Join(", ", game.Players.Select(c => c.Name))),
+        };
+
+        var embed = new Embed(
+            Title: game.Name,
+            Type: EmbedType.Rich,
+            Url: new Uri(_options.GeoNRageUrl, $"/games/{game.Id}").ToString(),
+            Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
+            Footer: new EmbedFooter("Rageux/20"),
+            Fields: fields);
+
+        Result<IMessage> reply = await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
+
+        return !reply.IsSuccess
+            ? Result.FromError(reply)
+            : Result.FromSuccess();
     }
 
     [Command("player")]
@@ -75,7 +104,6 @@ public partial class BotCommands : CommandGroup
             Url: new Uri(_options.GeoNRageUrl, $"/players/{player.Id}").ToString(),
             Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
             Thumbnail: new EmbedThumbnail(iconUrl),
-            Timestamp: DateTimeOffset.Now,
             Footer: new EmbedFooter("Rageux/20"),
             Fields: fields);
 
