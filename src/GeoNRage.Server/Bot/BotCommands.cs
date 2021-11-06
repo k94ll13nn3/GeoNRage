@@ -76,18 +76,18 @@ public partial class BotCommands : CommandGroup
             return await ReplyAsync("Joueur inconnu");
         }
 
-        PlayerFullDto? stats = await _playerService.GetFullAsync(player.Id, false);
-        if (stats is null)
+        PlayerFullDto? playerFull = await _playerService.GetFullAsync(player.Id, false);
+        if (playerFull is null)
         {
             return await ReplyAsync("Erreur inconnue");
         }
 
         var fields = new List<EmbedField>
         {
-            new("Nombre de carte complétées", $"{stats.ChallengesDone.Count()}"),
-            new("Nombre de 5000", $"{stats.Statistics.NumberOf5000}", true),
-            new("Meilleure partie", stats.Statistics.BestGameSum.FormatNullWithDash(), true),
-            new("Nombre de 25k", $"{stats.Statistics.NumberOf25000}", true),
+            new("Nombre de carte complétées", $"{playerFull.ChallengesDone.Count()}"),
+            new("Nombre de 5000", $"{playerFull.Statistics.NumberOf5000}", true),
+            new("Meilleure partie", playerFull.Statistics.BestGameSum.FormatNullWithDash(), true),
+            new("Nombre de 25k", $"{playerFull.Statistics.NumberOf25000}", true),
         };
 
         Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
@@ -97,6 +97,10 @@ public partial class BotCommands : CommandGroup
         }
 
         string iconUrl = $"https://cdn.discordapp.com/app-icons/{bot.Entity.ID}/{bot.Entity.Icon.Value}.png";
+        if (playerFull.IconUrl is not null)
+        {
+            iconUrl = $"https://www.geoguessr.com/images/auto/144/144/ce/0/plain/{playerFull.IconUrl}";
+        }
 
         var embed = new Embed(
             Title: player.Name,

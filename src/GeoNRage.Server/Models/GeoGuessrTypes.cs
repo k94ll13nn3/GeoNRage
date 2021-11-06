@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Server.Models;
+namespace GeoNRage.Server.Models;
 
 public record GeoGuessrLogin(string Email, string Password);
 
@@ -16,7 +16,9 @@ public record GeoGuessrGameGuess(string Token, decimal Lat, decimal Lng, bool Ti
 
 public record GeoGuessrGuess(int RoundScoreInPoints, bool TimedOut, bool TimedOutWithGuess, int Time, double DistanceInMeters);
 
-public record GeoGuessrPlayer(string Id, string Nick, IList<GeoGuessrGuess> Guesses);
+public record GeoGuessrPin(Uri Url);
+
+public record GeoGuessrPlayer(string Id, string Nick, IList<GeoGuessrGuess> Guesses, GeoGuessrPin Pin);
 
 public record GeoGuessrRound(decimal Lat, decimal Lng);
 

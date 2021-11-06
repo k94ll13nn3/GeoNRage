@@ -157,6 +157,9 @@ public partial class ChallengeService
                 Name = geoChallengeGamePlayer.Nick,
             };
 
+            // Update icon in order to have the most recent one.
+            player.IconUrl = geoChallengeGamePlayer.Pin.Url;
+
             var playerScore = new PlayerScore
             {
                 PlayerId = player.Id,

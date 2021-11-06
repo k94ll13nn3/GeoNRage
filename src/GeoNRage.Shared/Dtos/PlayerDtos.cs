@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace GeoNRage.Shared.Dtos.Players;
 
@@ -38,6 +38,7 @@ public record PlayerGameDto(int GameId, int Sum, DateTime GameDate);
 public record PlayerFullDto(
     string Id,
     string Name,
+    Uri? IconUrl,
     IEnumerable<PlayerChallengeDto> ChallengesDone,
     IEnumerable<PlayerChallengeDto> ChallengesNotDone,
     PlayerFullStatisticDto Statistics,
