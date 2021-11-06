@@ -1,6 +1,7 @@
 using System.Net;
 using GeoNRage.Server.Bot;
 using GeoNRage.Server.Entities;
+using GeoNRage.Server.Identity;
 using GeoNRage.Server.Services;
 using GeoNRage.Server.Tasks;
 using Microsoft.AspNetCore.DataProtection;
@@ -81,6 +82,7 @@ public static class ServiceCollectionExtensions
 
         services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<GeoNRageDbContext>()
+            .AddUserStore<GeoNRageUserStore>()
             .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
             .AddErrorDescriber<FrenchIdentityErrorDescriber>()
             .AddClaimsPrincipalFactory<GeoNRageUserClaimsPrincipalFactory>();

@@ -38,7 +38,7 @@ public record PlayerGameDto(int GameId, int Sum, DateTime GameDate);
 public record PlayerFullDto(
     string Id,
     string Name,
-    Uri? IconUrl,
+    Uri IconUrl,
     IEnumerable<PlayerChallengeDto> ChallengesDone,
     IEnumerable<PlayerChallengeDto> ChallengesNotDone,
     PlayerFullStatisticDto Statistics,

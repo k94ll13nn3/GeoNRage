@@ -95,11 +95,10 @@ public partial class BotCommands : CommandGroup
         {
             return await ReplyAsync("Erreur inconnue");
         }
-
-        string iconUrl = $"https://cdn.discordapp.com/app-icons/{bot.Entity.ID}/{bot.Entity.Icon.Value}.png";
-        if (playerFull.IconUrl is not null)
+        string iconUrl = playerFull.IconUrl.ToString();
+        if (iconUrl == "/img/icon.png")
         {
-            iconUrl = $"https://www.geoguessr.com/images/auto/144/144/ce/0/plain/{playerFull.IconUrl}";
+            iconUrl = new Uri(_options.GeoNRageUrl, iconUrl).ToString();
         }
 
         var embed = new Embed(

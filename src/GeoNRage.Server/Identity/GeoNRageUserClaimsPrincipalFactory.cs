@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using GeoNRage.Server.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace GeoNRage.Server;
+namespace GeoNRage.Server.Identity;
 
 public class GeoNRageUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<User, IdentityRole>
 {
@@ -21,6 +21,7 @@ public class GeoNRageUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<Use
         if (user?.PlayerId is not null)
         {
             identity.AddClaim(new Claim("PlayerId", user.PlayerId));
+            identity.AddClaim(new Claim("ProfilePicture", user.Player?.IconUrl?.ToString() ?? string.Empty));
         }
 
         return identity;

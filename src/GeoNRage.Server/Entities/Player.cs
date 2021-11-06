@@ -6,7 +6,7 @@ public class Player
 
     public string Name { get; set; } = null!;
 
-    public Uri? IconUrl { get; set; }
+    public Uri IconUrl { get; set; } = null!;
 
     public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
 }

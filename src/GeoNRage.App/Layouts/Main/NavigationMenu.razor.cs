@@ -1,4 +1,4 @@
-﻿using System.Security.Principal;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;
@@ -12,7 +12,7 @@ public partial class NavigationMenu : IDisposable
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
+    public ClaimsPrincipal User { get; set; } = null!;
 
     [Inject]
     public GeoNRageStateProvider GeoNRageStateProvider { get; set; } = null!;
@@ -30,11 +30,7 @@ public partial class NavigationMenu : IDisposable
 
     protected override async Task OnParametersSetAsync()
     {
-        IIdentity? identity = (await AuthenticationState).User.Identity;
-        if (identity is not null)
-        {
-            Name = identity.Name ?? string.Empty;
-        }
+        User = (await AuthenticationState).User;
     }
 
     protected override void OnInitialized()

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace GeoNRage.Server;
+namespace GeoNRage.Server.Identity;
 public class FrenchIdentityErrorDescriber : IdentityErrorDescriber
 {
     public override IdentityError DefaultError()

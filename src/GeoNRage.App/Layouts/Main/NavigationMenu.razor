@@ -1,79 +1,76 @@
-﻿<nav class="navbar is-radiusless" role="navigation" aria-label="main navigation">
-	<div class="container">
-		<div class="navbar-brand">
-			<a class="navbar-item page-header" href="@NavigationManager.ToAbsoluteUri("/")">Geo'N Rage</a>
-			<span class="navbar-burger" data-target="navbarMenu" @onclick="ToggleMenu">
-				<span></span>
-				<span></span>
-				<span></span>
-			</span>
-		</div>
-		<div id="navbarMenu" class="navbar-menu @(ShowMenu ? "is-active" : "")">
-			<div class="navbar-start">
-				<NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")">Parties</NavLink>
-				<AuthorizeView Roles="@Roles.Member">
-					<NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/challenges")">Challenges</NavLink>
-				</AuthorizeView>
-				<div class="navbar-item has-dropdown is-hoverable">
-					<a class="navbar-link">
-						Statistiques
-					</a>
+<nav class="navbar is-radiusless" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item page-header" href="@NavigationManager.ToAbsoluteUri("/")">Geo'N Rage</a>
+            <span class="navbar-burger" data-target="navbarMenu" @onclick="ToggleMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </div>
+        <div id="navbarMenu" class="navbar-menu @(ShowMenu ? "is-active" : "")">
+            <div class="navbar-start">
+                <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")">Parties</NavLink>
+                <AuthorizeView Roles="@Roles.Member">
+                    <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/challenges")">Challenges</NavLink>
+                </AuthorizeView>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Statistiques
+                    </a>
 
-					<div class="navbar-dropdown">
-						<NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/players")">Joueurs</NavLink>
-						<NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/locations")">Lieux</NavLink>
-					</div>
-				</div>
-				<AuthorizeView Roles="@Roles.Admin">
-					<NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active">Administration</NavLink>
-				</AuthorizeView>
-			</div>
-			<div class="navbar-end">
-				<span class="navbar-item">
-					<MapStatusSwitcher />
-				</span>
+                    <div class="navbar-dropdown">
+                        <NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/players")">Joueurs</NavLink>
+                        <NavLink Match="NavLinkMatch.All" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/statistics/locations")">Lieux</NavLink>
+                    </div>
+                </div>
+                <AuthorizeView Roles="@Roles.Admin">
+                    <NavLink Match="NavLinkMatch.Prefix" href="@NavigationManager.ToAbsoluteUri("/admin")" class="navbar-item" ActiveClass="is-active">Administration</NavLink>
+                </AuthorizeView>
+            </div>
+            <div class="navbar-end">
+                <span class="navbar-item">
+                    <MapStatusSwitcher />
+                </span>
 
-				<AuthorizeView>
-					<Authorized>
-						<NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
-							<span class="icon-text">
-								<span class="icon">
-									<i class="fas fa-user"></i>
-								</span>
-								<span>@Name</span>
-							</span>
-						</NavLink>
-						<span class="navbar-item">
-							<button class="button is-link" @onclick="@LogoutClickAsync">
-								<span class="icon">
-									<i class="fas fa-sign-in-alt"></i>
-								</span>
-								<span>Déconnexion</span>
-							</button>
-						</span>
-					</Authorized>
-					<Authorizing>
-						<span class="navbar-item">
-							<button class="button is-link" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
-								<span class="icon">
-									<i class="fas fa-sign-in-alt"></i>
-								</span>
-								<span>Connexion</span>
-							</button>
-						</span>
-					</Authorizing>
-					<NotAuthorized>
-						<span class="navbar-item">
-							<button class="button is-link" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
-								<span class="icon">
-									<i class="fas fa-sign-in-alt"></i>
-								</span>
-								<span>Connexion</span>
-							</button>
-						</span>
-					</NotAuthorized>
-				</AuthorizeView>
-			</div>
-		</div>
-	</div>
+                <AuthorizeView>
+                    <Authorized>
+                        <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
+                            <figure class="image is-32x32">
+                                <img class="is-rounded" src="@User.ProfilePicture()">
+                            </figure>
+                        </NavLink>
+                        <span class="navbar-item">
+                            <button class="button is-link" @onclick="@LogoutClickAsync">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Déconnexion</span>
+                            </button>
+                        </span>
+                    </Authorized>
+                    <Authorizing>
+                        <span class="navbar-item">
+                            <button class="button is-link" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Connexion</span>
+                            </button>
+                        </span>
+                    </Authorizing>
+                    <NotAuthorized>
+                        <span class="navbar-item">
+                            <button class="button is-link" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Connexion</span>
+                            </button>
+                        </span>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
 </nav>
