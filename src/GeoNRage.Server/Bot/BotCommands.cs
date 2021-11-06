@@ -96,7 +96,7 @@ public partial class BotCommands : CommandGroup
             return await ReplyAsync("Erreur inconnue");
         }
         string iconUrl = playerFull.IconUrl.ToString();
-        if (iconUrl == "/img/icon.png")
+        if (iconUrl == Constants.BaseAvatarUrl.ToString())
         {
             iconUrl = new Uri(_options.GeoNRageUrl, iconUrl).ToString();
         }

@@ -158,7 +158,14 @@ public partial class ChallengeService
             };
 
             // Update icon in order to have the most recent one.
-            player.IconUrl = new Uri($"https://www.geoguessr.com/images/auto/144/144/ce/0/plain/{geoChallengeGamePlayer.Pin.Url}");
+            if (!string.IsNullOrWhiteSpace(geoChallengeGamePlayer.Pin.Url.ToString()))
+            {
+                player.IconUrl = new Uri($"https://www.geoguessr.com/images/auto/144/144/ce/0/plain/{geoChallengeGamePlayer.Pin.Url}");
+            }
+            else
+            {
+                player.IconUrl = Constants.BaseAvatarUrl;
+            }
 
             var playerScore = new PlayerScore
             {

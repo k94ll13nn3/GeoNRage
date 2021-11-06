@@ -54,7 +54,7 @@ public class GeoNRageDbContext : IdentityDbContext<
 
         builder.Entity<Player>().HasKey(p => p.Id);
         builder.Entity<Player>().Property(g => g.Name).IsRequired();
-        builder.Entity<Player>().Property(g => g.IconUrl).IsRequired().HasDefaultValue(new Uri("/img/icon.png", UriKind.Relative));
+        builder.Entity<Player>().Property(g => g.IconUrl).IsRequired().HasDefaultValue(Constants.BaseAvatarUrl);
 
         builder.Entity<Map>().HasKey(m => m.Id);
         builder.Entity<Map>().Property(g => g.Name).IsRequired();
