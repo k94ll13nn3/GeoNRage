@@ -1,4 +1,4 @@
-﻿@page "/admin/challenges"
+@page "/admin/challenges"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Admin)]
 
@@ -42,9 +42,18 @@
                                 </span>
                             </ChildContent>
                             <ElseContent>
-                                <span class="icon has-text-warning">
-                                    <i class="fas fa-times"></i>
-                                </span>
+                                <Container Condition="challenge.CompletedBy > 0">
+                                    <ChildContent>
+                                        <span class="icon has-text-warning">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </ChildContent>
+                                    <ElseContent>
+                                        <span class="icon has-text-danger">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </ElseContent>
+                                </Container>
                             </ElseContent>
                         </Container>
                     </td>

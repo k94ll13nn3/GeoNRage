@@ -69,7 +69,8 @@ public partial class ChallengeService
                     && c.CreatorId != null
                     && c.TimeLimit != null
                     && c.UpdatedAt != DateTime.MinValue
-                    && c.PlayerScores.All(p => p.PlayerGuesses.All(g => g.Score != null && g.Distance != null && g.Time != null))
+                    && c.PlayerScores.All(p => p.PlayerGuesses.All(g => g.Score != null && g.Distance != null && g.Time != null)),
+                c.PlayerScores.Count(p => p.PlayerGuesses.Count == 5)
             ))
             .ToListAsync();
     }
