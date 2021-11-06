@@ -48,29 +48,27 @@ public partial class PlayerService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<PlayerDto>> GetAllAsync()
+    public Task<IEnumerable<PlayerDto>> GetAllAsync()
     {
-        if (!_cache.TryGetValue(CacheKeys.PlayerServiceGetAllAsync, out List<PlayerDto> players))
+        return _cache.GetOrCreateAsync(CacheKeys.PlayerServiceGetAllAsync, GetAllFactory);
+
+        async Task<IEnumerable<PlayerDto>> GetAllFactory(ICacheEntry entry)
         {
-            players = await _context
-                           .Players
-                           .OrderBy(p => p.Name)
-                           .AsNoTracking()
-                           .Select(p => new PlayerDto
-                           (
-                               p.Id,
-                               p.Name
-                           ))
-                           .ToListAsync();
+            List<PlayerDto> players = await _context
+                .Players
+                .OrderBy(p => p.Name)
+                .AsNoTracking()
+                .Select(p => new PlayerDto
+                (
+                    p.Id,
+                    p.Name
+                ))
+                .ToListAsync();
 
-            MemoryCacheEntryOptions? cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromDays(1))
-                .SetSize(players.Count);
+            entry.SetSlidingExpiration(TimeSpan.FromDays(1)).SetSize(players.Count);
 
-            _cache.Set(CacheKeys.PlayerServiceGetAllAsync, players, cacheEntryOptions);
+            return players;
         }
-
-        return players;
     }
 
     public async Task<PlayerFullDto?> GetFullAsync(string id, bool takeAllMaps)
