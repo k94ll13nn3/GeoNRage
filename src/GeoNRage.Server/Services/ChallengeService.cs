@@ -240,6 +240,7 @@ public partial class ChallengeService
         }
 
         _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
+        _cache.Remove(CacheKeys.MapServiceGetAllAsync);
         return challengeId;
     }
 }

@@ -1,5 +1,6 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace GeoNRage.Server.Services;
 
@@ -7,20 +8,30 @@ namespace GeoNRage.Server.Services;
 public partial class MapService
 {
     private readonly GeoNRageDbContext _context;
+    private readonly IMemoryCache _cache;
 
-    public async Task<IEnumerable<MapDto>> GetAllAsync()
+    public Task<IEnumerable<MapDto>> GetAllAsync()
     {
-        return await _context
-            .Maps
-            .OrderBy(m => m.Name)
-            .AsNoTracking()
-            .Select(m => new MapDto
-            (
-                m.Id,
-                m.Name,
-                m.IsMapForGame
-            ))
-            .ToListAsync();
+        return _cache.GetOrCreateAsync(CacheKeys.MapServiceGetAllAsync, GetAllFactory);
+
+        async Task<IEnumerable<MapDto>> GetAllFactory(ICacheEntry entry)
+        {
+            List<MapDto> maps = await _context
+                .Maps
+                .OrderBy(m => m.Name)
+                .AsNoTracking()
+                .Select(m => new MapDto
+                (
+                    m.Id,
+                    m.Name,
+                    m.IsMapForGame
+                ))
+                .ToListAsync();
+
+            entry.SetSlidingExpiration(TimeSpan.FromDays(1)).SetSize(maps.Count);
+
+            return maps;
+        }
     }
 
     public async Task<MapDto?> UpdateAsync(string id, MapEditDto dto)
@@ -35,6 +46,7 @@ public partial class MapService
 
             _context.Maps.Update(map);
             await _context.SaveChangesAsync();
+            _cache.Remove(CacheKeys.MapServiceGetAllAsync);
         }
 
         return await GetAsync(id);
@@ -52,6 +64,7 @@ public partial class MapService
 
             _context.Maps.Remove(map);
             await _context.SaveChangesAsync();
+            _cache.Remove(CacheKeys.MapServiceGetAllAsync);
         }
     }
 
