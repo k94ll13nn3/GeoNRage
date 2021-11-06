@@ -45,7 +45,7 @@ public partial class AdminService
 
     public async Task ClearLogsAsync()
     {
-        IEnumerable<Log> logsToRemove = _context.Logs.Where(c => EF.Functions.DateDiffDay(c.Timestamp, DateTime.UtcNow) > 30).ToList();
+        IEnumerable<Log> logsToRemove = _context.Logs.Where(c => EF.Functions.DateDiffDay(c.Timestamp, DateTime.UtcNow) > 15).ToList();
         _context.Logs.RemoveRange(logsToRemove);
         await _context.SaveChangesAsync();
     }
