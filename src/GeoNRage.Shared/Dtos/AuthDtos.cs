@@ -18,7 +18,7 @@ public static class Roles
     public static IEnumerable<string> All => new[] { Admin, SuperAdmin, Member };
 }
 
-public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, IEnumerable<string>> Claims, string? PlayerId);
+public record UserDto(bool IsAuthenticated, string UserName, Dictionary<string, IEnumerable<string>> Claims);
 
 public class RegisterDto
 {

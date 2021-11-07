@@ -25,4 +25,9 @@ public class GeoNRageUserStore : UserStore<
     {
         return Users.Include(p => p.Player).FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName, cancellationToken)!;
     }
+
+    public override Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        return Users.Include(p => p.Player).FirstOrDefaultAsync(u => u.Id == userId, cancellationToken)!;
+    }
 }

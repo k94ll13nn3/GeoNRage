@@ -143,15 +143,13 @@ public partial class AuthController : ControllerBase
     }
 
     [HttpGet("user")]
-    public async Task<UserDto> CurrentUserInfoAsync()
+    public UserDto CurrentUserInfo()
     {
-        User user = await _userManager.GetUserAsync(User);
         return new UserDto
         (
             User.Identity?.IsAuthenticated ?? false,
             User.Identity?.Name ?? string.Empty,
-            User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value)),
-            user?.PlayerId
+            User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value))
         );
     }
 

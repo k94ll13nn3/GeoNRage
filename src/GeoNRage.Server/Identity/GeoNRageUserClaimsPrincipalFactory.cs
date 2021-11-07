@@ -21,7 +21,7 @@ public class GeoNRageUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<Use
         if (user?.PlayerId is not null)
         {
             identity.AddClaim(new Claim("PlayerId", user.PlayerId));
-            identity.AddClaim(new Claim("ProfilePicture", user.Player?.IconUrl?.ToString() ?? string.Empty));
+            identity.AddClaim(new Claim("ProfilePicture", (user.Player?.IconUrl ?? Constants.BaseAvatarUrl).ToString()));
         }
 
         return identity;
