@@ -18,10 +18,13 @@ public class GeoNRageUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<Use
     protected override async Task<ClaimsIdentity> GenerateClaimsAsync(User user)
     {
         ClaimsIdentity? identity = await base.GenerateClaimsAsync(user);
-        if (user?.PlayerId is not null)
+        if (user is not null)
         {
-            identity.AddClaim(new Claim("PlayerId", user.PlayerId));
             identity.AddClaim(new Claim("ProfilePicture", (user.Player?.IconUrl ?? Constants.BaseAvatarUrl).ToString()));
+            if (user.PlayerId is not null)
+            {
+                identity.AddClaim(new Claim("PlayerId", user.PlayerId));
+            }
         }
 
         return identity;
