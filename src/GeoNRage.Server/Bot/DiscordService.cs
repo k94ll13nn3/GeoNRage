@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Options;
-using Remora.Discord.API.Abstractions.Objects;
-using Remora.Discord.API.Abstractions.Rest;
 using Remora.Discord.Commands.Services;
 using Remora.Discord.Core;
 using Remora.Discord.Gateway;
@@ -15,8 +13,6 @@ public partial class DiscordService : BackgroundService
     private readonly ILogger<DiscordService> _logger;
     private readonly DiscordGatewayClient _gatewayClient;
     private readonly SlashService _slashService;
-    private readonly IDiscordRestOAuth2API _oauth2API;
-    private readonly IDiscordRestApplicationAPI _discordRestApplicationAPI;
 
     [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
     private readonly ApplicationOptions _options;
@@ -30,52 +26,7 @@ public partial class DiscordService : BackgroundService
             return;
         }
 
-        Result<IApplication> getApplication = await _oauth2API.GetCurrentBotApplicationInformationAsync(stoppingToken);
-        if (!getApplication.IsSuccess)
-        {
-            LogApplicationFetchError(getApplication.Error.Message);
-            return;
-        }
-
-        Snowflake applicationId = getApplication.Entity.ID;
         _ = Snowflake.TryParse(_options.DiscordDevServerId, out Snowflake? guild);
-
-        Result<IReadOnlyList<IApplicationCommand>> globalCommands = await _discordRestApplicationAPI.GetGlobalApplicationCommandsAsync(applicationId, stoppingToken);
-        if (globalCommands.IsSuccess)
-        {
-            foreach (IApplicationCommand command in globalCommands.Entity)
-            {
-                Result deleteResult = await _discordRestApplicationAPI.DeleteGlobalApplicationCommandAsync(applicationId, command.ID, stoppingToken);
-                if (!deleteResult.IsSuccess)
-                {
-                    LogGlobalCommandsDeleteError(deleteResult.Error.Message);
-                }
-            }
-        }
-        else
-        {
-            LogGlobalCommandsGetError(globalCommands.Error.Message);
-        }
-
-        if (guild.HasValue)
-        {
-            Result<IReadOnlyList<IApplicationCommand>> guildCommands = await _discordRestApplicationAPI.GetGuildApplicationCommandsAsync(applicationId, guild.Value, stoppingToken);
-            if (guildCommands.IsSuccess)
-            {
-                foreach (IApplicationCommand? guildCommand in guildCommands.Entity)
-                {
-                    Result deleteResult = await _discordRestApplicationAPI.DeleteGuildApplicationCommandAsync(applicationId, guild.Value, guildCommand.ID, stoppingToken);
-                    if (!deleteResult.IsSuccess)
-                    {
-                        LogGuildCommandsDeleteError(deleteResult.Error.Message);
-                    }
-                }
-            }
-            else
-            {
-                LogGuildCommandsGetError(guildCommands.Error.Message);
-            }
-        }
 
         Result updateSlash = await _slashService.UpdateSlashCommandsAsync(guild, stoppingToken);
         if (!updateSlash.IsSuccess)

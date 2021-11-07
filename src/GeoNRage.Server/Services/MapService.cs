@@ -34,6 +34,24 @@ public partial class MapService
         }
     }
 
+    public Task<MapStatisticsDto?> GetMapStatisticsAsync(string id)
+    {
+        return _context
+            .Maps
+            .AsNoTracking()
+            .Where(m => m.Id == id)
+            .Select(m => new MapStatisticsDto
+            (
+                m.Id,
+                m.Name,
+                m.Challenges.SelectMany(c => c
+                    .PlayerScores
+                    .Where(ps => ps.PlayerGuesses.Count == 5)
+                    .Select(ps => new MapScoreDto(ps.Player.Name, ps.PlayerGuesses.Sum(pg => pg.Score) ?? 0, ps.PlayerGuesses.Sum(pg => pg.Time) ?? 0)))
+            ))
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<MapDto?> UpdateAsync(string id, MapEditDto dto)
     {
         _ = dto ?? throw new ArgumentNullException(nameof(dto));

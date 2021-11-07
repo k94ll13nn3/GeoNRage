@@ -21,6 +21,7 @@ public partial class BotCommands : CommandGroup
     private readonly InteractionContext _interactionContext;
     private readonly GameService _gameService;
     private readonly PlayerService _playerService;
+    private readonly MapService _mapService;
     private readonly FeedbackService _feedbackService;
     private readonly IDiscordRestOAuth2API _oauth2API;
 
@@ -107,6 +108,59 @@ public partial class BotCommands : CommandGroup
             Url: new Uri(_options.GeoNRageUrl, $"/players/{player.Id}").ToString(),
             Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
             Thumbnail: new EmbedThumbnail(iconUrl),
+            Footer: new EmbedFooter("Rageux/20"),
+            Fields: fields);
+
+        Result<IMessage> reply = await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
+
+        return !reply.IsSuccess
+            ? Result.FromError(reply)
+            : Result.FromSuccess();
+    }
+
+    [Command("map")]
+    [Description("Affiche les stats de la carte")]
+    public async Task<IRemoraResult> GetMapStatisticsAsync([AutocompleteProvider(nameof(MapNameAutocompleteProvider))] string mapName)
+    {
+        IEnumerable<MapDto> maps = await _mapService.GetAllAsync();
+
+        if (maps.FirstOrDefault(p => p.Name.RemoveDiacritics().Contains(mapName.RemoveDiacritics(), StringComparison.OrdinalIgnoreCase)) is not MapDto map)
+        {
+            return await ReplyAsync("Carte inconnue");
+        }
+
+        MapStatisticsDto? statistics = await _mapService.GetMapStatisticsAsync(map.Id);
+        if (statistics is null)
+        {
+            return await ReplyAsync("Erreur inconnue");
+        }
+
+        IEnumerable<string> rankings = statistics
+            .Scores
+            .OrderByDescending(s => s.Sum)
+            .ThenBy(s => s.Time)
+            .Select(s => $"{s.PlayerName} : {s.Sum} ({s.Time.ToTimeString()})");
+
+        var fields = new List<EmbedField>
+        {
+            new ("Classement (partie 1)", string.Join(Environment.NewLine, rankings.Take(5)), true),
+        };
+
+        if (rankings.Count() > 5)
+        {
+            fields.Add(new("Classement (partie 2)", string.Join(Environment.NewLine, rankings.Take(5..10)), true));
+        }
+
+        Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
+        if (!bot.IsSuccess || bot.Entity.Icon is null)
+        {
+            return await ReplyAsync("Erreur inconnue");
+        }
+
+        var embed = new Embed(
+            Title: map.Name,
+            Type: EmbedType.Rich,
+            Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
             Footer: new EmbedFooter("Rageux/20"),
             Fields: fields);
 

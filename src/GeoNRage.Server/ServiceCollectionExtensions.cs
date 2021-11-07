@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddDiscordCommands(true);
         services.AddCommandGroup<BotCommands>();
         services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
+        services.AddAutocompleteProvider<MapNameAutocompleteProvider>();
 
         return services;
     }
