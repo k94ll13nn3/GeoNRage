@@ -20,7 +20,7 @@ public partial class MapNameAutocompleteProvider : IAutocompleteProvider
         return (await _mapService.GetAllAsync())
             .Where(m => m.Name.RemoveDiacritics().Contains(userInput.RemoveDiacritics(), StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(m => m.IsMapForGame)
-            .Select(m => new ApplicationCommandOptionChoice(m.Name, m.Name))
+            .Select(m => new ApplicationCommandOptionChoice(m.Name, m.Id))
             .ToList();
     }
 }

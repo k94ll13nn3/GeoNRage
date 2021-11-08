@@ -68,19 +68,12 @@ public partial class BotCommands : CommandGroup
 
     [Command("player")]
     [Description("Affiche les stats du joueur")]
-    public async Task<IRemoraResult> GetPlayerStatisticsAsync([AutocompleteProvider(nameof(PlayerNameAutocompleteProvider))] string playerName)
+    public async Task<IRemoraResult> GetPlayerStatisticsAsync([AutocompleteProvider(nameof(PlayerNameAutocompleteProvider))] string playerId)
     {
-        IEnumerable<PlayerDto> players = await _playerService.GetAllAsync();
-
-        if (players.FirstOrDefault(p => p.Name.RemoveDiacritics().Contains(playerName.RemoveDiacritics(), StringComparison.OrdinalIgnoreCase)) is not PlayerDto player)
-        {
-            return await ReplyAsync("Joueur inconnu");
-        }
-
-        PlayerFullDto? playerFull = await _playerService.GetFullAsync(player.Id, false);
+        PlayerFullDto? playerFull = await _playerService.GetFullAsync(playerId, false);
         if (playerFull is null)
         {
-            return await ReplyAsync("Erreur inconnue");
+            return await ReplyAsync("Joueur inconnu");
         }
 
         var fields = new List<EmbedField>
@@ -91,11 +84,6 @@ public partial class BotCommands : CommandGroup
             new("Nombre de 25k", $"{playerFull.Statistics.NumberOf25000}", true),
         };
 
-        Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
-        if (!bot.IsSuccess || bot.Entity.Icon is null)
-        {
-            return await ReplyAsync("Erreur inconnue");
-        }
         string iconUrl = playerFull.IconUrl.ToString();
         if (iconUrl == Constants.BaseAvatarUrl.ToString())
         {
@@ -103,9 +91,9 @@ public partial class BotCommands : CommandGroup
         }
 
         var embed = new Embed(
-            Title: player.Name,
+            Title: playerFull.Name,
             Type: EmbedType.Rich,
-            Url: new Uri(_options.GeoNRageUrl, $"/players/{player.Id}").ToString(),
+            Url: new Uri(_options.GeoNRageUrl, $"/players/{playerFull.Id}").ToString(),
             Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
             Thumbnail: new EmbedThumbnail(iconUrl),
             Footer: new EmbedFooter("Rageux/20"),
@@ -120,19 +108,12 @@ public partial class BotCommands : CommandGroup
 
     [Command("map")]
     [Description("Affiche les stats de la carte")]
-    public async Task<IRemoraResult> GetMapStatisticsAsync([AutocompleteProvider(nameof(MapNameAutocompleteProvider))] string mapName)
+    public async Task<IRemoraResult> GetMapStatisticsAsync([AutocompleteProvider(nameof(MapNameAutocompleteProvider))] string mapId)
     {
-        IEnumerable<MapDto> maps = await _mapService.GetAllAsync();
-
-        if (maps.FirstOrDefault(p => p.Name.RemoveDiacritics().Contains(mapName.RemoveDiacritics(), StringComparison.OrdinalIgnoreCase)) is not MapDto map)
-        {
-            return await ReplyAsync("Carte inconnue");
-        }
-
-        MapStatisticsDto? statistics = await _mapService.GetMapStatisticsAsync(map.Id);
+        MapStatisticsDto? statistics = await _mapService.GetMapStatisticsAsync(mapId);
         if (statistics is null)
         {
-            return await ReplyAsync("Erreur inconnue");
+            return await ReplyAsync("Carte inconnue");
         }
 
         IEnumerable<string> rankings = statistics
@@ -151,14 +132,8 @@ public partial class BotCommands : CommandGroup
             fields.Add(new("Classement (partie 2)", string.Join(Environment.NewLine, rankings.Take(5..10)), true));
         }
 
-        Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
-        if (!bot.IsSuccess || bot.Entity.Icon is null)
-        {
-            return await ReplyAsync("Erreur inconnue");
-        }
-
         var embed = new Embed(
-            Title: map.Name,
+            Title: statistics.Name,
             Type: EmbedType.Rich,
             Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
             Footer: new EmbedFooter("Rageux/20"),

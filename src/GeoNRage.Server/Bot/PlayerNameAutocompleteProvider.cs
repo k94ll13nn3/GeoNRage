@@ -19,7 +19,7 @@ public partial class PlayerNameAutocompleteProvider : IAutocompleteProvider
     {
         return (await _playerService.GetAllAsync())
             .Where(p => p.Name.RemoveDiacritics().Contains(userInput.RemoveDiacritics(), StringComparison.OrdinalIgnoreCase))
-            .Select(p => new ApplicationCommandOptionChoice(p.Name, p.Name))
+            .Select(p => new ApplicationCommandOptionChoice(p.Name, p.Id))
             .ToList();
     }
 }
