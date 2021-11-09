@@ -34,7 +34,7 @@ public partial class MapService
         }
     }
 
-    public Task<MapStatisticsDto?> GetMapStatisticsAsync(string id)
+    public Task<MapStatisticsDto?> GetMapStatisticsAsync(string id, bool takeAllMaps)
     {
         return _context
             .Maps
@@ -44,7 +44,7 @@ public partial class MapService
             (
                 m.Id,
                 m.Name,
-                m.Challenges.SelectMany(c => c
+                m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || m.IsMapForGame))).SelectMany(c => c
                     .PlayerScores
                     .Where(ps => ps.PlayerGuesses.Count == 5)
                     .Select(ps => new MapScoreDto(ps.Player.Name, ps.PlayerGuesses.Sum(pg => pg.Score) ?? 0, ps.PlayerGuesses.Sum(pg => pg.Time) ?? 0)))

@@ -68,9 +68,14 @@ public partial class BotCommands : CommandGroup
 
     [Command("player")]
     [Description("Affiche les stats du joueur")]
-    public async Task<IRemoraResult> GetPlayerStatisticsAsync([AutocompleteProvider(nameof(PlayerNameAutocompleteProvider))] string playerId)
+    public async Task<IRemoraResult> GetPlayerStatisticsAsync(
+        [AutocompleteProvider(nameof(PlayerNameAutocompleteProvider))]
+        [Description("L'id du joueur, peut-être récupéré via autocompletion")]
+        string playerId,
+        [Description("Valeur indiquant si toutes les cartes doivent être prise ou seulement les principales")]
+        bool allMaps = false)
     {
-        PlayerFullDto? playerFull = await _playerService.GetFullAsync(playerId, false);
+        PlayerFullDto? playerFull = await _playerService.GetFullAsync(playerId, allMaps);
         if (playerFull is null)
         {
             return await ReplyAsync("Joueur inconnu");
@@ -108,9 +113,14 @@ public partial class BotCommands : CommandGroup
 
     [Command("map")]
     [Description("Affiche les stats de la carte")]
-    public async Task<IRemoraResult> GetMapStatisticsAsync([AutocompleteProvider(nameof(MapNameAutocompleteProvider))] string mapId)
+    public async Task<IRemoraResult> GetMapStatisticsAsync(
+        [AutocompleteProvider(nameof(MapNameAutocompleteProvider))]
+        [Description("L'id de la carte, peut-être récupéré via autocompletion")]
+        string mapId,
+        [Description("Valeur indiquant si toutes les cartes doivent être prise ou seulement les principales")]
+        bool allMaps = false)
     {
-        MapStatisticsDto? statistics = await _mapService.GetMapStatisticsAsync(mapId);
+        MapStatisticsDto? statistics = await _mapService.GetMapStatisticsAsync(mapId, allMaps);
         if (statistics is null)
         {
             return await ReplyAsync("Carte inconnue");
@@ -121,6 +131,16 @@ public partial class BotCommands : CommandGroup
             .OrderByDescending(s => s.Sum)
             .ThenBy(s => s.Time)
             .Select(s => $"{s.PlayerName} : {s.Sum} ({s.Time.ToTimeString()})");
+
+        if (!rankings.Any() && !allMaps)
+        {
+            return await ReplyAsync($"Veuillez utiliser le paramètre '{nameof(allMaps)}' pour cette carte");
+        }
+
+        if (!rankings.Any())
+        {
+            return await ReplyAsync("Erreur inconnue");
+        }
 
         var fields = new List<EmbedField>
         {
