@@ -144,12 +144,12 @@ public partial class BotCommands : CommandGroup
 
         var fields = new List<EmbedField>
         {
-            new ("Classement (partie 1)", string.Join(Environment.NewLine, rankings.Take(5)), true),
+            new ("Classement (1 à 5)", string.Join(Environment.NewLine, rankings.Take(5)), true),
         };
 
         if (rankings.Count() > 5)
         {
-            fields.Add(new("Classement (partie 2)", string.Join(Environment.NewLine, rankings.Take(5..10)), true));
+            fields.Add(new("Classement (6 à 10)", string.Join(Environment.NewLine, rankings.Take(5..10)), true));
         }
 
         var embed = new Embed(
