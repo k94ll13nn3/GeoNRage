@@ -3,6 +3,7 @@ using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
 using Plotly.Blazor.Traces;
+using Plotly.Blazor.Traces.BarLib;
 using Refit;
 
 namespace GeoNRage.App.Pages;
@@ -77,7 +78,9 @@ public partial class PlayerPage
         {
             X = Player.GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object).ToList(),
             Y = Player.GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
-            Name = "Historique des parties"
+            TextArray = Player.GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate.ToShortDateString()} - {g.NumberOf5000} fois 5000").ToList(),
+            Name = "Historique des parties",
+            TextPosition = TextPositionEnum.None
         });
     }
 

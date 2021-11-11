@@ -168,13 +168,28 @@ public partial class PlayerService
                         .Where(p => (takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))) && p.PlayerGuesses.All(g => g.Time != null))
                         .Select(p => new { Score = p.PlayerGuesses.Sum(g => g.Score), Time = p.PlayerGuesses.Sum(g => g.Time) })
                         .Where(s => s.Score == 25000)
-                        .Min(s => s.Time)
+                        .Min(s => s.Time),
+                    p
+                        .PlayerScores
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
+                        .Select(ps => new { ps.Challenge.GameId, NumberOf5000 = ps.PlayerGuesses.Count(g => g.Score == 5000) })
+                        .GroupBy(p => p.GameId)
+                        .Where(g => g.Count() == 3)
+                        .Select(g => new { Id = g.Key, NumberOf5000 = g.Select(p => p.NumberOf5000).Sum() })
+                        .Average(g => g.NumberOf5000)
                 ),
                 null!,
                 p
                     .PlayerScores
                     .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                    .Select(ps => new { ps.Challenge.GameId, ps.Challenge.Game.Date, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                    .Select(ps => new
+                    {
+                        ps.Challenge.GameId,
+                        ps.Challenge.Game.Date,
+                        Sum = ps.PlayerGuesses.Sum(g => g.Score),
+                        GameName = ps.Challenge.Game.Name,
+                        NumberOf5000 = ps.PlayerGuesses.Count(g => g.Score == 5000)
+                    })
                     .GroupBy(p => new { p.GameId, p.Date })
                     .Where(g => g.Count() == 3)
                     .OrderBy(g => g.Key.Date)
@@ -182,7 +197,9 @@ public partial class PlayerService
                     (
                         g.Key.GameId,
                         g.Select(p => p.Sum).Sum() ?? 0,
-                        g.Key.Date
+                        g.Key.Date,
+                        g.First().GameName,
+                        g.Select(p => p.NumberOf5000).Sum()
                     ))
             ))
             .FirstOrDefaultAsync();

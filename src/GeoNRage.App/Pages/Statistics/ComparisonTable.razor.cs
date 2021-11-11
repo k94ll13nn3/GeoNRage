@@ -30,6 +30,7 @@ public partial class ComparisonTable
         AddElement(p => p.Statistics.NumberOfTimeOutWithGuess, "Nombre de time out (avec guess)", (i, j) => j.CompareTo(i));
         AddElement(p => p.Statistics.Best5000Time, "5000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
         AddElement(p => p.Statistics.Best25000Time, "25000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.AverageOf5000ByGame, "Moyenne de 5000 par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
     }
 
     private void AddElement<T>(Func<PlayerFullDto, T> selector, string title, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)

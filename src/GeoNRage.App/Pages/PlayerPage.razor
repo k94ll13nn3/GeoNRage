@@ -124,14 +124,14 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de time out (sans guess)</p>
-                        <p class="title">@Player.Statistics.NumberOfTimeOut</p>
+                        <p class="heading">Nombre de time out (sans guess/avec guess)</p>
+                        <p class="title">@Player.Statistics.NumberOfTimeOut / @Player.Statistics.NumberOfTimeOutWithGuess</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de time out (avec guess)</p>
-                        <p class="title">@Player.Statistics.NumberOfTimeOutWithGuess</p>
+                        <p class="heading">Moyenne de 5000 par partie</p>
+                        <p class="title">@(Player.Statistics.AverageOf5000ByGame?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
