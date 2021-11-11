@@ -54,7 +54,7 @@
                 <FooterContent>
                     <Container Condition="User.PlayerId() is not null">
                         <th colspan="5" class="has-text-right">
-                            <Container Condition="!Challenges.Any()">
+                            <Container Condition="Challenges?.Any() != true">
                                 <p>Toutes les cartes disponibles ont été jouées !</p>
                             </Container>
                             <Container Condition="DisplayAll">
