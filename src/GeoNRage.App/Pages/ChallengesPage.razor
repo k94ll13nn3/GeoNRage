@@ -1,29 +1,29 @@
-﻿@page "/challenges"
+@page "/challenges"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Member)]
 
 @inherits UserSettingsAwareComponent
 
 <Container Condition="Challenges is not null">
-	<ChildContent>
-		<div class="container">
-			<div class="field m-3 is-grouped">
-				<p class="control is-expanded">
-					<input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
-				</p>
-				<div class="control">
-					<button type="submit" class="button is-primary" @onclick="Import">Importer</button>
-				</div>
-			</div>
-			<article class="message m-3">
-				<div class="message-body">
-					Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
-				</div>
-			</article>
+    <ChildContent>
+        <div class="container">
+            <div class="field m-3 is-grouped">
+                <p class="control is-expanded">
+                    <input class="input" type="text" placeholder="Id GeoGuessr" @bind="GeoGuessrId">
+                </p>
+                <div class="control">
+                    <button type="submit" class="button is-primary" @onclick="Import">Importer</button>
+                </div>
+            </div>
+            <article class="message m-3">
+                <div class="message-body">
+                    Seule l'id GeoGuessr est recevable, par exemple pour <em>https://www.geoguessr.com/challenge/uGnmazjHKBZs78JR</em>, rentrer <strong>uGnmazjHKBZs78JR</strong>.
+                </div>
+            </article>
 
-			<Table @ref="ChallengesTable"
-				   Items="Challenges"
-				   Headers="@(new TableHeader[]
+            <Table @ref="ChallengesTable"
+                   Items="Challenges"
+                   Headers="@(new TableHeader[]
                                   {
                                       new("Nom de la carte", true, nameof(ChallengeDto.MapName)),
                                       new("Créateur", false, string.Empty),
@@ -31,51 +31,54 @@
                                       new("", false, string.Empty),
                                       new("", false, string.Empty),
                                   })"
-				   Paginate="true"
-				   PageSize="15"
-				   IsNarrow="false"
-				   SortFunction="Sort">
-				<RowContent Context="challenge">
-					<td>@challenge.MapName</td>
-					<td>@(challenge.CreatorName ?? "—")</td>
-					<td>@challenge.MaxScore</td>
-					<td class="min">
-						<ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")"
-									Icon="fa-external-link-alt"
-									Tooltip="Ouvrir" />
-					</td>
-					<td class="min">
-						<ActionIcon Link="@(new Uri($"https://www.geoguessr.com/challenge/{challenge.GeoGuessrId}"))"
-									Icon="fa-link"
-									Tooltip="Ouvrir sur GeoGuessr"
-									IsExternal="true" />
-					</td>
-				</RowContent>
-				<FooterContent>
-					<Container Condition="User.PlayerId() is not null">
-						<th colspan="5" class="has-text-right">
-						<Container Condition="DisplayAll">
-							<ChildContent>
-								<button class="button is-primary" @onclick="() => FilterChallengesAsync(false)">
-									<span>Afficher les challenges non joués</span>
-								</button>
-							</ChildContent>
-							<ElseContent>
-								<button class="button is-primary" @onclick="() => FilterChallengesAsync(true)">
-									<span>Afficher tous les challenges</span>
-								</button>
-							</ElseContent>
-						</Container>
-					</th>
-					</Container>
-				</FooterContent>
-			</Table>
-		</div>
-	</ChildContent>
+                   Paginate="true"
+                   PageSize="15"
+                   IsNarrow="false"
+                   SortFunction="Sort">
+                <RowContent Context="challenge">
+                    <td>@challenge.MapName</td>
+                    <td>@(challenge.CreatorName ?? "—")</td>
+                    <td>@challenge.MaxScore</td>
+                    <td class="min">
+                        <ActionIcon Link="@NavigationManager.ToAbsoluteUri($"/challenges/{challenge.Id}")"
+                                    Icon="fa-external-link-alt"
+                                    Tooltip="Ouvrir" />
+                    </td>
+                    <td class="min">
+                        <ActionIcon Link="@(new Uri($"https://www.geoguessr.com/challenge/{challenge.GeoGuessrId}"))"
+                                    Icon="fa-link"
+                                    Tooltip="Ouvrir sur GeoGuessr"
+                                    IsExternal="true" />
+                    </td>
+                </RowContent>
+                <FooterContent>
+                    <Container Condition="User.PlayerId() is not null">
+                        <th colspan="5" class="has-text-right">
+                            <Container Condition="!Challenges.Any()">
+                                <p>Toutes les cartes disponibles ont été jouées !</p>
+                            </Container>
+                            <Container Condition="DisplayAll">
+                                <ChildContent>
+                                    <button class="button is-primary" @onclick="() => FilterChallengesAsync(false)">
+                                        <span>Afficher les challenges non joués</span>
+                                    </button>
+                                </ChildContent>
+                                <ElseContent>
+                                    <button class="button is-primary" @onclick="() => FilterChallengesAsync(true)">
+                                        <span>Afficher tous les challenges</span>
+                                    </button>
+                                </ElseContent>
+                            </Container>
+                        </th>
+                    </Container>
+                </FooterContent>
+            </Table>
+        </div>
+    </ChildContent>
 
-	<ElseContent>
-		<LoadingAnimation Animated="true">
-			Chargement des challenges...
-		</LoadingAnimation>
-	</ElseContent>
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des challenges...
+        </LoadingAnimation>
+    </ElseContent>
 </Container>
