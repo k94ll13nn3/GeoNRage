@@ -18,19 +18,24 @@ public partial class ComparisonTable
         AddElement(p => p.Statistics.NumberOf4999, "Nombre de 4999", (i, j) => i.CompareTo(j));
         AddElement(p => p.Statistics.ChallengesCompleted, "Nombre de carte complétées", (i, j) => i.CompareTo(j));
         AddElement(p => p.Statistics.BestGameSum, "Meilleure partie", NullableComparer);
-        AddElement(p => p.Statistics.NumberOf25000, "Nombre de 25k", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.MapAverage, "Moyenne par carte", NullableComparer, x => x is null ? "—" : $"{x:F1}");
-        AddElement(p => p.Statistics.RoundAverage, "Moyenne par round", NullableComparer, x => x is null ? "—" : $"{x:F1}");
+
+        AddElement(p => p.Statistics.NumberOf25000, "Nombre de 25000", (i, j) => i.CompareTo(j));
         AddElement(p => p.Statistics.NumberOf0, "Nombre de 0", (i, j) => j.CompareTo(i));
-        AddElement(p => p.Statistics.TimeByRoundAverage, "Temps moyen", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
-        AddElement(p => p.Statistics.DistanceAverage, "Distance moyenne", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
-        AddElement(p => p.Statistics.TotalTime, "Temps total", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
-        AddElement(p => p.Statistics.TotalDistance, "Distance totale", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
         AddElement(p => p.Statistics.NumberOfTimeOut, "Nombre de time out (sans guess)", (i, j) => j.CompareTo(i));
         AddElement(p => p.Statistics.NumberOfTimeOutWithGuess, "Nombre de time out (avec guess)", (i, j) => j.CompareTo(i));
         AddElement(p => p.Statistics.Best5000Time, "5000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
         AddElement(p => p.Statistics.Best25000Time, "25000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+
+        AddElement(p => p.Statistics.TimeByRoundAverage, "Temps moyen", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.DistanceAverage, "Distance moyenne", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
+        AddElement(p => p.Statistics.TotalTime, "Temps total", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.TotalDistance, "Distance totale", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
+
+
+        AddElement(p => p.Statistics.MapAverage, "Moyenne par carte", NullableComparer, x => x is null ? "—" : $"{x:F1}");
+        AddElement(p => p.Statistics.RoundAverage, "Moyenne par round", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.AverageOf5000ByGame, "Moyenne de 5000 par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
+        AddElement(p => p.Statistics.GameAverage, "Moyenne par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
     }
 
     private void AddElement<T>(Func<PlayerFullDto, T> selector, string title, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)

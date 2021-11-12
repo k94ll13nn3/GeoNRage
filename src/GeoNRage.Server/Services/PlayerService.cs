@@ -73,7 +73,7 @@ public partial class PlayerService
 
     public async Task<PlayerFullDto?> GetFullAsync(string id, bool takeAllMaps)
     {
-        IEnumerable<PlayerMapDto> mapsSummary = _context
+        List<PlayerMapDto> mapsSummary = await _context
             .Maps
             .WhereIf(!takeAllMaps, m => m.IsMapForGame || m.Challenges.Any(c => c.GameId != -1))
             .AsNoTracking()
@@ -85,9 +85,9 @@ public partial class PlayerService
                  m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).SelectMany(ps => ps.PlayerGuesses).Average(g => g.Distance),
                  m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).SelectMany(ps => ps.PlayerGuesses).Average(g => g.Time)
              ))
-            .AsEnumerable();
+            .ToListAsync();
 
-        IEnumerable<PlayerChallengeDto> challengesNotDone = _context
+        List<PlayerChallengeDto> challengesNotDone = await _context
             .Challenges
             .WhereIf(!takeAllMaps, c => (c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))
             .Where(c => !c.PlayerScores.Any(ps => ps.PlayerId == id && ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null) && ps.ChallengeId == c.Id))
@@ -95,139 +95,103 @@ public partial class PlayerService
             .Select(c => new PlayerChallengeDto
             (
                 c.Id,
-                c.GameId == -1 ? null : c.GameId, c.Map.Name, null
+                c.GameId == -1 ? null : c.GameId,
+                c.Map.Name,
+                null,
+                null
             ))
-            .AsEnumerable();
+            .ToListAsync();
 
-        IEnumerable<PlayerGuess> playerGuesses = _context
+        List<PlayerGuess> playerGuesses = await _context
             .PlayerGuesses
             .Where(g => g.PlayerId == id)
             .WhereIf(!takeAllMaps, g => (g.PlayerScore.Challenge.TimeLimit ?? 300) == 300 && (g.PlayerScore.Challenge.GameId != -1 || g.PlayerScore.Challenge.Map.IsMapForGame))
             .AsNoTracking()
-            .AsEnumerable();
+            .ToListAsync();
 
-        PlayerFullDto? player = await _context
+        List<PlayerGameDto> gameHistory = await _context
+            .PlayerScores
+            .Where(ps => ps.PlayerId == id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
+            .Select(ps => new
+            {
+                ps.Challenge.GameId,
+                ps.Challenge.Game.Date,
+                Sum = ps.PlayerGuesses.Sum(g => g.Score),
+                GameName = ps.Challenge.Game.Name,
+                NumberOf5000 = ps.PlayerGuesses.Count(g => g.Score == 5000)
+            })
+            .GroupBy(p => new { p.GameId, p.Date })
+            .Where(g => g.Count() == 3)
+            .OrderBy(g => g.Key.Date)
+            .AsNoTracking()
+            .Select(g => new PlayerGameDto
+            (
+                g.Key.GameId,
+                g.Select(p => p.Sum).Sum() ?? 0,
+                g.Key.Date,
+                g.First().GameName,
+                g.Select(p => p.NumberOf5000).Sum()
+            ))
+            .ToListAsync();
+
+        List<PlayerChallengeDto> challengesDones = await _context.PlayerScores
+            .Where(p => p.PlayerId == id)
+            .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+            .Where(ps => ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null))
+            .OrderBy(c => c.ChallengeId)
+            .AsNoTracking()
+            .Select(ps => new PlayerChallengeDto
+            (
+                ps.ChallengeId,
+                ps.Challenge.GameId == -1 ? null : ps.Challenge.GameId,
+                ps.Challenge.Map.Name,
+                ps.PlayerGuesses.Sum(g => g.Score),
+                ps.PlayerGuesses.Sum(g => g.Time)
+            ))
+            .ToListAsync();
+
+        Player? player = await _context
             .Players
             .AsNoTracking()
             .Where(p => p.Id == id)
-            .Select(p => new PlayerFullDto
-            (
-                p.Id,
-                p.Name,
-                p.IconUrl,
-                p
-                    .PlayerScores
-                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
-                    .Where(ps => ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null))
-                    .Select(ps => new PlayerChallengeDto
-                    (
-                        ps.ChallengeId,
-                        ps.Challenge.GameId == -1 ? null : ps.Challenge.GameId,
-                        ps.Challenge.Map.Name,
-                        ps.PlayerGuesses.Sum(g => g.Score)
-                    )),
-                null!,
-                new PlayerFullStatisticDto
-                (
-                    0,
-                    0,
-                    p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
-                    p
-                        .PlayerScores
-                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                        .GroupBy(p => p.GameId)
-                        .Where(g => g.Count() == 3)
-                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
-                        .OrderByDescending(g => g.Sum)
-                        .First()
-                        .Sum,
-                    p
-                        .PlayerScores
-                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
-                        .GroupBy(p => p.GameId)
-                        .Where(g => g.Count() == 3)
-                        .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
-                        .OrderByDescending(g => g.Sum)
-                        .First()
-                        .Id,
-                    0,
-                    p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Select(p => p.PlayerGuesses.Sum(g => g.Score)).Count(s => s == 25000),
-                    p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Select(p => p.PlayerGuesses.Sum(g => g.Score)).Average(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    p
-                        .PlayerScores
-                        .Where(p => (takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))) && p.PlayerGuesses.All(g => g.Time != null))
-                        .Select(p => new { Score = p.PlayerGuesses.Sum(g => g.Score), Time = p.PlayerGuesses.Sum(g => g.Time) })
-                        .Where(s => s.Score == 25000)
-                        .Min(s => s.Time),
-                    p
-                        .PlayerScores
-                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                        .Select(ps => new { ps.Challenge.GameId, NumberOf5000 = ps.PlayerGuesses.Count(g => g.Score == 5000) })
-                        .GroupBy(p => p.GameId)
-                        .Where(g => g.Count() == 3)
-                        .Select(g => new { Id = g.Key, NumberOf5000 = g.Select(p => p.NumberOf5000).Sum() })
-                        .Average(g => g.NumberOf5000)
-                ),
-                null!,
-                p
-                    .PlayerScores
-                    .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                    .Select(ps => new
-                    {
-                        ps.Challenge.GameId,
-                        ps.Challenge.Game.Date,
-                        Sum = ps.PlayerGuesses.Sum(g => g.Score),
-                        GameName = ps.Challenge.Game.Name,
-                        NumberOf5000 = ps.PlayerGuesses.Count(g => g.Score == 5000)
-                    })
-                    .GroupBy(p => new { p.GameId, p.Date })
-                    .Where(g => g.Count() == 3)
-                    .OrderBy(g => g.Key.Date)
-                    .Select(g => new PlayerGameDto
-                    (
-                        g.Key.GameId,
-                        g.Select(p => p.Sum).Sum() ?? 0,
-                        g.Key.Date,
-                        g.First().GameName,
-                        g.Select(p => p.NumberOf5000).Sum()
-                    ))
-            ))
             .FirstOrDefaultAsync();
 
         if (player is not null)
         {
-            player = player with
-            {
-                MapsSummary = mapsSummary,
-                ChallengesNotDone = challengesNotDone,
-                Statistics = player.Statistics with
-                {
-                    NumberOf0 = playerGuesses.Count(g => g.Score == 0),
-                    NumberOf4999 = playerGuesses.Count(g => g.Score == 4999),
-                    NumberOf5000 = playerGuesses.Count(g => g.Score == 5000),
-                    RoundAverage = playerGuesses.Average(g => g.Score),
-                    NumberOfTimeOut = playerGuesses.Count(g => g.TimedOut),
-                    NumberOfTimeOutWithGuess = playerGuesses.Count(g => g.TimedOutWithGuess),
-                    DistanceAverage = playerGuesses.Average(g => g.Distance),
-                    TimeByRoundAverage = playerGuesses.Average(g => g.Time),
-                    TotalTime = playerGuesses.Any() ? playerGuesses.Sum(g => g.Time) : null,
-                    TotalDistance = playerGuesses.Any() ? playerGuesses.Sum(g => g.Distance) : null,
-                    Best5000Time = playerGuesses.Where(g => g.Score == 5000 && g.Time is not null).Min(g => g.Time)
-                }
-            };
+            PlayerGameDto? bestGame = gameHistory.OrderByDescending(g => g.Sum).FirstOrDefault();
+            return new PlayerFullDto
+            (
+                Id: player.Id,
+                Name: player.Name,
+                IconUrl: player.IconUrl,
+                ChallengesDone: challengesDones,
+                ChallengesNotDone: challengesNotDone,
+                Statistics: new PlayerFullStatisticDto
+                (
+                    NumberOf5000: playerGuesses.Count(g => g.Score == 5000),
+                    NumberOf4999: playerGuesses.Count(g => g.Score == 4999),
+                    ChallengesCompleted: challengesDones.Count,
+                    BestGameSum: bestGame?.Sum,
+                    BestGameId: bestGame?.GameId,
+                    RoundAverage: playerGuesses.Average(g => g.Score),
+                    NumberOf25000: challengesDones.Count(c => c.Sum == 25000),
+                    MapAverage: challengesDones.Average(c => c.Sum),
+                    NumberOf0: playerGuesses.Count(g => g.Score == 0),
+                    TimeByRoundAverage: playerGuesses.Average(g => g.Time),
+                    DistanceAverage: playerGuesses.Average(g => g.Distance),
+                    NumberOfTimeOut: playerGuesses.Count(g => g.TimedOut),
+                    NumberOfTimeOutWithGuess: playerGuesses.Count(g => g.TimedOutWithGuess),
+                    TotalTime: playerGuesses.Count > 0 ? playerGuesses.Sum(g => g.Time) : null,
+                    TotalDistance: playerGuesses.Count > 0 ? playerGuesses.Sum(g => g.Distance) : null,
+                    Best5000Time: playerGuesses.Where(g => g.Score == 5000 && g.Time is not null).Min(g => g.Time),
+                    Best25000Time: challengesDones.Where(c => c.Sum == 25000).Min(s => s.Time),
+                    AverageOf5000ByGame: gameHistory.Average(g => g.NumberOf5000),
+                    GameAverage: gameHistory.Average(g => g.Sum)),
+                MapsSummary: mapsSummary,
+                GameHistory: gameHistory);
         }
 
-        return player;
+        return null;
     }
 
     public async Task<PlayerDto?> GetAsync(string id)

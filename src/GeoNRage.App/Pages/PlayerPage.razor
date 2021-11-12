@@ -70,26 +70,26 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de 25k</p>
+                        <p class="heading">Nombre de 25000</p>
                         <p class="title">@Player.Statistics.NumberOf25000</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Moyenne par carte</p>
-                        <p class="title">@(Player.Statistics.MapAverage?.ToString("F1") ?? "—")</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Moyenne par round</p>
-                        <p class="title">@(Player.Statistics.RoundAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
                         <p class="heading">Nombre de 0</p>
                         <p class="title">@Player.Statistics.NumberOf0</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">5000 le plus rapide</p>
+                        <p class="title">@Player.Statistics.Best5000Time.ToTimeString()</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">25000 le plus rapide</p>
+                        <p class="title">@Player.Statistics.Best25000Time.ToTimeString()</p>
                     </div>
                 </div>
             </nav>
@@ -124,8 +124,8 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de time out (sans guess/avec guess)</p>
-                        <p class="title">@Player.Statistics.NumberOfTimeOut / @Player.Statistics.NumberOfTimeOutWithGuess</p>
+                        <p class="heading">Moyenne par partie</p>
+                        <p class="title">@(Player.Statistics.GameAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
@@ -136,14 +136,14 @@
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">5000 le plus rapide</p>
-                        <p class="title">@Player.Statistics.Best5000Time.ToTimeString()</p>
+                        <p class="heading">Moyenne par carte</p>
+                        <p class="title">@(Player.Statistics.MapAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">25000 le plus rapide</p>
-                        <p class="title">@Player.Statistics.Best25000Time.ToTimeString()</p>
+                        <p class="heading">Moyenne par round</p>
+                        <p class="title">@(Player.Statistics.RoundAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
             </nav>

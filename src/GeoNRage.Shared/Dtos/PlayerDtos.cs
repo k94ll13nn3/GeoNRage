@@ -10,7 +10,7 @@ public class PlayerEditDto
 
 public record PlayerDto(string Id, string Name);
 
-public record PlayerChallengeDto(int ChallengeId, int? GameId, string MapName, int? Sum);
+public record PlayerChallengeDto(int ChallengeId, int? GameId, string MapName, int? Sum, int? Time);
 
 public record PlayerFullStatisticDto(
     int NumberOf5000,
@@ -30,7 +30,8 @@ public record PlayerFullStatisticDto(
     double? TotalDistance,
     int? Best5000Time,
     int? Best25000Time,
-    double? AverageOf5000ByGame);
+    double? AverageOf5000ByGame,
+    double? GameAverage);
 
 public record PlayerMapDto(string MapName, int? Best, double? RoundAverage, double? DistanceAverage, double? TimeAverage);
 
