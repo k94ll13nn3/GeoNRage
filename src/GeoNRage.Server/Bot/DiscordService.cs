@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Options;
 using Remora.Discord.Commands.Services;
-using Remora.Discord.Core;
 using Remora.Discord.Gateway;
 using Remora.Discord.Gateway.Results;
+using Remora.Rest.Core;
 using Remora.Results;
 
 namespace GeoNRage.Server.Bot;
