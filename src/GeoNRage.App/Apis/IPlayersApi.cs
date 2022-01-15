@@ -1,4 +1,4 @@
-﻿using Refit;
+using Refit;
 
 namespace GeoNRage.App.Apis;
 
@@ -6,6 +6,9 @@ public interface IPlayersApi
 {
     [Get("/api/players")]
     Task<PlayerDto[]> GetAllAsync();
+
+    [Get("/api/players/admin-view")]
+    Task<PlayerAdminViewDto[]> GetAllAsAdminViewAsync();
 
     [Get("/api/players/statistics")]
     [Headers($"{Constants.MapStatusHeaderName}:")]

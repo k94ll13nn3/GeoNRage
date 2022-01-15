@@ -36,6 +36,7 @@ public partial class IndexAdmin
         await OnInitializedAsync();
         ToastService.DisplayToast("Logs vidés.", TimeSpan.FromSeconds(3), ToastType.Success, "clear-logs-admin", true);
         LogsTable.SetItems(Logs);
+        ShowWarning = false;
     }
 
     private void ToggleLogView()

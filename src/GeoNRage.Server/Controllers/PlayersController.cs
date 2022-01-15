@@ -17,6 +17,13 @@ public partial class PlayersController : ControllerBase
         return await _playerService.GetAllAsync();
     }
 
+    [Authorize(Roles = Roles.Admin)]
+    [HttpGet("admin-view")]
+    public async Task<IEnumerable<PlayerAdminViewDto>> GetAllAsAdminViewAsync()
+    {
+        return await _playerService.GetAllAsAdminViewAsync();
+    }
+
     [HttpGet("statistics")]
     public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync()
     {

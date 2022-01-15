@@ -151,11 +151,18 @@ public partial class ChallengeService
         var playerScores = new List<PlayerScore>();
         foreach (GeoGuessrPlayer geoChallengeGamePlayer in results.Select(g => g.Game.Player))
         {
+            bool isMainPlayer = true;
             Player player = await _context.Players.FindAsync(geoChallengeGamePlayer.Id) ?? new Player
             {
                 Id = geoChallengeGamePlayer.Id,
                 Name = geoChallengeGamePlayer.Nick,
             };
+
+            if (player.AssociatedPlayerId is not null)
+            {
+                player = (await _context.Players.FindAsync(player.AssociatedPlayerId))!;
+                isMainPlayer = false;
+            }
 
             // Update icon in order to have the most recent one.
             if (!string.IsNullOrWhiteSpace(geoChallengeGamePlayer.Pin.Url.ToString()))
@@ -181,7 +188,16 @@ public partial class ChallengeService
                     Distance = p.DistanceInMeters,
                 }).ToList(),
             };
-            playerScores.Add(playerScore);
+
+            if (isMainPlayer && playerScores.Any(ps => ps.PlayerId == playerScore.PlayerId))
+            {
+                playerScores.RemoveAll(ps => ps.PlayerId == playerScore.PlayerId);
+            }
+
+            if (!playerScores.Any(ps => ps.PlayerId == playerScore.PlayerId))
+            {
+                playerScores.Add(playerScore);
+            }
         }
 
         Map map = await _context.Maps.FindAsync(challenge.Map.Id) ?? new Map

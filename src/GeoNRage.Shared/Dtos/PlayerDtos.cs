@@ -6,9 +6,13 @@ public class PlayerEditDto
 {
     [Required]
     public string Name { get; set; } = null!;
+
+    public string? AssociatedPlayerId { get; set; }
 }
 
 public record PlayerDto(string Id, string Name);
+
+public record PlayerAdminViewDto(string Id, string Name, string? AssociatedPlayerId, string? AssociatedPlayerName);
 
 public record PlayerChallengeDto(int ChallengeId, int? GameId, string MapName, int? Sum, int? Time);
 

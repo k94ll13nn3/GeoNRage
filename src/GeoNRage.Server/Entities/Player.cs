@@ -8,5 +8,9 @@ public class Player
 
     public Uri IconUrl { get; set; } = null!;
 
+    public string? AssociatedPlayerId { get; set; }
+
+    public Player? AssociatedPlayer { get; set; }
+
     public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
 }

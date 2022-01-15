@@ -71,6 +71,22 @@ public partial class PlayerService
         }
     }
 
+    public async Task<IEnumerable<PlayerAdminViewDto>> GetAllAsAdminViewAsync()
+    {
+        return await _context
+            .Players
+            .OrderBy(p => p.Name)
+            .AsNoTracking()
+            .Select(p => new PlayerAdminViewDto
+            (
+                p.Id,
+                p.Name,
+                p.AssociatedPlayerId,
+                p.AssociatedPlayer == null ? null : p.AssociatedPlayer.Name
+            ))
+            .ToListAsync();
+    }
+
     public async Task<PlayerFullDto?> GetFullAsync(string id, bool takeAllMaps)
     {
         List<PlayerMapDto> mapsSummary = await _context
@@ -185,8 +201,8 @@ public partial class PlayerService
                     TotalDistance: playerGuesses.Count > 0 ? playerGuesses.Sum(g => g.Distance) : null,
                     Best5000Time: playerGuesses.Where(g => g.Score == 5000 && g.Time is not null).Min(g => g.Time),
                     Best25000Time: challengesDones.Where(c => c.Sum == 25000).Min(s => s.Time),
-                    AverageOf5000ByGame: gameHistory.Average(g => g.NumberOf5000),
-                    GameAverage: gameHistory.Average(g => g.Sum)),
+                    AverageOf5000ByGame: gameHistory.Count == 0 ? 0 : gameHistory.Average(g => g.NumberOf5000),
+                    GameAverage: gameHistory.Count == 0 ? 0 : gameHistory.Average(g => g.Sum)),
                 MapsSummary: mapsSummary,
                 GameHistory: gameHistory);
         }
@@ -216,6 +232,7 @@ public partial class PlayerService
         if (player is not null)
         {
             player.Name = dto.Name;
+            player.AssociatedPlayerId = string.IsNullOrWhiteSpace(dto.AssociatedPlayerId) ? null : dto.AssociatedPlayerId;
 
             _context.Players.Update(player);
             await _context.SaveChangesAsync();

@@ -16,7 +16,7 @@ public partial class PlayersAdmin
     [Inject]
     public ToastService ToastService { get; set; } = null!;
 
-    public IEnumerable<PlayerDto> Players { get; set; } = null!;
+    public IEnumerable<PlayerAdminViewDto> Players { get; set; } = null!;
 
     public bool ShowEditForm { get; set; }
 
@@ -32,7 +32,7 @@ public partial class PlayersAdmin
     {
         Error = null;
         ShowEditForm = true;
-        Player = new PlayerEditDto { Name = Players.First(m => m.Id == playerId).Name };
+        Player = new PlayerEditDto { Name = Players.First(m => m.Id == playerId).Name, AssociatedPlayerId = Players.First(m => m.Id == playerId).AssociatedPlayerId };
         SelectedPlayerId = playerId;
     }
 
@@ -53,7 +53,7 @@ public partial class PlayersAdmin
 
             ShowEditForm = false;
             SelectedPlayerId = null;
-            Players = await PlayersApi.GetAllAsync();
+            Players = await PlayersApi.GetAllAsAdminViewAsync();
             StateHasChanged();
         }
         catch (ApiException e)
@@ -64,7 +64,7 @@ public partial class PlayersAdmin
 
     protected override async Task OnInitializedAsync()
     {
-        Players = await PlayersApi.GetAllAsync();
+        Players = await PlayersApi.GetAllAsAdminViewAsync();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -77,7 +77,7 @@ public partial class PlayersAdmin
         try
         {
             await PlayersApi.DeleteAsync(playerId);
-            Players = await PlayersApi.GetAllAsync();
+            Players = await PlayersApi.GetAllAsAdminViewAsync();
             StateHasChanged();
         }
         catch (ApiException e)

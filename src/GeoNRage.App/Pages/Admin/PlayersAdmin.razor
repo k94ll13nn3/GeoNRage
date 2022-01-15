@@ -1,4 +1,4 @@
-﻿@page "/admin/players"
+@page "/admin/players"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Admin)]
 
@@ -11,6 +11,7 @@
                 <tr>
                     <th>Id</th>
                     <th>Nom</th>
+                    <th>Joueur lié</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -19,6 +20,7 @@
                     <tr>
                         <td>@player.Id</td>
                         <td>@player.Name</td>
+                        <td>@player.AssociatedPlayerName.FormatNullWithDash()</td>
                         <td class="has-text-centered">
                             <a class="has-text-info" @onclick="(() => EditPlayer(player.Id))">
                                 <span class="icon">
@@ -64,6 +66,20 @@
                         </p>
                     </div>
                 </div>
+
+                <div class="field">
+					<label class="label">Joueur lié</label>
+					<div class="control">
+						<div class="select">
+							<InputSelect @bind-Value="Player.AssociatedPlayerId">
+								<option value="">—</option>
+								<Repeater Items="@Players" Context="player">
+									<option value="@player.Id">@player.Name</option>
+								</Repeater>
+							</InputSelect>
+						</div>
+					</div>
+				</div>
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-primary" type="submit">Valider</button>
