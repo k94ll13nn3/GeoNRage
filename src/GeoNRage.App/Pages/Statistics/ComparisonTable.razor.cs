@@ -31,7 +31,6 @@ public partial class ComparisonTable
         AddElement(p => p.Statistics.TotalTime, "Temps total", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
         AddElement(p => p.Statistics.TotalDistance, "Distance totale", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
 
-
         AddElement(p => p.Statistics.MapAverage, "Moyenne par carte", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.RoundAverage, "Moyenne par round", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.AverageOf5000ByGame, "Moyenne de 5000 par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
