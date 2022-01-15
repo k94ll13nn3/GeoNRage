@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 
-namespace GeoNRage.App.Pages;
+namespace GeoNRage.App.Pages.Challenges;
 
 public partial class ChallengesPage
 {

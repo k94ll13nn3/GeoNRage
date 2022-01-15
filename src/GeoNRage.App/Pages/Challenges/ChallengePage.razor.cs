@@ -2,7 +2,7 @@ using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
-namespace GeoNRage.App.Pages;
+namespace GeoNRage.App.Pages.Challenges;
 
 public partial class ChallengePage
 {
