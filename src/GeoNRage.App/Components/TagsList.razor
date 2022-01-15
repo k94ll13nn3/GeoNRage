@@ -1,0 +1,18 @@
+<div class="tagsfield field input is-grouped @(IsFocused ? "is-focused" : "")" @onclick="HandleOnClickAsync">
+    <Container Condition="Tags.Count > 0">
+        <Repeater Items="Tags" Context="tag">
+            <div class="control">
+                <div class="tags has-addons">
+                    <span class="tag is-success">@tag</span>
+                    <a class="tag is-delete" @onclick="() => RemoveTag(tag)"></a>
+                </div>
+            </div>
+        </Repeater>
+    </Container>
+    <div>
+        <input type="hidden" @bind-value="Value">
+        <span autocomplete="off" spellcheck="false" placeholder="@Placeholder" contenteditable
+              @onblur="HandleOnBlur" @onfocus="HandleOnFocus" @onkeydown="async (e) => await HandleOnKeyDownAsync(e)"
+              @ref="EditableContent"></span>
+    </div>
+</div>

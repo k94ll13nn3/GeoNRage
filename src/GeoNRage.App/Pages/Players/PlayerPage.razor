@@ -243,22 +243,8 @@
                                     </p>
                                 </header>
                                 <div class="card-table">
-                                    <div class="field has-addons m-1">
-                                        <p class="control is-expanded has-icons-right">
-                                            <input class="input" type="text" placeholder="Filtrer" @bind="@Filter">
-                                            <Container Condition="@ShowWarning">
-                                                <span class="icon is-small is-right" title="La recherche n'a pas retourné de résultats.">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                </span>
-                                            </Container>
-                                        </p>
-                                        <p class="control">
-                                            <button class="button is-info" @onclick="@FilterChallengesDone">
-                                                <span class="icon is-small">
-                                                    <i class="fas fa-search"></i>
-                                                </span>
-                                            </button>
-                                        </p>
+                                    <div class="m-1">
+                                        <TagsList Placeholder="Filtrer" TagsChanged="OnFilter"></TagsList>
                                     </div>
                                     <div class="content small-table">
                                         <table class="table table is-striped is-hoverable is-fullwidth">

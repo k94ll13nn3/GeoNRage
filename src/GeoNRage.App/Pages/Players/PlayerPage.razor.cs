@@ -21,6 +21,9 @@ public partial class PlayerPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    public ToastService ToastService { get; set; } = null!;
+
     public PlayerFullDto Player { get; set; } = null!;
 
     public bool PlayerFound { get; set; } = true;
@@ -36,10 +39,6 @@ public partial class PlayerPage
     public IList<ITrace> Data { get; } = new List<ITrace>();
 
     public IEnumerable<PlayerChallengeDto> ChallengesDone { get; set; } = new List<PlayerChallengeDto>();
-
-    public string Filter { get; set; } = string.Empty;
-
-    public bool ShowWarning { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,10 +83,34 @@ public partial class PlayerPage
         });
     }
 
-    private void FilterChallengesDone()
+    private void OnFilter(IEnumerable<string> tags)
     {
-        ShowWarning = false;
-        Match match = NumericFilterRegex.Match(Filter);
+        if (tags.Any())
+        {
+            var challengesDone = new List<PlayerChallengeDto>();
+            foreach (string tag in tags)
+            {
+                challengesDone = challengesDone.Union(FilterChallengesDone(tag)).ToList();
+            }
+
+            ChallengesDone = challengesDone;
+            if (!ChallengesDone.Any())
+            {
+                ChallengesDone = Player.ChallengesDone.ToList();
+                ToastService.DisplayToast("La recherche n'a pas retourné de résultats", TimeSpan.FromSeconds(3), ToastType.Warning, "challenges-filter-no-results", true);
+            }
+        }
+        else
+        {
+            ChallengesDone = Player.ChallengesDone.ToList();
+        }
+
+        StateHasChanged();
+    }
+
+    private IEnumerable<PlayerChallengeDto> FilterChallengesDone(string filter)
+    {
+        Match match = NumericFilterRegex.Match(filter);
         if (match.Success && int.TryParse(match.Groups["value"].Value, out int value))
         {
             IEnumerable<PlayerChallengeDto> challenges = Player.ChallengesDone
@@ -102,19 +125,9 @@ public partial class PlayerPage
                 _ => challenges,
             };
 
-            ChallengesDone = challenges.ToList();
-        }
-        else
-        {
-            ChallengesDone = Player.ChallengesDone.Where(c => $"{c.MapName}{c.Sum}".Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+            return challenges.ToList();
         }
 
-        if (!ChallengesDone.Any())
-        {
-            ChallengesDone = Player.ChallengesDone.ToList();
-            ShowWarning = true;
-        }
-
-        StateHasChanged();
+        return Player.ChallengesDone.Where(c => $"{c.MapName}{c.Sum}".Contains(filter, StringComparison.OrdinalIgnoreCase)).ToList();
     }
 }
