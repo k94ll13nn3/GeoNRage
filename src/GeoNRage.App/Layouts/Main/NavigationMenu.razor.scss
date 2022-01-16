@@ -1,0 +1,6 @@
+@use 'variables' as v;
+
+.page-header {
+    font-family: v.$logo-font;
+    font-size: 30px;
+}

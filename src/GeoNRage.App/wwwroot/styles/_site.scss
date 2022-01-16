@@ -1,0 +1,33 @@
+html {
+    overflow: auto;
+}
+
+.application-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    margin-bottom: 0px !important;
+    border-radius: 0px !important;
+}
+
+.default-score {
+    background-color: $info;
+    color: findColorInvert($info);
+}
+
+.perfect {
+    background-color: $success;
+    color: findColorInvert($success);
+}
+
+.almost-perfect {
+    background-color: $warning;
+    color: findColorInvert($warning);
+}
