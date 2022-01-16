@@ -40,6 +40,10 @@ public partial class PlayerPage
 
     public IEnumerable<PlayerChallengeDto> ChallengesDone { get; set; } = new List<PlayerChallengeDto>();
 
+    public int SortDirection { get; set; }
+
+    public IEnumerable<PlayerGameDto> GameHistory { get; set; } = new List<PlayerGameDto>();
+
     protected override async Task OnInitializedAsync()
     {
         Loaded = false;
@@ -55,6 +59,7 @@ public partial class PlayerPage
             PlayerFound = true;
             Player = response.Content;
             ChallengesDone = Player.ChallengesDone;
+            GameHistory = Player.GameHistory;
             CreatePlot();
             StateHasChanged();
         }
@@ -72,12 +77,17 @@ public partial class PlayerPage
         Layout = new PlotlyConfig().Layout;
         Layout.Height = 250;
 
+        UpdateChartData();
+    }
+
+    private void UpdateChartData()
+    {
         Data.Clear();
         Data.Add(new Bar
         {
-            X = Player.GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object).ToList(),
-            Y = Player.GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
-            TextArray = Player.GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate.ToShortDateString()} - {g.NumberOf5000} fois 5000").ToList(),
+            X = GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object).ToList(),
+            Y = GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
+            TextArray = GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate.ToShortDateString()} - {g.NumberOf5000} fois 5000").ToList(),
             Name = "Historique des parties",
             TextPosition = TextPositionEnum.None
         });
@@ -129,5 +139,24 @@ public partial class PlayerPage
         }
 
         return Player.ChallengesDone.Where(c => $"{c.MapName}{c.Sum}".Contains(filter, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+
+    private async Task SortGameHistoryAsync()
+    {
+        SortDirection = (SortDirection + 1) % 3;
+        GameHistory = SortDirection switch
+        {
+            1 => Player.GameHistory.OrderBy(g => g.Sum),
+            2 => Player.GameHistory.OrderByDescending(g => g.Sum),
+            _ => Player.GameHistory,
+        };
+
+        UpdateChartData();
+        if (Chart is not null)
+        {
+            await Chart.React();
+        }
+
+        StateHasChanged();
     }
 }

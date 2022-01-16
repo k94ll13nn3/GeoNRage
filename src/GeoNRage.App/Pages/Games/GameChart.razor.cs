@@ -7,8 +7,6 @@ namespace GeoNRage.App.Pages.Games;
 
 public partial class GameChart
 {
-    public PlotlyChart? Chart { get; set; } = null!;
-
     public Config Config { get; set; } = new();
 
     public Layout Layout { get; set; } = new();

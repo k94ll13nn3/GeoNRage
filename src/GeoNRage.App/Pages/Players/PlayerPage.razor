@@ -51,7 +51,7 @@
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Meilleure partie (<span title="Seules les parties avec 3 cartes sont comptées" style="cursor:help">?</span>)</p>
+                        <p class="heading">Meilleure partie</p>
                         <p class="title">
                             <Container Condition="Player.Statistics.BestGameSum is not null">
                                 <ChildContent>
@@ -203,13 +203,36 @@
                 </div>
 
                 <div class="column">
-                    <Container Condition="Player.GameHistory?.Any() == true">
+                    <Container Condition="GameHistory?.Any() == true">
                         <ChildContent>
                             <div class="card">
                                 <header class="card-header">
                                     <p class="card-header-title">
-                                        Historique des parties (<span class="help-tooltip" title="Seules les parties avec 3 cartes sont comptées, survoler les barres pour voir le score">?</span>)
+                                        Historique des parties
                                     </p>
+                                    <button class="card-header-icon" @onclick="SortGameHistoryAsync">
+                                        <Container Condition="SortDirection == 0">
+                                            <ChildContent>
+                                                <span class="icon">
+                                                    <i class="fas fa-sort"></i>
+                                                </span>
+                                            </ChildContent>
+                                            <ElseContent>
+                                                <Container Condition="SortDirection == 1">
+                                                    <ChildContent>
+                                                        <span class="icon">
+                                                            <i class="fas fa-sort-up"></i>
+                                                        </span>
+                                                    </ChildContent>
+                                                    <ElseContent>
+                                                        <span class="icon">
+                                                            <i class="fas fa-sort-down"></i>
+                                                        </span>
+                                                    </ElseContent>
+                                                </Container>
+                                            </ElseContent>
+                                        </Container>
+                                    </button>
                                 </header>
                                 <div class="card-content">
                                     <PlotlyChart Config="Config" Layout="Layout" Data="Data" @ref="Chart" style="" />
