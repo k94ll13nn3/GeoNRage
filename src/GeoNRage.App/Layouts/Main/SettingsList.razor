@@ -1,0 +1,19 @@
+<div class="navbar-item">
+    <label class="mr-3">
+        @(AllMaps ? "Toutes cartes" : "Cartes principales")
+    </label>
+    <label class="switch">
+        <input type="checkbox" @onchange="ChangeMapStatusAsync" checked="@AllMaps">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="navbar-item">
+    <label class="mr-3">
+        Thème @(Theme == Theme.Dark ? "sombre" : "clair")
+    </label>
+    <label class="switch">
+        <input type="checkbox" @onchange="ChangeThemeAsync" checked="@(Theme == Theme.Dark)">
+        <span class="slider"></span>
+    </label>
+</div>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Core;
 
@@ -14,7 +14,7 @@ public abstract class UserSettingsAwareComponent : ComponentBase, IDisposable
         UserSettingsService.SettingsChanged += OnSettingsChanged;
     }
 
-    internal abstract void OnSettingsChanged(object? sender, EventArgs e);
+    internal abstract void OnSettingsChanged(object? sender, UserSettingsEventArgs e);
 
     protected virtual void Dispose(bool disposing)
     {

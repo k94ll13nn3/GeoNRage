@@ -29,7 +29,7 @@ public partial class PlayersStatisticsPage
         Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();
     }
 
-    internal override async void OnSettingsChanged(object? sender, EventArgs e)
+    internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
         Players = Enumerable.Empty<PlayerStatisticDto>();
         StateHasChanged();

@@ -38,7 +38,7 @@ public partial class LocationsStatisticsPage
         StateHasChanged();
     }
 
-    internal override async void OnSettingsChanged(object? sender, EventArgs e)
+    internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
         Locations = Enumerable.Empty<LocationDto>();
         ShowCountryChart = false;

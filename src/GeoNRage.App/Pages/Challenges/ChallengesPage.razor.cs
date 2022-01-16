@@ -40,7 +40,7 @@ public partial class ChallengesPage
         await FilterChallengesAsync(DisplayAll);
     }
 
-    internal override async void OnSettingsChanged(object? sender, EventArgs e)
+    internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
         await FilterChallengesAsync(DisplayAll);
     }
