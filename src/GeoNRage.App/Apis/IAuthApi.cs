@@ -1,4 +1,4 @@
-﻿using Refit;
+using Refit;
 
 namespace GeoNRage.App.Apis;
 
@@ -11,6 +11,7 @@ public interface IAuthApi
     Task Logout();
 
     [Get("/api/auth/user")]
+    [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<UserDto> CurrentUserInfo();
 
     [Post("/api/auth/edit")]

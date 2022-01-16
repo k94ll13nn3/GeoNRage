@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using GeoNRage.Server.Entities;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -148,8 +149,8 @@ public partial class AuthController : ControllerBase
         return new UserDto
         (
             User.Identity?.IsAuthenticated ?? false,
-            User.Identity?.Name ?? string.Empty,
-            User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value))
+            User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value)),
+            _playerService.CountChallengesNotDone(User.FindFirstValue("PlayerId"), Request.Headers[Constants.MapStatusHeaderName] == "True") > 0
         );
     }
 

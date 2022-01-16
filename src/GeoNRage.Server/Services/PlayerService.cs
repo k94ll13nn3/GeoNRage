@@ -210,6 +210,16 @@ public partial class PlayerService
         return null;
     }
 
+    public int CountChallengesNotDone(string id, bool takeAllMaps)
+    {
+        return _context
+            .Challenges
+            .WhereIf(!takeAllMaps, c => (c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))
+            .Where(c => !c.PlayerScores.Any(ps => ps.PlayerId == id && ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null) && ps.ChallengeId == c.Id))
+            .AsNoTracking()
+            .Count();
+    }
+
     public async Task<PlayerDto?> GetAsync(string id)
     {
         return await _context

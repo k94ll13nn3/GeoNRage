@@ -1,3 +1,5 @@
+@inherits UserSettingsAwareComponent
+
 <nav class="navbar is-radiusless" role="navigation" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
@@ -44,8 +46,11 @@
                 <AuthorizeView>
                     <Authorized>
                         <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
-                            <figure class="image is-32x32">
+                            <figure class="image is-32x32 profil-notification">
                                 <img class="is-rounded" src="@User.ProfilePicture()">
+                                <Container Condition="@HasNotifications">
+                                    <span class="badge"></span>
+                                </Container>
                             </figure>
                         </NavLink>
                         <span class="navbar-item">
