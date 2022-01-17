@@ -15,7 +15,7 @@ public partial class LoginPage
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
-    public LoginDto LoginRequest { get; set; } = new LoginDto { RememberMe = true };
+    public LoginDto LoginRequest { get; set; } = new() { RememberMe = true };
 
     public bool ShowError { get; set; }
 

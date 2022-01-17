@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Server.Entities;
+namespace GeoNRage.Server.Entities;
 
 public class Challenge
 {
@@ -20,9 +20,9 @@ public class Challenge
 
     public ICollection<Location> Locations { get; set; } = new HashSet<Location>();
 
-    public string? CreatorId { get; set; } = null!;
+    public string? CreatorId { get; set; }
 
-    public Player? Creator { get; set; } = null!;
+    public Player? Creator { get; set; }
 
     public DateTime UpdatedAt { get; set; }
 }

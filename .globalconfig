@@ -26,3 +26,8 @@ dotnet_diagnostic.IDE0161.severity = warning
 
 dotnet_diagnostic.IDE0045.severity = refactoring
 dotnet_diagnostic.IDE0046.severity = refactoring
+
+roslynator_accessibility_modifiers = explicit
+roslynator_enum_has_flag_style = method
+roslynator_object_creation_type_style = implicit_when_type_is_obvious
+roslynator_use_var_instead_of_implicit_object_creation = true

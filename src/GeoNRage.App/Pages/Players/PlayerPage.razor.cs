@@ -30,7 +30,7 @@ public partial class PlayerPage
 
     public bool Loaded { get; set; }
 
-    public PlotlyChart? Chart { get; set; } = null!;
+    public PlotlyChart? Chart { get; set; }
 
     public Config Config { get; set; } = new();
 

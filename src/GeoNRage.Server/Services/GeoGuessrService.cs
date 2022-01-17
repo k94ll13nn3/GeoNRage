@@ -52,7 +52,7 @@ public partial class GeoGuessrService
         }
         catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.Unauthorized)
         {
-            HttpResponseMessage response = await client.PostAsync(new Uri($"challenges/{geoGuessrId}", UriKind.Relative), null!);
+            HttpResponseMessage response = await client.PostAsync(new Uri($"challenges/{geoGuessrId}", UriKind.Relative), null);
             string? gameId = (await response.Content.ReadFromJsonAsync<GeoGuessrChallengeGame>())?.Token;
             if (gameId is null)
             {

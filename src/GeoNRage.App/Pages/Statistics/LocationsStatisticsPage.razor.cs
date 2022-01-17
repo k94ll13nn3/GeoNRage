@@ -23,7 +23,7 @@ public partial class LocationsStatisticsPage
 
     internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
 
-    public PlotlyChart? Chart { get; set; } = null!;
+    public PlotlyChart? Chart { get; set; }
 
     public Config Config { get; set; } = new();
 

@@ -1,4 +1,4 @@
-﻿using Plotly.Blazor;
+using Plotly.Blazor;
 using Plotly.Blazor.LayoutLib;
 using Plotly.Blazor.LayoutLib.LegendLib;
 
@@ -6,13 +6,13 @@ namespace GeoNRage.App.Core;
 
 public class PlotlyConfig
 {
-    public Config Config { get; set; } = new Config
+    public Config Config { get; set; } = new()
     {
         DisplayLogo = false,
         ModeBarButtonsToRemove = new[] { "toImage", "zoom", "pan", "select", "zoomIn", "zoomOut", "autoScale", "resetScale", "lasso2d" },
     };
 
-    public Layout Layout { get; set; } = new Layout
+    public Layout Layout { get; set; } = new()
     {
         PaperBgColor = "#00000000",
         PlotBgColor = "#00000000",

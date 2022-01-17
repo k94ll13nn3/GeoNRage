@@ -122,7 +122,7 @@ public partial class ChallengeService
         _ = dto ?? throw new ArgumentNullException(nameof(dto));
 
         (GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results) = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
-        List<Location> locations = new();
+        var locations = new List<Location>();
         HttpClient googleClient = _clientFactory.CreateClient("google");
         for (int i = 0; i < results[0].Game.Rounds.Count; i++)
         {
@@ -132,7 +132,7 @@ public partial class ChallengeService
             if (geocode?.Results?.Count > 0)
             {
                 GoogleGeocodeResult result = geocode.Results[0];
-                Location location = new()
+                var location = new Location()
                 {
                     DisplayName = result.FormattedAddress,
                     Locality = result.AddressComponents.FirstOrDefault(x => x.Types.Contains("locality"))?.Name,
@@ -212,7 +212,7 @@ public partial class ChallengeService
             throw new InvalidOperationException($"Cannot import challenges created by {challenge.Creator.Nick}.");
         }
 
-        Challenge newChallenge = new()
+        var newChallenge = new Challenge()
         {
             GameId = gameId,
             MapId = map.Id,
