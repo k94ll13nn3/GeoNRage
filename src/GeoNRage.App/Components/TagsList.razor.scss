@@ -1,17 +1,14 @@
 @use 'bulma/sass/utilities/controls' as c;
-@use '_theme' as t;
 @use 'bulma/sass/utilities/functions' as f;
 
 // Forked from https://github.com/crabvk/bulma-tagsfield
 $tagsfield-spacing-vertical: calc((0.5em - #{c.$control-border-width}) / 2);
-$placeholder-color: f.bulmaRgba(t.$input-color, 0.3) !default;
 
 .tagsfield {
     height: auto !important;
     cursor: text;
     padding-top: $tagsfield-spacing-vertical !important;
     padding-bottom: $tagsfield-spacing-vertical !important;
-
     // Each tag
     > .control {
         margin-right: c.$control-padding-vertical !important;
@@ -32,7 +29,6 @@ $placeholder-color: f.bulmaRgba(t.$input-color, 0.3) !default;
             }
         }
     }
-
     // The div with input and span[contenteditable]
     > div:last-child {
         flex-grow: 1;
@@ -45,12 +41,11 @@ $placeholder-color: f.bulmaRgba(t.$input-color, 0.3) !default;
             width: 100%;
         }
     }
-
     // Only child
     > div:first-child:nth-last-child(1) span[contenteditable] {
         &:empty:after {
             content: attr(placeholder);
-            color: $placeholder-color;
+            color: var(--input-color-light);
         }
     }
 

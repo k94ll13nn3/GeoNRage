@@ -31,3 +31,12 @@ html {
     background-color: $warning;
     color: findColorInvert($warning);
 }
+
+:root {
+    --primary: #{$primary};
+    --primary-invert: #{findColorInvert($primary)};
+    --link: #{$link};
+    --input-color: #{$input-color};
+    --input-color-light: #{bulmaRgba($input-color, 0.3)};
+    --text: #{$text};
+}

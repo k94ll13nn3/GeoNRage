@@ -3,7 +3,7 @@
         <Repeater Items="Tags" Context="tag">
             <div class="control">
                 <div class="tags has-addons">
-                    <span class="tag is-success">@tag</span>
+                    <span class="tag is-primary">@tag</span>
                     <a class="tag is-delete" @onclick="() => RemoveTag(tag)"></a>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 @use 'variables' as v;
-@use 'theme' as t;
 
 .page-header {
     font-family: v.$logo-font;
@@ -11,7 +10,7 @@
     top: -5px;
     right: -5px;
     border-radius: 50%;
-    background: t.$link;
+    background: var(--link);
     color: #fff;
     height: 15px;
     width: 15px;

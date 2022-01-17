@@ -1,5 +1,4 @@
-﻿@use 'bulma/sass/utilities/functions' as f;
-@use '_theme' as t;
+@use 'bulma/sass/utilities/functions' as f;
 
 table {
     border-spacing: 0;
@@ -12,7 +11,7 @@ table {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background-color: t.$primary;
+        background-color: var(--primary);
     }
 
     th {
@@ -22,15 +21,15 @@ table {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background-color: t.$primary;
-        color: f.findColorInvert(t.$primary);
+        background-color: var(--primary);
+        color: var(--primary-invert);
         padding-left: 5px;
         padding-right: 5px;
     }
 }
 
 .action-button {
-    color: t.$text;
+    color: var(--primary-invert);
 }
 
 .error-alert {

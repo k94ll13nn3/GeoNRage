@@ -1,4 +1,3 @@
-﻿@use '_theme' as t;
 /* From https://www.w3schools.com/howto/howto_css_switch.asp */
 
 .switch {
@@ -42,11 +41,11 @@
 
 input {
     &:checked + .slider {
-        background-color: t.$link;
+        background-color: var(--link);
     }
 
     &:focus + .slider {
-        box-shadow: 0 0 1px t.$link;
+        box-shadow: 0 0 1px var(--link);
     }
 
     &:checked + .slider:before {
