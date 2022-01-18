@@ -26,10 +26,10 @@ public partial class PresenceService : BackgroundService
         }
 
         // Wait a little to be sure that the bot is started.
-        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+        await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
         UpdatePresence();
 
-        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(30));
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(20));
         while (!stoppingToken.IsCancellationRequested)
         {
             await timer.WaitForNextTickAsync(stoppingToken);

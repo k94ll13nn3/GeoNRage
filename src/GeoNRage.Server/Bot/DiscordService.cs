@@ -36,7 +36,7 @@ public partial class DiscordService : BackgroundService
         }
 
         Result runResult = await _gatewayClient.RunAsync(stoppingToken);
-        if (!runResult.IsSuccess)
+        if (!runResult.IsSuccess && !stoppingToken.IsCancellationRequested)
         {
             switch (runResult.Error)
             {
