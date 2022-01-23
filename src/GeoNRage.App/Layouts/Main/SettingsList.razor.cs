@@ -17,15 +17,15 @@ public partial class SettingsList
         Theme = (await UserSettingsService.GetAsync()).Theme;
     }
 
-    public async Task ChangeMapStatusAsync(ChangeEventArgs e)
+    public async Task ChangeMapStatusAsync(bool allMaps)
     {
-        AllMaps = e?.Value is true;
+        AllMaps = allMaps;
         await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { AllMaps = AllMaps });
     }
 
-    public async Task ChangeThemeAsync(ChangeEventArgs e)
+    public async Task ChangeThemeAsync(Theme theme)
     {
-        Theme = e?.Value is true ? Theme.Dark : Theme.Light;
+        Theme = theme;
         await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { Theme = Theme });
     }
 }

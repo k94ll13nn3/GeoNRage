@@ -1,19 +1,85 @@
-<div class="navbar-item">
-    <label class="mr-3">
-        @(AllMaps ? "Toutes cartes" : "Cartes principales")
-    </label>
-    <label class="switch">
-        <input type="checkbox" @onchange="ChangeMapStatusAsync" checked="@AllMaps">
-        <span class="slider"></span>
-    </label>
-</div>
+<a class="navbar-item" @onclick="() => ChangeMapStatusAsync(true)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Toutes les cartes</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="AllMaps">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>
 
-<div class="navbar-item">
-    <label class="mr-3">
-        Thème @(Theme == Theme.Dark ? "sombre" : "clair")
-    </label>
-    <label class="switch">
-        <input type="checkbox" @onchange="ChangeThemeAsync" checked="@(Theme == Theme.Dark)">
-        <span class="slider"></span>
-    </label>
-</div>
+<a class="navbar-item" @onclick="() => ChangeMapStatusAsync(false)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Cartes principales</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="!AllMaps">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>
+
+<hr class="dropdown-divider">
+
+<a class="navbar-item" @onclick="() => ChangeThemeAsync(Theme.Dark)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Thème sombre</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="Theme == Theme.Dark">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>
+
+<a class="navbar-item" @onclick="() => ChangeThemeAsync(Theme.Light)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Thème clair</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="Theme == Theme.Light">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>
