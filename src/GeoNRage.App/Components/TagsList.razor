@@ -1,4 +1,12 @@
-<div class="tagsfield field input is-grouped @(IsFocused ? "is-focused" : "")" @onclick="HandleOnClickAsync">
+<div class="field m-1">
+    <p class="control is-expanded">
+        <input class="input" type="text" placeholder="@Placeholder"
+               @bind-value="Value" @bind-value:event="oninput"
+               @onkeydown="HandleOnKeyDown" @ref="EditableContent">
+    </p>
+</div>
+
+<div class="field is-grouped is-grouped-multiline m-1">
     <Container Condition="Tags.Count > 0">
         <Repeater Items="Tags" Context="tag">
             <div class="control">
@@ -9,10 +17,4 @@
             </div>
         </Repeater>
     </Container>
-    <div>
-        <input type="hidden" @bind-value="Value">
-        <span autocomplete="off" spellcheck="false" placeholder="@Placeholder" contenteditable
-              @onblur="HandleOnBlur" @onfocus="HandleOnFocus" @onkeydown="async (e) => await HandleOnKeyDownAsync(e)"
-              @ref="EditableContent"></span>
-    </div>
 </div>

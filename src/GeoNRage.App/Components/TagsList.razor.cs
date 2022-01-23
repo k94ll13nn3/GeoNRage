@@ -29,44 +29,19 @@ public partial class TagsList
     {
         JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./Components/{nameof(TagsList)}.razor.js");
         await JSModule.InvokeVoidAsync("addPreventDefault", EditableContent);
-        if (!string.IsNullOrWhiteSpace(Value))
-        {
-            foreach (string tag in Value.Split(','))
-            {
-                Tags.Add(tag);
-            }
-        }
     }
 
-    private async Task HandleOnClickAsync()
+    private void HandleOnKeyDown(KeyboardEventArgs args)
     {
-        await EditableContent.FocusAsync();
-    }
-
-    private void HandleOnBlur()
-    {
-        IsFocused = false;
-    }
-
-    private void HandleOnFocus()
-    {
-        IsFocused = true;
-    }
-
-    private async Task HandleOnKeyDownAsync(KeyboardEventArgs args)
-    {
-        string value = (await JSModule.InvokeAsync<string>("getTextContent", EditableContent)).Trim(',').Trim();
-
         if (new[] { "Enter", " ", ",", "Tab" }.Contains(args.Key))
         {
-            if (ValidateTag(value))
+            if (ValidateTag(Value))
             {
-                AddTag(value);
-                await JSModule.InvokeVoidAsync("resetElement", EditableContent);
-                Value = string.Join(',', Tags);
+                AddTag(Value);
+                Value = "";
             }
         }
-        else if (args.Key == "Backspace" && string.IsNullOrWhiteSpace(value) && Tags.Count > 1)
+        else if (args.Key == "Backspace" && string.IsNullOrWhiteSpace(Value) && Tags.Count > 1)
         {
             RemoveTag(Tags[^1]);
         }

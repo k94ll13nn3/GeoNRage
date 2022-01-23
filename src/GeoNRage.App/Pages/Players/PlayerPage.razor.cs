@@ -44,6 +44,10 @@ public partial class PlayerPage
 
     public IEnumerable<PlayerGameDto> GameHistory { get; set; } = new List<PlayerGameDto>();
 
+    public bool ShowFilterPanel { get; set; }
+
+    public bool IsFiltered { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         Loaded = false;
@@ -95,6 +99,7 @@ public partial class PlayerPage
 
     private void OnFilter(IEnumerable<string> tags)
     {
+        IsFiltered = true;
         if (tags.Any())
         {
             var challengesDone = new List<PlayerChallengeDto>();
@@ -106,12 +111,14 @@ public partial class PlayerPage
             ChallengesDone = challengesDone;
             if (!ChallengesDone.Any())
             {
+                IsFiltered = false;
                 ChallengesDone = Player.ChallengesDone.ToList();
                 ToastService.DisplayToast("La recherche n'a pas retourné de résultats", TimeSpan.FromSeconds(3), ToastType.Warning, "challenges-filter-no-results", true);
             }
         }
         else
         {
+            IsFiltered = false;
             ChallengesDone = Player.ChallengesDone.ToList();
         }
 
