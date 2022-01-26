@@ -19,12 +19,12 @@ public partial class UserSettingsService
         return json != null ? JsonSerializer.Deserialize<UserSettings>(json) ?? defaultSettings : defaultSettings;
     }
 
-    public async Task SaveAsync(UserSettings settings)
+    public async Task SaveAsync(UserSettings settings, string changedKey)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
         string json = JsonSerializer.Serialize(settings);
         await _jsRuntime.InvokeVoidAsync("localStorage.setItem", KeyName, json);
-        SettingsChanged?.Invoke(this, new(settings.AllMaps, settings.Theme));
+        SettingsChanged?.Invoke(this, new(settings.AllMaps, settings.Theme, changedKey));
     }
 }

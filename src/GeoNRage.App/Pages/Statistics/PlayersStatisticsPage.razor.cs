@@ -31,6 +31,11 @@ public partial class PlayersStatisticsPage
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
+        if (e.ChangedKey != nameof(UserSettings.AllMaps))
+        {
+            return;
+        }
+
         Players = Enumerable.Empty<PlayerStatisticDto>();
         StateHasChanged();
         Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();

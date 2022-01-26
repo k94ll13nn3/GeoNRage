@@ -42,6 +42,11 @@ public partial class ChallengesPage
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
+        if (e.ChangedKey != nameof(UserSettings.AllMaps))
+        {
+            return;
+        }
+
         await FilterChallengesAsync(DisplayAll);
     }
 

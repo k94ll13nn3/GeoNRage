@@ -20,12 +20,12 @@ public partial class SettingsList
     public async Task ChangeMapStatusAsync(bool allMaps)
     {
         AllMaps = allMaps;
-        await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { AllMaps = AllMaps });
+        await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { AllMaps = AllMaps }, nameof(UserSettings.AllMaps));
     }
 
     public async Task ChangeThemeAsync(Theme theme)
     {
         Theme = theme;
-        await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { Theme = Theme });
+        await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { Theme = Theme }, nameof(UserSettings.Theme));
     }
 }

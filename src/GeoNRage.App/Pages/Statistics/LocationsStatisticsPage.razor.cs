@@ -40,6 +40,11 @@ public partial class LocationsStatisticsPage
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
+        if (e.ChangedKey != nameof(UserSettings.AllMaps))
+        {
+            return;
+        }
+
         Locations = Enumerable.Empty<LocationDto>();
         ShowCountryChart = false;
         Chart = null;

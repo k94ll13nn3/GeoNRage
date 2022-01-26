@@ -74,6 +74,11 @@ public partial class NavigationMenu
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
     {
+        if (e.ChangedKey != nameof(UserSettings.AllMaps))
+        {
+            return;
+        }
+
         HasNotifications = (await AuthApi.CurrentUserInfo()).HasNotifications;
         StateHasChanged();
     }
