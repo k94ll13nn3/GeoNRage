@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]);
         services.AddDiscordCommands(true);
-        services.AddCommandGroup<BotCommands>();
+        services.AddCommandTree().WithCommandGroup<BotCommands>();
         services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
         services.AddAutocompleteProvider<MapNameAutocompleteProvider>();
 

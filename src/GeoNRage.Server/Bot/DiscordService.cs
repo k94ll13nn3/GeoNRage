@@ -28,7 +28,7 @@ public partial class DiscordService : BackgroundService
 
         _ = Snowflake.TryParse(_options.DiscordDevServerId, out Snowflake? guild);
 
-        Result updateSlash = await _slashService.UpdateSlashCommandsAsync(guild, stoppingToken);
+        Result updateSlash = await _slashService.UpdateSlashCommandsAsync(guild, null, stoppingToken);
         if (!updateSlash.IsSuccess)
         {
             LogSlashCommandsUpdateError(updateSlash.Error.Message);

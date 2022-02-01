@@ -1,7 +1,6 @@
-﻿namespace GeoNRage.Server.Tasks;
+namespace GeoNRage.Server.Tasks;
 
 public interface IStartupTask
 {
     Task ExecuteAsync(CancellationToken cancellationToken = default);
 }
-
