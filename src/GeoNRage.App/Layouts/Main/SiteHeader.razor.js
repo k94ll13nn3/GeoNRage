@@ -4,3 +4,14 @@ export function disableStyleSheet() {
         elements[i].parentNode.removeChild(elements[i]);
     }
 }
+
+    
+export function enableStyleSheet() {
+    var head = document.getElementsByTagName('head')[0];
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.title = 'temp'
+    link.href = 'styles/main.css';
+
+    head.appendChild(link);
+}
