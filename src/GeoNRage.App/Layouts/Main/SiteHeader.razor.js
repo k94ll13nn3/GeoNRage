@@ -1,17 +1,6 @@
-export function disableStyleSheet() {
-    var elements = document.querySelectorAll('link[rel=stylesheet][title=temp]');
+export function enableStyleSheet(e) {
+    var elements = document.querySelectorAll('link[rel=stylesheet][title=main]');
     for (var i = 0; i < elements.length; i++) {
-        elements[i].parentNode.removeChild(elements[i]);
+        elements[i].href = e;
     }
-}
-
-    
-export function enableStyleSheet() {
-    var head = document.getElementsByTagName('head')[0];
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.title = 'temp'
-    link.href = 'styles/main.css';
-
-    head.appendChild(link);
 }
