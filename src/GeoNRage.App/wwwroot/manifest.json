@@ -1,0 +1,26 @@
+{
+  "name": "Geo'N Rage",
+  "short_name": "Geo'N Rage",
+  "start_url": "./games",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#375a7f",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "img/ms-icon-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "img/ms-icon-150x150.png",
+      "type": "image/png",
+      "sizes": "150x150"
+    },
+    {
+      "src": "img/ms-icon-310x310.png",
+      "type": "image/png",
+      "sizes": "310x310"
+    }
+  ]
+}

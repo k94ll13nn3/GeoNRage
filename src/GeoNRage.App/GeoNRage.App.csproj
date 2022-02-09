@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,11 @@
   <ItemGroup>
     <ProjectReference Include="..\GeoNRage.Shared\GeoNRage.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.js" />
+  </ItemGroup>
+
 
   <!-- Define scss files for the compilation but do not publish them -->
   <ItemGroup>
