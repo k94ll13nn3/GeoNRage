@@ -39,10 +39,8 @@ public partial class GameChart
 
         var labels = new List<object>();
         int i = 1;
-        foreach (string item in Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(_ => $"{x.MapName[0]}_R{i++}")).Prepend("0"))
-        {
-            labels.Add(item);
-        }
+
+        labels.AddRange(Challenges.SelectMany(x => Enumerable.Range(1, 5).Select(_ => $"{x.MapName[0]}_R{i++}")).Prepend("0"));
 
         foreach (GamePlayerDto player in Players)
         {
