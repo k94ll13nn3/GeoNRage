@@ -20,7 +20,7 @@ builder.Services.AddSignalR();
 builder.Services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
 builder.Services.AddRazorPages();
 builder.Services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
-builder.Services.AddMemoryCache(o => o.SizeLimit = 100);
+builder.Services.AddMemoryCache(); // SizeLimit cannot be specified because Remora uses the same cache without specifing an entity size :(.
 builder.Services.AddDatabaseAndIdentity(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpClients();
