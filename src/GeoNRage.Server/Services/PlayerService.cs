@@ -231,6 +231,7 @@ public partial class PlayerService
             _context.Players.Update(player);
             await _context.SaveChangesAsync();
             _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
+            _cache.Remove(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync);
         }
 
         return await GetAsync(id);
@@ -249,54 +250,62 @@ public partial class PlayerService
             _context.Players.Remove(player);
             await _context.SaveChangesAsync();
             _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
+            _cache.Remove(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync);
         }
     }
 
-    public async Task<Dictionary<string, ICollection<PlayerGameDto>>> GetGamesWithPlayersScoreAsync(bool takeAllMaps)
+    internal Task<Dictionary<string, ICollection<PlayerGameDto>>> GetGamesWithPlayersScoreAsync(bool takeAllMaps)
     {
-        var gamesWithPlayersScore = await _context.Games
-            .Where(g => g.Id != -1 && g.Challenges.Count(c => takeAllMaps || (c.TimeLimit ?? 300) == 300) == 3)
-            .Select(g => new
-            {
-                g.Id,
-                g.Date,
-                g.Name,
-                Scores = g
-                    .Challenges
-                    .SelectMany(c => c.PlayerScores)
-                    .GroupBy(ps => ps.PlayerId)
-                    .Select(scores => new
-                    {
-                        PlayerId = scores.Key,
-                        Sum = scores.Sum(ps => ps.PlayerGuesses.Sum(pg => pg.Score)),
-                        NumberOf5000 = scores.Sum(ps => ps.PlayerGuesses.Count(g => g.Score == 5000)),
-                    })
-            })
-            .AsNoTracking()
-            .ToListAsync();
+        return _cache.GetOrCreateAsync(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync, GetAllFactory);
 
-        var games = new Dictionary<string, ICollection<PlayerGameDto>>();
-        foreach (var game in gamesWithPlayersScore)
+        async Task<Dictionary<string, ICollection<PlayerGameDto>>> GetAllFactory(ICacheEntry entry)
         {
-            int position = 1;
-            foreach (var playerScoreForGame in game.Scores.OrderByDescending(s => s.Sum))
-            {
-                if (!games.ContainsKey(playerScoreForGame.PlayerId))
+            var gamesWithPlayersScore = await _context.Games
+                .Where(g => g.Id != -1 && g.Challenges.Count(c => takeAllMaps || (c.TimeLimit ?? 300) == 300) == 3)
+                .Select(g => new
                 {
-                    games[playerScoreForGame.PlayerId] = new List<PlayerGameDto>();
+                    g.Id,
+                    g.Date,
+                    g.Name,
+                    Scores = g
+                        .Challenges
+                        .SelectMany(c => c.PlayerScores)
+                        .GroupBy(ps => ps.PlayerId)
+                        .Select(scores => new
+                        {
+                            PlayerId = scores.Key,
+                            Sum = scores.Sum(ps => ps.PlayerGuesses.Sum(pg => pg.Score)),
+                            NumberOf5000 = scores.Sum(ps => ps.PlayerGuesses.Count(g => g.Score == 5000)),
+                        })
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            var games = new Dictionary<string, ICollection<PlayerGameDto>>();
+            foreach (var game in gamesWithPlayersScore)
+            {
+                int position = 1;
+                foreach (var playerScoreForGame in game.Scores.OrderByDescending(s => s.Sum))
+                {
+                    if (!games.ContainsKey(playerScoreForGame.PlayerId))
+                    {
+                        games[playerScoreForGame.PlayerId] = new List<PlayerGameDto>();
+                    }
+
+                    games[playerScoreForGame.PlayerId].Add(new PlayerGameDto(
+                        game.Id,
+                        playerScoreForGame.Sum ?? 0,
+                        game.Date,
+                        game.Name,
+                        playerScoreForGame.NumberOf5000,
+                        position));
+                    position++;
                 }
-
-                games[playerScoreForGame.PlayerId].Add(new PlayerGameDto(
-                    game.Id,
-                    playerScoreForGame.Sum ?? 0,
-                    game.Date,
-                    game.Name,
-                    playerScoreForGame.NumberOf5000,
-                    position));
-                position++;
             }
-        }
 
-        return games;
+            entry.SetSlidingExpiration(TimeSpan.FromMinutes(10)).SetSize(games.Count);
+
+            return games;
+        }
     }
 }

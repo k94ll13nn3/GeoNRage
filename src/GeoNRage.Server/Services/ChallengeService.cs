@@ -264,6 +264,7 @@ public partial class ChallengeService
 
         _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
         _cache.Remove(CacheKeys.MapServiceGetAllAsync);
+        _cache.Remove(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync);
         return challengeId;
     }
 }
