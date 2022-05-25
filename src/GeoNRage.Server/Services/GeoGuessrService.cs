@@ -39,7 +39,16 @@ public partial class GeoGuessrService
             throw new InvalidOperationException("Cannot import data.");
         }
 
-        GeoGuessrChallenge? challenge = await client.GetFromJsonAsync<GeoGuessrChallenge>($"challenges/{geoGuessrId}", options);
+        GeoGuessrChallenge? challenge = null;
+        try
+        {
+            challenge = await client.GetFromJsonAsync<GeoGuessrChallenge>($"challenges/{geoGuessrId}", options);
+        }
+        catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new InvalidOperationException("Challenge not found.");
+        }
+
         if (challenge is null)
         {
             throw new InvalidOperationException("Cannot import data.");

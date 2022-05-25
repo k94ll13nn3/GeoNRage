@@ -29,7 +29,7 @@ public partial class BotCommands : CommandGroup
     private readonly ApplicationOptions _options;
 
     [Command("last")]
-    [Description("Recupère la dernière game créée")]
+    [Description("Recupère la dernière partie créée")]
     public async Task<IRemoraResult> GetLastGameAsync()
     {
         Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
@@ -168,6 +168,54 @@ public partial class BotCommands : CommandGroup
         return !reply.IsSuccess
             ? Result.FromError(reply)
             : Result.FromSuccess();
+    }
+
+    [Command("import-challenge")]
+    [Description("Importer un challenge")]
+    [CommandType(ApplicationCommandType.ChatInput)]
+    [SuppressInteractionResponse(true)]
+    public async Task<Result> OnModalAsync()
+    {
+        var response = new InteractionResponse
+        (
+            InteractionCallbackType.Modal,
+            new
+            (
+                new InteractionModalCallbackData
+                (
+                    "challenge-import",
+                    "Importer un challenge",
+                    new[]
+                    {
+                        new ActionRowComponent
+                        (
+                           new[]
+                            {
+                                new TextInputComponent
+                                (
+                                    "challenge-geoguessr-id",
+                                    TextInputStyle.Short,
+                                    "Id du challenge",
+                                    16,
+                                    16,
+                                    true,
+                                    string.Empty,
+                                    "Id GeoGuessr"
+                                )
+                            }
+                        )
+                    }
+                )
+            )
+        );
+
+        return await _interactionApi.CreateInteractionResponseAsync
+        (
+            _interactionContext.ID,
+            _interactionContext.Token,
+            response,
+            ct: CancellationToken
+        );
     }
 
     private async Task<Result> ReplyAsync(string message)

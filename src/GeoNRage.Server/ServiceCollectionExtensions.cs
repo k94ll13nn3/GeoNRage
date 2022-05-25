@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Remora.Commands.Extensions;
 using Remora.Discord.Commands.Extensions;
 using Remora.Discord.Gateway.Extensions;
+using Remora.Discord.Interactivity.Extensions;
 
 namespace GeoNRage.Server;
 
@@ -37,6 +38,8 @@ public static class ServiceCollectionExtensions
         services.AddCommandTree().WithCommandGroup<BotCommands>();
         services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
         services.AddAutocompleteProvider<MapNameAutocompleteProvider>();
+        services.AddInteractivity();
+        services.AddInteractiveEntity<ModalReceiver>();
 
         return services;
     }
