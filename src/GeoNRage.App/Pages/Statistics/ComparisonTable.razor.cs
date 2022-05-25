@@ -35,6 +35,11 @@ public partial class ComparisonTable
         AddElement(p => p.Statistics.RoundAverage, "Moyenne par round", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.AverageOf5000ByGame, "Moyenne de 5000 par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
         AddElement(p => p.Statistics.GameAverage, "Moyenne par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
+
+        AddElement(p => p.Statistics.NumberOfGamesPlayed, "Nombre de parties jouées", (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfFirstPlaceInGame, "Nombre parties gagnées", (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfSecondPlaceInGame, "Nombre de deuxième places", (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfThirdPlaceInGame, "Nombre de troisième places", (i, j) => i.CompareTo(j));
     }
 
     private void AddElement<T>(Func<PlayerFullDto, T> selector, string title, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)

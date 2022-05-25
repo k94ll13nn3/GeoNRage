@@ -35,11 +35,15 @@ public record PlayerFullStatisticDto(
     int? Best5000Time,
     int? Best25000Time,
     double? AverageOf5000ByGame,
-    double? GameAverage);
+    double? GameAverage,
+    int NumberOfGamesPlayed,
+    int NumberOfFirstPlaceInGame,
+    int NumberOfSecondPlaceInGame,
+    int NumberOfThirdPlaceInGame);
 
 public record PlayerMapDto(string MapName, int? Best, double? RoundAverage, double? DistanceAverage, double? TimeAverage);
 
-public record PlayerGameDto(int GameId, int Sum, DateTime GameDate, string GameName, int NumberOf5000);
+public record PlayerGameDto(int GameId, int Sum, DateTime GameDate, string GameName, int NumberOf5000, int Position);
 
 public record PlayerFullDto(
     string Id,

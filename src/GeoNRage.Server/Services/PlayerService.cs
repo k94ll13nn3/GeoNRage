@@ -125,30 +125,9 @@ public partial class PlayerService
             .AsNoTracking()
             .ToListAsync();
 
-        List<PlayerGameDto> gameHistory = await _context
-            .PlayerScores
-            .Where(ps => ps.PlayerId == id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-            .Select(ps => new
-            {
-                ps.Challenge.GameId,
-                ps.Challenge.Game.Date,
-                Sum = ps.PlayerGuesses.Sum(g => g.Score),
-                GameName = ps.Challenge.Game.Name,
-                NumberOf5000 = ps.PlayerGuesses.Count(g => g.Score == 5000)
-            })
-            .GroupBy(p => new { p.GameId, p.Date })
-            .Where(g => g.Count() == 3)
-            .OrderBy(g => g.Key.Date)
-            .AsNoTracking()
-            .Select(g => new PlayerGameDto
-            (
-                g.Key.GameId,
-                g.Select(p => p.Sum).Sum() ?? 0,
-                g.Key.Date,
-                g.First().GameName,
-                g.Select(p => p.NumberOf5000).Sum()
-            ))
-            .ToListAsync();
+        List<PlayerGameDto> gameHistory = (await GetGamesWithPlayersScoreAsync(takeAllMaps)).GetValueOrDefault(id, new List<PlayerGameDto>())
+            .OrderBy(g => g.GameDate)
+            .ToList();
 
         List<PlayerChallengeDto> challengesDones = await _context.PlayerScores
             .Where(p => p.PlayerId == id)
@@ -202,7 +181,12 @@ public partial class PlayerService
                     Best5000Time: playerGuesses.Where(g => g.Score == 5000 && g.Time is not null).Min(g => g.Time),
                     Best25000Time: challengesDones.Where(c => c.Sum == 25000).Min(s => s.Time),
                     AverageOf5000ByGame: gameHistory.Count == 0 ? 0 : gameHistory.Average(g => g.NumberOf5000),
-                    GameAverage: gameHistory.Count == 0 ? 0 : gameHistory.Average(g => g.Sum)),
+                    GameAverage: gameHistory.Count == 0 ? 0 : gameHistory.Average(g => g.Sum),
+                    NumberOfGamesPlayed: gameHistory.Count,
+                    NumberOfFirstPlaceInGame: gameHistory.Count(gh => gh.Position == 1),
+                    NumberOfSecondPlaceInGame: gameHistory.Count(gh => gh.Position == 2),
+                    NumberOfThirdPlaceInGame: gameHistory.Count(gh => gh.Position == 3)
+                ),
                 MapsSummary: mapsSummary,
                 GameHistory: gameHistory);
         }
@@ -266,5 +250,53 @@ public partial class PlayerService
             await _context.SaveChangesAsync();
             _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
         }
+    }
+
+    public async Task<Dictionary<string, ICollection<PlayerGameDto>>> GetGamesWithPlayersScoreAsync(bool takeAllMaps)
+    {
+        var gamesWithPlayersScore = await _context.Games
+            .Where(g => g.Id != -1 && g.Challenges.Count(c => takeAllMaps || (c.TimeLimit ?? 300) == 300) == 3)
+            .Select(g => new
+            {
+                g.Id,
+                g.Date,
+                g.Name,
+                Scores = g
+                    .Challenges
+                    .SelectMany(c => c.PlayerScores)
+                    .GroupBy(ps => ps.PlayerId)
+                    .Select(scores => new
+                    {
+                        PlayerId = scores.Key,
+                        Sum = scores.Sum(ps => ps.PlayerGuesses.Sum(pg => pg.Score)),
+                        NumberOf5000 = scores.Sum(ps => ps.PlayerGuesses.Count(g => g.Score == 5000)),
+                    })
+            })
+            .AsNoTracking()
+            .ToListAsync();
+
+        var games = new Dictionary<string, ICollection<PlayerGameDto>>();
+        foreach (var game in gamesWithPlayersScore)
+        {
+            int position = 1;
+            foreach (var playerScoreForGame in game.Scores.OrderByDescending(s => s.Sum))
+            {
+                if (!games.ContainsKey(playerScoreForGame.PlayerId))
+                {
+                    games[playerScoreForGame.PlayerId] = new List<PlayerGameDto>();
+                }
+
+                games[playerScoreForGame.PlayerId].Add(new PlayerGameDto(
+                    game.Id,
+                    playerScoreForGame.Sum ?? 0,
+                    game.Date,
+                    game.Name,
+                    playerScoreForGame.NumberOf5000,
+                    position));
+                position++;
+            }
+        }
+
+        return games;
     }
 }

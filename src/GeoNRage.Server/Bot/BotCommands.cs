@@ -87,6 +87,10 @@ public partial class BotCommands : CommandGroup
             new("Nombre de 5000", $"{playerFull.Statistics.NumberOf5000}", true),
             new("Meilleure partie", playerFull.Statistics.BestGameSum.FormatNullWithDash(), true),
             new("Nombre de 25k", $"{playerFull.Statistics.NumberOf25000}", true),
+            new("Nombre de parties jouées", $"{playerFull.Statistics.NumberOfGamesPlayed}"),
+            new("🥇", $"{playerFull.Statistics.NumberOfFirstPlaceInGame}", true),
+            new("🥈", $"{playerFull.Statistics.NumberOfSecondPlaceInGame}", true),
+            new("🥉", $"{playerFull.Statistics.NumberOfThirdPlaceInGame}", true),
         };
 
         string iconUrl = playerFull.IconUrl.ToString();
