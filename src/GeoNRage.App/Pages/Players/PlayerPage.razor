@@ -33,25 +33,25 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de 5000</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOf5000)</p>
                         <p class="title">@Player.Statistics.NumberOf5000</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de 4999</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOf4999)</p>
                         <p class="title">@Player.Statistics.NumberOf4999</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de carte complétées</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.ChallengesCompleted)</p>
                         <p class="title">@Player.Statistics.ChallengesCompleted</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Meilleure partie</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.BestGameSum)</p>
                         <p class="title">
                             <Container Condition="Player.Statistics.BestGameSum is not null">
                                 <ChildContent>
@@ -68,25 +68,25 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de parties jouées</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOfGamesPlayed)</p>
                         <p class="title">@Player.Statistics.NumberOfGamesPlayed</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre parties gagnées</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOfFirstPlaceInGame)</p>
                         <p class="title">@Player.Statistics.NumberOfFirstPlaceInGame</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de deuxième places</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOfSecondPlaceInGame)</p>
                         <p class="title">@Player.Statistics.NumberOfSecondPlaceInGame</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de troisième places</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOfThirdPlaceInGame)</p>
                         <p class="title">@Player.Statistics.NumberOfThirdPlaceInGame</p>
                     </div>
                 </div>
@@ -96,25 +96,25 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de 25000</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOf25000)</p>
                         <p class="title">@Player.Statistics.NumberOf25000</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Nombre de 0</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOf0)</p>
                         <p class="title">@Player.Statistics.NumberOf0</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">5000 le plus rapide</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.Best5000Time)</p>
                         <p class="title">@Player.Statistics.Best5000Time.ToTimeString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">25000 le plus rapide</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.Best25000Time)</p>
                         <p class="title">@Player.Statistics.Best25000Time.ToTimeString()</p>
                     </div>
                 </div>
@@ -123,25 +123,25 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Temps moyen</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.TimeByRoundAverage)</p>
                         <p class="title">@Player.Statistics.TimeByRoundAverage.ToTimeString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Distance moyenne</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.DistanceAverage)</p>
                         <p class="title">@Player.Statistics.DistanceAverage.ToDistanceString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Temps total</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.TotalTime)</p>
                         <p class="title">@Player.Statistics.TotalTime.ToTimeString()</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Distance totale</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.TotalDistance)</p>
                         <p class="title">@Player.Statistics.TotalDistance.ToDistanceString()</p>
                     </div>
                 </div>
@@ -150,25 +150,25 @@
             <nav class="level mx-3 my-5">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Moyenne par partie</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.GameAverage)</p>
                         <p class="title">@(Player.Statistics.GameAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Moyenne de 5000 par partie</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.AverageOf5000ByGame)</p>
                         <p class="title">@(Player.Statistics.AverageOf5000ByGame?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Moyenne par carte</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.MapAverage)</p>
                         <p class="title">@(Player.Statistics.MapAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Moyenne par round</p>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.RoundAverage)</p>
                         <p class="title">@(Player.Statistics.RoundAverage?.ToString("F1") ?? "—")</p>
                     </div>
                 </div>

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Statistics;
@@ -14,39 +15,45 @@ public partial class ComparisonTable
 
     protected override void OnInitialized()
     {
-        AddElement(p => p.Statistics.NumberOf5000, "Nombre de 5000", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.NumberOf4999, "Nombre de 4999", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.ChallengesCompleted, "Nombre de carte complétées", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.BestGameSum, "Meilleure partie", NullableComparer);
+        AddElement(p => p.Statistics.NumberOf5000, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOf4999, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.ChallengesCompleted, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.BestGameSum, NullableComparer);
 
-        AddElement(p => p.Statistics.NumberOf25000, "Nombre de 25000", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.NumberOf0, "Nombre de 0", (i, j) => j.CompareTo(i));
-        AddElement(p => p.Statistics.NumberOfTimeOut, "Nombre de time out (sans guess)", (i, j) => j.CompareTo(i));
-        AddElement(p => p.Statistics.NumberOfTimeOutWithGuess, "Nombre de time out (avec guess)", (i, j) => j.CompareTo(i));
-        AddElement(p => p.Statistics.Best5000Time, "5000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
-        AddElement(p => p.Statistics.Best25000Time, "25000 le plus rapide", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.NumberOf25000, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOf0, (i, j) => j.CompareTo(i));
+        AddElement(p => p.Statistics.NumberOfTimeOut, (i, j) => j.CompareTo(i));
+        AddElement(p => p.Statistics.NumberOfTimeOutWithGuess, (i, j) => j.CompareTo(i));
+        AddElement(p => p.Statistics.Best5000Time, (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.Best25000Time, (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
 
-        AddElement(p => p.Statistics.TimeByRoundAverage, "Temps moyen", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
-        AddElement(p => p.Statistics.DistanceAverage, "Distance moyenne", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
-        AddElement(p => p.Statistics.TotalTime, "Temps total", (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
-        AddElement(p => p.Statistics.TotalDistance, "Distance totale", (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
+        AddElement(p => p.Statistics.TimeByRoundAverage, (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.DistanceAverage, (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
+        AddElement(p => p.Statistics.TotalTime, (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
+        AddElement(p => p.Statistics.TotalDistance, (i, j) => NullableComparer(i, j, true), x => x.ToDistanceString());
 
-        AddElement(p => p.Statistics.MapAverage, "Moyenne par carte", NullableComparer, x => x is null ? "—" : $"{x:F1}");
-        AddElement(p => p.Statistics.RoundAverage, "Moyenne par round", NullableComparer, x => x is null ? "—" : $"{x:F1}");
-        AddElement(p => p.Statistics.AverageOf5000ByGame, "Moyenne de 5000 par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
-        AddElement(p => p.Statistics.GameAverage, "Moyenne par partie", NullableComparer, x => x is null ? "—" : $"{x:F1}");
+        AddElement(p => p.Statistics.MapAverage, NullableComparer, x => x is null ? "—" : $"{x:F1}");
+        AddElement(p => p.Statistics.RoundAverage, NullableComparer, x => x is null ? "—" : $"{x:F1}");
+        AddElement(p => p.Statistics.AverageOf5000ByGame, NullableComparer, x => x is null ? "—" : $"{x:F1}");
+        AddElement(p => p.Statistics.GameAverage, NullableComparer, x => x is null ? "—" : $"{x:F1}");
 
-        AddElement(p => p.Statistics.NumberOfGamesPlayed, "Nombre de parties jouées", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.NumberOfFirstPlaceInGame, "Nombre parties gagnées", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.NumberOfSecondPlaceInGame, "Nombre de deuxième places", (i, j) => i.CompareTo(j));
-        AddElement(p => p.Statistics.NumberOfThirdPlaceInGame, "Nombre de troisième places", (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfGamesPlayed, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfFirstPlaceInGame, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfSecondPlaceInGame, (i, j) => i.CompareTo(j));
+        AddElement(p => p.Statistics.NumberOfThirdPlaceInGame, (i, j) => i.CompareTo(j));
     }
 
-    private void AddElement<T>(Func<PlayerFullDto, T> selector, string title, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)
+    private void AddElement<T>(Expression<Func<PlayerFullDto, T>> selectorExpression, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)
     {
         Func<T, string> formatter = customFormatter ?? (t => t?.ToString() ?? "—");
 
-        PlayersComparisons.Add(new(title, formatter(selector(Player1)), formatter(selector(Player2)), comparer(selector(Player1), selector(Player2))));
+        Func<PlayerFullDto, T> selector = selectorExpression.Compile();
+
+        PlayersComparisons.Add(new(
+            LabelStore.Get(selectorExpression),
+            formatter(selector(Player1)),
+            formatter(selector(Player2)),
+            comparer(selector(Player1), selector(Player2))));
     }
 
     private static int NullableComparer<T>(T? firstValue, T? secondValue) where T : struct, IComparable

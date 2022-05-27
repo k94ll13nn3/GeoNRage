@@ -83,14 +83,14 @@ public partial class BotCommands : CommandGroup
 
         var fields = new List<EmbedField>
         {
-            new("Nombre de carte complétées", $"{playerFull.ChallengesDone.Count()}"),
-            new("Nombre de 5000", $"{playerFull.Statistics.NumberOf5000}", true),
-            new("Meilleure partie", playerFull.Statistics.BestGameSum.FormatNullWithDash(), true),
-            new("Nombre de 25k", $"{playerFull.Statistics.NumberOf25000}", true),
-            new("Nombre de parties jouées", $"{playerFull.Statistics.NumberOfGamesPlayed}"),
-            new("🥇", $"{playerFull.Statistics.NumberOfFirstPlaceInGame}", true),
-            new("🥈", $"{playerFull.Statistics.NumberOfSecondPlaceInGame}", true),
-            new("🥉", $"{playerFull.Statistics.NumberOfThirdPlaceInGame}", true),
+            new(LabelStore.Get(() => playerFull.Statistics.ChallengesCompleted), $"{playerFull.Statistics.ChallengesCompleted}"),
+            new(LabelStore.Get(() => playerFull.Statistics.NumberOf5000), $"{playerFull.Statistics.NumberOf5000}", true),
+            new(LabelStore.Get(() => playerFull.Statistics.BestGameSum), playerFull.Statistics.BestGameSum.FormatNullWithDash(), true),
+            new(LabelStore.Get(() => playerFull.Statistics.NumberOf25000), $"{playerFull.Statistics.NumberOf25000}", true),
+            new(LabelStore.Get(() => playerFull.Statistics.NumberOfGamesPlayed), $"{playerFull.Statistics.NumberOfGamesPlayed}"),
+            new(LabelStore.Get(() => playerFull.Statistics.NumberOfFirstPlaceInGame), $"{playerFull.Statistics.NumberOfFirstPlaceInGame}", true),
+            new(LabelStore.Get(() => playerFull.Statistics.NumberOfSecondPlaceInGame), $"{playerFull.Statistics.NumberOfSecondPlaceInGame}", true),
+            new(LabelStore.Get(() => playerFull.Statistics.NumberOfThirdPlaceInGame), $"{playerFull.Statistics.NumberOfThirdPlaceInGame}", true),
         };
 
         string iconUrl = playerFull.IconUrl.ToString();

@@ -9,11 +9,11 @@
 				   Headers="@(new TableHeader[]
 								{
 									new("Joueur", true, nameof(PlayerStatisticDto.Name)),
-									new("Nombre de 5000", true, nameof(PlayerStatisticDto.NumberOf5000)),
-									new("Nombre de 4999 😏", true, nameof(PlayerStatisticDto.NumberOf4999)),
-									new("Nombre de carte complétées", true, nameof(PlayerStatisticDto.ChallengesCompleted)),
-									new("Moyenne par round", true, nameof(PlayerStatisticDto.RoundAverage)),
-									new("Meilleure partie", true, nameof(PlayerStatisticDto.BestGameSum)),
+									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf5000), true, nameof(PlayerStatisticDto.NumberOf5000)),
+									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf4999), true, nameof(PlayerStatisticDto.NumberOf4999)),
+									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.ChallengesCompleted), true, nameof(PlayerStatisticDto.ChallengesCompleted)),
+									new(LabelStore.Get<PlayerStatisticDto, double?>(ps => ps.RoundAverage), true, nameof(PlayerStatisticDto.RoundAverage)),
+									new(LabelStore.Get<PlayerStatisticDto, int?>(ps => ps.BestGameSum), true, nameof(PlayerStatisticDto.BestGameSum)),
 									new(string.Empty, false, string.Empty)
 								})"
 				   SortFunction="Sort">
