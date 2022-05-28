@@ -14,18 +14,36 @@
             <div class="m-3">
                 <section class="hero is-primary is-small">
                     <div class="hero-body">
-                        <p class="title">
-                            @Player.Name
-                        </p>
-                        <p class="subtitle">
-                            <a href="https://www.geoguessr.com/user/@Player.Id" target="_blank">
-                                <span class="icon is-small">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </span>
-                                <span>Profil GeoGuessr</span>
-                            </a>
-                        </p>
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <figure class="image is-64x64">
+                                        <img class="is-rounded" src="@Player.IconUrl">
+                                    </figure>
+                                </div>
+                                <div class="level-item is-hero-content-item">
+                                    <div>
+                                        <h1 class="title is-spaced">@Player.Name</h1>
+                                        <h3 class="subtitle">
+                                            Rookie @*TODO*@
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <a href="https://www.geoguessr.com/user/@Player.Id" target="_blank" class="button is-link">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </span>
+                                        <span>Profil GeoGuessr</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+
                 </section>
             </div>
 
