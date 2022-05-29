@@ -63,13 +63,22 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(cookieContainer);
 
         services.AddHttpClient("geoguessr", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v3/"))
-        .ConfigurePrimaryHttpMessageHandler(() =>
-        {
-            return new HttpClientHandler()
+            .ConfigurePrimaryHttpMessageHandler(() =>
             {
-                CookieContainer = cookieContainer
-            };
-        });
+                return new HttpClientHandler()
+                {
+                    CookieContainer = cookieContainer
+                };
+            });
+
+        services.AddHttpClient("geoguessrV4", c => c.BaseAddress = new Uri("https://www.geoguessr.com/api/v4/"))
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler()
+                {
+                    CookieContainer = cookieContainer
+                };
+            });
 
         services.AddHttpClient("google", c => c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/"));
 

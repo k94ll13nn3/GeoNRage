@@ -64,6 +64,26 @@ public partial class PlayersController : ControllerBase
     }
 
     [Authorize(Roles = Roles.Admin)]
+    [HttpPost("{id}/update-geoguessr-profile")]
+    public async Task<IActionResult> UpdateAsync(string id)
+    {
+        try
+        {
+            PlayerDto? updatedPlayer = await _playerService.UpdateGeoGuessrProfileAsync(id);
+            if (updatedPlayer is null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+        catch (InvalidOperationException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {

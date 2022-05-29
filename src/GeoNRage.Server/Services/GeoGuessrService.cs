@@ -100,4 +100,24 @@ public partial class GeoGuessrService
 
         return (challenge, results: challengeResults.Where(r => r.Game.Player.Id != profile.Id).ToList());
     }
+
+    public async Task<GeoGuessrPlayerStatistics?> GetPlayerStatisticsAsync(string playerId)
+    {
+        HttpClient clientV3 = _clientFactory.CreateClient("geoguessr");
+
+        if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
+        {
+            await clientV3.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin(_options.GeoGuessrEmail, _options.GeoGuessrPassword));
+        }
+
+        HttpClient clientV4 = _clientFactory.CreateClient("geoguessrV4");
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new JsonStringEnumConverter() },
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        };
+
+        return await clientV4.GetFromJsonAsync<GeoGuessrPlayerStatistics>($"stats/users/{playerId}", options);
+    }
 }

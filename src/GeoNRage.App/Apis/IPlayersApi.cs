@@ -21,6 +21,9 @@ public interface IPlayersApi
     [Put("/api/players/{id}")]
     Task UpdateAsync(string id, [Body] PlayerEditDto dto);
 
+    [Post("/api/players/{id}/update-geoguessr-profile")]
+    Task UpdateGeoGuessrProfileAsync(string id);
+
     [Delete("/api/players/{id}")]
     Task DeleteAsync(string id);
 }

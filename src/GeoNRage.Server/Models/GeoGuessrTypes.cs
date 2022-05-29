@@ -30,3 +30,9 @@ public record GeoGuessrChallenge(
     GeoGuessrChallengeChallenge Challenge,
     GeoGuessrChallengeMap Map,
     GeoGuessrChallengeCreator Creator);
+
+public record GeoGuessrTitle(string Name);
+
+public record GeoGuessrLifeTimeXP(GeoGuessrTitle CurrentTitle);
+
+public record GeoGuessrPlayerStatistics(GeoGuessrLifeTimeXP LifeTimeXpProgression);

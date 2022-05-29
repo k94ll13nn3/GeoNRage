@@ -41,6 +41,11 @@ public partial class PlayersAdmin
         PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId));
     }
 
+    public void UpdateGeoGuessrProfile(string playerId)
+    {
+        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la mise à jour du joueur {playerId} ?", () => OnConfirmUpdateGeoGuessrProfileAsync(playerId));
+    }
+
     public async Task UpdatePlayerAsync()
     {
         try
@@ -83,6 +88,20 @@ public partial class PlayersAdmin
         catch (ApiException e)
         {
             ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "player-delete", true);
+        }
+    }
+
+    private async void OnConfirmUpdateGeoGuessrProfileAsync(string playerId)
+    {
+        try
+        {
+            await PlayersApi.UpdateGeoGuessrProfileAsync(playerId);
+            Players = await PlayersApi.GetAllAsAdminViewAsync();
+            StateHasChanged();
+        }
+        catch (ApiException e)
+        {
+            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "player-update-geoguessr", true);
         }
     }
 }

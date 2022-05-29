@@ -12,6 +12,8 @@
                     <th>Id</th>
                     <th>Nom</th>
                     <th>Joueur lié</th>
+                    <th>Titre</th>
+                    <th>Dernière mise à jour du profil GeoGuessr</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -21,10 +23,17 @@
                         <td>@player.Id</td>
                         <td>@player.Name</td>
                         <td>@player.AssociatedPlayerName.FormatNullWithDash()</td>
+                        <td>@player.Title</td>
+                        <td>@player.LastUpdate.FormatNullWithDash()</td>
                         <td class="has-text-centered">
                             <a class="has-text-info" @onclick="(() => EditPlayer(player.Id))">
                                 <span class="icon">
                                     <i class="fas fa-edit"></i>
+                                </span>
+                            </a>
+                            <a class="has-text-info" @onclick="(() => UpdateGeoGuessrProfile(player.Id))">
+                                <span class="icon">
+                                    <i class="fas fa-sync"></i>
                                 </span>
                             </a>
                             <a class="has-text-danger" @onclick="(() => DeletePlayer(player.Id))">

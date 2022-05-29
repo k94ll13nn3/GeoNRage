@@ -56,6 +56,7 @@ public class GeoNRageDbContext : IdentityDbContext<
         builder.Entity<Player>().Property(g => g.Name).IsRequired();
         builder.Entity<Player>().Property(g => g.IconUrl).IsRequired().HasDefaultValue(Constants.BaseAvatarUrl);
         builder.Entity<Player>().HasOne(p => p.AssociatedPlayer).WithOne().HasForeignKey<Player>(p => p.AssociatedPlayerId).IsRequired(false);
+        builder.Entity<Player>().Property(g => g.Title).IsRequired().HasDefaultValue("Newbie");
 
         builder.Entity<Map>().HasKey(m => m.Id);
         builder.Entity<Map>().Property(g => g.Name).IsRequired();

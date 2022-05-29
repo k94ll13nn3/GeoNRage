@@ -9,6 +9,7 @@ public partial class PlayerService
 {
     private readonly GeoNRageDbContext _context;
     private readonly IMemoryCache _cache;
+    private readonly GeoGuessrService _geoGuessrService;
 
     public async Task<IEnumerable<PlayerStatisticDto>> GetAllStatisticsAsync(bool takeAllMaps)
     {
@@ -82,7 +83,9 @@ public partial class PlayerService
                 p.Id,
                 p.Name,
                 p.AssociatedPlayerId,
-                p.AssociatedPlayer == null ? null : p.AssociatedPlayer.Name
+                p.AssociatedPlayer == null ? null : p.AssociatedPlayer.Name,
+                p.Title,
+                p.LastUpdate
             ))
             .ToListAsync();
     }
@@ -158,6 +161,7 @@ public partial class PlayerService
             (
                 Id: player.Id,
                 Name: player.Name,
+                Title: player.Title,
                 IconUrl: player.IconUrl,
                 ChallengesDone: challengesDones,
                 ChallengesNotDone: challengesNotDone,
@@ -232,6 +236,25 @@ public partial class PlayerService
             await _context.SaveChangesAsync();
             _cache.Remove(CacheKeys.PlayerServiceGetAllAsync);
             _cache.Remove(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync);
+        }
+
+        return await GetAsync(id);
+    }
+
+    public async Task<PlayerDto?> UpdateGeoGuessrProfileAsync(string id)
+    {
+        Player? player = await _context.Players.FindAsync(id);
+        if (player is not null)
+        {
+            Models.GeoGuessrPlayerStatistics? statistics = await _geoGuessrService.GetPlayerStatisticsAsync(id);
+            if (statistics is not null)
+            {
+                player.Title = statistics.LifeTimeXpProgression.CurrentTitle.Name;
+                player.LastUpdate = DateTime.Now;
+
+                _context.Players.Update(player);
+                await _context.SaveChangesAsync();
+            }
         }
 
         return await GetAsync(id);

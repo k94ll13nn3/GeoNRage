@@ -12,5 +12,9 @@ public class Player
 
     public Player? AssociatedPlayer { get; set; }
 
+    public string Title { get; set; } = null!;
+
+    public DateTime? LastUpdate { get; set; }
+
     public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
 }

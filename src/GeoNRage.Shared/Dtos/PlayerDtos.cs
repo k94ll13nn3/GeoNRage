@@ -12,7 +12,7 @@ public class PlayerEditDto
 
 public record PlayerDto(string Id, string Name);
 
-public record PlayerAdminViewDto(string Id, string Name, string? AssociatedPlayerId, string? AssociatedPlayerName);
+public record PlayerAdminViewDto(string Id, string Name, string? AssociatedPlayerId, string? AssociatedPlayerName, string Title, DateTime? LastUpdate);
 
 public record PlayerChallengeDto(int ChallengeId, int? GameId, string MapName, int? Sum, int? Time);
 
@@ -48,6 +48,7 @@ public record PlayerGameDto(int GameId, int Sum, DateTime GameDate, string GameN
 public record PlayerFullDto(
     string Id,
     string Name,
+    string Title,
     Uri IconUrl,
     IEnumerable<PlayerChallengeDto> ChallengesDone,
     IEnumerable<PlayerChallengeDto> ChallengesNotDone,
