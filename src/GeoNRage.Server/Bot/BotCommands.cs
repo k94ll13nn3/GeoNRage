@@ -102,6 +102,7 @@ public partial class BotCommands : CommandGroup
         var embed = new Embed(
             Title: playerFull.Name,
             Type: EmbedType.Rich,
+            Description: playerFull.Title,
             Url: new Uri(_options.GeoNRageUrl, $"/players/{playerFull.Id}").ToString(),
             Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
             Thumbnail: new EmbedThumbnail(iconUrl),
