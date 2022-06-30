@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
         services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
         services.AddAutocompleteProvider<MapNameAutocompleteProvider>();
         services.AddInteractivity();
-        services.AddInteractiveEntity<ModalReceiver>();
+        services.AddInteractionGroup<ChallengeImportModal>();
 
         return services;
     }

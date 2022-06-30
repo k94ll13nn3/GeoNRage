@@ -173,9 +173,8 @@ public partial class BotCommands : CommandGroup
 
     [Command("import-challenge")]
     [Description("Importer un challenge")]
-    [CommandType(ApplicationCommandType.ChatInput)]
     [SuppressInteractionResponse(true)]
-    public async Task<Result> OnModalAsync()
+    public async Task<Result> ShowImportModalAsync()
     {
         var response = new InteractionResponse
         (
@@ -184,7 +183,7 @@ public partial class BotCommands : CommandGroup
             (
                 new InteractionModalCallbackData
                 (
-                    "challenge-import",
+                    Remora.Discord.Interactivity.CustomIDHelpers.CreateModalID("import-challenge"),
                     "Importer un challenge",
                     new[]
                     {
