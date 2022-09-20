@@ -5,7 +5,7 @@
     {
       "provider": "unpkg",
       "library": "bulma@0.9.4",
-      "destination": "wwwroot/styles/bulma/",
+      "destination": "wwwroot/lib/bulma/",
       "files": [
         "sass/**/*.sass",
         "LICENSE",

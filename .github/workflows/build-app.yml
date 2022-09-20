@@ -22,5 +22,4 @@ jobs:
         uses: actions/setup-dotnet@v1
       - name: Execute build
         run: |
-          dotnet tool restore
           dotnet build --configuration Release /nologo

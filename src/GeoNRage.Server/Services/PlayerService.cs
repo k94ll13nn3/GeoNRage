@@ -51,7 +51,7 @@ public partial class PlayerService
 
     public Task<IEnumerable<PlayerDto>> GetAllAsync()
     {
-        return _cache.GetOrCreateAsync(CacheKeys.PlayerServiceGetAllAsync, GetAllFactory);
+        return _cache.GetOrCreateAsync(CacheKeys.PlayerServiceGetAllAsync, GetAllFactory)!;
 
         async Task<IEnumerable<PlayerDto>> GetAllFactory(ICacheEntry entry)
         {
@@ -279,7 +279,7 @@ public partial class PlayerService
 
     internal Task<Dictionary<string, ICollection<PlayerGameDto>>> GetGamesWithPlayersScoreAsync(bool takeAllMaps)
     {
-        return _cache.GetOrCreateAsync(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync, GetAllFactory);
+        return _cache.GetOrCreateAsync(CacheKeys.PlayerServiceGetGamesWithPlayersScoreAsync, GetAllFactory)!;
 
         async Task<Dictionary<string, ICollection<PlayerGameDto>>> GetAllFactory(ICacheEntry entry)
         {

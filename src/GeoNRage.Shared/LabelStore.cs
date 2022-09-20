@@ -63,10 +63,9 @@ public static class LabelStore
 
         if (propertyType is not null
             && propertyName is not null
-            && Labels.ContainsKey(propertyType)
-            && Labels[propertyType].ContainsKey(propertyName))
+            && Labels.TryGetValue(propertyType, out Dictionary<string, string>? typeLabels) && typeLabels.TryGetValue(propertyName, out string? label))
         {
-            return Labels[propertyType][propertyName];
+            return label;
         }
 
         throw new InvalidOperationException($"No label set for property {propertyName} on type {propertyType}");

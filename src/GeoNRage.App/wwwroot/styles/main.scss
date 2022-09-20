@@ -7,7 +7,7 @@ $family-sans-serif: "Alata", sans-serif;
 $modal-content-width: 800px;
 $navbar-item-img-max-height: 2.5rem;
 
-@import 'bulma/bulma';
+@import '../lib/bulma/bulma';
 @import 'variables';
 @import 'loader';
 

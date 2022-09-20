@@ -1,0 +1,14 @@
+{
+  "SourceFolder": "wwwroot/styles",
+  "TargetFolder": "wwwroot/styles",
+  "Arguments": "--style=compressed --no-source-map",
+  "GenerateScopedCss": true,
+  "ScopedCssFolders": [ "Layouts", "Pages", "Components" ],
+  "IncludePaths": [ "wwwroot/styles", "wwwroot/lib" ],
+
+  "Configurations": {
+    "Debug": { // These options apply only to Debug builds
+      "Arguments": "--style=expanded --no-source-map"
+    }
+  }
+}

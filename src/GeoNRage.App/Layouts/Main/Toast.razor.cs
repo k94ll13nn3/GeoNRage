@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Layouts.Main;
 
-public partial class Toast
+public partial class Toast : IDisposable
 {
     private readonly CancellationTokenSource _tokenSource = new();
+    private bool _disposedValue;
 
     [Parameter]
     public TimeSpan? Duration { get; set; }
@@ -22,6 +23,13 @@ public partial class Toast
     public string? Title { get; set; }
 
     public string NotificationClass { get; set; } = null!;
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
     protected override void OnInitialized()
     {
@@ -47,6 +55,19 @@ public partial class Toast
             {
                 await CloseToastAsync();
             }
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing)
+            {
+                _tokenSource.Dispose();
+            }
+
+            _disposedValue = true;
         }
     }
 

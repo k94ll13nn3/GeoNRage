@@ -1,4 +1,4 @@
-﻿using GeoNRage.Server.Entities;
+using GeoNRage.Server.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
@@ -14,8 +14,8 @@ public partial class SuperAdminCreationTask : IStartupTask
         using IServiceScope scope = _serviceProvider.CreateScope();
         UserManager<User> userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         ApplicationOptions options = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
-        User user = await userManager.FindByNameAsync(options.SuperAdminUserName);
-        if (user == null)
+        User? user = await userManager.FindByNameAsync(options.SuperAdminUserName);
+        if (user is null)
         {
             user = new User
             {

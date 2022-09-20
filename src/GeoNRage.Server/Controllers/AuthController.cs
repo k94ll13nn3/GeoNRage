@@ -21,8 +21,8 @@ public partial class AuthController : ControllerBase
     {
         _ = request ?? throw new ArgumentNullException(nameof(request));
 
-        User user = await _userManager.FindByNameAsync(request.UserName);
-        if (user == null)
+        User? user = await _userManager.FindByNameAsync(request.UserName);
+        if (user is null)
         {
             return BadRequest("Utilisateur ou mot de passe invalide.");
         }
@@ -75,7 +75,7 @@ public partial class AuthController : ControllerBase
     {
         _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
 
-        User user = await _userManager.FindByNameAsync(User.Identity?.Name);
+        User? user = await _userManager.FindByNameAsync(User.Identity?.Name!);
         if (user is null)
         {
             return BadRequest("Utilisateur invalide.");
@@ -110,7 +110,7 @@ public partial class AuthController : ControllerBase
     {
         _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
 
-        User user = await _userManager.FindByNameAsync(parameters.UserName);
+        User? user = await _userManager.FindByNameAsync(parameters.UserName);
         if (user is null)
         {
             return BadRequest("Utilisateur invalide.");
@@ -150,7 +150,7 @@ public partial class AuthController : ControllerBase
         (
             User.Identity?.IsAuthenticated ?? false,
             User.Claims.GroupBy(c => c.Type).ToDictionary(g => g.Key, g => g.Select(c => c.Value)),
-            _playerService.CountChallengesNotDone(User.FindFirstValue("PlayerId"), Request.Headers[Constants.MapStatusHeaderName] == "True") > 0
+            _playerService.CountChallengesNotDone(User.FindFirstValue("PlayerId")!, Request.Headers[Constants.MapStatusHeaderName] == "True") > 0
         );
     }
 
@@ -158,7 +158,7 @@ public partial class AuthController : ControllerBase
     [HttpDelete("{userName}")]
     public async Task<IActionResult> DeleteUserAsync(string userName)
     {
-        User user = await _userManager.FindByNameAsync(userName);
+        User? user = await _userManager.FindByNameAsync(userName);
         if (user is not null)
         {
             await _userManager.DeleteAsync(user);

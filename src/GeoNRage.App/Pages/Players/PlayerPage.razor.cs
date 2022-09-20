@@ -10,8 +10,6 @@ namespace GeoNRage.App.Pages.Players;
 
 public partial class PlayerPage
 {
-    private static readonly Regex NumericFilterRegex = new(@"^(?<map>.*?)\s*(?<operator>[><]=?|=){1}\s*(?<value>\d{1,5})$", RegexOptions.Compiled);
-
     [Parameter]
     public string Id { get; set; } = null!;
 
@@ -132,7 +130,7 @@ public partial class PlayerPage
 
     private IEnumerable<PlayerChallengeDto> FilterChallengesDone(string filter)
     {
-        Match match = NumericFilterRegex.Match(filter);
+        Match match = NumericFilterRegex().Match(filter);
         if (match.Success && int.TryParse(match.Groups["value"].Value, out int value))
         {
             IEnumerable<PlayerChallengeDto> challenges = Player.ChallengesDone
@@ -171,4 +169,7 @@ public partial class PlayerPage
 
         StateHasChanged();
     }
+
+    [GeneratedRegex("^(?<map>.*?)\\s*(?<operator>[><]=?|=){1}\\s*(?<value>\\d{1,5})$", RegexOptions.Compiled)]
+    private static partial Regex NumericFilterRegex();
 }

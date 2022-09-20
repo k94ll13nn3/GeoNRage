@@ -54,10 +54,10 @@ public partial class AdminService
     {
         return await _context.Users
             .Select(u => new UserAminViewDto(
-                u.UserName,
+                u.UserName ?? string.Empty,
                 u.PlayerId,
                 u.Player != null ? u.Player.Name : null,
-                u.UserRoles.Select(ur => ur.Role.Name)
+                u.UserRoles.Select(ur => ur.Role.Name ?? string.Empty)
             ))
             .ToListAsync();
     }

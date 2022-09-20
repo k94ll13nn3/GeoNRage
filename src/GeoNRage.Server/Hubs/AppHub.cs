@@ -64,7 +64,7 @@ public partial class AppHub : Hub<IAppHub>
 
     private string? GetPlayerIdForCurrentUser()
     {
-        return Context.User.FindFirstValue("PlayerId");
+        return Context.User?.FindFirstValue("PlayerId");
     }
 
     private async Task<bool> UserInGameAsync(int gameId)

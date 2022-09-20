@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<DiscordService>();
         services.AddHostedService<PresenceService>();
 
-        services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]);
+        services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]!);
         services.AddDiscordCommands(true);
         services.AddCommandTree().WithCommandGroup<BotCommands>();
         services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
@@ -87,7 +87,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDatabaseAndIdentity(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("GeoNRageConnection");
+        string connectionString = configuration.GetConnectionString("GeoNRageConnection")!;
         services.AddDbContextPool<GeoNRageDbContext>(options =>
             options
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))

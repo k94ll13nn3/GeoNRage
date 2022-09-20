@@ -28,12 +28,12 @@ public class FrenchIdentityErrorDescriber : IdentityErrorDescriber
         return new IdentityError { Code = nameof(LoginAlreadyAssociated), Description = "Un utilisateur avec ce nom de compte existe déjà." };
     }
 
-    public override IdentityError InvalidUserName(string userName)
+    public override IdentityError InvalidUserName(string? userName)
     {
         return new IdentityError { Code = nameof(InvalidUserName), Description = $"Le nom de compte '{userName}' est invalide. Seuls les lettres et chiffres sont autorisés." };
     }
 
-    public override IdentityError InvalidEmail(string email)
+    public override IdentityError InvalidEmail(string? email)
     {
         return new IdentityError { Code = nameof(InvalidEmail), Description = $"L'email '{email}' est invalide." };
     }
@@ -48,7 +48,7 @@ public class FrenchIdentityErrorDescriber : IdentityErrorDescriber
         return new IdentityError { Code = nameof(DuplicateEmail), Description = $"L'email '{email} est déjà utilisée." };
     }
 
-    public override IdentityError InvalidRoleName(string role)
+    public override IdentityError InvalidRoleName(string? role)
     {
         return new IdentityError { Code = nameof(InvalidRoleName), Description = $"Le nom du rôle '{role}' est invalide." };
     }

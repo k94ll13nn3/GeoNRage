@@ -12,7 +12,7 @@ public partial class MapService
 
     public Task<IEnumerable<MapDto>> GetAllAsync()
     {
-        return _cache.GetOrCreateAsync(CacheKeys.MapServiceGetAllAsync, GetAllFactory);
+        return _cache.GetOrCreateAsync(CacheKeys.MapServiceGetAllAsync, GetAllFactory)!;
 
         async Task<IEnumerable<MapDto>> GetAllFactory(ICacheEntry entry)
         {
