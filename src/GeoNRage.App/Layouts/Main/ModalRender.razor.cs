@@ -6,9 +6,7 @@ namespace GeoNRage.App.Layouts.Main;
 
 public partial class ModalRender : IDisposable
 {
-    private Type? _componentType;
-    private IDictionary<string, object>? _parameters;
-    private Guid? _guid;
+    private ModalEventArgs? _eventArgs;
     private bool _isOpen;
     private bool _disposedValue;
     private DynamicComponent? _componentRef;
@@ -60,9 +58,7 @@ public partial class ModalRender : IDisposable
 
     private void ShowModal(object? sender, ModalEventArgs e)
     {
-        _componentType = e.ComponentType;
-        _parameters = e.Parameters;
-        _guid = e.ComponentGuid;
+        _eventArgs = e;
         _isOpen = true;
         StateHasChanged();
     }
@@ -70,15 +66,13 @@ public partial class ModalRender : IDisposable
     private void Close()
     {
         _isOpen = false;
-        object? result = (_componentRef?.Instance as IModal)?.Close();
-        if (_guid is not null && result is not null)
+        if (_eventArgs is null)
         {
-            ModalService.SetResult(_guid.Value, result);
+            throw new InvalidOperationException("Cannot close modal.");
         }
 
-        _guid = null;
-        _componentType = null;
-        _parameters = null;
+        _eventArgs.Result.SetResult(_componentRef?.Instance);
+
         StateHasChanged();
     }
 

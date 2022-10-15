@@ -4,34 +4,22 @@ namespace GeoNRage.App.Services;
 
 public class ModalService
 {
-    private readonly Dictionary<Guid, object> _results = new();
-
     public event EventHandler<ModalEventArgs>? OnModalRequested;
 
     public async Task<TOutputData> DisplayModalAsync<TModal, TOutputData>(IDictionary<string, object> parameters)
-        where TModal : ComponentBase, IModal
+        where TModal : ComponentBase, IModal<TOutputData>
         where TOutputData : class
     {
-        var componentGuid = Guid.NewGuid();
-        OnModalRequested?.Invoke(this, new(componentGuid, typeof(TModal), parameters));
+        TaskCompletionSource<object?> tcs = new();
+        OnModalRequested?.Invoke(this, new(typeof(TModal), parameters, tcs));
 
-        while (!_results.ContainsKey(componentGuid))
+        object? component = await tcs.Task;
+
+        if (component is not IModal<TOutputData> modal)
         {
-            await Task.Delay(100);
+            throw new InvalidOperationException("Cannot get modal result.");
         }
 
-        if (_results[componentGuid] is not TOutputData result)
-        {
-            throw new InvalidOperationException("Error when getting modal return value.");
-        }
-
-        _results.Remove(componentGuid);
-
-        return result;
-    }
-
-    public void SetResult(Guid componentGuid, object result)
-    {
-        _results[componentGuid] = result;
+        return modal.Close();
     }
 }

@@ -2,7 +2,7 @@
     <div class="modal is-active" tabindex="0" @onkeydown="HandleKeyDown">
         <div class="modal-background"></div>
         <div class="modal-content">
-            <DynamicComponent Type="@_componentType" Parameters="@_parameters" @ref="_componentRef" />
+            <DynamicComponent Type="@_eventArgs!.ComponentType" Parameters="@_eventArgs.Parameters" @ref="_componentRef" />
         </div>
         <button class="modal-close is-large" aria-label="close" type="button" @onclick="Close"></button>
     </div>

@@ -1,6 +1,6 @@
 namespace GeoNRage.App.Models;
 
-public interface IModal
+public interface IModal<out T>
 {
-    object Close();
+    T Close();
 }

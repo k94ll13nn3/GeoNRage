@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Players;
 
-public partial class FilterPanel : IModal
+public partial class FilterPanel : IModal<IEnumerable<string>>
 {
     private IEnumerable<string>? _tags;
 
@@ -14,7 +14,7 @@ public partial class FilterPanel : IModal
         _tags = Tags;
     }
 
-    public object Close()
+    public IEnumerable<string> Close()
     {
         return _tags ?? new List<string>();
     }
