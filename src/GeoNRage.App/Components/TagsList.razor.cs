@@ -6,6 +6,8 @@ namespace GeoNRage.App.Components;
 
 public partial class TagsList
 {
+    private readonly List<string> _tags = new();
+
     [Inject]
     public IJSRuntime JSRuntime { get; set; } = null!;
 
@@ -15,9 +17,10 @@ public partial class TagsList
     [Parameter]
     public EventCallback<IEnumerable<string>> TagsChanged { get; set; }
 
-    public IJSObjectReference JSModule { get; set; } = null!;
+    [Parameter]
+    public IReadOnlyCollection<string>? Tags { get; set; }
 
-    public IList<string> Tags { get; } = new List<string>();
+    public IJSObjectReference JSModule { get; set; } = null!;
 
     public bool IsFocused { get; set; }
 
@@ -27,42 +30,47 @@ public partial class TagsList
 
     protected override async Task OnInitializedAsync()
     {
+        if (Tags is not null)
+        {
+            _tags.AddRange(Tags);
+        }
+
         JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./Components/{nameof(TagsList)}.razor.js");
         await JSModule.InvokeVoidAsync("addPreventDefault", EditableContent);
     }
 
-    private void HandleOnKeyDown(KeyboardEventArgs args)
+    private async Task HandleOnKeyDownAsync(KeyboardEventArgs args)
     {
         if (new[] { "Enter", " ", ",", "Tab" }.Contains(args.Key))
         {
             if (ValidateTag(Value))
             {
-                AddTag(Value);
+                await AddTagAsync(Value);
                 Value = "";
             }
         }
-        else if (args.Key == "Backspace" && string.IsNullOrWhiteSpace(Value) && Tags.Count > 1)
+        else if (args.Key == "Backspace" && string.IsNullOrWhiteSpace(Value) && _tags.Count > 1)
         {
-            RemoveTag(Tags[^1]);
+            await RemoveTagAsync(_tags[^1]);
         }
     }
 
-    private void AddTag(string tag)
+    private async Task AddTagAsync(string tag)
     {
-        Tags.Add(tag);
-        TagsChanged.InvokeAsync(Tags);
+        _tags.Add(tag);
+        await TagsChanged.InvokeAsync(_tags);
         StateHasChanged();
     }
 
-    private void RemoveTag(string tag)
+    private async Task RemoveTagAsync(string tag)
     {
-        Tags.Remove(tag);
-        TagsChanged.InvokeAsync(Tags);
+        _tags.Remove(tag);
+        await TagsChanged.InvokeAsync(_tags);
         StateHasChanged();
     }
 
     private bool ValidateTag(string tag)
     {
-        return tag.Length >= 5 && tag.Length <= 50 && !Tags.Contains(tag);
+        return tag.Length >= 5 && tag.Length <= 50 && !_tags.Contains(tag);
     }
 }

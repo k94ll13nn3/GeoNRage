@@ -10,6 +10,8 @@ namespace GeoNRage.App.Pages.Players;
 
 public partial class PlayerPage
 {
+    private IEnumerable<string> _tags = new List<string>();
+
     [Parameter]
     public string Id { get; set; } = null!;
 
@@ -21,6 +23,9 @@ public partial class PlayerPage
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
+
+    [Inject]
+    public ModalService ModalService { get; set; } = null!;
 
     public PlayerFullDto Player { get; set; } = null!;
 
@@ -41,8 +46,6 @@ public partial class PlayerPage
     public int SortDirection { get; set; }
 
     public IEnumerable<PlayerGameDto> GameHistory { get; set; } = new List<PlayerGameDto>();
-
-    public bool ShowFilterPanel { get; set; }
 
     public bool IsFiltered { get; set; }
 
@@ -100,13 +103,19 @@ public partial class PlayerPage
         });
     }
 
-    private void OnFilter(IEnumerable<string> tags)
+    private async Task ShowFilterPanelAsync()
+    {
+        _tags = await ModalService.DisplayModalAsync<FilterPanel, IEnumerable<string>>(new Dictionary<string, object> { [nameof(FilterPanel.Tags)] = _tags });
+        OnFilter();
+    }
+
+    private void OnFilter()
     {
         IsFiltered = true;
-        if (tags.Any())
+        if (_tags.Any())
         {
             var challengesDone = new List<PlayerChallengeDto>();
-            foreach (string tag in tags)
+            foreach (string tag in _tags)
             {
                 challengesDone = challengesDone.Union(FilterChallengesDone(tag)).ToList();
             }
@@ -116,7 +125,7 @@ public partial class PlayerPage
             {
                 IsFiltered = false;
                 ChallengesDone = Player.ChallengesDone.ToList();
-                ToastService.DisplayToast("La recherche n'a pas retourné de résultats", TimeSpan.FromSeconds(3), ToastType.Warning, "challenges-filter-no-results", true);
+                ToastService.DisplayToast("La recherche n'a pas retournée de résultats", TimeSpan.FromSeconds(3), ToastType.Warning, "challenges-filter-no-results", true);
             }
         }
         else

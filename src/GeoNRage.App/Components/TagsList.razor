@@ -2,17 +2,17 @@
     <p class="control is-expanded">
         <input class="input" type="text" placeholder="@Placeholder"
                @bind-value="Value" @bind-value:event="oninput"
-               @onkeydown="HandleOnKeyDown" @ref="EditableContent">
+               @onkeydown="HandleOnKeyDownAsync" @ref="EditableContent">
     </p>
 </div>
 
 <div class="field is-grouped is-grouped-multiline m-1">
-    <Container Condition="Tags.Count > 0">
-        <Repeater Items="Tags" Context="tag">
+    <Container Condition="_tags.Count > 0">
+        <Repeater Items="_tags" Context="tag">
             <div class="control">
                 <div class="tags has-addons">
                     <span class="tag is-primary">@tag</span>
-                    <a class="tag is-delete" @onclick="() => RemoveTag(tag)"></a>
+                    <a class="tag is-delete" @onclick="() => RemoveTagAsync(tag)"></a>
                 </div>
             </div>
         </Repeater>

@@ -308,7 +308,7 @@
                                     <p class="card-header-title">
                                         Cartes jouées
                                     </p>
-                                    <button class="card-header-icon" @onclick="() => ShowFilterPanel = true">
+                                    <button class="card-header-icon" @onclick="ShowFilterPanelAsync">
                                         <span class="icon @(IsFiltered ? "has-text-primary" : "")">
                                             <i class="fas fa-filter"></i>
                                         </span>
@@ -411,11 +411,3 @@
         </Container>
     </ElseContent>
 </Container>
-
-<div class="modal @(ShowFilterPanel ? "is-active" : "")">
-    <div class="modal-background"></div>
-    <div class="modal-content">
-        <TagsList Placeholder="Filtrer" TagsChanged="OnFilter"></TagsList>
-    </div>
-    <button class="modal-close is-large" aria-label="close" type="button" @onclick="() => ShowFilterPanel = false"></button>
-</div>

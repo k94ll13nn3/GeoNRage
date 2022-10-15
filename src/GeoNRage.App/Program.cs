@@ -1,4 +1,4 @@
-﻿using GeoNRage.App;
+using GeoNRage.App;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -25,6 +25,7 @@ builder.AddRefitClient<IAdminApi>();
 builder.Services.AddSingleton<PopupService>();
 builder.Services.AddSingleton<UserSettingsService>();
 builder.Services.AddSingleton<ToastService>();
+builder.Services.AddSingleton<ModalService>();
 
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
