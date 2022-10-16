@@ -48,23 +48,17 @@ public class GeoNRageDbContext : IdentityDbContext<
 
         builder.Entity<Game>().HasKey(g => g.Id);
         builder.Entity<Game>().Property(g => g.Id).UseMySqlIdentityColumn();
-        builder.Entity<Game>().Property(g => g.Name).IsRequired();
-        builder.Entity<Game>().Property(g => g.Date).IsRequired();
         builder.Entity<Game>().HasMany(g => g.Challenges).WithOne(c => c.Game).HasForeignKey(c => c.GameId);
 
         builder.Entity<Player>().HasKey(p => p.Id);
-        builder.Entity<Player>().Property(g => g.Name).IsRequired();
-        builder.Entity<Player>().Property(g => g.IconUrl).IsRequired().HasDefaultValue(Constants.BaseAvatarUrl);
+        builder.Entity<Player>().Property(g => g.IconUrl).HasDefaultValue(Constants.BaseAvatarUrl);
         builder.Entity<Player>().HasOne(p => p.AssociatedPlayer).WithOne().HasForeignKey<Player>(p => p.AssociatedPlayerId).IsRequired(false);
         builder.Entity<Player>().Property(g => g.Title).IsRequired().HasDefaultValue("Newbie");
 
         builder.Entity<Map>().HasKey(m => m.Id);
-        builder.Entity<Map>().Property(g => g.Name).IsRequired();
 
         builder.Entity<Challenge>().HasKey(m => m.Id);
         builder.Entity<Challenge>().HasIndex(g => g.GeoGuessrId).IsUnique();
-        builder.Entity<Challenge>().Property(g => g.GeoGuessrId).IsRequired();
-        builder.Entity<Challenge>().Property(g => g.UpdatedAt).HasDefaultValue(DateTime.MinValue);
         builder.Entity<Challenge>().Property(g => g.Id).UseMySqlIdentityColumn();
         builder.Entity<Challenge>().HasOne(c => c.Map).WithMany(m => m.Challenges).HasForeignKey(c => c.MapId).IsRequired();
         builder.Entity<Challenge>().HasMany(c => c.PlayerScores).WithOne(p => p.Challenge).HasForeignKey(p => p.ChallengeId);
@@ -76,9 +70,6 @@ public class GeoNRageDbContext : IdentityDbContext<
 
         builder.Entity<Location>().HasKey(l => new { l.ChallengeId, l.RoundNumber });
         builder.Entity<Location>().HasOne(l => l.Challenge).WithMany(c => c.Locations).HasForeignKey(l => l.ChallengeId).IsRequired();
-        builder.Entity<Location>().Property(l => l.RoundNumber).IsRequired();
-        builder.Entity<Location>().Property(l => l.Latitude).IsRequired();
-        builder.Entity<Location>().Property(l => l.Longitude).IsRequired();
 
         builder.Entity<PlayerGuess>().HasKey(p => new { p.ChallengeId, p.PlayerId, p.RoundNumber });
 

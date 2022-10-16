@@ -68,7 +68,7 @@ public partial class ChallengeService
                 c.Locations.Count == 5
                     && c.CreatorId != null
                     && c.TimeLimit != null
-                    && c.UpdatedAt != DateTime.MinValue
+                    && c.UpdatedAt != null
                     && c.PlayerScores.All(p => p.PlayerGuesses.All(g => g.Score != null && g.Distance != null && g.Time != null)),
                 c.PlayerScores.Count(p => p.PlayerGuesses.Count == 5)
             ))

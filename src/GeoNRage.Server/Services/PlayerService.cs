@@ -85,7 +85,7 @@ public partial class PlayerService
                 p.AssociatedPlayerId,
                 p.AssociatedPlayer == null ? null : p.AssociatedPlayer.Name,
                 p.Title,
-                p.LastUpdate
+                p.UpdatedAt
             ))
             .ToListAsync();
     }
@@ -250,7 +250,7 @@ public partial class PlayerService
             if (statistics is not null)
             {
                 player.Title = statistics.LifeTimeXpProgression.CurrentTitle.Name;
-                player.LastUpdate = DateTime.Now;
+                player.UpdatedAt = DateTime.UtcNow;
 
                 _context.Players.Update(player);
                 await _context.SaveChangesAsync();

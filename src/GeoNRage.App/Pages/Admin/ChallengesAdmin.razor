@@ -33,7 +33,7 @@
                     <td>@challenge.Id</td>
                     <td>@challenge.MapName</td>
                     <td>@challenge.GameName</td>
-                    <td>@(challenge.LastUpdate == DateTime.MinValue ? "—" : challenge.LastUpdate.ToLocalTime().Humanize())</td>
+                    <td>@(challenge.LastUpdate is null ? "—" : challenge.LastUpdate.Value.ToLocalTime().Humanize())</td>
                     <td>
                         <Container Condition="challenge.UpToDate">
                             <ChildContent>

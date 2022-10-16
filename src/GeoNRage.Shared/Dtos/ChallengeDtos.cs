@@ -13,7 +13,7 @@ public class ChallengeImportDto
     public bool OverrideData { get; set; }
 }
 
-public record ChallengeAdminViewDto(int Id, string MapId, string MapName, string GeoGuessrId, int GameId, string GameName, DateTime LastUpdate, bool UpToDate, int CompletedBy);
+public record ChallengeAdminViewDto(int Id, string MapId, string MapName, string GeoGuessrId, int GameId, string GameName, DateTime? LastUpdate, bool UpToDate, int CompletedBy);
 
 public record ChallengeDetailDto(int Id, string MapName, string GeoGuessrId, IEnumerable<ChallengePlayerScoreDto> PlayerScores);
 

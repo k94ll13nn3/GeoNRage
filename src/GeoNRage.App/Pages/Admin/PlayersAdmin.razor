@@ -2,6 +2,8 @@
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Admin)]
 
+@using Humanizer;
+
 <GeoNRage.App.Pages.Admin.AdminMenu />
 
 <div class="container is-fluid m-3">
@@ -24,7 +26,7 @@
                         <td>@player.Name</td>
                         <td>@player.AssociatedPlayerName.FormatNullWithDash()</td>
                         <td>@player.Title</td>
-                        <td>@player.LastUpdate.FormatNullWithDash()</td>
+                        <td>@(player.LastUpdate is null ? "—" : player.LastUpdate.Value.ToLocalTime().Humanize())</td>
                         <td class="has-text-centered">
                             <a class="has-text-info" @onclick="(() => EditPlayer(player.Id))">
                                 <span class="icon">

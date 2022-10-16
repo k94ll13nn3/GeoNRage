@@ -24,5 +24,5 @@ public class Challenge
 
     public Player? Creator { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
