@@ -1,20 +1,36 @@
 using System.Linq.Expressions;
+using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Statistics;
 
-public partial class ComparisonTable
+public partial class ComparisonTable : IModal
 {
-    [Parameter]
-    public PlayerFullDto Player1 { get; set; } = null!;
+    private PlayerFullDto? _player1;
+    private PlayerFullDto? _player2;
 
     [Parameter]
-    public PlayerFullDto Player2 { get; set; } = null!;
+    public string Player1Id { get; set; } = null!;
 
-    public ICollection<(string statistic, string player1, string player2, int comparison)> PlayersComparisons { get; } = new List<(string statistic, string player1, string player2, int comparison)>();
+    [Parameter]
+    public string Player2Id { get; set; } = null!;
 
-    protected override void OnInitialized()
+    [Inject]
+    public IPlayersApi PlayersApi { get; set; } = null!;
+
+    public ICollection<(string statistic, string player1, string player2, int comparison)> PlayersComparisons { get; }
+        = new List<(string statistic, string player1, string player2, int comparison)>();
+
+    protected override async Task OnInitializedAsync()
     {
+        _player1 = (await PlayersApi.GetFullAsync(Player1Id)).Content;
+        _player2 = (await PlayersApi.GetFullAsync(Player2Id)).Content;
+
+        if (_player1 is null || _player2 is null)
+        {
+            throw new InvalidOperationException("Cannot load players for comparison.");
+        }
+
         AddElement(p => p.Statistics.NumberOf5000, (i, j) => i.CompareTo(j));
         AddElement(p => p.Statistics.NumberOf4999, (i, j) => i.CompareTo(j));
         AddElement(p => p.Statistics.ChallengesCompleted, (i, j) => i.CompareTo(j));
@@ -45,15 +61,20 @@ public partial class ComparisonTable
 
     private void AddElement<T>(Expression<Func<PlayerFullDto, T>> selectorExpression, Func<T, T, int> comparer, Func<T, string>? customFormatter = null)
     {
+        if (_player1 is null || _player2 is null)
+        {
+            throw new InvalidOperationException("Cannot load players for comparison.");
+        }
+
         Func<T, string> formatter = customFormatter ?? (t => t?.ToString() ?? "—");
 
         Func<PlayerFullDto, T> selector = selectorExpression.Compile();
 
         PlayersComparisons.Add(new(
             LabelStore.Get(selectorExpression),
-            formatter(selector(Player1)),
-            formatter(selector(Player2)),
-            comparer(selector(Player1), selector(Player2))));
+            formatter(selector(_player1)),
+            formatter(selector(_player2)),
+            comparer(selector(_player1), selector(_player2))));
     }
 
     private static int NullableComparer<T>(T? firstValue, T? secondValue) where T : struct, IComparable

@@ -1,9 +1,28 @@
-<Container Condition="_isOpen">
+@if (_isOpen && _eventArgs is not null)
+{
     <div class="modal is-active" tabindex="0" @onkeydown="HandleKeyDown">
         <div class="modal-background"></div>
-        <div class="modal-content">
-            <DynamicComponent Type="@_eventArgs!.ComponentType" Parameters="@_eventArgs.Parameters" @ref="_componentRef" />
-        </div>
-        <button class="modal-close is-large" aria-label="close" type="button" @onclick="Close"></button>
+        <Container Condition="!_eventArgs.Options.IsCard">
+            <ChildContent>
+                <div class="modal-content">
+                    <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" @ref="_componentRef" />
+                </div>
+                <button class="modal-close is-large" aria-label="close" type="button" @onclick="Close"></button>
+            </ChildContent>
+            <ElseContent>
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">@_eventArgs.Options.Title</p>
+                        <button class="delete" aria-label="close" @onclick="Close"></button>
+                    </header>
+                    <section class="modal-card-body">
+                        <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" @ref="_componentRef" />
+                    </section>
+                    <footer class="modal-card-foot">
+                        <button class="button is-primary" @onclick="Close">Fermer</button>
+                    </footer>
+                </div>
+            </ElseContent>
+        </Container>
     </div>
-</Container>
+}

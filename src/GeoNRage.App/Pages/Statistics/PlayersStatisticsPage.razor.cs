@@ -12,15 +12,9 @@ public partial class PlayersStatisticsPage
     public NavigationManager NavigationManager { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
+    public ModalService ModalService { get; set; } = null!;
 
     public IList<string> SelectedPlayerIds { get; } = new List<string>();
-
-    public bool ShowComparison { get; set; }
-
-    public PlayerFullDto Player1 { get; set; } = null!;
-
-    public PlayerFullDto Player2 { get; set; } = null!;
 
     internal IEnumerable<PlayerStatisticDto> Players { get; set; } = Enumerable.Empty<PlayerStatisticDto>();
 
@@ -58,11 +52,12 @@ public partial class PlayersStatisticsPage
 
     private async Task CompareAsync()
     {
-        PopupService.DisplayLoader("Chargement...");
-        Player1 = (await PlayersApi.GetFullAsync(SelectedPlayerIds[0])).Content!;
-        Player2 = (await PlayersApi.GetFullAsync(SelectedPlayerIds[1])).Content!;
-        PopupService.HidePopup();
-        ShowComparison = true;
+        await ModalService.DisplayModalAsync<ComparisonTable>(new()
+        {
+            [nameof(ComparisonTable.Player1Id)] = SelectedPlayerIds[0],
+            [nameof(ComparisonTable.Player2Id)] = SelectedPlayerIds[1],
+        },
+        new(true, "Comparaison"));
     }
 
     private bool CanCompare()

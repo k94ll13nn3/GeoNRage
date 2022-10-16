@@ -59,21 +59,3 @@
 		</LoadingAnimation>
 	</ElseContent>
 </Container>
-
-<Container Condition="ShowComparison">
-	<div class="modal is-active">
-		<div class="modal-background"></div>
-		<div class="modal-card">
-			<header class="modal-card-head">
-				<p class="modal-card-title">Comparaison</p>
-				<button class="delete" aria-label="close" @onclick="() => ShowComparison = false"></button>
-			</header>
-			<section class="modal-card-body">
-				<ComparisonTable Player1="@Player1" Player2="@Player2"></ComparisonTable>
-			</section>
-			<footer class="modal-card-foot">
-				<button class="button is-primary" @onclick="() => ShowComparison = false">Fermer</button>
-			</footer>
-		</div>
-	</div>
-</Container>

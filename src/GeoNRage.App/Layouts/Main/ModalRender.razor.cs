@@ -66,13 +66,8 @@ public partial class ModalRender : IDisposable
     private void Close()
     {
         _isOpen = false;
-        if (_eventArgs is null)
-        {
-            throw new InvalidOperationException("Cannot close modal.");
-        }
-
-        _eventArgs.Result.SetResult(_componentRef?.Instance);
-
+        _eventArgs?.Result.SetResult(_componentRef?.Instance);
+        _eventArgs = null;
         StateHasChanged();
     }
 
