@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="NLog.Database" Version="5.0.5" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.5" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
