@@ -27,6 +27,9 @@ dotnet_diagnostic.S1172.severity = silent
 # IDE0161 : Use file scoped namespace
 dotnet_diagnostic.IDE0161.severity = warning
 
+# RCS1173: Use coalesce instead of if
+dotnet_diagnostic.RCS1173.severity = silent
+
 roslynator_accessibility_modifiers = explicit
 roslynator_enum_has_flag_style = method
 roslynator_object_creation_type_style = implicit_when_type_is_obvious

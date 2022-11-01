@@ -19,13 +19,6 @@ public partial class DiscordService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Result checkSlashSupport = _slashService.SupportsSlashCommands();
-        if (!checkSlashSupport.IsSuccess)
-        {
-            LogSlashCommandsNotSupported(checkSlashSupport.Error.Message);
-            return;
-        }
-
         _ = Snowflake.TryParse(_options.DiscordDevServerId, out Snowflake? guild);
 
         Result updateSlash = await _slashService.UpdateSlashCommandsAsync(guild, null, stoppingToken);
