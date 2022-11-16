@@ -21,12 +21,12 @@ public class GeoNRageUserStore : UserStore<
     {
     }
 
-    public override Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
+    public override Task<User?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
     {
         return Users.Include(p => p.Player).FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName, cancellationToken)!;
     }
 
-    public override Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
+    public override Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
     {
         return Users.Include(p => p.Player).FirstOrDefaultAsync(u => u.Id == userId, cancellationToken)!;
     }
