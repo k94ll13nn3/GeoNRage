@@ -14,7 +14,7 @@ namespace GeoNRage.Server.Bot;
 public partial class ChallengeImportModal : InteractionGroup
 {
     private readonly IDiscordRestInteractionAPI _interactionApi;
-    private readonly InteractionContext _interactionContext;
+    private readonly IInteractionContext _interactionContext;
     private readonly ChallengeService _challengeService;
     private readonly FeedbackService _feedbackService;
 
@@ -62,8 +62,8 @@ public partial class ChallengeImportModal : InteractionGroup
     private async Task<Result> ReplyEphemeralAsync(string message)
     {
         Result<IMessage> reply = await _interactionApi.CreateFollowupMessageAsync(
-            _interactionContext.ApplicationID,
-            _interactionContext.Token,
+            _interactionContext.Interaction.ApplicationID,
+            _interactionContext.Interaction.Token,
             message,
             flags: MessageFlags.Ephemeral
         );

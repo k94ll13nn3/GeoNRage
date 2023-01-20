@@ -129,7 +129,7 @@ public partial class ChallengeService
             GeoGuessrRound round = results[0].Game.Rounds[i];
             string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}";
             GoogleGeocode? geocode = await googleClient.GetFromJsonAsync<GoogleGeocode>(query);
-            if (geocode is not null && geocode.Results?.Count > 0)
+            if (geocode?.Results?.Count > 0)
             {
                 GoogleGeocodeResult result = geocode.Results[0];
                 var location = new Location()

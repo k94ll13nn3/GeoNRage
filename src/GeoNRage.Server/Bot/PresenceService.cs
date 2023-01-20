@@ -44,7 +44,7 @@ public partial class PresenceService : BackgroundService
     {
         (ActivityType type, string name) = _activities[RandomNumberGenerator.GetInt32(_activities.Count)];
         _gatewayClient.SubmitCommand(new UpdatePresence(
-            ClientStatus.Online,
+            UserStatus.Online,
             false,
             null,
             new[] { new Activity(name, type) }));

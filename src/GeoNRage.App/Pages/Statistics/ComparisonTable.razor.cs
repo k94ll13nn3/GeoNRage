@@ -9,6 +9,8 @@ public partial class ComparisonTable : IModal
     private PlayerFullDto? _player1;
     private PlayerFullDto? _player2;
 
+    public string Id => nameof(ComparisonTable);
+
     [Parameter]
     public string Player1Id { get; set; } = null!;
 

@@ -18,7 +18,7 @@ namespace GeoNRage.Server.Bot;
 public partial class BotCommands : CommandGroup
 {
     private readonly IDiscordRestInteractionAPI _interactionApi;
-    private readonly InteractionContext _interactionContext;
+    private readonly IInteractionContext _interactionContext;
     private readonly GameService _gameService;
     private readonly PlayerService _playerService;
     private readonly MapService _mapService;
@@ -131,18 +131,19 @@ public partial class BotCommands : CommandGroup
             return await ReplyAsync("Carte inconnue");
         }
 
-        IEnumerable<string> rankings = statistics
+        List<string> rankings = statistics
             .Scores
             .OrderByDescending(s => s.Sum)
             .ThenBy(s => s.Time)
-            .Select(s => $"{s.PlayerName} : {s.Sum} ({s.Time.ToTimeString()})");
+            .Select(s => $"{s.PlayerName} : {s.Sum} ({s.Time.ToTimeString()})")
+            .ToList();
 
-        if (!rankings.Any() && !allMaps)
+        if (rankings.Count == 0 && !allMaps)
         {
             return await ReplyAsync($"Veuillez utiliser le paramètre '{nameof(allMaps)}' pour cette carte");
         }
 
-        if (!rankings.Any())
+        if (rankings.Count == 0)
         {
             return await ReplyAsync("Erreur inconnue");
         }
@@ -152,7 +153,7 @@ public partial class BotCommands : CommandGroup
             new ("Classement (1 à 5)", string.Join(Environment.NewLine, rankings.Take(5)), true),
         };
 
-        if (rankings.Count() > 5)
+        if (rankings.Count > 5)
         {
             fields.Add(new("Classement (6 à 10)", string.Join(Environment.NewLine, rankings.Take(5..10)), true));
         }
@@ -193,13 +194,13 @@ public partial class BotCommands : CommandGroup
                             {
                                 new TextInputComponent
                                 (
-                                    "challenge-geoguessr-id",
+                                    "challengeGeoguessrId",
                                     TextInputStyle.Short,
                                     "Id du challenge",
                                     16,
                                     16,
                                     true,
-                                    string.Empty,
+                                    default,
                                     "Id GeoGuessr"
                                 )
                             }
@@ -211,8 +212,8 @@ public partial class BotCommands : CommandGroup
 
         return await _interactionApi.CreateInteractionResponseAsync
         (
-            _interactionContext.ID,
-            _interactionContext.Token,
+            _interactionContext.Interaction.ID,
+            _interactionContext.Interaction.Token,
             response,
             ct: CancellationToken
         );
@@ -221,8 +222,8 @@ public partial class BotCommands : CommandGroup
     private async Task<Result> ReplyAsync(string message)
     {
         Result<IMessage> reply = await _interactionApi.CreateFollowupMessageAsync(
-            _interactionContext.ApplicationID,
-            _interactionContext.Token,
+            _interactionContext.Interaction.ApplicationID,
+            _interactionContext.Interaction.Token,
             message
         );
 

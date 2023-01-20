@@ -6,6 +6,8 @@ public partial class FilterPanel : IModal<IEnumerable<string>>
 {
     private IEnumerable<string>? _tags;
 
+    public string Id => nameof(FilterPanel);
+
     [Parameter]
     public IReadOnlyCollection<string>? Tags { get; set; }
 

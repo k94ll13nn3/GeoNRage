@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 
 namespace GeoNRage.App.Layouts.Main;
 
-public partial class SiteHeader
+public partial class SiteHeader : IAsyncDisposable
 {
     private IJSObjectReference _jsModule = null!;
 
@@ -12,6 +12,12 @@ public partial class SiteHeader
     public IJSRuntime JSRuntime { get; set; } = null!;
 
     public Theme Theme { get; set; }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _jsModule.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
 
     protected override async Task OnInitializedAsync()
     {
