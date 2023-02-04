@@ -1,6 +1,6 @@
 @use 'bulma/sass/utilities/functions' as f;
 
-table {
+/*table {
     border-spacing: 0;
     border-collapse: collapse;
     font-size: 14px;
@@ -26,11 +26,7 @@ table {
         color: var(--primary-invert);
         padding: 5px;
     }
-}
-
-.action-button {
-    color: var(--primary-invert);
-}
+}*/
 
 .game-title {
     text-overflow: ellipsis;

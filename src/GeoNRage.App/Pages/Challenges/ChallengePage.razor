@@ -1,9 +1,9 @@
-﻿@page "/challenges/{Id:int}"
+@page "/challenges/{Id:int}"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Member)]
 
 <Container Condition="Loaded && ChallengeFound">
-	<PageTitle>@Challenge.MapName</PageTitle>
+    <PageTitle>@Challenge.MapName</PageTitle>
 </Container>
 
 <Container Condition="Loaded && ChallengeFound">
@@ -13,15 +13,17 @@
                 <div class="card-header-title is-size-3 game-title" style="display: block">
                     <h1 class="title">
                         @Challenge.MapName
-                        <a href="https://www.geoguessr.com/challenge/@Challenge.GeoGuessrId" target="_blank" class="action-button">
-                            <span class="icon">
-                                <i class="fas fa-link" aria-hidden="true"></i>
-                            </span>
-                        </a>
                     </h1>
                 </div>
                 <div class="card-header-icon">
                     <div class="field has-addons">
+                        <p class="control">
+                            <a href="https://www.geoguessr.com/challenge/@Challenge.GeoGuessrId" target="_blank" class="button">
+                                <span class="icon">
+                                    <i class="fas fa-link" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </p>
                         <p class="control">
                             <button class="button" @onclick="Refresh">
                                 <span class="is-hidden-touch"></span>
@@ -35,49 +37,46 @@
                 </div>
             </header>
             <div class="card-content">
-                <div class="table-container">
-                    <table>
-                        <tr>
-                            <th>
-                            </th>
-                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
-                                <th>@playerScore.PlayerName</th>
-                            </Repeater>
-                        </tr>
-
+                <Table Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))"
+                       Headers="@(new TableHeader[]
+                                  {
+                                      new("", false, string.Empty),
+                                      new("Round 1", false, string.Empty),
+                                      new("Round 2", false, string.Empty),
+                                      new("Round 3", false, string.Empty),
+                                      new("Round 4", false, string.Empty),
+                                      new("Round 5", false, string.Empty),
+                                      new("Total", false, string.Empty),
+                                  })"
+                       IsNarrow="false">
+                    <RowContent Context="playerScore">
+                        <td>@playerScore.PlayerName</td>
                         <Repeater Items="Enumerable.Range(1, 5)" Context="round">
-                            <tr>
-                                <th>Round @round</th>
-                                <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
-                                    @{
-                                        var guess = Challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerScore.PlayerId)?.PlayerGuesses.FirstOrDefault(g => g.RoundNumber == round);
-                                    }
-                                    <Container Condition="guess is not null">
-                                        <ChildContent>
-                                            <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : "default-score"))">
-                                                @guess!.Score <br />
-                                                <small>@($"{guess.Distance.ToDistanceString()}") / @($"{guess.Time.ToTimeString()}")</small>
-                                            </td>
-                                        </ChildContent>
-                                        <ElseContent>
-                                            <td>—</td>
-                                        </ElseContent>
-                                    </Container>
-                                </Repeater>
-                            </tr>
+                            @{
+                                var guess = Challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerScore.PlayerId)?.PlayerGuesses.FirstOrDefault(g => g.RoundNumber == round);
+                            }
+                            <Container Condition="guess is not null">
+                                <ChildContent>
+                                    <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : ""))">
+                                        @guess!.Score <br />
+                                        <small>@($"{guess.Distance.ToDistanceString()}") / @($"{guess.Time.ToTimeString()}")</small>
+                                    </td>
+                                </ChildContent>
+                                <ElseContent>
+                                    <td>—</td>
+                                </ElseContent>
+                            </Container>
                         </Repeater>
 
-                        <tr>
-                            <th>Total</th>
-                            <Repeater Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))" Context="playerScore">
-                                <th>
-                                    @(playerScore.PlayerGuesses.Sum(g => g.Score) ?? 0) <br />
-                                    <small>@($"{playerScore.PlayerGuesses.Sum(g => g.Distance).ToDistanceString()}") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time).ToTimeString()}")</small>
-                                </th>
-                            </Repeater>
-                        </tr>
-                    </table>
-                </div>
+                        @{
+                            var sum = playerScore.PlayerGuesses.Sum(g => g.Score);
+                        }
+                        <td class="@(sum == 25000 ? "perfect" : (sum == 24999 ? "almost-perfect" : ""))">
+                            @(sum ?? 0) <br />
+                            <small>@($"{playerScore.PlayerGuesses.Sum(g => g.Distance).ToDistanceString()}") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time).ToTimeString()}")</small>
+                        </td>
+                    </RowContent>
+                </Table>
             </div>
         </div>
     </div>
