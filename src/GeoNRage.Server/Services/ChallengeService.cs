@@ -19,7 +19,7 @@ public partial class ChallengeService
     [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
     private readonly ApplicationOptions _options;
 
-    public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame, bool onlyMapForGame, string[]? playersToExclude)
+    public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame, bool onlyMapForGame, string[]? playersToExclude, string? currentPlayerId)
     {
         IQueryable<Challenge> query = _context.Challenges.AsNoTracking();
         if (onlyWithoutGame)
@@ -46,7 +46,8 @@ public partial class ChallengeService
                 c.GeoGuessrId,
                 c.GameId == -1 ? null : c.GameId,
                 c.Creator == null ? null : c.Creator.Name,
-                c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0
+                c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
+                c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault()
             ))
             .ToListAsync();
     }

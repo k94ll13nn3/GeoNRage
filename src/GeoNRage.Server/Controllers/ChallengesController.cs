@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ public partial class ChallengesController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame = false, [FromQuery] string[]? playersToExclude = null)
     {
-        return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers[Constants.MapStatusHeaderName] != "True", playersToExclude);
+        return await _challengeService.GetAllAsync(onlyWithoutGame, Request.Headers[Constants.MapStatusHeaderName] != "True", playersToExclude, User?.FindFirstValue("PlayerId"));
     }
 
     [Authorize(Roles = Roles.Admin)]

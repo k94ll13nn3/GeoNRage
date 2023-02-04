@@ -56,6 +56,7 @@ public partial class ChallengesPage
         {
             nameof(ChallengeDto.MapName) => ascending ? challenges.OrderBy(c => c.MapName) : challenges.OrderByDescending(c => c.MapName),
             nameof(ChallengeDto.MaxScore) => ascending ? challenges.OrderBy(c => c.MaxScore) : challenges.OrderByDescending(c => c.MaxScore),
+            nameof(ChallengeDto.PlayerScore) => ascending ? challenges.OrderBy(c => c.PlayerScore) : challenges.OrderByDescending(c => c.PlayerScore),
             _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
         };
     }
