@@ -37,7 +37,8 @@
                 </div>
             </header>
             <div class="card-content">
-                <Table Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))"
+                <Table @ref="ChallengeTable"
+                       Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))"
                        Headers="@(new TableHeader[]
                                   {
                                       new("", false, string.Empty),

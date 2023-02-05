@@ -1,4 +1,5 @@
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
 using Refit;
 
@@ -24,6 +25,8 @@ public partial class ChallengePage
 
     public ChallengeDetailDto Challenge { get; set; } = null!;
 
+    public Table<ChallengePlayerScoreDto> ChallengeTable { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
         ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Id);
@@ -42,17 +45,18 @@ public partial class ChallengePage
 
     private void Refresh()
     {
-        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await RefreshAsync());
+        PopupService.DisplayOkCancelPopup("Mise à jour", "Mettre à jour les scores du challenge ?", async () => await RefreshAsync());
     }
 
     private async Task RefreshAsync()
     {
         try
         {
-            PopupService.DisplayLoader("Restoration");
+            PopupService.DisplayLoader("Mise à jour");
             await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
             ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
             Challenge = response.Content!;
+            ChallengeTable?.SetItems(Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score)));
         }
         catch (ApiException e)
         {
