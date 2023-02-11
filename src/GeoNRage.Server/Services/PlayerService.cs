@@ -21,9 +21,20 @@ public partial class PlayerService
             (
                 p.Id,
                 p.Name,
-                p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 5000),
-                p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Count(g => g.Score == 4999),
-                p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
+                p
+                    .PlayerScores
+                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                    .SelectMany(p => p.PlayerGuesses)
+                    .Count(g => g.Score == 5000),
+                p
+                    .PlayerScores
+                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                    .SelectMany(p => p.PlayerGuesses)
+                    .Count(g => g.Score == 4999),
+                p
+                    .PlayerScores
+                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                    .Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
                 p
                     .PlayerScores
                     .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
@@ -44,7 +55,34 @@ public partial class PlayerService
                     .OrderByDescending(g => g.Sum)
                     .First()
                     .Id,
-                p.PlayerScores.Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame))).SelectMany(p => p.PlayerGuesses).Select(g => g.Score).Average()
+                p
+                    .PlayerScores
+                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                    .SelectMany(p => p.PlayerGuesses)
+                    .Select(g => g.Score)
+                    .Average(),
+                ExperienceEngine.GetLevel(
+                    p
+                        .PlayerScores
+                        .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                        .Select(p =>
+                            p.PlayerGuesses.Count // number of rounds = 1xp each
+                            + p.PlayerGuesses.Count(pg => pg.Score == 5000) // number of 5000 = 1xp each
+                            + (p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null) ? 5 : 0) // number of challenges = 5xp each
+                            + (p.PlayerGuesses.Count == 5 && p.PlayerGuesses.Sum(g => g.Score) == 25000 ? 5 : 0) // number of 25000 = 5xp each
+                        )
+                        .Sum()
+                    +
+                    // number of games = 10xp each (20xp for 75000)
+                    p
+                        .PlayerScores
+                        .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
+                        .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                        .GroupBy(p => p.GameId)
+                        .Where(g => g.Count() == 3)
+                        .Select(g => g.Sum(p => p.Sum) == 75000 ? 20 : 10)
+                        .Sum()
+                )
             ))
             .ToListAsync();
     }

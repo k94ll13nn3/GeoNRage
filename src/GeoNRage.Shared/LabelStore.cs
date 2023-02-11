@@ -40,6 +40,10 @@ public static class LabelStore
             [nameof(PlayerStatisticDto.BestGameSum)] = "Meilleure partie",
             [nameof(PlayerStatisticDto.RoundAverage)] = "Moyenne par round",
         },
+        [typeof(PlayerExperienceDto).ToString()] = new()
+        {
+            [nameof(PlayerExperienceDto.Level)] = "Niveau",
+        },
     };
 
     public static string Get<TType, TProperty>(Expression<Func<TType, TProperty>> expression)
