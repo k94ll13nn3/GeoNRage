@@ -4,6 +4,7 @@
      xmlns="http://www.w3.org/2000/svg"
      height="@(Size)px"
      width="@(Size)px">
+        <title>Niveau @PlayerExperience.Level (@PlayerExperience.CurrentLevelExperience/@PlayerExperience.ExperienceForLevel XP)</title>
         <polygon style="fill: #fff"
              points="347.632 327.107 219.632 412.441 91.632 327.107 91.632 105.241 125.765 105.241 125.765 71.107 313.499 71.107 313.499 105.241 347.632 105.241" />
         <polygon class="badge-middle"
@@ -15,7 +16,7 @@
           text-anchor="middle"
           x="219.6305"
           y="250"
-          style="font-family: 'Alata', cursive; font-size: 130px">
+          style="font-family: 'Alata', cursive; font-size: 120px; pointer-events: none; user-select: none;">
             @PlayerExperience.Level
         </text>
     </svg>
