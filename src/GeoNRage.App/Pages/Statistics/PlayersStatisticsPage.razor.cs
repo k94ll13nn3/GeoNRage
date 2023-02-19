@@ -46,7 +46,6 @@ public partial class PlayersStatisticsPage
             nameof(PlayerStatisticDto.ChallengesCompleted) => ascending ? players.OrderBy(p => p.ChallengesCompleted) : players.OrderByDescending(p => p.ChallengesCompleted),
             nameof(PlayerStatisticDto.BestGameSum) => ascending ? players.OrderBy(p => p.BestGameSum) : players.OrderByDescending(p => p.BestGameSum),
             nameof(PlayerStatisticDto.RoundAverage) => ascending ? players.OrderBy(p => p.RoundAverage) : players.OrderByDescending(p => p.RoundAverage),
-            nameof(PlayerExperienceDto.Level) => ascending ? players.OrderBy(p => p.Experience.Level) : players.OrderByDescending(p => p.Experience.Level),
             _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
         };
     }

@@ -64,7 +64,6 @@ public record PlayerStatisticDto(
     int ChallengesCompleted,
     int? BestGameSum,
     int? BestGameId,
-    double? RoundAverage,
-    PlayerExperienceDto Experience);
+    double? RoundAverage);
 
 public record PlayerExperienceDto(int Level, int TotalExperience, int CurrentLevelExperience, int ExperienceForLevel);

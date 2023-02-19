@@ -14,7 +14,6 @@
 									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.ChallengesCompleted), true, nameof(PlayerStatisticDto.ChallengesCompleted)),
 									new(LabelStore.Get<PlayerStatisticDto, double?>(ps => ps.RoundAverage), true, nameof(PlayerStatisticDto.RoundAverage)),
 									new(LabelStore.Get<PlayerStatisticDto, int?>(ps => ps.BestGameSum), true, nameof(PlayerStatisticDto.BestGameSum)),
-									new(LabelStore.Get<PlayerExperienceDto, int>(pe => pe.Level), true, nameof(PlayerExperienceDto.Level)),
 									new(string.Empty, false, string.Empty)
 								})"
 				   SortFunction="Sort">
@@ -34,7 +33,6 @@
 							</ElseContent>
 						</Container>
 					</td>
-                    <td>@player.Experience.Level</td>
                     <td>
 						<input type="checkbox"
 							   checked=@SelectedPlayerIds.Contains(player.Id)
@@ -43,7 +41,7 @@
 					</td>
 				</RowContent>
 				<FooterContent>
-					<th colspan="8" class="has-text-right">
+					<th colspan="7" class="has-text-right">
 						<button class="button is-primary" @onclick="@CompareAsync" disabled="@(!CanCompare())">
 							<span class="icon">
 								<i class="fas fa-random"></i>
