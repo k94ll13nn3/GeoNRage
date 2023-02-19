@@ -65,3 +65,5 @@ public record PlayerStatisticDto(
     int? BestGameSum,
     int? BestGameId,
     double? RoundAverage);
+
+public record PlayerExperienceDto(int Level, int TotalExperience, int CurrentLevelExperience, int ExperienceForLevel);

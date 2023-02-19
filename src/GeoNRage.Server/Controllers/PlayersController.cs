@@ -42,6 +42,18 @@ public partial class PlayersController : ControllerBase
         return player;
     }
 
+    [HttpGet("{id}/experience")]
+    public async Task<ActionResult<PlayerExperienceDto>> GetExperienceAsync(string id)
+    {
+        PlayerExperienceDto? experience = await _playerService.GetExperienceAsync(id, Request.Headers[Constants.MapStatusHeaderName] == "True");
+        if (experience is null)
+        {
+            return NotFound();
+        }
+
+        return experience;
+    }
+
     [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(string id, PlayerEditDto dto)
