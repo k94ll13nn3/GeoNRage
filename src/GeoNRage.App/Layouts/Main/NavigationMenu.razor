@@ -45,6 +45,9 @@
 
                 <AuthorizeView>
                     <Authorized>
+                         <span class="navbar-item">
+                            <LevelBadge>1</LevelBadge>
+                        </span>
                         <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
                             <figure class="image is-32x32 profil-notification">
                                 <img class="is-rounded" src="@User.ProfilePicture()">
