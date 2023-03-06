@@ -14,6 +14,7 @@ public partial class CheckboxList<TItem, TId>
     public Func<TItem, TId> IdSelector { get; set; } = null!;
 
     [Parameter]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Blazor parameters must have a setter")]
     public ICollection<TId> SelectedIds { get; set; } = new List<TId>();
 
     [Parameter]
