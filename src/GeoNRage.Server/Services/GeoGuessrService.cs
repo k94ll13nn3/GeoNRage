@@ -54,10 +54,10 @@ public partial class GeoGuessrService
             throw new InvalidOperationException("Cannot import data.");
         }
 
-        GeoGuessrChallengeResult[]? challengeResults;
+        IList<GeoGuessrChallengeResult>? challengeResults;
         try
         {
-            challengeResults = await client.GetFromJsonAsync<GeoGuessrChallengeResult[]>($"results/scores/{geoGuessrId}/0/26", options);
+            challengeResults = (await client.GetFromJsonAsync<GeoGuessrChallengeHighscore>($"results/highscores/{geoGuessrId}?limit=26", options))?.Items;
         }
         catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -85,7 +85,7 @@ public partial class GeoGuessrService
                 }
             }
 
-            challengeResults = await client.GetFromJsonAsync<GeoGuessrChallengeResult[]>($"results/scores/{geoGuessrId}/0/26", options);
+            challengeResults = (await client.GetFromJsonAsync<GeoGuessrChallengeHighscore>($"results/highscores/{geoGuessrId}?limit=26", options))?.Items;
         }
 
         if (challengeResults is null)

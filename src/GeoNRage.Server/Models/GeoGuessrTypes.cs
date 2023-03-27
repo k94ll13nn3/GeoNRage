@@ -26,6 +26,8 @@ public record GeoGuessrGame(GeoGuessrPlayer Player, IList<GeoGuessrRound> Rounds
 
 public record GeoGuessrChallengeResult(GeoGuessrGame Game);
 
+public record GeoGuessrChallengeHighscore(IList<GeoGuessrChallengeResult> Items);
+
 public record GeoGuessrChallenge(
     GeoGuessrChallengeChallenge Challenge,
     GeoGuessrChallengeMap Map,
