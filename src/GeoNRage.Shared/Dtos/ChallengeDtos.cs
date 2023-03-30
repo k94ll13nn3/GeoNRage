@@ -6,7 +6,7 @@ public class ChallengeImportDto
 {
     [Required]
     [MinLength(16)]
-    [MaxLength(16)]
+    [MaxLength(17)]
     public string GeoGuessrId { get; set; } = null!;
 
     [Required]

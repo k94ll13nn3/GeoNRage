@@ -198,7 +198,7 @@ public partial class BotCommands : CommandGroup
                                     TextInputStyle.Short,
                                     "Id du challenge",
                                     16,
-                                    16,
+                                    17,
                                     true,
                                     default,
                                     "Id GeoGuessr"
