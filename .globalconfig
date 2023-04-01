@@ -18,9 +18,6 @@ dotnet_diagnostic.CA1716.severity = none
 # RS0030: Do not use banned APIs
 dotnet_diagnostic.RS0030.severity = error
 
-# S3903 : Move class to namespace. Not detecting file scoped namespace
-dotnet_diagnostic.S3903.severity = silent
-
 # S1172 : Remove this parameter XXXX, whose value is ignored in the method, FP for delegates
 dotnet_diagnostic.S1172.severity = silent
 
@@ -29,6 +26,8 @@ dotnet_diagnostic.IDE0161.severity = warning
 
 # RCS1173: Use coalesce instead of if
 dotnet_diagnostic.RCS1173.severity = silent
+
+dotnet_diagnostic.IDE0270.severity = refactoring
 
 roslynator_accessibility_modifiers = explicit
 roslynator_enum_has_flag_style = method
