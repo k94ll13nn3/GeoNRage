@@ -49,7 +49,7 @@ public partial class ToastRender : IDisposable
 
     private void AddToast(object? sender, ToastEventArgs toast)
     {
-        if (!_toasts.Any(t => !string.IsNullOrWhiteSpace(t.Id) && t.Id == toast.Id) || toast.OverrideSameId)
+        if (!_toasts.Exists(t => !string.IsNullOrWhiteSpace(t.Id) && t.Id == toast.Id) || toast.OverrideSameId)
         {
             _toasts.RemoveAll(t => t.Id == toast.Id);
             _toasts.Add(toast);

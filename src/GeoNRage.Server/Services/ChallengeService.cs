@@ -190,12 +190,12 @@ public partial class ChallengeService
                 }).ToList(),
             };
 
-            if (isMainPlayer && playerScores.Any(ps => ps.PlayerId == playerScore.PlayerId))
+            if (isMainPlayer && playerScores.Exists(ps => ps.PlayerId == playerScore.PlayerId))
             {
                 playerScores.RemoveAll(ps => ps.PlayerId == playerScore.PlayerId);
             }
 
-            if (!playerScores.Any(ps => ps.PlayerId == playerScore.PlayerId))
+            if (!playerScores.Exists(ps => ps.PlayerId == playerScore.PlayerId))
             {
                 playerScores.Add(playerScore);
             }
