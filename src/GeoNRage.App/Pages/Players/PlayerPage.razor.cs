@@ -179,6 +179,11 @@ public partial class PlayerPage
         StateHasChanged();
     }
 
+    private void NavigateToGame(object x, object _)
+    {
+        NavigationManager.NavigateTo($"/games/{x.ToString()![1..]}");
+    }
+
     [GeneratedRegex("^(?<map>.*?)\\s*(?<operator>[><]=?|=){1}\\s*(?<value>\\d{1,5})$", RegexOptions.Compiled)]
     private static partial Regex NumericFilterRegex();
 }
