@@ -1,4 +1,5 @@
 using GeoNRage.Server;
+using GeoNRage.Server.Endpoints;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Tasks;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -30,6 +31,7 @@ builder.Services.AddStartupTasks();
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSwaggerGen();
+    builder.Services.AddEndpointsApiExplorer();
 }
 
 WebApplication app = builder.Build();
@@ -59,6 +61,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllers();
+app.MapApplicationEndpoints();
 app.MapHub<AppHub>("/apphub");
 app.MapFallbackToFile("index.html");
 
