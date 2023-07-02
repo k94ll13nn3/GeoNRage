@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Endpoints;
 
@@ -9,6 +10,8 @@ public static class EndpointsExtensions
         builder.MapMapsEndpoints();
         builder.MapLocationsEndpoints();
         builder.MapPlayersEndpoints();
+        builder.MapAdminEndpoints();
+        builder.MapChallengesEndpoints();
 
         return builder;
     }
@@ -16,6 +19,9 @@ public static class EndpointsExtensions
     public static TBuilder RequireRole<TBuilder>(this TBuilder builder, string role)
         where TBuilder : IEndpointConventionBuilder
     {
-        return builder.RequireAuthorization(new AuthorizeAttribute() { Roles = role });
+        return builder
+            .RequireAuthorization(new AuthorizeAttribute() { Roles = role })
+            .WithMetadata(new ProducesResponseTypeAttribute(StatusCodes.Status401Unauthorized))
+            .WithMetadata(new ProducesResponseTypeAttribute(StatusCodes.Status403Forbidden));
     }
 }
