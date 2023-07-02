@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Refit;
 
 namespace GeoNRage.App.Services;
 
@@ -26,5 +27,14 @@ public class ToastService
         string? title = null)
     {
         OnToastRequested?.Invoke(this, new(id, Guid.NewGuid(), content, duration, toastType, overrideSameId, title));
+    }
+
+    public async Task DisplayErrorToastAsync(ApiException exception, string id)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        ApiError? error = await exception.GetContentAsAsync<ApiError>();
+        string message = error?.Message ?? "Une erreur est survenue";
+        DisplayToast(message, null, ToastType.Error, id, true);
     }
 }

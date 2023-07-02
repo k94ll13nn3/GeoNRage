@@ -51,7 +51,7 @@ public partial class ChallengesAdmin
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "challenge-delete", true);
+            await ToastService.DisplayErrorToastAsync(e, "challenge-delete");
         }
     }
 
@@ -75,7 +75,7 @@ public partial class ChallengesAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {e.Content}";
+            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
         }
         finally
         {

@@ -63,7 +63,7 @@ public partial class PlayersAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {e.Content}";
+            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
         }
     }
 
@@ -87,7 +87,7 @@ public partial class PlayersAdmin
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "player-delete", true);
+            await ToastService.DisplayErrorToastAsync(e, "player-delete");
         }
     }
 
@@ -101,7 +101,7 @@ public partial class PlayersAdmin
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "player-update-geoguessr", true);
+            await ToastService.DisplayErrorToastAsync(e, "player-update-geoguessr");
         }
     }
 }

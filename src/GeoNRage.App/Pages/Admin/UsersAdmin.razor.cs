@@ -63,7 +63,7 @@ public partial class UsersAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {e.Content}";
+            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
         }
     }
 
@@ -79,7 +79,7 @@ public partial class UsersAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {e.Content}";
+            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
         }
     }
 
@@ -116,7 +116,7 @@ public partial class UsersAdmin
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast(e.Content ?? "Une erreur est survenue", null, ToastType.Error, "player-delete", true);
+            await ToastService.DisplayErrorToastAsync(e, "player-delete");
         }
     }
 }

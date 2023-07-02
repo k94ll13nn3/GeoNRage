@@ -55,7 +55,7 @@ public partial class ProfilePage
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast($"Error: {e.Content}", null, ToastType.Error);
+            await ToastService.DisplayErrorToastAsync(e, "profile-update");
         }
     }
 

@@ -60,7 +60,7 @@ public partial class ChallengePage
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast(e.Content ?? "Echec de l'opération", null, ToastType.Error, "challenge-refresh", true);
+            await ToastService.DisplayErrorToastAsync(e, "challenge-refresh");
         }
         finally
         {

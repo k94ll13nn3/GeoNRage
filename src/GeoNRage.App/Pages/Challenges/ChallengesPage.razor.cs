@@ -96,7 +96,7 @@ public partial class ChallengesPage
         }
         catch (ApiException e)
         {
-            ToastService.DisplayToast(e.Content ?? string.Empty, null, ToastType.Error);
+            await ToastService.DisplayErrorToastAsync(e, "challenge-import");
         }
         finally
         {
