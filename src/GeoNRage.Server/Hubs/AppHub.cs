@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using GeoNRage.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GeoNRage.Server.Hubs;
 
+[Authorize]
 [AutoConstructor]
 public partial class AppHub : Hub<IAppHub>
 {

@@ -77,6 +77,8 @@ public partial class GamePage : IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        User = (await AuthenticationState).User;
+
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
             .WithAutomaticReconnect()
@@ -90,7 +92,10 @@ public partial class GamePage : IAsyncDisposable
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
         _hubConnection.Reconnected += OnHubConnectionReconnected;
 
-        await _hubConnection.StartAsync(_cancellationToken.Token);
+        if (User.PlayerId() is not null)
+        {
+            await _hubConnection.StartAsync(_cancellationToken.Token);
+        }
 
         ApiResponse<GameDetailDto> response = await GamesApi.GetAsync(Id);
         if (!response.IsSuccessStatusCode || response.Content is null)
@@ -115,12 +120,14 @@ public partial class GamePage : IAsyncDisposable
                 }
             }
 
-            await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
+            if (User.PlayerId() is not null)
+            {
+                await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
+            }
             Images["Noob"] = "img/noob.webp";
             Images["Nlm"] = "img/finger.webp";
             Images["Tech Genus"] = "img/shut-up.webp";
             Images["Pignouf"] = "img/pignouf.webp";
-            User = (await AuthenticationState).User;
 
             StateHasChanged();
         }
