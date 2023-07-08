@@ -9,7 +9,7 @@ public static class GamesEndpointsBuilder
 {
     public static RouteGroupBuilder MapGamesEndpoints(this IEndpointRouteBuilder builder)
     {
-        RouteGroupBuilder group = builder.MapGroup("api/games").RequireRole(Roles.Admin).WithTags("Games");
+        RouteGroupBuilder group = builder.MapGroup("api/games").WithTags("Games");
 
         group.MapGet("/", GetAllAsync);
         group.MapGet("/admin-view", GetAllAsAdminViewAsync).RequireRole(Roles.Admin);
