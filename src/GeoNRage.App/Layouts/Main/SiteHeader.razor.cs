@@ -6,7 +6,7 @@ namespace GeoNRage.App.Layouts.Main;
 
 public partial class SiteHeader : IAsyncDisposable
 {
-    private IJSObjectReference _jsModule = null!;
+    private IJSObjectReference? _jsModule;
 
     [Inject]
     public IJSRuntime JSRuntime { get; set; } = null!;
@@ -15,7 +15,11 @@ public partial class SiteHeader : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await _jsModule.DisposeAsync();
+        if (_jsModule is not null)
+        {
+            await _jsModule.DisposeAsync();
+            _jsModule = null;
+        }
         GC.SuppressFinalize(this);
     }
 
@@ -42,6 +46,9 @@ public partial class SiteHeader : IAsyncDisposable
             _ => "main"
         };
 
-        await _jsModule.InvokeVoidAsync("enableStyleSheet", $"styles/{stylePath}.css");
+        if (_jsModule is not null)
+        {
+            await _jsModule.InvokeVoidAsync("enableStyleSheet", $"styles/{stylePath}.css");
+        }
     }
 }
