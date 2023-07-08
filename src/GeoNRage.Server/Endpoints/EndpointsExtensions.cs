@@ -13,6 +13,7 @@ public static class EndpointsExtensions
         builder.MapAdminEndpoints();
         builder.MapChallengesEndpoints();
         builder.MapAuthEndpoints();
+        builder.MapGamesEndpoints();
 
         return builder;
     }
