@@ -36,8 +36,6 @@ public class GeoNRageDbContext : IdentityDbContext<
 
     public DbSet<PlayerGuess> PlayerGuesses { get; set; } = null!;
 
-    public DbSet<Log> Logs { get; set; } = null!;
-
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -72,8 +70,6 @@ public class GeoNRageDbContext : IdentityDbContext<
         builder.Entity<Location>().HasOne(l => l.Challenge).WithMany(c => c.Locations).HasForeignKey(l => l.ChallengeId).IsRequired();
 
         builder.Entity<PlayerGuess>().HasKey(p => new { p.ChallengeId, p.PlayerId, p.RoundNumber });
-
-        builder.Entity<Log>().HasKey(p => p.Id);
 
         builder.Entity<Game>().HasData(new Game { Id = -1, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
 

@@ -9,23 +9,15 @@ public static class AdminEndpointsBuilder
     {
         RouteGroupBuilder group = builder.MapGroup("api/admin").RequireRole(Roles.Admin).WithTags("Admin");
 
-        group.MapGet("/info", GetAdminInfoAsync);
+        group.MapGet("/info", GetAdminInfo);
         group.MapGet("/users", GetAllUsersAsAdminViewAsync).RequireRole(Roles.SuperAdmin);
-
-        group.MapPost("/clear-logs", ClearLogsAsync);
 
         return group;
     }
 
-    private static async Task<Ok<AdminInfoDto>> GetAdminInfoAsync(AdminService _adminService)
+    private static Ok<AdminInfoDto> GetAdminInfo(AdminService _adminService)
     {
-        return TypedResults.Ok(await _adminService.GetAdminInfoAsync());
-    }
-
-    private static async Task<NoContent> ClearLogsAsync(AdminService _adminService)
-    {
-        await _adminService.ClearLogsAsync();
-        return TypedResults.NoContent();
+        return TypedResults.Ok(_adminService.GetAdminInfo());
     }
 
     private static async Task<Ok<IEnumerable<UserAminViewDto>>> GetAllUsersAsAdminViewAsync(AdminService _adminService)

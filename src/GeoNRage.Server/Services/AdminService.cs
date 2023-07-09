@@ -1,4 +1,3 @@
-using GeoNRage.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Services;
@@ -8,19 +7,8 @@ public partial class AdminService
 {
     private readonly GeoNRageDbContext _context;
 
-    public async Task<AdminInfoDto> GetAdminInfoAsync()
+    public AdminInfoDto GetAdminInfo()
     {
-        List<LogEntryDto> logs = await _context.Logs
-            .AsNoTracking()
-            .Select(l => new LogEntryDto
-            (
-                l.Message,
-                l.Level,
-                l.Timestamp,
-                l.Exception
-            ))
-            .ToListAsync();
-
         var tables = new List<TableInfoDto>
             {
                 new (nameof(GeoNRageDbContext.Games), _context.Games.Count()),
@@ -30,7 +18,6 @@ public partial class AdminService
                 new (nameof(GeoNRageDbContext.PlayerScores), _context.PlayerScores.Count()),
                 new (nameof(GeoNRageDbContext.Locations), _context.Locations.Count()),
                 new (nameof(GeoNRageDbContext.PlayerGuesses), _context.PlayerGuesses.Count()),
-                new (nameof(GeoNRageDbContext.Logs), _context.Logs.Count()),
                 new (nameof(GeoNRageDbContext.RoleClaims), _context.RoleClaims.Count()),
                 new (nameof(GeoNRageDbContext.Roles), _context.Roles.Count()),
                 new (nameof(GeoNRageDbContext.UserClaims), _context.UserClaims.Count()),
@@ -40,14 +27,7 @@ public partial class AdminService
                 new (nameof(GeoNRageDbContext.UserTokens), _context.UserTokens.Count()),
             };
 
-        return new AdminInfoDto(tables, logs);
-    }
-
-    public async Task ClearLogsAsync()
-    {
-        IEnumerable<Log> logsToRemove = _context.Logs.Where(c => EF.Functions.DateDiffDay(c.Timestamp, DateTime.UtcNow) > 15).ToList();
-        _context.Logs.RemoveRange(logsToRemove);
-        await _context.SaveChangesAsync();
+        return new AdminInfoDto(tables);
     }
 
     public async Task<IEnumerable<UserAminViewDto>> GetAllUsersAsAdminViewAsync()

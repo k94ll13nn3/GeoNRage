@@ -6,7 +6,7 @@
 
 <GeoNRage.App.Pages.Admin.AdminMenu />
 
-<Container Condition="Tables is not null && Logs is not null">
+<Container Condition="Tables is not null">
     <ChildContent>
         <div class="container is-fluid">
             <h1 class="is-size-4 m-3">Tables</h1>
@@ -20,37 +20,6 @@
                     <td>@table.Name</td>
                     <td>@table.RowCount</td>
                 </RowContent>
-            </Table>
-
-            <h1 class="is-size-4 m-3">Logs</h1>
-            <Table Items="Logs"
-                   Headers="@(new TableHeader[]
-                                  {
-                                      new("Date/heure", false, string.Empty),
-                                      new("Niveau", false, string.Empty),
-                                      new("Message", false, string.Empty),
-                                      new("Exception", false, string.Empty),
-                                  })"
-                   Paginate="true"
-                   PageSize="15"
-                   IsNarrow="false"
-                   @ref="LogsTable">
-                <RowContent Context="log">
-                    <td>@log.Timestamp.ToLocalTime().Humanize()</td>
-                    <td class="@(log.Level == "Warn" ? "has-text-warning" : "has-text-danger")">@log.Level</td>
-                    <td title="@log.Message">@log.Message[0..Math.Min(log.Message.Length, 100)]</td>
-                    <td title="@log.Exception">@log.Exception[0..Math.Min(log.Exception.Length, 100)]</td>
-                </RowContent>
-                <FooterContent>
-                    <th colspan="4" class="has-text-right">
-                        <button class="button is-primary" @onclick="ToggleLogView">
-                            <span>Changer de vue</span>
-                        </button>
-                        <button class="button is-primary" @onclick="ClearLogsAsync">
-                            <span>Vider</span>
-                        </button>
-                    </th>
-                </FooterContent>
             </Table>
         </div>
     </ChildContent>

@@ -3,16 +3,10 @@ using GeoNRage.Server.Endpoints;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Tasks;
 using Microsoft.AspNetCore.ResponseCompression;
-using NLog;
-using NLog.Web;
-
-Logger logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-builder.Host.UseNLog();
+builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSeq(builder.Configuration.GetSection("Seq")));
 
 builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection(nameof(ApplicationOptions)));
 
@@ -63,6 +57,8 @@ app.MapApplicationEndpoints();
 app.MapHub<AppHub>("/apphub");
 app.MapFallbackToFile("index.html");
 
+ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
+
 try
 {
     foreach (IStartupTask startupTask in app.Services.GetServices<IStartupTask>())
@@ -74,10 +70,6 @@ try
 }
 catch (Exception exception)
 {
-    logger.Error(exception, "Stopped program because of exception");
+    logger.LogError(exception, "Stopped program because of exception");
     throw;
-}
-finally
-{
-    LogManager.Shutdown();
 }
