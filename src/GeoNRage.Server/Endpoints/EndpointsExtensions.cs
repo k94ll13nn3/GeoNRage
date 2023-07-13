@@ -14,6 +14,7 @@ public static class EndpointsExtensions
         builder.MapChallengesEndpoints();
         builder.MapAuthEndpoints();
         builder.MapGamesEndpoints();
+        builder.MapLogsEndpoints();
 
         return builder;
     }

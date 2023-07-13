@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GeoNRage.Shared;
 
-public static class Extensions
+public static class ClassExtensions
 {
     public static string FormatNullWithDash<T>(this T value)
     {

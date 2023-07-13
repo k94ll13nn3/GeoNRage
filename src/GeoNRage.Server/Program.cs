@@ -70,6 +70,6 @@ try
 }
 catch (Exception exception)
 {
-    logger.LogError(exception, "Stopped program because of exception");
+    Loggers.LogUnhandledException(logger, "Stopped server because of exception", exception);
     throw;
 }
