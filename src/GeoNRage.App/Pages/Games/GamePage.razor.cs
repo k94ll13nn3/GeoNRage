@@ -59,7 +59,7 @@ public partial class GamePage : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _cancellationToken.Cancel();
-        _cancellationToken?.Dispose();
+        _cancellationToken.Dispose();
         _hubConnection.Closed -= OnHubConnectionClosed;
         _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
         _hubConnection.Reconnected -= OnHubConnectionReconnected;

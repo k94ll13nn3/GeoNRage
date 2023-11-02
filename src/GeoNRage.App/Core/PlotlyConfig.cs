@@ -20,14 +20,16 @@ public class PlotlyConfig
         XAxis = new List<XAxis> { new XAxis { GridColor = "#808080", FixedRange = true } },
         YAxis = new List<YAxis> { new YAxis { GridColor = "#808080", FixedRange = true } },
         Font = new Plotly.Blazor.LayoutLib.Font { Color = "#808080" },
-        Legend = new Legend
-        {
-            YAnchor = YAnchorEnum.Top,
-            Y = 0.99m,
-            XAnchor = XAnchorEnum.Left,
-            X = 0.01m,
-            BgColor = "#eeeeee",
-            Font = new Plotly.Blazor.LayoutLib.LegendLib.Font { Color = "#444444" }
-        },
+        Legend = new List<Legend>(){
+            new Legend
+            {
+                YAnchor = YAnchorEnum.Top,
+                Y = 0.99m,
+                XAnchor = XAnchorEnum.Left,
+                X = 0.01m,
+                BgColor = "#eeeeee",
+                Font = new Plotly.Blazor.LayoutLib.LegendLib.Font { Color = "#444444" }
+            },
+        }
     };
 }

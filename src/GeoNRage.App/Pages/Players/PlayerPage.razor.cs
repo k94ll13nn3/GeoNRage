@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
+using Plotly.Blazor.Interop;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.BarLib;
 using Refit;
@@ -179,9 +180,12 @@ public partial class PlayerPage
         StateHasChanged();
     }
 
-    private void NavigateToGame(object x, object _)
+    private void NavigateToGame(IEnumerable<EventDataPoint> points)
     {
-        NavigationManager.NavigateTo($"/games/{x.ToString()![1..]}");
+        if (points.FirstOrDefault() is EventDataPoint point)
+        {
+            NavigationManager.NavigateTo($"/games/{point.X.ToString()![1..]}");
+        }
     }
 
     [GeneratedRegex("^(?<map>.*?)\\s*(?<operator>[><]=?|=){1}\\s*(?<value>\\d{1,5})$", RegexOptions.Compiled)]
