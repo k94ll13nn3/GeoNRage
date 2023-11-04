@@ -168,7 +168,7 @@ public partial class ChallengeService
             // Update icon in order to have the most recent one.
             if (!string.IsNullOrWhiteSpace(geoChallengeGamePlayer.Pin.Url.ToString()))
             {
-                player.IconUrl = new Uri($"https://www.geoguessr.com/images/auto/144/144/ce/0/plain/{geoChallengeGamePlayer.Pin.Url}");
+                player.IconUrl = new Uri($"https://www.geoguessr.com/images/resize:auto:144:144/gravity:ce/plain/{geoChallengeGamePlayer.Pin.Url}");
             }
             else
             {
