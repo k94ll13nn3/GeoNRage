@@ -6,7 +6,7 @@
 
 <Container Condition="Games?.Any() == true">
     <ChildContent>
-        <div class="container is-fluid m-3">
+        <div class="container is-fluid">
             <Table Items="Games"
                    Headers="@(new TableHeader[]
                           {
@@ -146,7 +146,7 @@
                     <span>Ajouter carte</span>
                 </button>
 
-                <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" />
+                <CheckboxList Data="@Players" LabelSelector="@(p => p.Name)" IdSelector="@(p => p.Id)" SelectedIds="@Game.PlayerIds" Label="Joueurs" />
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-primary" type="submit">Valider</button>

@@ -1,44 +1,57 @@
-﻿@page "/admin/maps"
+@page "/admin/maps"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Admin)]
 
 <GeoNRage.App.Pages.Admin.AdminMenu />
 
-<div class="container is-fluid m-3">
-    <Container Condition="Maps?.Any() == true">
-        <table class="table is-bordered is-striped is-hoverable">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Nom</th>
-                    <th>Carte pour partie</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <Repeater Items="Maps" Context="map">
-                    <tr>
-                        <td>@map.Id</td>
-                        <td>@map.Name</td>
-                        <td><input type="checkbox" checked="@map.IsMapForGame" disabled></td>
-                        <td class="has-text-centered">
-                            <a class="has-text-info" @onclick="(() => EditMap(map.Id))">
-                                <span class="icon">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                            </a>
-                            <a class="has-text-danger" @onclick="(() => DeleteMap(map.Id))">
-                                <span class="icon">
-                                    <i class="fas fa-trash-alt"></i>
-                                </span>
-                            </a>
-                        </td>
-                    </tr>
-                </Repeater>
-            </tbody>
-        </table>
-    </Container>
-</div>
+<Container Condition="Maps?.Any() == true">
+    <ChildContent>
+        <div class="container is-fluid">
+            <Table Items="Maps"
+                   Headers="@(new TableHeader[]
+                          {
+                              new("Id", false, string.Empty),
+                              new("Nom", false, string.Empty),
+                              new("", false, string.Empty),
+                              new("", false, string.Empty),
+                          })"
+                   PageSize="20"
+                   Paginate="true"
+                   @ref="MapsTable">
+                <RowContent Context="map">
+                    <td>@map.Id</td>
+                    <td>
+                        @map.Name
+                        @if (@map.IsMapForGame)
+                        {
+                            <span class="tag is-link tag-map-for-game">Carte pour partie</span>
+                        }
+                    </td>
+                    <td class="min">
+                        <a class="has-text-info" @onclick="(() => EditMap(map.Id))">
+                            <span class="icon">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                        </a>
+                    </td>
+                    <td class="min">
+                        <a class="has-text-danger" @onclick="(() => DeleteMap(map.Id))">
+                            <span class="icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                        </a>
+                    </td>
+                </RowContent>
+            </Table>
+        </div>
+    </ChildContent>
+
+    <ElseContent>
+        <LoadingAnimation Animated="true">
+            Chargement des cartes...
+        </LoadingAnimation>
+    </ElseContent>
+</Container>
 
 <div class="modal @(ShowEditForm ? "is-active" : "")">
     <EditForm Model="Map" OnValidSubmit="UpdateMapAsync" @ref="Form">

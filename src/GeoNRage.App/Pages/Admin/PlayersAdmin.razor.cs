@@ -1,4 +1,5 @@
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
@@ -27,6 +28,8 @@ public partial class PlayersAdmin
     public EditForm Form { get; set; } = null!;
 
     public string? Error { get; set; }
+
+    public Table<PlayerAdminViewDto> PlayersTable { get; set; } = null!;
 
     public void EditPlayer(string playerId)
     {
@@ -59,6 +62,7 @@ public partial class PlayersAdmin
             ShowEditForm = false;
             SelectedPlayerId = null;
             Players = await PlayersApi.GetAllAsAdminViewAsync();
+            PlayersTable.SetItems(Players);
             StateHasChanged();
         }
         catch (ApiException e)
@@ -83,6 +87,7 @@ public partial class PlayersAdmin
         {
             await PlayersApi.DeleteAsync(playerId);
             Players = await PlayersApi.GetAllAsAdminViewAsync();
+            PlayersTable.SetItems(Players);
             StateHasChanged();
         }
         catch (ApiException e)
@@ -97,6 +102,7 @@ public partial class PlayersAdmin
         {
             await PlayersApi.UpdateGeoGuessrProfileAsync(playerId);
             Players = await PlayersApi.GetAllAsAdminViewAsync();
+            PlayersTable.SetItems(Players);
             StateHasChanged();
         }
         catch (ApiException e)

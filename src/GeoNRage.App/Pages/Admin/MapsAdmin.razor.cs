@@ -1,4 +1,5 @@
 using GeoNRage.App.Apis;
+using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Refit;
@@ -28,6 +29,8 @@ public partial class MapsAdmin
 
     public string? Error { get; set; }
 
+    public Table<MapDto> MapsTable { get; set; } = null!;
+
     public void EditMap(string mapId)
     {
         Error = null;
@@ -54,6 +57,7 @@ public partial class MapsAdmin
             ShowEditForm = false;
             SelectedMapId = null;
             Maps = await MapsApi.GetAllAsync();
+            MapsTable.SetItems(Maps);
             StateHasChanged();
         }
         catch (ApiException e)
@@ -78,6 +82,7 @@ public partial class MapsAdmin
         {
             await MapsApi.DeleteAsync(mapId);
             Maps = await MapsApi.GetAllAsync();
+            MapsTable.SetItems(Maps);
             StateHasChanged();
         }
         catch (ApiException e)
