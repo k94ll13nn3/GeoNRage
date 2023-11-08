@@ -124,10 +124,13 @@ public partial class GamePage : IAsyncDisposable
             {
                 await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
             }
+
             Images["Noob"] = "img/noob.webp";
             Images["Nlm"] = "img/finger.webp";
             Images["Tech Genus"] = "img/shut-up.webp";
             Images["Pignouf"] = "img/pignouf.webp";
+            Images["Baltringue"] = "img/baltringue.jpg";
+            Images["Super"] = "img/super.gif";
 
             StateHasChanged();
         }
