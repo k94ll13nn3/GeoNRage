@@ -1,5 +1,9 @@
 @use 'variables' as v;
 
+nav {
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,.2);
+}
+
 .page-header {
     font-family: v.$logo-font;
     font-size: 30px;
