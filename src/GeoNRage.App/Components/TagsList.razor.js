@@ -5,3 +5,7 @@ export function addPreventDefault(e) {
         }
     })
 }
+
+export function focusElement(e) {
+    e.focus();
+}

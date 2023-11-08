@@ -37,6 +37,7 @@ public partial class TagsList
 
         JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./Components/{nameof(TagsList)}.razor.js");
         await JSModule.InvokeVoidAsync("addPreventDefault", EditableContent);
+        await JSModule.InvokeVoidAsync("focusElement", EditableContent);
     }
 
     private async Task HandleOnKeyDownAsync(KeyboardEventArgs args)
