@@ -32,7 +32,7 @@ public partial class ChallengeService
             query = query.Where(c => c.Map.IsMapForGame && (c.TimeLimit ?? 300) == 300);
         }
 
-        if (playersToExclude?.Any() == true)
+        if (playersToExclude?.Length > 0)
         {
             query = query.Where(c => c.PlayerScores.All(p => !playersToExclude.Contains(p.PlayerId)));
         }

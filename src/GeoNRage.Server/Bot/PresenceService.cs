@@ -12,7 +12,7 @@ public partial class PresenceService : BackgroundService
 {
     private readonly DiscordGatewayClient _gatewayClient;
     private readonly IServiceProvider _serviceProvider;
-    private readonly List<(ActivityType type, string name)> _activities = new();
+    private readonly List<(ActivityType type, string name)> _activities = [];
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

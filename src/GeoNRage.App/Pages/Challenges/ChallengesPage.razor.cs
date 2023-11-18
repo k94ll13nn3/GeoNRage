@@ -69,10 +69,10 @@ public partial class ChallengesPage
     private async Task FilterChallengesAsync(bool displayAll)
     {
         DisplayAll = displayAll;
-        string[] playersToHide = Array.Empty<string>();
+        string[] playersToHide = [];
         if (!DisplayAll && User.PlayerId() is string playerId)
         {
-            playersToHide = new[] { playerId };
+            playersToHide = [playerId];
         }
 
         Challenges = await ChallengesApi.GetAllAsync(true, playersToHide);

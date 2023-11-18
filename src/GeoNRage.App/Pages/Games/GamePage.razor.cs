@@ -46,7 +46,7 @@ public partial class GamePage : IAsyncDisposable
 
     public bool ShowTaunt { get; set; }
 
-    public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = new();
+    public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = [];
 
     public ClaimsPrincipal User { get; set; } = null!;
 
@@ -54,11 +54,11 @@ public partial class GamePage : IAsyncDisposable
 
     public string? SelectedImageId { get; set; }
 
-    public Dictionary<string, string> Images { get; } = new();
+    public Dictionary<string, string> Images { get; } = [];
 
     public async ValueTask DisposeAsync()
     {
-        _cancellationToken.Cancel();
+        await _cancellationToken.CancelAsync();
         _cancellationToken.Dispose();
         _hubConnection.Closed -= OnHubConnectionClosed;
         _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
@@ -144,7 +144,7 @@ public partial class GamePage : IAsyncDisposable
             ToastType.Information,
             "signalr-connection",
             true);
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 
     private Task OnHubConnectionReconnecting(Exception? arg)
@@ -155,7 +155,7 @@ public partial class GamePage : IAsyncDisposable
             ToastType.Warning,
             "signalr-connection",
             true);
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 
     private Task OnHubConnectionClosed(Exception? arg)
@@ -166,7 +166,7 @@ public partial class GamePage : IAsyncDisposable
             ToastType.Error,
             "signalr-connection",
             true);
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 
     private void HandleReceiveValue(int challengeId, string playerId, int round, int score)

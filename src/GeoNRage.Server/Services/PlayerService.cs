@@ -358,12 +358,13 @@ public partial class PlayerService
                 int position = 1;
                 foreach (var playerScoreForGame in game.Scores.OrderByDescending(s => s.Sum))
                 {
-                    if (!games.ContainsKey(playerScoreForGame.PlayerId))
+                    if (!games.TryGetValue(playerScoreForGame.PlayerId, out ICollection<PlayerGameDto>? value))
                     {
-                        games[playerScoreForGame.PlayerId] = new List<PlayerGameDto>();
+                        value = new List<PlayerGameDto>();
+                        games[playerScoreForGame.PlayerId] = value;
                     }
 
-                    games[playerScoreForGame.PlayerId].Add(new PlayerGameDto(
+                    value.Add(new PlayerGameDto(
                         game.Id,
                         playerScoreForGame.Sum ?? 0,
                         game.Date,

@@ -74,7 +74,7 @@ public partial class PlayersStatisticsPage
                 SelectedPlayerIds.Add(selectedId);
             }
         }
-        else if (SelectedPlayerIds.Contains(selectedId))
+        else
         {
             SelectedPlayerIds.Remove(selectedId);
         }

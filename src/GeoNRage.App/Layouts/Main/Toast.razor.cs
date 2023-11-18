@@ -73,7 +73,7 @@ public partial class Toast : IDisposable
 
     private async Task CloseToastAsync()
     {
-        _tokenSource.Cancel();
+        await _tokenSource.CancelAsync();
         await OnCloseCallback.InvokeAsync();
     }
 }

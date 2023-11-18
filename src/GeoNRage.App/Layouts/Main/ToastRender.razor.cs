@@ -6,7 +6,7 @@ namespace GeoNRage.App.Layouts.Main;
 public partial class ToastRender : IDisposable
 {
     private bool _disposedValue;
-    private readonly List<ToastEventArgs> _toasts = new();
+    private readonly List<ToastEventArgs> _toasts = [];
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;

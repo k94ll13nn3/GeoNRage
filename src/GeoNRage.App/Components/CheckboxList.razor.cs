@@ -29,7 +29,7 @@ public partial class CheckboxList<TItem, TId>
                 SelectedIds.Add(selectedId);
             }
         }
-        else if (SelectedIds.Contains(selectedId))
+        else
         {
             SelectedIds.Remove(selectedId);
         }

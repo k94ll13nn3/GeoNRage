@@ -17,12 +17,11 @@ public class PlotlyConfig
         PaperBgColor = "#00000000",
         PlotBgColor = "#00000000",
         Margin = new Margin { B = 40, L = 30, R = 20, T = 20 },
-        XAxis = new List<XAxis> { new XAxis { GridColor = "#808080", FixedRange = true } },
-        YAxis = new List<YAxis> { new YAxis { GridColor = "#808080", FixedRange = true } },
+        XAxis = new List<XAxis> { new() { GridColor = "#808080", FixedRange = true } },
+        YAxis = new List<YAxis> { new() { GridColor = "#808080", FixedRange = true } },
         Font = new Plotly.Blazor.LayoutLib.Font { Color = "#808080" },
         Legend = new List<Legend>(){
-            new Legend
-            {
+            new() {
                 YAnchor = YAnchorEnum.Top,
                 Y = 0.99m,
                 XAnchor = XAnchorEnum.Left,

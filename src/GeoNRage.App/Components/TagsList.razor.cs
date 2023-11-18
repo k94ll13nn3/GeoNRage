@@ -6,7 +6,8 @@ namespace GeoNRage.App.Components;
 
 public partial class TagsList
 {
-    private readonly List<string> _tags = new();
+    private static readonly string[] Separators = ["Enter", " ", ",", "Tab"];
+    private readonly List<string> _tags = [];
 
     [Inject]
     public IJSRuntime JSRuntime { get; set; } = null!;
@@ -42,7 +43,7 @@ public partial class TagsList
 
     private async Task HandleOnKeyDownAsync(KeyboardEventArgs args)
     {
-        if (new[] { "Enter", " ", ",", "Tab" }.Contains(args.Key))
+        if (Separators.Contains(args.Key))
         {
             if (ValidateTag(Value))
             {
