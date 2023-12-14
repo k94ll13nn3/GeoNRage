@@ -138,7 +138,7 @@ public partial class PlayerPage
         StateHasChanged();
     }
 
-    private IEnumerable<PlayerChallengeDto> FilterChallengesDone(string filter)
+    private List<PlayerChallengeDto> FilterChallengesDone(string filter)
     {
         Match match = NumericFilterRegex().Match(filter);
         if (match.Success && int.TryParse(match.Groups["value"].Value, out int value))

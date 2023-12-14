@@ -144,9 +144,7 @@ public partial class PlayerService
             .AsNoTracking()
             .ToListAsync();
 
-        List<PlayerGameDto> gameHistory = (await GetGamesWithPlayersScoreAsync(takeAllMaps)).GetValueOrDefault(id, new List<PlayerGameDto>())
-            .OrderBy(g => g.GameDate)
-            .ToList();
+        List<PlayerGameDto> gameHistory = [.. (await GetGamesWithPlayersScoreAsync(takeAllMaps)).GetValueOrDefault(id, new List<PlayerGameDto>()).OrderBy(g => g.GameDate)];
 
         List<PlayerChallengeDto> challengesDones = await _context.PlayerScores
             .Where(p => p.PlayerId == id)

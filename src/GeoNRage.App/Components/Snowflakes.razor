@@ -1,0 +1,12 @@
+@inherits UserSettingsAwareComponent
+
+<Container Condition="_enabled && _seasonalStyle">
+    <div class="snowflakes" aria-hidden="true">
+        @for (int i = 0; i < 10; i++)
+        {
+            <div class="snowflake">
+                ❅
+            </div>
+        }
+    </div>
+</Container>

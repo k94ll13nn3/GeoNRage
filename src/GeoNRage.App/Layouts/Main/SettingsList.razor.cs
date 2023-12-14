@@ -11,10 +11,14 @@ public partial class SettingsList
 
     public Theme Theme { get; set; }
 
+    public bool SeasonalStyle { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        AllMaps = (await UserSettingsService.GetAsync()).AllMaps;
-        Theme = (await UserSettingsService.GetAsync()).Theme;
+        UserSettings userSettings = await UserSettingsService.GetAsync();
+        AllMaps = userSettings.AllMaps;
+        Theme = userSettings.Theme;
+        SeasonalStyle = userSettings.SeasonalStyle;
     }
 
     public async Task ChangeMapStatusAsync(bool allMaps)
@@ -27,5 +31,11 @@ public partial class SettingsList
     {
         Theme = theme;
         await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { Theme = Theme }, nameof(UserSettings.Theme));
+    }
+
+    public async Task ChangeSeasonalStyleAsync(bool seasonalStyle)
+    {
+        SeasonalStyle = seasonalStyle;
+        await UserSettingsService.SaveAsync(await UserSettingsService.GetAsync() with { SeasonalStyle = SeasonalStyle }, nameof(UserSettings.SeasonalStyle));
     }
 }

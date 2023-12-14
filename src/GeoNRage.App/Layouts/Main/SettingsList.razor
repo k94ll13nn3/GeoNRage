@@ -83,3 +83,47 @@
         </div>
     </div>
 </a>
+
+<hr class="dropdown-divider">
+
+<a class="navbar-item" @onclick="() => ChangeSeasonalStyleAsync(true)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Styles saisonniers</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="SeasonalStyle">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>
+
+<a class="navbar-item" @onclick="() => ChangeSeasonalStyleAsync(false)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Pas de styles saisonniers</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="!SeasonalStyle">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>

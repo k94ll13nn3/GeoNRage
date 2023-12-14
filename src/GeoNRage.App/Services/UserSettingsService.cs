@@ -6,7 +6,7 @@ namespace GeoNRage.App.Services;
 [AutoConstructor]
 public partial class UserSettingsService
 {
-    private const string KeyName = "state";
+    private const string KeyName = "settings";
 
     private readonly IJSRuntime _jsRuntime;
 
@@ -15,7 +15,7 @@ public partial class UserSettingsService
     public async Task<UserSettings> GetAsync()
     {
         string json = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", KeyName);
-        var defaultSettings = new UserSettings(false, Theme.Dark);
+        var defaultSettings = new UserSettings(false, Theme.Dark, true);
         return json != null ? JsonSerializer.Deserialize<UserSettings>(json) ?? defaultSettings : defaultSettings;
     }
 
@@ -25,6 +25,6 @@ public partial class UserSettingsService
 
         string json = JsonSerializer.Serialize(settings);
         await _jsRuntime.InvokeVoidAsync("localStorage.setItem", KeyName, json);
-        SettingsChanged?.Invoke(this, new(settings.AllMaps, settings.Theme, changedKey));
+        SettingsChanged?.Invoke(this, new(settings.AllMaps, settings.Theme, settings.SeasonalStyle, changedKey));
     }
 }

@@ -1,3 +1,3 @@
 namespace GeoNRage.App.Models;
 
-public record UserSettings(bool AllMaps, Theme Theme);
+public record UserSettings(bool AllMaps, Theme Theme, bool SeasonalStyle);
