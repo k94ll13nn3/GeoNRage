@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="AspNetCore.SassCompiler" Version="1.72.0" />
+    <PackageVersion Include="AutoConstructor" Version="5.3.0" />
+    <PackageVersion Include="Humanizer.Core.fr" Version="2.14.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="MinVer" Version="5.0.0" />
+    <PackageVersion Include="Plotly.Blazor" Version="4.2.0" />
+    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <PackageVersion Include="Refit.HttpClientFactory" Version="7.0.0" />
+    <PackageVersion Include="Remora.Discord" Version="2024.1.0" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.0" />
+    <PackageVersion Include="Seq.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.22.0.87781" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
+  </ItemGroup>
+</Project>
