@@ -14,9 +14,9 @@ public partial class PlayersStatisticsPage
     [Inject]
     public ModalService ModalService { get; set; } = null!;
 
-    public IList<string> SelectedPlayerIds { get; } = new List<string>();
+    public IList<string> SelectedPlayerIds { get; } = [];
 
-    internal IEnumerable<PlayerStatisticDto> Players { get; set; } = Enumerable.Empty<PlayerStatisticDto>();
+    internal IEnumerable<PlayerStatisticDto> Players { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,7 +30,7 @@ public partial class PlayersStatisticsPage
             return;
         }
 
-        Players = Enumerable.Empty<PlayerStatisticDto>();
+        Players = [];
         StateHasChanged();
         Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();
         StateHasChanged();

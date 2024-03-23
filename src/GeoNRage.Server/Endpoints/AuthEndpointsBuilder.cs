@@ -67,7 +67,7 @@ public static class AuthEndpointsBuilder
             return TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
         }
 
-        result = await userManager.AddToRolesAsync(user, new[] { Roles.Member });
+        result = await userManager.AddToRolesAsync(user, [Roles.Member]);
         return result.Succeeded
             ? TypedResults.Ok()
             : TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));

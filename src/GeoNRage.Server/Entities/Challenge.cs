@@ -16,9 +16,9 @@ public class Challenge
 
     public int? TimeLimit { get; set; }
 
-    public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
+    public ICollection<PlayerScore> PlayerScores { get; set; } = [];
 
-    public ICollection<Location> Locations { get; set; } = new HashSet<Location>();
+    public ICollection<Location> Locations { get; set; } = [];
 
     public string? CreatorId { get; set; }
 

@@ -17,10 +17,10 @@ public class PlotlyConfig
         PaperBgColor = "#00000000",
         PlotBgColor = "#00000000",
         Margin = new Margin { B = 40, L = 30, R = 20, T = 20 },
-        XAxis = new List<XAxis> { new() { GridColor = "#808080", FixedRange = true } },
-        YAxis = new List<YAxis> { new() { GridColor = "#808080", FixedRange = true } },
+        XAxis = [new() { GridColor = "#808080", FixedRange = true }],
+        YAxis = [new() { GridColor = "#808080", FixedRange = true }],
         Font = new Plotly.Blazor.LayoutLib.Font { Color = "#808080" },
-        Legend = new List<Legend>(){
+        Legend = [
             new() {
                 YAnchor = YAnchorEnum.Top,
                 Y = 0.99m,
@@ -29,6 +29,6 @@ public class PlotlyConfig
                 BgColor = "#eeeeee",
                 Font = new Plotly.Blazor.LayoutLib.LegendLib.Font { Color = "#444444" }
             },
-        }
+        ]
     };
 }

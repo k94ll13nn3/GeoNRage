@@ -91,7 +91,7 @@ public partial class ChallengesPage
         }
         catch (ValidationApiException e)
         {
-            string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? Array.Empty<string>());
+            string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
             ToastService.DisplayToast(error, null, ToastType.Error);
         }
         catch (ApiException e)

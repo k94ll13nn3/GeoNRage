@@ -5,16 +5,12 @@ using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Identity;
 
-public class GeoNRageUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<User, IdentityRole>
+public class GeoNRageUserClaimsPrincipalFactory(
+    UserManager<User> userManager,
+    RoleManager<IdentityRole> roleManager,
+    IOptions<IdentityOptions> optionsAccessor)
+    : UserClaimsPrincipalFactory<User, IdentityRole>(userManager, roleManager, optionsAccessor)
 {
-    public GeoNRageUserClaimsPrincipalFactory(
-        UserManager<User> userManager,
-        RoleManager<IdentityRole> roleManager,
-        IOptions<IdentityOptions> optionsAccessor)
-            : base(userManager, roleManager, optionsAccessor)
-    {
-    }
-
     protected override async Task<ClaimsIdentity> GenerateClaimsAsync(User user)
     {
         ClaimsIdentity? identity = await base.GenerateClaimsAsync(user);

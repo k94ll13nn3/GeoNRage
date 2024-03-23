@@ -11,7 +11,7 @@ public partial class GameChart
 
     public Layout Layout { get; set; } = new();
 
-    public IList<ITrace> Data { get; } = new List<ITrace>();
+    public IList<ITrace> Data { get; } = [];
 
     [Parameter]
     public IEnumerable<GameChallengeDto> Challenges { get; set; } = null!;

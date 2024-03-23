@@ -5,7 +5,7 @@ namespace GeoNRage.App.Components;
 public partial class CheckboxList<TItem, TId>
 {
     [Parameter]
-    public IEnumerable<TItem> Data { get; set; } = Enumerable.Empty<TItem>();
+    public IEnumerable<TItem> Data { get; set; } = [];
 
     [Parameter]
     public Func<TItem, string> LabelSelector { get; set; } = null!;
@@ -15,7 +15,7 @@ public partial class CheckboxList<TItem, TId>
 
     [Parameter]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Blazor parameters must have a setter")]
-    public ICollection<TId> SelectedIds { get; set; } = new List<TId>();
+    public ICollection<TId> SelectedIds { get; set; } = [];
 
     [Parameter]
     public string Label { get; set; } = null!;

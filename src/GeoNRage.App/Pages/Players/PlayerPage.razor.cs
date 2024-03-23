@@ -11,7 +11,7 @@ namespace GeoNRage.App.Pages.Players;
 
 public partial class PlayerPage
 {
-    private IEnumerable<string> _tags = new List<string>();
+    private IEnumerable<string> _tags = [];
 
     [Parameter]
     public string Id { get; set; } = null!;
@@ -40,13 +40,13 @@ public partial class PlayerPage
 
     public Layout Layout { get; set; } = new();
 
-    public IList<ITrace> Data { get; } = new List<ITrace>();
+    public IList<ITrace> Data { get; } = [];
 
-    public IEnumerable<PlayerChallengeDto> ChallengesDone { get; set; } = new List<PlayerChallengeDto>();
+    public IEnumerable<PlayerChallengeDto> ChallengesDone { get; set; } = [];
 
     public int SortDirection { get; set; }
 
-    public IEnumerable<PlayerGameDto> GameHistory { get; set; } = new List<PlayerGameDto>();
+    public IEnumerable<PlayerGameDto> GameHistory { get; set; } = [];
 
     public bool IsFiltered { get; set; }
 

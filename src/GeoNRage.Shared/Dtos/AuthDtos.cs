@@ -15,7 +15,7 @@ public static class Roles
     /// </summary>
     public const string None = nameof(None);
 
-    public static IEnumerable<string> All => new[] { Admin, SuperAdmin, Member };
+    public static IEnumerable<string> All => [Admin, SuperAdmin, Member];
 }
 
 public record UserDto(bool IsAuthenticated, Dictionary<string, IEnumerable<string>> Claims, bool HasNotifications);
@@ -52,7 +52,7 @@ public class UserEditAdminDto
     public string? PlayerId { get; set; }
 
     [Required(ErrorMessage = "Le champ 'Roles' est requis.")]
-    public ICollection<string> Roles { get; set; } = new HashSet<string>();
+    public ICollection<string> Roles { get; set; } = [];
 }
 
 public class LoginDto

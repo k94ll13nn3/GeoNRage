@@ -83,7 +83,7 @@ public partial class GamesAdmin
         }
         catch (ValidationApiException e)
         {
-            Error = $"Error: {string.Join(",", e.Content?.Errors.Select(x => string.Join(Environment.NewLine, x.Value)) ?? Array.Empty<string>())}";
+            Error = $"Error: {string.Join(",", e.Content?.Errors.Select(x => string.Join(Environment.NewLine, x.Value)) ?? [])}";
         }
         catch (ApiException e)
         {

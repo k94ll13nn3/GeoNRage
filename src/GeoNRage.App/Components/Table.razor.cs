@@ -45,7 +45,7 @@ public partial class Table<T>
     [Parameter]
     public bool IsFullWidth { get; set; } = true;
 
-    public ICollection<T> DisplayedItems { get; } = new List<T>();
+    public ICollection<T> DisplayedItems { get; } = [];
 
     public int PageCount { get; private set; }
 

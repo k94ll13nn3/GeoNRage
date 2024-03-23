@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Identity;
 
-public class GeoNRageUserStore : UserStore<
+public class GeoNRageUserStore(GeoNRageDbContext context, IdentityErrorDescriber describer = null!) : UserStore<
         User,
         IdentityRole,
         GeoNRageDbContext,
@@ -15,12 +15,8 @@ public class GeoNRageUserStore : UserStore<
         IdentityUserLogin<string>,
         IdentityUserToken<string>,
         IdentityRoleClaim<string>
-    >
+    >(context, describer)
 {
-    public GeoNRageUserStore(GeoNRageDbContext context, IdentityErrorDescriber describer = null!) : base(context, describer)
-    {
-    }
-
     public override Task<User?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
     {
         return Users.Include(p => p.Player).FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName, cancellationToken)!;

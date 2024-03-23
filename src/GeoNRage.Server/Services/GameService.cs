@@ -194,7 +194,11 @@ public partial class GameService
             }
 
             challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
-            challenge.PlayerScores = challenge.PlayerScores.Concat(dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p })).ToList();
+            challenge.PlayerScores =
+            [
+                .. challenge.PlayerScores,
+                .. dto.PlayerIds.Where(id => !challenge.PlayerScores.Any(ps => ps.PlayerId == id)).Select(p => new PlayerScore { PlayerId = p }),
+            ];
         }
 
         _context.Games.Update(game);

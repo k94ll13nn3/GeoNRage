@@ -8,5 +8,5 @@ public class Map
 
     public bool IsMapForGame { get; set; }
 
-    public ICollection<Challenge> Challenges { get; set; } = new HashSet<Challenge>();
+    public ICollection<Challenge> Challenges { get; set; } = [];
 }

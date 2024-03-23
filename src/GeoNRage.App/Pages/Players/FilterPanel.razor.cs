@@ -18,7 +18,7 @@ public partial class FilterPanel : IModal<IEnumerable<string>>
 
     public IEnumerable<string> Close()
     {
-        return _tags ?? new List<string>();
+        return _tags ?? [];
     }
 
     public void OnTagsChanged(IEnumerable<string> tags)

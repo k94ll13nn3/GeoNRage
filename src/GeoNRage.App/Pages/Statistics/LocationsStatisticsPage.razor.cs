@@ -21,7 +21,7 @@ public partial class LocationsStatisticsPage
 
     public bool ShowCountryChart { get; set; }
 
-    internal IEnumerable<LocationDto> Locations { get; set; } = Enumerable.Empty<LocationDto>();
+    internal IEnumerable<LocationDto> Locations { get; set; } = [];
 
     public PlotlyChart? Chart { get; set; }
 
@@ -29,7 +29,7 @@ public partial class LocationsStatisticsPage
 
     public Layout Layout { get; set; } = new();
 
-    public IList<ITrace> Data { get; } = new List<ITrace>();
+    public IList<ITrace> Data { get; } = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,7 +45,7 @@ public partial class LocationsStatisticsPage
             return;
         }
 
-        Locations = Enumerable.Empty<LocationDto>();
+        Locations = [];
         ShowCountryChart = false;
         Chart = null;
         StateHasChanged();

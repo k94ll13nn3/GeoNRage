@@ -21,10 +21,10 @@ public class GameCreateOrEditDto
     public DateTime Date { get; set; }
 
     [Required]
-    public ICollection<string> PlayerIds { get; set; } = new HashSet<string>();
+    public ICollection<string> PlayerIds { get; set; } = [];
 
     [Required]
-    public ICollection<GameChallengeCreateOrEditDto> Challenges { get; set; } = new HashSet<GameChallengeCreateOrEditDto>();
+    public ICollection<GameChallengeCreateOrEditDto> Challenges { get; set; } = [];
 }
 
 public record GameDto(int Id, string Name, DateTime Date);

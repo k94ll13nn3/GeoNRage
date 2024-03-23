@@ -16,5 +16,5 @@ public class Player
 
     public DateTime? UpdatedAt { get; set; }
 
-    public ICollection<PlayerScore> PlayerScores { get; set; } = new HashSet<PlayerScore>();
+    public ICollection<PlayerScore> PlayerScores { get; set; } = [];
 }

@@ -8,5 +8,5 @@ public class User : IdentityUser
 
     public Player? Player { get; set; }
 
-    public ICollection<UserRole> UserRoles { get; set; } = new HashSet<UserRole>();
+    public ICollection<UserRole> UserRoles { get; set; } = [];
 }

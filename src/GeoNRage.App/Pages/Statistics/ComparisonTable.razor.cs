@@ -20,8 +20,7 @@ public partial class ComparisonTable : IModal
     [Inject]
     public IPlayersApi PlayersApi { get; set; } = null!;
 
-    public ICollection<(string statistic, string player1, string player2, int comparison)> PlayersComparisons { get; }
-        = new List<(string statistic, string player1, string player2, int comparison)>();
+    public ICollection<(string statistic, string player1, string player2, int comparison)> PlayersComparisons { get; } = [];
 
     protected override async Task OnInitializedAsync()
     {

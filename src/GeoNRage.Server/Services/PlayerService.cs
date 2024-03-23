@@ -41,7 +41,7 @@ public partial class PlayerService
                     .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
-                    .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
+                    .Select(g => new { Id = g.Key, Sum = g.Sum(p => p.Sum) })
                     .OrderByDescending(g => g.Sum)
                     .First()
                     .Sum,
@@ -51,7 +51,7 @@ public partial class PlayerService
                     .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
-                    .Select(g => new { Id = g.Key, Sum = g.Select(p => p.Sum).Sum() })
+                    .Select(g => new { Id = g.Key, Sum = g.Sum(p => p.Sum) })
                     .OrderByDescending(g => g.Sum)
                     .First()
                     .Id,
@@ -59,8 +59,7 @@ public partial class PlayerService
                     .PlayerScores
                     .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
                     .SelectMany(p => p.PlayerGuesses)
-                    .Select(g => g.Score)
-                    .Average()
+                    .Average(g => g.Score)
             ))
             .ToListAsync();
     }
@@ -144,7 +143,7 @@ public partial class PlayerService
             .AsNoTracking()
             .ToListAsync();
 
-        List<PlayerGameDto> gameHistory = [.. (await GetGamesWithPlayersScoreAsync(takeAllMaps)).GetValueOrDefault(id, new List<PlayerGameDto>()).OrderBy(g => g.GameDate)];
+        List<PlayerGameDto> gameHistory = [.. (await GetGamesWithPlayersScoreAsync(takeAllMaps)).GetValueOrDefault(id, []).OrderBy(g => g.GameDate)];
 
         List<PlayerChallengeDto> challengesDones = await _context.PlayerScores
             .Where(p => p.PlayerId == id)
@@ -247,13 +246,12 @@ public partial class PlayerService
                 p
                     .PlayerScores
                     .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
-                    .Select(p =>
+                    .Sum(p =>
                         p.PlayerGuesses.Count // number of rounds = 1xp each
                         + p.PlayerGuesses.Count(pg => pg.Score == 5000) // number of 5000 = 1xp each
                         + (p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null) ? 5 : 0) // number of challenges = 5xp each
                         + (p.PlayerGuesses.Count == 5 && p.PlayerGuesses.Sum(g => g.Score) == 25000 ? 5 : 0) // number of 25000 = 5xp each
                     )
-                    .Sum()
                 +
                 // number of games = 10xp each (20xp for 75000)
                 p
@@ -262,8 +260,7 @@ public partial class PlayerService
                     .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
-                    .Select(g => g.Sum(p => p.Sum) == 75000 ? 20 : 10)
-                    .Sum()
+                    .Sum(g => g.Sum(p => p.Sum) == 75000 ? 20 : 10)
                 ))
             .FirstOrDefaultAsync();
     }
@@ -358,7 +355,7 @@ public partial class PlayerService
                 {
                     if (!games.TryGetValue(playerScoreForGame.PlayerId, out ICollection<PlayerGameDto>? value))
                     {
-                        value = new List<PlayerGameDto>();
+                        value = [];
                         games[playerScoreForGame.PlayerId] = value;
                     }
 

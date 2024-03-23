@@ -7,7 +7,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace GeoNRage.Server;
 
-public class GeoNRageDbContext : IdentityDbContext<
+public class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : IdentityDbContext<
         User,
         IdentityRole,
         string,
@@ -16,12 +16,8 @@ public class GeoNRageDbContext : IdentityDbContext<
         IdentityUserLogin<string>,
         IdentityRoleClaim<string>,
         IdentityUserToken<string>
-    >, IDataProtectionKeyContext
+    >(options), IDataProtectionKeyContext
 {
-    public GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<Game> Games { get; set; } = null!;
 
     public DbSet<Map> Maps { get; set; } = null!;

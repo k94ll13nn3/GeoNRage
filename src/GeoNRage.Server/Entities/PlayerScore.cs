@@ -10,5 +10,5 @@ public class PlayerScore
 
     public Player Player { get; set; } = null!;
 
-    public ICollection<PlayerGuess> PlayerGuesses { get; set; } = new HashSet<PlayerGuess>();
+    public ICollection<PlayerGuess> PlayerGuesses { get; set; } = [];
 }
