@@ -14,8 +14,12 @@ nav {
     top: -5px;
     right: -5px;
     border-radius: 50%;
-    background: var(--link);
+    background: var(--primary);
     color: #fff;
     height: 15px;
     width: 15px;
+}
+
+img {
+    max-height: 2.5rem;
 }

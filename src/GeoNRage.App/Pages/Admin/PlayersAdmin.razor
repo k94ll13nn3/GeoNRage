@@ -21,7 +21,7 @@
                               new("", false, string.Empty),
                               new("", false, string.Empty),
                           })"
-                   PageSize="20"
+                   PageSize="15"
                    Paginate="true"
                    @ref="PlayersTable">
                 <RowContent Context="player">
@@ -105,8 +105,10 @@
                 </div>
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-primary" type="submit">Valider</button>
-                <button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
+                <div class="buttons">
+                    <button class="button is-primary" type="submit">Valider</button>
+                    <button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
+                </div>
             </footer>
         </div>
     </EditForm>

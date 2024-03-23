@@ -17,24 +17,10 @@ html {
     border-radius: 0px !important;
 }
 
-.default-score {
-    background-color: var(--bulma-info);
-    color: var(--bulma-info-invert);
-}
-
-.perfect {
-    background-color: var(--bulma-success);
-    color: var(--bulma-success-invert);
-}
-
-.almost-perfect {
-    background-color: var(--bulma-warning);
-    color: var(--bulma-warning-invert);
-}
-
 :root {
     --primary: #{var(--bulma-primary)};
     --primary-invert: #{var(--bulma-primary-invert)};
     --link: #{var(--bulma-link)};
     --text: #{var(--bulma-text)};
+    --bulma-family-primary: "Alata", sans-serif;
 }

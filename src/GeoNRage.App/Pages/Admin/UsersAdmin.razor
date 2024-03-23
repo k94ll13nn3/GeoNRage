@@ -1,162 +1,166 @@
-﻿@page "/admin/users"
+@page "/admin/users"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.SuperAdmin)]
 
 <GeoNRage.App.Pages.Admin.AdminMenu />
 
 <div class="container is-fluid m-3">
-	<Container Condition="Users?.Any() == true">
-		<table class="table is-bordered is-striped is-hoverable">
-			<thead>
-				<tr>
-					<th>Nom</th>
-					<th>Joueur</th>
-					<th>Roles</th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<Repeater Items="Users" Context="user">
-					<tr>
-						<td>@user.UserName</td>
-						<td>@(user.PlayerName ?? "—")</td>
-						<td>
-							<div class="tags">
-								<Repeater Items="user.Roles" Context="role">
-									<span class="tag is-link">@role</span>
-								</Repeater>
-							</div>
-						</td>
-						<td class="has-text-centered">
-							<a class="has-text-info" @onclick="(() => EditUser(user.UserName))">
-								<span class="icon">
-									<i class="fas fa-edit"></i>
-								</span>
-							</a>
-						</td>
-						<td class="min">
-							<a class="has-text-danger" @onclick="(() => DeleteUser(user.UserName))">
-								<span class="icon">
-									<i class="fas fa-trash-alt"></i>
-								</span>
-							</a>
-						</td>
-					</tr>
-				</Repeater>
-			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="5" class="has-text-right">
-						<button class="button is-primary" @onclick="ShowUserCreation">
-							<span class="icon">
-								<i class="fas fa-plus"></i>
-							</span>
-							<span>Créer</span>
-						</button>
-					</th>
-				</tr>
-			</tfoot>
-		</table>
-	</Container>
+    <Container Condition="Users?.Any() == true">
+        <table class="table is-bordered is-striped is-hoverable">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Joueur</th>
+                    <th>Roles</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <Repeater Items="Users" Context="user">
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@(user.PlayerName ?? "—")</td>
+                        <td>
+                            <div class="tags">
+                                <Repeater Items="user.Roles" Context="role">
+                                    <span class="tag is-link">@role</span>
+                                </Repeater>
+                            </div>
+                        </td>
+                        <td class="has-text-centered">
+                            <a class="has-text-info" @onclick="(() => EditUser(user.UserName))">
+                                <span class="icon">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </a>
+                        </td>
+                        <td class="min">
+                            <a class="has-text-danger" @onclick="(() => DeleteUser(user.UserName))">
+                                <span class="icon">
+                                    <i class="fas fa-trash-alt"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </Repeater>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5" class="has-text-right">
+                        <button class="button is-primary" @onclick="ShowUserCreation">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Créer</span>
+                        </button>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </Container>
 </div>
 
 <div class="modal @(ShowCreateForm ? "is-active" : "")">
-	<EditForm Model="UserRegister" OnValidSubmit="CreateUserAsync" @ref="Form">
-		<div class="modal-background"></div>
-		<div class="modal-card">
-			<header class="modal-card-head">
-				<p class="modal-card-title">Création d'utilisateur</p>
-				<button class="delete" aria-label="close" @onclick="() => ShowCreateForm = false" type="button"></button>
-			</header>
-			<section class="modal-card-body">
-				<DataAnnotationsValidator />
+    <EditForm Model="UserRegister" OnValidSubmit="CreateUserAsync" @ref="Form">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Création d'utilisateur</p>
+                <button class="delete" aria-label="close" @onclick="() => ShowCreateForm = false" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+                <DataAnnotationsValidator />
 
-				<Container Condition="!string.IsNullOrWhiteSpace(Error)">
-					<div class="notification is-danger">
-						@Error
-					</div>
-				</Container>
+                <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                    <div class="notification is-danger">
+                        @Error
+                    </div>
+                </Container>
 
-				<div class="field">
-					<label class="label">Nom d'utilisateur</label>
-					<div class="control">
-						<InputText @bind-Value="UserRegister.UserName" placeholder="Nom d'utilisateur" class="input" />
-						<p class="help is-danger">
-							<ValidationMessage For="@(() => UserRegister.UserName)"></ValidationMessage>
-						</p>
-					</div>
-				</div>
+                <div class="field">
+                    <label class="label">Nom d'utilisateur</label>
+                    <div class="control">
+                        <InputText @bind-Value="UserRegister.UserName" placeholder="Nom d'utilisateur" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => UserRegister.UserName)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-				<div class="field">
-					<label class="label">Mot de passe</label>
-					<div class="control">
-						<InputText @bind-Value="UserRegister.Password" placeholder="Mot de passe" class="input" type="password" />
-						<p class="help is-danger">
-							<ValidationMessage For="@(() => UserRegister.Password)"></ValidationMessage>
-						</p>
-					</div>
-				</div>
+                <div class="field">
+                    <label class="label">Mot de passe</label>
+                    <div class="control">
+                        <InputText @bind-Value="UserRegister.Password" placeholder="Mot de passe" class="input" type="password" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => UserRegister.Password)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-				<div class="field">
-					<label class="label">Confirmation mot de passe</label>
-					<div class="control">
-						<InputText @bind-Value="UserRegister.PasswordConfirm" placeholder="Confirmation mot de passe" class="input" type="password" />
-						<p class="help is-danger">
-							<ValidationMessage For="@(() => UserRegister.PasswordConfirm)"></ValidationMessage>
-						</p>
-					</div>
-				</div>
-			</section>
-			<footer class="modal-card-foot">
-				<button class="button is-primary" type="submit">Valider</button>
-				<button class="button is-danger" @onclick="() => ShowCreateForm = false" type="button">Fermer</button>
-			</footer>
-		</div>
-	</EditForm>
+                <div class="field">
+                    <label class="label">Confirmation mot de passe</label>
+                    <div class="control">
+                        <InputText @bind-Value="UserRegister.PasswordConfirm" placeholder="Confirmation mot de passe" class="input" type="password" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => UserRegister.PasswordConfirm)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <div class="buttons">
+                    <button class="button is-primary" type="submit">Valider</button>
+                    <button class="button is-danger" @onclick="() => ShowCreateForm = false" type="button">Fermer</button>
+                </div>
+            </footer>
+        </div>
+    </EditForm>
 </div>
 
 <div class="modal @(ShowEditForm ? "is-active" : "")">
-	<EditForm Model="UserEdit" OnValidSubmit="EditUserAsync" @ref="Form">
-		<div class="modal-background"></div>
-		<div class="modal-card">
-			<header class="modal-card-head">
-				<p class="modal-card-title">Edition d'utilisateur</p>
-				<button class="delete" aria-label="close" @onclick="() => ShowEditForm = false" type="button"></button>
-			</header>
-			<section class="modal-card-body">
-				<DataAnnotationsValidator />
+    <EditForm Model="UserEdit" OnValidSubmit="EditUserAsync" @ref="Form">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edition d'utilisateur</p>
+                <button class="delete" aria-label="close" @onclick="() => ShowEditForm = false" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+                <DataAnnotationsValidator />
 
-				<Container Condition="!string.IsNullOrWhiteSpace(Error)">
-					<div class="notification is-danger">
-						@Error
-					</div>
-				</Container>
+                <Container Condition="!string.IsNullOrWhiteSpace(Error)">
+                    <div class="notification is-danger">
+                        @Error
+                    </div>
+                </Container>
 
-				<div class="field">
-					<label class="label">Joueur lié</label>
-					<div class="control">
-						<div class="select">
-							<InputSelect @bind-Value="UserEdit.PlayerId">
-								<option value="">—</option>
-								<Repeater Items="@Players" Context="player">
-									<option value="@player.Id">@player.Name</option>
-								</Repeater>
-							</InputSelect>
-						</div>
-					</div>
-				</div>
+                <div class="field">
+                    <label class="label">Joueur lié</label>
+                    <div class="control">
+                        <div class="select">
+                            <InputSelect @bind-Value="UserEdit.PlayerId">
+                                <option value="">—</option>
+                                <Repeater Items="@Players" Context="player">
+                                    <option value="@player.Id">@player.Name</option>
+                                </Repeater>
+                            </InputSelect>
+                        </div>
+                    </div>
+                </div>
 
-				<CheckboxList Data="@Roles.All.Except(new [] { Roles.SuperAdmin })"
-							  LabelSelector="@(p => p)"
-							  IdSelector="@(p => p)"
-							  SelectedIds="@UserEdit.Roles"
-							  Label="Roles" />
-			</section>
-			<footer class="modal-card-foot">
-				<button class="button is-primary" type="submit">Valider</button>
-				<button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
-			</footer>
-		</div>
-	</EditForm>
+                <CheckboxList Data="@Roles.All.Except(new [] { Roles.SuperAdmin })"
+                              LabelSelector="@(p => p)"
+                              IdSelector="@(p => p)"
+                              SelectedIds="@UserEdit.Roles"
+                              Label="Roles" />
+            </section>
+            <footer class="modal-card-foot">
+                <div class="buttons">
+                    <button class="button is-primary" type="submit">Valider</button>
+                    <button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
+                </div>
+            </footer>
+        </div>
+    </EditForm>
 </div>

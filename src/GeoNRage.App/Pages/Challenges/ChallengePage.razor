@@ -58,7 +58,7 @@
                             }
                             <Container Condition="guess is not null">
                                 <ChildContent>
-                                    <td class="@(guess!.Score == 5000 ? "perfect" : (guess.Score == 4999 ? "almost-perfect" : ""))">
+                                    <td class="@(guess!.Score == 5000 ? "has-background-success has-text-success-invert" : (guess.Score == 4999 ? "has-background-warning has-text-warning-invert" : ""))">
                                         @guess!.Score <br />
                                         <small>@($"{guess.Distance.ToDistanceString()}") / @($"{guess.Time.ToTimeString()}")</small>
                                     </td>
@@ -72,7 +72,7 @@
                         @{
                             var sum = playerScore.PlayerGuesses.Sum(g => g.Score);
                         }
-                        <td class="@(sum == 25000 ? "perfect" : (sum == 24999 ? "almost-perfect" : ""))">
+                        <td class="@(sum == 25000 ? "has-background-success has-text-success-invert" : (sum == 24999 ? "has-background-warning has-text-warning-invert" : ""))">
                             @(sum ?? 0) <br />
                             <small>@($"{playerScore.PlayerGuesses.Sum(g => g.Distance).ToDistanceString()}") / @($"{playerScore.PlayerGuesses.Sum(g => g.Time).ToTimeString()}")</small>
                         </td>

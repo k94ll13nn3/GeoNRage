@@ -1,6 +1,6 @@
 export function enableStyleSheet(e) {
-    document.body.removeAttribute('data-theme');
+    document.documentElement.removeAttribute('data-theme');
     if (e) {
-        document.body.setAttribute('data-theme', e)
+        document.documentElement.setAttribute('data-theme', e)
     }
 }

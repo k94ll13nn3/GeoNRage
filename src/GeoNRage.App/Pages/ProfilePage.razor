@@ -1,73 +1,74 @@
-﻿@page "/profile"
+@page "/profile"
 
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = Roles.Member)]
 
 <div class="container">
-	<div class="m-3">
-		<section class="hero is-primary is-small">
-			<div class="hero-body">
-				<p class="title">
-					@User.Identity?.Name
-				</p>
-				<Container Condition="User.PlayerId() is not null">
-					<p class="subtitle">
-						<a href="https://www.geoguessr.com/user/@User.PlayerId()" target="_blank">
-							<span class="icon is-small">
-								<i class="fas fa-map-marker-alt"></i>
-							</span>
-							<span>Profil GeoGuessr</span>
-						</a>
-						<br />
-						<a href="@NavigationManager.ToAbsoluteUri($"/players/{User.PlayerId()}")">
-							<span class="icon is-small">
-								<i class="fas fa-gamepad"></i>
-							</span>
-							<span>Profil joueur</span>
-						</a>
-					</p>
-				</Container>
-			</div>
-		</section>
-	</div>
+    <div class="m-3">
+        <section class="hero is-primary is-small">
+            <div class="hero-body">
+                <p class="title">
+                    @User.Identity?.Name
+                </p>
+                <Container Condition="User.PlayerId() is not null">
+                    <p class="subtitle">
+                        <div class="buttons">
+                            <a href="https://www.geoguessr.com/user/@User.PlayerId()" target="_blank" class="button">
+                                <span class="icon is-small">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </span>
+                                <span>Profil GeoGuessr</span>
+                            </a>
+                            <a href="@NavigationManager.ToAbsoluteUri($"/players/{User.PlayerId()}")" class="button">
+                                <span class="icon is-small">
+                                    <i class="fas fa-gamepad"></i>
+                                </span>
+                                <span>Profil joueur</span>
+                            </a>
+                        </div>
+                    </p>
+                </Container>
+            </div>
+        </section>
+    </div>
 
-	<h1 class="is-size-4 m-3">Mise à jour du profil</h1>
-	<div class="columns m-3">
-		<div class="column is-half box">
-			<EditForm Model="UserEdit" OnSubmit="UpdateUserAsync" @ref="Form" autocomplete="off" class="my-3">
-				<DataAnnotationsValidator />
+    <h1 class="is-size-4 m-3">Mise à jour du profil</h1>
+    <div class="columns m-3">
+        <div class="column is-half box">
+            <EditForm Model="UserEdit" OnSubmit="UpdateUserAsync" @ref="Form" autocomplete="off" class="my-3">
+                <DataAnnotationsValidator />
 
-				<div class="field">
-					<label class="label">Nom d'utilisateur</label>
-					<div class="control">
-						<InputText @bind-Value="UserEdit.UserName" placeholder="Nom d'utilisateur" class="input" />
-						<p class="help is-danger">
-							<ValidationMessage For="@(() => UserEdit.UserName)"></ValidationMessage>
-						</p>
-					</div>
-				</div>
+                <div class="field">
+                    <label class="label">Nom d'utilisateur</label>
+                    <div class="control">
+                        <InputText @bind-Value="UserEdit.UserName" placeholder="Nom d'utilisateur" class="input" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => UserEdit.UserName)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-				<div class="field">
-					<label class="label">Mot de passe</label>
-					<div class="control">
-						<InputText @bind-Value="UserEdit.Password" placeholder="Mot de passe" class="input" type="password" />
-						<p class="help is-danger">
-							<ValidationMessage For="@(() => UserEdit.Password)"></ValidationMessage>
-						</p>
-					</div>
-				</div>
+                <div class="field">
+                    <label class="label">Mot de passe</label>
+                    <div class="control">
+                        <InputText @bind-Value="UserEdit.Password" placeholder="Mot de passe" class="input" type="password" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => UserEdit.Password)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-				<div class="field">
-					<label class="label">Confirmation mot de passe</label>
-					<div class="control">
-						<InputText @bind-Value="UserEdit.PasswordConfirm" placeholder="Confirmation mot de passe" class="input" type="password" />
-						<p class="help is-danger">
-							<ValidationMessage For="@(() => UserEdit.PasswordConfirm)"></ValidationMessage>
-						</p>
-					</div>
-				</div>
+                <div class="field">
+                    <label class="label">Confirmation mot de passe</label>
+                    <div class="control">
+                        <InputText @bind-Value="UserEdit.PasswordConfirm" placeholder="Confirmation mot de passe" class="input" type="password" />
+                        <p class="help is-danger">
+                            <ValidationMessage For="@(() => UserEdit.PasswordConfirm)"></ValidationMessage>
+                        </p>
+                    </div>
+                </div>
 
-				<button class="button is-primary" type="submit">Valider</button>
-			</EditForm>
-		</div>
-	</div>
+                <button class="button is-primary" type="submit">Valider</button>
+            </EditForm>
+        </div>
+    </div>
 </div>

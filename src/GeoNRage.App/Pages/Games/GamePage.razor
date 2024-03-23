@@ -93,21 +93,29 @@
                                             var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
                                         }
                                         <td>
-                                            <Container Condition="User.PlayerId() == playerScore.PlayerId || !HideScores">
+                                            <Container Condition="User.PlayerId() == playerScore.PlayerId">
                                                 <ChildContent>
                                                     <NumericInput @key="@key"
                                                                   InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
                                                                   ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
-                                                                  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "perfect" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "almost-perfect" : "")} {(User.PlayerId() != playerScore.PlayerId ? "default-score" : "")}")"
-                                                                  TabIndex="@(i + j)"
-                                                                  Disabled="User.PlayerId() != playerScore.PlayerId"></NumericInput>
+                                                                  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(User.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
+                                                                  TabIndex="@(i + j)"></NumericInput>
                                                 </ChildContent>
                                                 <ElseContent>
-                                                    <NumericInput @key="@key"
-                                                                  InitialValue="0"
-                                                                  Class="default-score"
-                                                                  TabIndex="@(i + j)"
-                                                                  Disabled="true"></NumericInput>
+                                                    <Container Condition="HideScores">
+                                                        <ChildContent>
+                                                            <NumericInput @key="@key"
+                                                                          InitialValue="0"
+                                                                          Class="has-background-info has-text-info-invert"
+                                                                          Disabled="true"></NumericInput>
+                                                        </ChildContent>
+                                                        <ElseContent>
+                                                            <NumericInput @key="@key"
+                                                                          InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
+                                                                          Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(User.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
+                                                                          Disabled="true"></NumericInput>
+                                                        </ElseContent>
+                                                    </Container>
                                                 </ElseContent>
                                             </Container>
                                         </td>
@@ -154,9 +162,6 @@
                 <section class="modal-card-body">
                     <GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
                 </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-primary" @onclick="() => ShowRankings = false">Fermer</button>
-                </footer>
             </div>
         </div>
     </Container>
@@ -172,9 +177,6 @@
                 <section class="modal-card-body">
                     <GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameChart>
                 </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-primary" @onclick="() => ShowChart = false">Fermer</button>
-                </footer>
             </div>
         </div>
     </Container>
@@ -216,9 +218,6 @@
                         </div>
                     </div>
                 </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-primary" @onclick="() => ShowTaunt = false">Fermer</button>
-                </footer>
             </div>
         </div>
     </Container>

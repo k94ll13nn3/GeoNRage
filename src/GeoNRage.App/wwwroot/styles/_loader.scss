@@ -3,7 +3,7 @@
     font-family: $logo-font;
 
     > .logo-text-inner {
-        color: var(--bulma-primary);
+        color: var(--bulma-link);
     }
 }
 
@@ -24,7 +24,7 @@
 
     > path {
         stroke: var(--bulma-text);
-        fill: var(--bulma-primary);
+        fill: var(--bulma-link);
         stroke-width: 1;
     }
 }
