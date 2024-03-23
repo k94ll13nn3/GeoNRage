@@ -1,17 +1,15 @@
-<div class="navbar-item">
-    <a  @onclick="ToggleMapAsync">
-        @if (_allMaps)
-        {
-            <span class="icon is-medium" title="Toutes les cartes">
-                <i class="fas fa-lg fa-solid fa-map"></i>
-            </span>
-        }
-        else
-        {
-            <span class="icon is-medium" title="Cartes principales">
-                <i class="fas fa-lg fa-solid fa-map-location-dot"></i>
-            </span>
-        }
-    </a>
-</div>
+<a @onclick="ToggleMapAsync">
+    @if (_allMaps)
+    {
+        <span class="icon is-medium" title="Toutes les cartes">
+            <i class="fas fa-lg fa-solid fa-map"></i>
+        </span>
+    }
+    else
+    {
+        <span class="icon is-medium" title="Cartes principales">
+            <i class="fas fa-lg fa-solid fa-map-location-dot"></i>
+        </span>
+    }
+</a>
 

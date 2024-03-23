@@ -1,22 +1,20 @@
-<div class="navbar-item">
-    <a @onclick="ToggleThemeAsync">
-        @if (_theme is Theme.Light)
-        {
-            <span class="icon is-medium" title="Thème clair">
-                <i class="fas fa-lg fa-solid fa-sun"></i>
-            </span>
-        }
-        else if (_theme is Theme.System)
-        {
-            <span class="icon is-medium" title="Thème système">
-                <i class="fas fa-lg fa-solid fa-display"></i>
-            </span>
-        }
-        else if (_theme is Theme.Dark)
-        {
-            <span class="icon is-medium" title="Thème sombre">
-                <i class="fas fa-lg fa-solid fa-moon"></i>
-            </span>
-        }
-    </a>
-</div>
+<a @onclick=" ToggleThemeAsync">
+    @if (_theme is Theme.Light)
+    {
+        <span class="icon is-medium" title="Thème clair">
+            <i class="fas fa-lg fa-solid fa-sun"></i>
+        </span>
+    }
+    else if (_theme is Theme.System)
+    {
+        <span class="icon is-medium" title="Thème système">
+            <i class="fas fa-lg fa-solid fa-display"></i>
+        </span>
+    }
+    else if (_theme is Theme.Dark)
+    {
+        <span class="icon is-medium" title="Thème sombre">
+            <i class="fas fa-lg fa-solid fa-moon"></i>
+        </span>
+    }
+</a>

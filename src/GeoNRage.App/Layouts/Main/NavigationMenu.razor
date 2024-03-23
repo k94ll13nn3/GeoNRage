@@ -2,7 +2,7 @@
 
 <nav class="navbar is-radiusless" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item page-header" href="@NavigationManager.ToAbsoluteUri("/")">Geo'N Rage</a>
+        <a class="navbar-item page-header" href="@NavigationManager.ToAbsoluteUri("/")"><span>Geo<span class="has-text-link">'N</span> Rage</span></a>
         <span class="navbar-burger @(ShowMenu ? "is-active" : "")" data-target="navbarMenu" @onclick="ToggleMenu">
             <span></span>
             <span></span>
@@ -30,31 +30,37 @@
             </AuthorizeView>
         </div>
         <div class="navbar-end">
-            <ThemeSwitcher />
-            <MapSwitcher />
-            <SeasonalStyleSwitcher />
+            <div class="navbar-item">
+                <div class="buttons">
+                    <ThemeSwitcher />
+                    <MapSwitcher />
+                    <SeasonalStyleSwitcher />
+                </div>
+            </div>
 
             <AuthorizeView>
                 <Authorized>
-                    <span class="navbar-item">
-                        <LevelBadge Id="@User.PlayerId()" />
-                    </span>
-                    <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
-                        <figure class="image is-32x32 profil-notification">
-                            <img class="is-rounded" src="@User.ProfilePicture()">
-                            <Container Condition="@HasNotifications">
-                                <span class="badge"></span>
-                            </Container>
-                        </figure>
-                    </NavLink>
-                    <span class="navbar-item">
-                        <button class="button is-link" @onclick="@LogoutClickAsync">
-                            <span class="icon">
-                                <i class="fas fa-sign-in-alt"></i>
-                            </span>
-                            <span>Déconnexion</span>
-                        </button>
-                    </span>
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <LevelBadge Id="@User.PlayerId()" />
+
+                            <NavLink Match="NavLinkMatch.Prefix" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
+                                <figure class="image is-32x32 profil-notification">
+                                    <img class="is-rounded" src="@User.ProfilePicture()">
+                                    <Container Condition="@HasNotifications">
+                                        <span class="badge"></span>
+                                    </Container>
+                                </figure>
+                            </NavLink>
+
+                            <button class="button is-link" @onclick="@LogoutClickAsync">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Déconnexion</span>
+                            </button>
+                        </div>
+                    </div>
                 </Authorized>
                 <Authorizing>
                     <span class="navbar-item">
