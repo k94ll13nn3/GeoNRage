@@ -20,6 +20,7 @@ public partial class SiteHeader : IAsyncDisposable
             await _jsModule.DisposeAsync();
             _jsModule = null;
         }
+
         GC.SuppressFinalize(this);
     }
 

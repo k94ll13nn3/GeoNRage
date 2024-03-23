@@ -17,15 +17,13 @@ public partial class UnhandledExceptionLogger : ILogger
         return true;
     }
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    public async void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         if (logLevel >= LogLevel.Error)
         {
-            _serviceProvider
+            await _serviceProvider
                 .GetRequiredService<ILogApi>()
-                .PostLogAsync(new ErrorLog(exception?.Message ?? "An unexpected error occured", exception?.Source, exception?.StackTrace))
-                .GetAwaiter()
-                .GetResult();
+                .PostLogAsync(new ErrorLog(exception?.Message ?? "An unexpected error occured", exception?.Source, exception?.StackTrace));
         }
     }
 

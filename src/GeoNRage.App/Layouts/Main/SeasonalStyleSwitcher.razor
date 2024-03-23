@@ -1,0 +1,17 @@
+<div class="navbar-item">
+    <a @onclick="ToggleSeasonalStyleAsync">
+        @if (_seasonalStyle)
+        {
+            <span class="icon is-medium" title="Styles saisonniers">
+                <i class="fas fa-lg fa-solid fa-star"></i>
+            </span>
+        }
+        else
+        {
+            <span class="icon is-medium" title="Pas de styles saisonniers">
+                <i class="fas fa-lg fa-regular fa-star"></i>
+            </span>
+        }
+    </a>
+</div>
+
