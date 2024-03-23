@@ -237,12 +237,12 @@ public partial class PlayerService
 
     internal async Task<PlayerExperienceDto?> GetExperienceAsync(string id, bool takeAllMaps)
     {
-        return await _context
+        return ExperienceEngine.GetLevel(await _context
             .Players
             .OrderBy(p => p.Name)
             .AsNoTracking()
             .Where(p => p.Id == id)
-            .Select(p => ExperienceEngine.GetLevel(
+            .Select(p =>
                 p
                     .PlayerScores
                     .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
@@ -260,9 +260,10 @@ public partial class PlayerService
                     .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
-                    .Sum(g => g.Sum(p => p.Sum) == 75000 ? 20 : 10)
-                ))
-            .FirstOrDefaultAsync();
+                    .Select(g => g.Sum(p => p.Sum) == 75000 ? 20 : 10)
+                    .Sum()
+                )
+            .FirstOrDefaultAsync());
     }
 
     public async Task<PlayerDto?> UpdateAsync(string id, PlayerEditDto dto)

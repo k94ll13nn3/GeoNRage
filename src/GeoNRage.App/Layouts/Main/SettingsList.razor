@@ -84,6 +84,27 @@
     </div>
 </a>
 
+<a class="navbar-item" @onclick="() => ChangeThemeAsync(Theme.System)">
+    <div class="level is-mobile">
+        <div class="level-left">
+            <span class="level-item">Thème système</span>
+        </div>
+        <div class="level-right">
+            <Container Condition="Theme == Theme.System">
+                <ChildContent>
+                    <span class="icon level-item">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </ChildContent>
+                <ElseContent>
+                    <span class="icon level-item">
+                    </span>
+                </ElseContent>
+            </Container>
+        </div>
+    </div>
+</a>
+
 <hr class="dropdown-divider">
 
 <a class="navbar-item" @onclick="() => ChangeSeasonalStyleAsync(true)">

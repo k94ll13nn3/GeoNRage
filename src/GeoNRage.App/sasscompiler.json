@@ -4,7 +4,7 @@
   "Arguments": "--style=compressed --no-source-map",
   "GenerateScopedCss": true,
   "ScopedCssFolders": [ "Layouts", "Pages", "Components" ],
-  "IncludePaths": [ "wwwroot/styles", "wwwroot/lib" ],
+  "IncludePaths": [ "wwwroot/styles" ],
 
   "Configurations": {
     "Debug": { // These options apply only to Debug builds

@@ -1,9 +1,9 @@
-﻿.logo-text {
+.logo-text {
     font-size: 60px;
     font-family: $logo-font;
 
     > .logo-text-inner {
-        color: $primary;
+        color: var(--bulma-primary);
     }
 }
 
@@ -23,8 +23,8 @@
     }
 
     > path {
-        stroke: $text;
-        fill: $primary;
+        stroke: var(--bulma-text);
+        fill: var(--bulma-primary);
         stroke-width: 1;
     }
 }

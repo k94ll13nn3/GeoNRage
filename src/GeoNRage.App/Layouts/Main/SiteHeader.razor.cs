@@ -39,16 +39,16 @@ public partial class SiteHeader : IAsyncDisposable
 
     private async Task UpdateStyleAsync()
     {
-        string stylePath = Theme switch
+        string? theme = Theme switch
         {
-            Theme.Dark => "main",
+            Theme.Dark => "dark",
             Theme.Light => "light",
-            _ => "main"
+            _ => null
         };
 
         if (_jsModule is not null)
         {
-            await _jsModule.InvokeVoidAsync("enableStyleSheet", $"styles/{stylePath}.css");
+            await _jsModule.InvokeVoidAsync("enableStyleSheet", theme);
         }
     }
 }
