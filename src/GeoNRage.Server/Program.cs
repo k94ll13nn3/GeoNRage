@@ -1,5 +1,6 @@
 using GeoNRage.Server;
 using GeoNRage.Server.Endpoints;
+using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Tasks;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -48,7 +49,6 @@ else
     app.UseHsts();
 }
 
-app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
@@ -56,6 +56,8 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapApplicationEndpoints();
+
+app.MapHub<AppHub>("/apphub");
 
 app.MapRazorComponents<Application>()
     .AddInteractiveWebAssemblyRenderMode()
