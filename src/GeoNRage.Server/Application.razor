@@ -1,3 +1,6 @@
+@using GeoNRage.App
+@using Microsoft.AspNetCore.Components.Web
+
 <!DOCTYPE html>
 <html lang="fr-fr">
 <head>
@@ -7,8 +10,8 @@
     <base href="/" />
     <link rel="icon" href="favicon.ico" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
-    <link href="styles/main.css?v=2" rel="stylesheet" />
-    <link href="GeoNRage.App.styles.css?v=2" rel="stylesheet" />
+    <link href="styles/main.css" rel="stylesheet" />
+    <link href="GeoNRage.Server.styles.css" rel="stylesheet" />
     <meta name="theme-color" content="#375a7f">
     <meta property="og:title" content="Geo'N Rage">
     <meta property="og:description" content="Venez jouer à GeoGuessr dans la joie, la bonne humeur, et la rage.">
@@ -17,10 +20,13 @@
     <link rel="apple-touch-icon" sizes="144x144" href="img/ms-icon-144x144.png" />
     <link rel="apple-touch-icon" sizes="150x150" href="img/ms-icon-150x150.png" />
     <link rel="apple-touch-icon" sizes="310x310" href="img/ms-icon-310x310.png" />
+    <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)" />
 </head>
 
 <body>
-    <div id="app" class="application-container">
+    <div class="application-container">
+        <Routes @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)" />
+
         <div class="container is-flex is-align-items-center is-align-self-center is-justify-content-center is-flex-direction-column">
             <svg viewBox="0 0 24 24" class="logo-icon big">
                 <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
@@ -35,7 +41,7 @@
         Une erreur s'est produite, veuillez recharger la page.
     </div>
 
-    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_framework/blazor.web.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
     <script src="https://use.fontawesome.com/releases/v6.5.1/js/all.js" crossorigin="anonymous"></script>
 </body>

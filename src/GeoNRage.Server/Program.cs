@@ -1,6 +1,5 @@
 using GeoNRage.Server;
 using GeoNRage.Server.Endpoints;
-using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Tasks;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -20,6 +19,8 @@ builder.Services.AddApplicationServices();
 builder.Services.AddHttpClients();
 builder.Services.AddDiscordBot(builder.Configuration);
 builder.Services.AddStartupTasks();
+
+builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -52,10 +53,13 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapRazorPages();
+app.UseAntiforgery();
+
 app.MapApplicationEndpoints();
-app.MapHub<AppHub>("/apphub");
-app.MapFallbackToFile("index.html");
+
+app.MapRazorComponents<Application>()
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(GeoNRage.App._Imports).Assembly);
 
 ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
 

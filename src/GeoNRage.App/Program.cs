@@ -1,13 +1,10 @@
-using GeoNRage.App;
 using GeoNRage.App.Apis;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<Application>("#app");
 
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
@@ -30,8 +27,6 @@ builder.Services.AddSingleton<ToastService>();
 builder.Services.AddSingleton<ModalService>();
 
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
-
-builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.TryAddEnumerable(
     ServiceDescriptor.Singleton<ILoggerProvider, UnhandledExceptionLoggerProvider>());

@@ -27,6 +27,9 @@ dotnet_diagnostic.IDE0161.severity = warning
 # RCS1173: Use coalesce instead of if
 dotnet_diagnostic.RCS1173.severity = silent
 
+# Add missing cases to switch expression 
+dotnet_diagnostic.IDE0072.severity = none
+
 roslynator_accessibility_modifiers = explicit
 roslynator_enum_has_flag_style = method
 roslynator_object_creation_type_style = implicit_when_type_is_obvious

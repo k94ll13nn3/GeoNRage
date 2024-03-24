@@ -6,6 +6,10 @@ html {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+    > div:last-child:not(:first-child){
+        display: none !important;
+    }
 }
 
 #blazor-error-ui {
