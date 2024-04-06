@@ -15,20 +15,17 @@ dotnet_diagnostic.S1075.severity = none
 # CA1716: Identifiers should not match keywords
 dotnet_diagnostic.CA1716.severity = none
 
-# RS0030: Do not use banned APIs
-dotnet_diagnostic.RS0030.severity = error
-
 # S1172 : Remove this parameter XXXX, whose value is ignored in the method, FP for delegates
 dotnet_diagnostic.S1172.severity = silent
-
-# IDE0161 : Use file scoped namespace
-dotnet_diagnostic.IDE0161.severity = warning
 
 # RCS1173: Use coalesce instead of if
 dotnet_diagnostic.RCS1173.severity = silent
 
 # Add missing cases to switch expression 
 dotnet_diagnostic.IDE0072.severity = none
+
+# IDE0270: Use coalesce expression
+dotnet_diagnostic.IDE0270.severity = silent
 
 roslynator_accessibility_modifiers = explicit
 roslynator_enum_has_flag_style = method

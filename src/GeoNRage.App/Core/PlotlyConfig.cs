@@ -21,7 +21,8 @@ public class PlotlyConfig
         YAxis = [new() { GridColor = "#808080", FixedRange = true }],
         Font = new Plotly.Blazor.LayoutLib.Font { Color = "#808080" },
         Legend = [
-            new() {
+            new()
+            {
                 YAnchor = YAnchorEnum.Top,
                 Y = 0.99m,
                 XAnchor = XAnchorEnum.Left,
