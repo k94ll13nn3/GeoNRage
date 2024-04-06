@@ -32,7 +32,7 @@ jobs:
             ghcr.io/k94ll13nn3/geonrage:${{ steps.get_version.outputs.VERSION }}
             ghcr.io/k94ll13nn3/geonrage:latest
       - name: Run Docker image
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
