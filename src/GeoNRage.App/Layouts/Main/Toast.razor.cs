@@ -81,6 +81,7 @@ public partial class Toast : IDisposable
             }
             catch (ObjectDisposedException)
             {
+                // Toekn was cancelled between the if and the cancellation
             }
         }
 
