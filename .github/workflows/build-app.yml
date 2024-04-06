@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0 # for minver
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo "{VERSION}={${GITHUB_REF/refs\/tags\//}}" >> $GITHUB_OUTPUT
         shell: bash
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
