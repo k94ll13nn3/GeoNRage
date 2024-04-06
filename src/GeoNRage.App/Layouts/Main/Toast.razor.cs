@@ -51,7 +51,7 @@ public partial class Toast : IDisposable
         {
             using var timer = new PeriodicTimer(Duration.Value);
             await timer.WaitForNextTickAsync(_tokenSource.Token);
-            if (!_tokenSource.Token.IsCancellationRequested)
+            if (!_tokenSource.IsCancellationRequested)
             {
                 await CloseToastAsync();
             }
@@ -73,7 +73,17 @@ public partial class Toast : IDisposable
 
     private async Task CloseToastAsync()
     {
-        await _tokenSource.CancelAsync();
+        if (!_tokenSource.IsCancellationRequested)
+        {
+            try
+            {
+                await _tokenSource.CancelAsync();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+        }
+
         await OnCloseCallback.InvokeAsync();
     }
 }
