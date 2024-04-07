@@ -12,7 +12,7 @@ public partial class MapsAdmin
     public IMapsApi MapsApi { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
+    public ModalService ModalService { get; set; } = null!;
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
@@ -39,9 +39,23 @@ public partial class MapsAdmin
         SelectedMapId = mapId;
     }
 
-    public void DeleteMap(string mapId)
+    public async Task DeleteMapAsync(string mapId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la carte {mapId} ?", () => OnConfirmDeleteAsync(mapId));
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Suppression", $"Valider la suppression de la carte {mapId} ?");
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await MapsApi.DeleteAsync(mapId);
+                Maps = await MapsApi.GetAllAsync();
+                MapsTable.SetItems(Maps);
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "map-delete");
+            }
+        }
     }
 
     public async Task UpdateMapAsync()
@@ -74,20 +88,5 @@ public partial class MapsAdmin
     protected override void OnAfterRender(bool firstRender)
     {
         Form?.EditContext?.UpdateCssClassProvider();
-    }
-
-    private async void OnConfirmDeleteAsync(string mapId)
-    {
-        try
-        {
-            await MapsApi.DeleteAsync(mapId);
-            Maps = await MapsApi.GetAllAsync();
-            MapsTable.SetItems(Maps);
-            StateHasChanged();
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "map-delete");
-        }
     }
 }

@@ -14,9 +14,6 @@ public partial class ChallengePage
     public int Id { get; set; }
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
-
-    [Inject]
     public ModalService ModalService { get; set; } = null!;
 
     [Inject]
@@ -51,23 +48,24 @@ public partial class ChallengePage
         ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Mise à jour", "Mettre à jour les scores du challenge ?");
         if (!result.Cancelled)
         {
-            try
+            await ModalService.DisplayLoaderAsync(async () =>
             {
-                PopupService.DisplayLoader("Mise à jour");
-                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
-                ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
-                Challenge = response.Content!;
-                ChallengeTable?.SetItems(Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score)));
-            }
-            catch (ApiException e)
-            {
-                await ToastService.DisplayErrorToastAsync(e, "challenge-refresh");
-            }
-            finally
-            {
-                PopupService.HidePopup();
-                StateHasChanged();
-            }
+                try
+                {
+                    await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
+                    ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
+                    Challenge = response.Content!;
+                    ChallengeTable?.SetItems(Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score)));
+                }
+                catch (ApiException e)
+                {
+                    await ToastService.DisplayErrorToastAsync(e, "challenge-refresh");
+                }
+                finally
+                {
+                    StateHasChanged();
+                }
+            });
         }
     }
 }

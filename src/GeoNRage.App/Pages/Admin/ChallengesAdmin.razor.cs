@@ -14,7 +14,7 @@ public partial class ChallengesAdmin
     public IChallengesApi ChallengesApi { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
+    public ModalService ModalService { get; set; } = null!;
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
@@ -30,59 +30,55 @@ public partial class ChallengesAdmin
         Challenges = await ChallengesApi.GetAllAsAdminViewAsync();
     }
 
-    private void ImportChallenge(ChallengeAdminViewDto challenge)
-    {
-        PopupService.DisplayOkCancelPopup("Restoration", "Valider la restoration du challenge ?", async () => await ImportChallengeAsync(challenge));
-    }
-
-    private void DeleteChallenge(int challengeId)
-    {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du challenge {challengeId} ?", () => OnConfirmDeleteAsync(challengeId));
-    }
-
-    private async void OnConfirmDeleteAsync(int challengeId)
-    {
-        try
-        {
-            await ChallengesApi.DeleteAsync(challengeId);
-            await OnInitializedAsync();
-            ChallengesTable.SetItems(Challenges);
-            StateHasChanged();
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "challenge-delete");
-        }
-    }
-
     private async Task ImportChallengeAsync(ChallengeAdminViewDto challenge)
     {
-        _ = challenge ?? throw new ArgumentNullException(nameof(challenge));
-
-        PopupService.DisplayLoader("Restoration");
-
-        try
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Restoration", "Valider la restoration du challenge ?");
+        if (!result.Cancelled)
         {
-            Error = null;
-            if (challenge.GameId == -1)
+            await ModalService.DisplayLoaderAsync(async () =>
             {
-                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
-            }
-            else
+                try
+                {
+                    Error = null;
+                    if (challenge.GameId == -1)
+                    {
+                        await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = challenge.GeoGuessrId, OverrideData = true });
+                    }
+                    else
+                    {
+                        await GamesApi.UpdateChallengesAsync(challenge.GameId);
+                    }
+                }
+                catch (ApiException e)
+                {
+                    Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+                }
+                finally
+                {
+                    await OnInitializedAsync();
+                    ChallengesTable.SetItems(Challenges);
+                    StateHasChanged();
+                }
+            });
+        }
+    }
+
+    private async Task DeleteChallengeAsync(int challengeId)
+    {
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Suppression", $"Valider la suppression du challenge {challengeId} ?");
+        if (!result.Cancelled)
+        {
+            try
             {
-                await GamesApi.UpdateChallengesAsync(challenge.GameId);
+                await ChallengesApi.DeleteAsync(challengeId);
+                await OnInitializedAsync();
+                ChallengesTable.SetItems(Challenges);
+                StateHasChanged();
             }
-        }
-        catch (ApiException e)
-        {
-            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
-        }
-        finally
-        {
-            await OnInitializedAsync();
-            ChallengesTable.SetItems(Challenges);
-            PopupService.HidePopup();
-            StateHasChanged();
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "challenge-delete");
+            }
         }
     }
 }

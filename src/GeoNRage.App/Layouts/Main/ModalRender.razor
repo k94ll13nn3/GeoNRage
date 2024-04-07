@@ -5,7 +5,7 @@
             <div class="modal-background"></div>
             <Container Condition="!_eventArgs.Options.IsCard">
                 <ChildContent>
-                    <div class="modal-content">
+                    <div class="modal-content @(_eventArgs.Options.IsSmall ? "small" : null)">
                         <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" />
                     </div>
                 </ChildContent>

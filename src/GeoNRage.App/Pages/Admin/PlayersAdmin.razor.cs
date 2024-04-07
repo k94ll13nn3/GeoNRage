@@ -12,7 +12,7 @@ public partial class PlayersAdmin
     public IPlayersApi PlayersApi { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
+    public ModalService ModalService { get; set; } = null!;
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
@@ -39,14 +39,42 @@ public partial class PlayersAdmin
         SelectedPlayerId = playerId;
     }
 
-    public void DeletePlayer(string playerId)
+    public async Task DeletePlayerAsync(string playerId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {playerId} ?", () => OnConfirmDeleteAsync(playerId));
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Suppression", $"Valider la suppression du joueur {playerId} ?");
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await PlayersApi.DeleteAsync(playerId);
+                Players = await PlayersApi.GetAllAsAdminViewAsync();
+                PlayersTable.SetItems(Players);
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "player-delete");
+            }
+        }
     }
 
-    public void UpdateGeoGuessrProfile(string playerId)
+    public async Task UpdateGeoGuessrProfileAsync(string playerId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la mise à jour du joueur {playerId} ?", () => OnConfirmUpdateGeoGuessrProfileAsync(playerId));
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Mise à jour", $"Valider la mise à jour du joueur {playerId} ?");
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await PlayersApi.UpdateGeoGuessrProfileAsync(playerId);
+                Players = await PlayersApi.GetAllAsAdminViewAsync();
+                PlayersTable.SetItems(Players);
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "player-update-geoguessr");
+            }
+        }
     }
 
     public async Task UpdatePlayerAsync()
@@ -79,35 +107,5 @@ public partial class PlayersAdmin
     protected override void OnAfterRender(bool firstRender)
     {
         Form?.EditContext?.UpdateCssClassProvider();
-    }
-
-    private async void OnConfirmDeleteAsync(string playerId)
-    {
-        try
-        {
-            await PlayersApi.DeleteAsync(playerId);
-            Players = await PlayersApi.GetAllAsAdminViewAsync();
-            PlayersTable.SetItems(Players);
-            StateHasChanged();
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "player-delete");
-        }
-    }
-
-    private async void OnConfirmUpdateGeoGuessrProfileAsync(string playerId)
-    {
-        try
-        {
-            await PlayersApi.UpdateGeoGuessrProfileAsync(playerId);
-            Players = await PlayersApi.GetAllAsAdminViewAsync();
-            PlayersTable.SetItems(Players);
-            StateHasChanged();
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "player-update-geoguessr");
-        }
     }
 }

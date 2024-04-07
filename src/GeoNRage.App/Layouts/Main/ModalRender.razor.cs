@@ -18,18 +18,14 @@ public partial class ModalRender : IDisposable
 
     public void Cancel()
     {
-        _isOpen = false;
-        _eventArgs?.Result.SetResult(new ModalResult(true));
-        _eventArgs = null;
-        StateHasChanged();
+        Close(new ModalResult(true));
     }
 
     public void Close(object? result = null)
     {
         _isOpen = false;
-        _eventArgs?.Result.SetResult(result);
-        _eventArgs = null;
         StateHasChanged();
+        _eventArgs?.Result.SetResult(result);
     }
 
     public void Dispose()

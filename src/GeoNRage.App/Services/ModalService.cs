@@ -48,4 +48,9 @@ public class ModalService
 
         return await DisplayModalAsync<OkCancelModal>(parameters, ModalOptions.Default);
     }
+
+    public async Task<ModalResult> DisplayLoaderAsync(Func<Task> action)
+    {
+        return await DisplayModalAsync<LoaderModal>(new() { [nameof(LoaderModal.Action)] = action }, ModalOptions.Default with { IsSmall = true });
+    }
 }

@@ -22,9 +22,6 @@ public partial class ChallengesPage
     public ModalService ModalService { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
-
-    [Inject]
     public ToastService ToastService { get; set; } = null!;
 
     public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
@@ -75,28 +72,29 @@ public partial class ChallengesPage
                 return;
             }
 
-            try
+            await ModalService.DisplayLoaderAsync(async () =>
             {
-                PopupService.DisplayLoader("Importation");
-                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
-                await FilterChallengesAsync(DisplayAll);
-                GeoGuessrId = string.Empty;
-                ToastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
-            }
-            catch (ValidationApiException e)
-            {
-                string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
-                ToastService.DisplayToast(error, null, ToastType.Error);
-            }
-            catch (ApiException e)
-            {
-                await ToastService.DisplayErrorToastAsync(e, "challenge-import");
-            }
-            finally
-            {
-                PopupService.HidePopup();
-                StateHasChanged();
-            }
+                try
+                {
+                    await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
+                    await FilterChallengesAsync(DisplayAll);
+                    GeoGuessrId = string.Empty;
+                    ToastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
+                }
+                catch (ValidationApiException e)
+                {
+                    string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
+                    ToastService.DisplayToast(error, null, ToastType.Error);
+                }
+                catch (ApiException e)
+                {
+                    await ToastService.DisplayErrorToastAsync(e, "challenge-import");
+                }
+                finally
+                {
+                    StateHasChanged();
+                }
+            });
         }
     }
 
