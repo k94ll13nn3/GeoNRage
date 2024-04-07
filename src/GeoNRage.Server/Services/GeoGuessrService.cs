@@ -48,6 +48,10 @@ public partial class GeoGuessrService
         {
             throw new InvalidOperationException("Challenge not found.");
         }
+        catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.BadRequest)
+        {
+            throw new InvalidOperationException("Cannot import data.");
+        }
 
         if (challenge is null)
         {

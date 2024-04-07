@@ -19,6 +19,9 @@ public partial class ChallengesPage
     public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
+    public ModalService ModalService { get; set; } = null!;
+
+    [Inject]
     public PopupService PopupService { get; set; } = null!;
 
     [Inject]
@@ -61,9 +64,40 @@ public partial class ChallengesPage
         };
     }
 
-    private void Import()
+    private async Task ImportAsync()
     {
-        PopupService.DisplayOkCancelPopup("Importation", "Valider l'importation du challenge ?", async () => await ImportAsync());
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Importation", "Valider l'importation du challenge ?");
+        if (!result.Cancelled)
+        {
+            if (string.IsNullOrEmpty(GeoGuessrId))
+            {
+                ToastService.DisplayToast("Veuillez remplir l'id", TimeSpan.FromSeconds(3), ToastType.Error);
+                return;
+            }
+
+            try
+            {
+                PopupService.DisplayLoader("Importation");
+                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
+                await FilterChallengesAsync(DisplayAll);
+                GeoGuessrId = string.Empty;
+                ToastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
+            }
+            catch (ValidationApiException e)
+            {
+                string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
+                ToastService.DisplayToast(error, null, ToastType.Error);
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "challenge-import");
+            }
+            finally
+            {
+                PopupService.HidePopup();
+                StateHasChanged();
+            }
+        }
     }
 
     private async Task FilterChallengesAsync(bool displayAll)
@@ -77,31 +111,5 @@ public partial class ChallengesPage
 
         Challenges = await ChallengesApi.GetAllAsync(true, playersToHide);
         ChallengesTable?.SetItems(Challenges);
-    }
-
-    private async Task ImportAsync()
-    {
-        try
-        {
-            PopupService.DisplayLoader("Importation");
-            await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
-            await FilterChallengesAsync(DisplayAll);
-            GeoGuessrId = string.Empty;
-            ToastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
-        }
-        catch (ValidationApiException e)
-        {
-            string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
-            ToastService.DisplayToast(error, null, ToastType.Error);
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "challenge-import");
-        }
-        finally
-        {
-            PopupService.HidePopup();
-            StateHasChanged();
-        }
     }
 }

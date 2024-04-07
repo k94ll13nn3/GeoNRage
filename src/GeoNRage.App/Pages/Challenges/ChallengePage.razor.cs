@@ -17,6 +17,9 @@ public partial class ChallengePage
     public PopupService PopupService { get; set; } = null!;
 
     [Inject]
+    public ModalService ModalService { get; set; } = null!;
+
+    [Inject]
     public ToastService ToastService { get; set; } = null!;
 
     public bool ChallengeFound { get; set; } = true;
@@ -43,29 +46,28 @@ public partial class ChallengePage
         }
     }
 
-    private void Refresh()
-    {
-        PopupService.DisplayOkCancelPopup("Mise à jour", "Mettre à jour les scores du challenge ?", async () => await RefreshAsync());
-    }
-
     private async Task RefreshAsync()
     {
-        try
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Mise à jour", "Mettre à jour les scores du challenge ?");
+        if (!result.Cancelled)
         {
-            PopupService.DisplayLoader("Mise à jour");
-            await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
-            ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
-            Challenge = response.Content!;
-            ChallengeTable?.SetItems(Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score)));
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "challenge-refresh");
-        }
-        finally
-        {
-            PopupService.HidePopup();
-            StateHasChanged();
+            try
+            {
+                PopupService.DisplayLoader("Mise à jour");
+                await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = Challenge.GeoGuessrId, OverrideData = true });
+                ApiResponse<ChallengeDetailDto> response = await ChallengesApi.GetAsync(Challenge.Id);
+                Challenge = response.Content!;
+                ChallengeTable?.SetItems(Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score)));
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "challenge-refresh");
+            }
+            finally
+            {
+                PopupService.HidePopup();
+                StateHasChanged();
+            }
         }
     }
 }

@@ -9,13 +9,28 @@ public partial class ModalRender : IDisposable
     private ModalEventArgs? _eventArgs;
     private bool _isOpen;
     private bool _disposedValue;
-    private DynamicComponent? _componentRef;
 
     [Inject]
     public ModalService ModalService { get; set; } = null!;
 
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
+
+    public void Cancel()
+    {
+        _isOpen = false;
+        _eventArgs?.Result.SetResult(new ModalResult(true));
+        _eventArgs = null;
+        StateHasChanged();
+    }
+
+    public void Close(object? result = null)
+    {
+        _isOpen = false;
+        _eventArgs?.Result.SetResult(result);
+        _eventArgs = null;
+        StateHasChanged();
+    }
 
     public void Dispose()
     {
@@ -52,7 +67,7 @@ public partial class ModalRender : IDisposable
     {
         if (e.Key == "Escape")
         {
-            Close();
+            Cancel();
         }
     }
 
@@ -63,16 +78,8 @@ public partial class ModalRender : IDisposable
         StateHasChanged();
     }
 
-    private void Close()
-    {
-        _isOpen = false;
-        _eventArgs?.Result.SetResult(_componentRef?.Instance);
-        _eventArgs = null;
-        StateHasChanged();
-    }
-
     private void Close(object? sender, LocationChangedEventArgs args)
     {
-        Close();
+        Cancel();
     }
 }

@@ -31,4 +31,8 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="components\OkCancelModal.razor.scss" />
+  </ItemGroup>
+
 </Project>
