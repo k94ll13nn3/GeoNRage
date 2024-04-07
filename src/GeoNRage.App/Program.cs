@@ -21,7 +21,6 @@ builder.AddRefitClient<ILocationsApi>();
 builder.AddRefitClient<IAdminApi>();
 builder.AddRefitClient<ILogApi>();
 
-builder.Services.AddSingleton<PopupService>();
 builder.Services.AddSingleton<UserSettingsService>();
 builder.Services.AddSingleton<ToastService>();
 builder.Services.AddSingleton<ModalService>();

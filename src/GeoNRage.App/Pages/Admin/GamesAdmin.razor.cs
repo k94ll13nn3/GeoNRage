@@ -18,7 +18,7 @@ public partial class GamesAdmin
     public IGamesApi GamesApi { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
+    public ModalService ModalService { get; set; } = null!;
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
@@ -56,9 +56,23 @@ public partial class GamesAdmin
         SelectedGameId = gameId;
     }
 
-    public void DeleteGame(int gameId)
+    public async Task DeleteGameAsync(int gameId)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression de la partie {gameId} ?", () => OnConfirmDeleteAsync(gameId));
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Suppression", $"Valider la suppression de la partie {gameId} ?");
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await GamesApi.DeleteAsync(gameId);
+                await LoadGamesAsync();
+                StateHasChanged();
+                GamesTable.SetItems(Games);
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "game-delete");
+            }
+        }
     }
 
     public async Task CreateOrUpdateGameAsync()
@@ -108,21 +122,6 @@ public partial class GamesAdmin
     protected override void OnAfterRender(bool firstRender)
     {
         Form?.EditContext?.UpdateCssClassProvider();
-    }
-
-    private async void OnConfirmDeleteAsync(int gameId)
-    {
-        try
-        {
-            await GamesApi.DeleteAsync(gameId);
-            await LoadGamesAsync();
-            StateHasChanged();
-            GamesTable.SetItems(Games);
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "game-delete");
-        }
     }
 
     private async Task LoadGamesAsync()

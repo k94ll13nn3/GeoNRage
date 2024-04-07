@@ -58,12 +58,12 @@
                         </Container>
                     </td>
                     <td class="min">
-                        <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallenge(challenge)">
+                        <span class="icon is-small has-text-info" style="cursor:pointer;" @onclick="() => ImportChallengeAsync(challenge)">
                             <i class="fas fa-sync-alt"></i>
                         </span>
                     </td>
                     <td class="min">
-                        <a class="has-text-danger" @onclick="(() => DeleteChallenge(challenge.Id))">
+                        <a class="has-text-danger" @onclick="(() => DeleteChallengeAsync(challenge.Id))">
                             <span class="icon">
                                 <i class="fas fa-trash-alt"></i>
                             </span>

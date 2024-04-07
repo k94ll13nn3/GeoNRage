@@ -17,7 +17,7 @@ public partial class UsersAdmin
     public IPlayersApi PlayersApi { get; set; } = null!;
 
     [Inject]
-    public PopupService PopupService { get; set; } = null!;
+    public ModalService ModalService { get; set; } = null!;
 
     [Inject]
     public ToastService ToastService { get; set; } = null!;
@@ -90,9 +90,22 @@ public partial class UsersAdmin
         UserRegister = new RegisterDto();
     }
 
-    public void DeleteUser(string userName)
+    public async Task DeleteUserAsync(string userName)
     {
-        PopupService.DisplayOkCancelPopup("Suppression", $"Valider la suppression du joueur {userName} ?", () => OnConfirmDeleteAsync(userName));
+        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Suppression", $"Valider la suppression du joueur {userName} ?");
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await AuthApi.DeleteUserAsync(userName);
+                Users = await AdminApi.GetAllUsersAsAdminViewAsync();
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                await ToastService.DisplayErrorToastAsync(e, "player-delete");
+            }
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -104,19 +117,5 @@ public partial class UsersAdmin
     protected override void OnAfterRender(bool firstRender)
     {
         Form?.EditContext?.UpdateCssClassProvider();
-    }
-
-    private async void OnConfirmDeleteAsync(string userName)
-    {
-        try
-        {
-            await AuthApi.DeleteUserAsync(userName);
-            Users = await AdminApi.GetAllUsersAsAdminViewAsync();
-            StateHasChanged();
-        }
-        catch (ApiException e)
-        {
-            await ToastService.DisplayErrorToastAsync(e, "player-delete");
-        }
     }
 }

@@ -106,8 +106,14 @@ public partial class PlayerPage
 
     private async Task ShowFilterPanelAsync()
     {
-        _tags = await ModalService.DisplayModalAsync<FilterPanel, IEnumerable<string>>(new() { [nameof(FilterPanel.Tags)] = _tags }, ModalOptions.Default);
-        OnFilter();
+        ModalResult<IEnumerable<string>> result = await ModalService.DisplayModalAsync<FilterPanel, IEnumerable<string>>(
+            new() { [nameof(FilterPanel.Tags)] = _tags },
+            ModalOptions.Default);
+        if (!result.Cancelled)
+        {
+            _tags = result.Value;
+            OnFilter();
+        }
     }
 
     private void OnFilter()

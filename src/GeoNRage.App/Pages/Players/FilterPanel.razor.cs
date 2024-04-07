@@ -1,8 +1,9 @@
+using GeoNRage.App.Layouts.Main;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Players;
 
-public partial class FilterPanel : IModal<IEnumerable<string>>
+public partial class FilterPanel : IModal
 {
     private IEnumerable<string>? _tags;
 
@@ -11,18 +12,21 @@ public partial class FilterPanel : IModal<IEnumerable<string>>
     [Parameter]
     public IReadOnlyCollection<string>? Tags { get; set; }
 
+    [CascadingParameter]
+    public ModalRender ModalRender { get; set; } = null!;
+
     protected override void OnInitialized()
     {
         _tags = Tags;
     }
 
-    public IEnumerable<string> Close()
-    {
-        return _tags ?? [];
-    }
-
     public void OnTagsChanged(IEnumerable<string> tags)
     {
         _tags = tags;
+    }
+
+    private void Confirm()
+    {
+        ModalRender.Close(_tags);
     }
 }
