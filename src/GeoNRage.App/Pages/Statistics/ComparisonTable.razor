@@ -1,22 +1,22 @@
-@if (_player1 is not null && _player2 is not null)
-{
-    <Table Items="PlayersComparisons"
-       Headers="@(new TableHeader[]
+<div class="box">
+    @if (_player1 is not null && _player2 is not null)
+    {
+        <Table Items="PlayersComparisons"
+               Headers="@(new TableHeader[]
 					{
 						new("Statistique", false, string.Empty),
 						new(_player1.Name, false, string.Empty),
 						new(_player2.Name, false, string.Empty),
 					})">
-        <RowContent Context="comparison">
-            <td>@comparison.statistic</td>
-            <td class="@(comparison.comparison == 1 ? "has-text-success" : "")">@comparison.player1</td>
-            <td class="@(comparison.comparison == -1 ? "has-text-success" : "")">@comparison.player2</td>
-        </RowContent>
-    </Table>
-}
-else
-{
-    <LoadingAnimation>
-        Chargement...
-    </LoadingAnimation>
-}
+            <RowContent Context="comparison">
+                <td>@comparison.statistic</td>
+                <td class="@(comparison.comparison == 1 ? "has-text-success" : "")">@comparison.player1</td>
+                <td class="@(comparison.comparison == -1 ? "has-text-success" : "")">@comparison.player2</td>
+            </RowContent>
+        </Table>
+    }
+    else
+    {
+        <div class="skeleton-block"></div>
+    }
+</div>

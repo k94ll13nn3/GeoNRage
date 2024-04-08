@@ -3,24 +3,14 @@
     <CascadingValue Value="this">
         <div class="modal is-active" tabindex="0" @onkeydown="HandleKeyDown">
             <div class="modal-background"></div>
-            <Container Condition="!_eventArgs.Options.IsCard">
-                <ChildContent>
-                    <div class="modal-content @(_eventArgs.Options.IsSmall ? "small" : null)">
-                        <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" />
-                    </div>
-                </ChildContent>
-                <ElseContent>
-                    <div class="modal-card">
-                        <header class="modal-card-head">
-                            <p class="modal-card-title">@_eventArgs.Options.Title</p>
-                            <button class="delete" aria-label="close" @onclick="Cancel"></button>
-                        </header>
-                        <section class="modal-card-body">
-                            <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" />
-                        </section>
-                    </div>
-                </ElseContent>
-            </Container>
+            <div class="modal-content @(_eventArgs.Options.IsSmall ? "small" : null)">
+                <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" />
+            </div>
+
+            @if (_eventArgs.Options.ShowCloseButton)
+            {
+                <button class="modal-close is-large" aria-label="close" type="button" @onclick="Close"></button>
+            }
         </div>
     </CascadingValue>
 }

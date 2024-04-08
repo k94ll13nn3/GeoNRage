@@ -57,7 +57,7 @@ public partial class PlayersStatisticsPage
             [nameof(ComparisonTable.Player1Id)] = SelectedPlayerIds[0],
             [nameof(ComparisonTable.Player2Id)] = SelectedPlayerIds[1],
         },
-        new(true, "Comparaison", false));
+        ModalOptions.Default with { ShowCloseButton = true });
     }
 
     private bool CanCompare()
