@@ -1,14 +1,14 @@
-﻿@page "/statistics/locations"
+@page "/statistics/locations"
 
 @inherits UserSettingsAwareComponent
 
 @using Plotly.Blazor
 
 <Container Condition="Locations?.Any() == true">
-	<ChildContent>
-		<div class="container">
-			<Table Items="Locations"
-				   Headers="@(new TableHeader[]
+    <ChildContent>
+        <div class="container">
+            <Table Items="Locations"
+                   Headers="@(new TableHeader[]
                                   {
                                       new("Nom", true, nameof(LocationDto.DisplayName)),
                                       new("Ville", true, nameof(LocationDto.Locality)),
@@ -18,49 +18,49 @@
                                       new("N.", true, nameof(LocationDto.TimesSeen)),
                                       new("", false, string.Empty)
                                   })"
-				   Paginate="true"
-				   PageSize="15"
-				   SortFunction="Sort"
-				   CanSearch="true"
-				   FilterFunction="Filter"
-				   ShowRowCount="true">
-				<RowContent Context="location">
-					<td>@(location.DisplayName ?? "—")</td>
-					<td>@(location.Locality ?? "—")</td>
-					<td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
-					<td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
-					<td>@(location.Country ?? "—")</td>
-					<td>@location.TimesSeen</td>
-					<td class="min">
-						<ActionIcon Link="@(new Uri($"https://www.google.com/maps/search/?api=1&query={location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},{location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"))"
-									Icon="fa-map-marked-alt"
-									IsExternal="true" />
-					</td>
-				</RowContent>
-				<FooterContent>
-					<th colspan="7" class="has-text-right">
-						<span class="is-italic is-size-7 has-text-weight-light">* Graphique sur les 15 pays les plus visités. Prends quelques secondes à s'afficher.</span>
-						<button class="button is-primary" @onclick="() => ShowCountryChartAsync(true)">
-							Voir le graphique
-						</button>
-					</th>
-				</FooterContent>
-			</Table>
-		</div>
+                   Paginate="true"
+                   PageSize="15"
+                   SortFunction="Sort"
+                   CanSearch="true"
+                   FilterFunction="Filter"
+                   ShowRowCount="true">
+                <RowContent Context="location">
+                    <td>@(location.DisplayName ?? "—")</td>
+                    <td>@(location.Locality ?? "—")</td>
+                    <td>@(location.AdministrativeAreaLevel2 ?? "—")</td>
+                    <td>@(location.AdministrativeAreaLevel1 ?? "—")</td>
+                    <td>@(location.Country ?? "—")</td>
+                    <td>@location.TimesSeen</td>
+                    <td class="min">
+                        <ActionIcon Link="@(new Uri($"https://www.google.com/maps/search/?api=1&query={location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},{location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}"))"
+                                    Icon="fa-map-marked-alt"
+                                    IsExternal="true" />
+                    </td>
+                </RowContent>
+                <FooterContent>
+                    <th colspan="7" class="has-text-right">
+                        <span class="is-italic is-size-7 has-text-weight-light">* Graphique sur les 15 pays les plus visités. Prends quelques secondes à s'afficher.</span>
+                        <button class="button is-primary" @onclick="() => ShowCountryChartAsync(true)">
+                            Voir le graphique
+                        </button>
+                    </th>
+                </FooterContent>
+            </Table>
+        </div>
 
-		<Container Condition="ShowCountryChart">
-			<div class="modal is-active">
-				<div class="modal-background"></div>
-				<div class="modal-content">
-					<PlotlyChart Config="Config" Layout="Layout" Data="Data" @ref="Chart" />
-				</div>
-				<button class="modal-close is-large" @onclick="() => ShowCountryChartAsync(false)"></button>
-			</div>
-		</Container>
-	</ChildContent>
-	<ElseContent>
-		<LoadingAnimation>
-			Chargement...
-		</LoadingAnimation>
-	</ElseContent>
+        <Container Condition="ShowCountryChart">
+            <div class="modal is-active">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <PlotlyChart Config="Config" Layout="Layout" Data="Data" @ref="Chart" />
+                </div>
+                <button class="modal-close is-large" @onclick="() => ShowCountryChartAsync(false)"></button>
+            </div>
+        </Container>
+    </ChildContent>
+    <ElseContent>
+        <div class="container is-flex">
+            <TableSkeleton CanSearch Paginate />
+        </div>
+    </ElseContent>
 </Container>

@@ -1,0 +1,29 @@
+<div class="m-3 is-flex is-flex-direction-column is-flex-grow-1">
+    <Container Condition="CanSearch">
+        <div class="field">
+            <p class="control">
+                <input class="input is-skeleton">
+            </p>
+        </div>
+    </Container>
+
+    <div class="skeleton-block is-flex-grow-1"></div>
+
+    <Container Condition="Paginate">
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <a class="pagination-previous is-skeleton">Précedent</a>
+            <a class="pagination-next is-skeleton">Suivant</a>
+            <ul class="pagination-list">
+                <li>
+                    <a class="pagination-link is-skeleton"></a>
+                </li>
+                <li>
+                    <a class="pagination-link is-skeleton"></a>
+                </li>
+                <li>
+                    <a class="pagination-link is-skeleton"></a>
+                </li>
+            </ul>
+        </nav>
+    </Container>
+</div>
