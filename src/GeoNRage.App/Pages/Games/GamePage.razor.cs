@@ -19,6 +19,9 @@ public partial class GamePage : IAsyncDisposable
     [SupplyParameterFromQuery]
     public bool HideScores { get; set; }
 
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
@@ -28,21 +31,17 @@ public partial class GamePage : IAsyncDisposable
     [Inject]
     public IGamesApi GamesApi { get; set; } = null!;
 
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
-
     [Inject]
     public IPlayersApi PlayersApi { get; set; } = null!;
+
+    [Inject]
+    public ModalService ModalService { get; set; } = null!;
 
     public bool GameFound { get; set; } = true;
 
     public GameDetailDto Game { get; set; } = null!;
 
     public bool Loaded { get; set; }
-
-    public bool ShowRankings { get; set; }
-
-    public bool ShowChart { get; set; }
 
     public bool ShowTaunt { get; set; }
 
@@ -69,8 +68,6 @@ public partial class GamePage : IAsyncDisposable
 
     public async Task ReloadPageAsync()
     {
-        ShowChart = false;
-        ShowRankings = false;
         Loaded = false;
         await OnInitializedAsync();
     }
@@ -229,5 +226,27 @@ public partial class GamePage : IAsyncDisposable
             await _hubConnection.InvokeAsync("TauntPlayer", Id, SelectedPlayerId, SelectedImageId);
             ToastService.DisplayToast("Envoyé !", TimeSpan.FromMilliseconds(1500), ToastType.Success, "toast-sent");
         }
+    }
+
+    private async Task ShowRankingsAsync()
+    {
+        await ModalService.DisplayModalAsync<GameRankings>(new()
+        {
+            [nameof(GameRankings.Scores)] = Scores,
+            [nameof(GameRankings.Challenges)] = Game.Challenges,
+            [nameof(GameRankings.Players)] = Game.Players,
+        },
+        ModalOptions.Default);
+    }
+
+    private async Task ShowChartAsync()
+    {
+        await ModalService.DisplayModalAsync<GameChart>(new()
+        {
+            [nameof(GameChart.Scores)] = Scores,
+            [nameof(GameChart.Challenges)] = Game.Challenges,
+            [nameof(GameChart.Players)] = Game.Players,
+        },
+        ModalOptions.Default with { Size = ModalSize.Large });
     }
 }

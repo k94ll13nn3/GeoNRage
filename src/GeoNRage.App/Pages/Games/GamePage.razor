@@ -44,14 +44,14 @@
                         </Container>
                         <Container Condition="!HideScores">
                             <p class="control">
-                                <button class="button" @onclick="() => ShowChart = true">
+                                <button class="button" @onclick="ShowChartAsync">
                                     <span class="icon is-small">
                                         <i class="fas fa-chart-line"></i>
                                     </span>
                                 </button>
                             </p>
                             <p class="control">
-                                <button class="button" @onclick="() => ShowRankings = true">
+                                <button class="button" @onclick="ShowRankingsAsync">
                                     <span class="icon is-small">
                                         <i class="fas fa-table"></i>
                                     </span>
@@ -150,36 +150,6 @@
             </div>
         </div>
     </div>
-
-    <Container Condition="ShowRankings">
-        <div class="modal is-active">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">Tableau des scores</p>
-                    <button class="delete" aria-label="close" @onclick="() => ShowRankings = false"></button>
-                </header>
-                <section class="modal-card-body">
-                    <GameRankings Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameRankings>
-                </section>
-            </div>
-        </div>
-    </Container>
-
-    <Container Condition="ShowChart">
-        <div class="modal is-active">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">Graphique</p>
-                    <button class="delete" aria-label="close" @onclick="() => ShowChart = false"></button>
-                </header>
-                <section class="modal-card-body">
-                    <GameChart Scores="@Scores" Challenges="@Game.Challenges" Players="@Game.Players"></GameChart>
-                </section>
-            </div>
-        </div>
-    </Container>
 
     <Container Condition="ShowTaunt">
         <div class="modal is-active">

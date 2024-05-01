@@ -1,19 +1,27 @@
-﻿@using Humanizer;
+@using Humanizer;
 
-<div class="container">
-    <Table Items="Challenges"
-           Headers="@(Enumerable.Range(1, Players.Count()).Select(i => new TableHeader(i.Ordinalize(), false, "")).Prepend(new TableHeader("", false, "")))">
-        <RowContent Context="challenge">
-            <th>@challenge.MapName</th>
-            <Repeater Items="Scores.Where(s => s.Key.challengeId == challenge.Id).GroupBy(s => s.Key.playerId).Select(g => (g.Key, Sum:g.Sum(s => s.Value))).OrderByDescending(p => p.Sum)" Context="player">
-                <td>@(GetPlayerName(player.Key))<br /><span class="is-size-7">@(player.Sum ?? 0)</span></td>
-            </Repeater>
-        </RowContent>
-        <FooterContent>
-            <th>Général</th>
-            <Repeater Items="Scores.GroupBy(c => c.Key.playerId).Select(p => (name: GetPlayerName(p.First().Key.playerId), score: p.Sum(ps => ps.Value))).OrderByDescending(p => p.score)" Context="player">
-                <td>@(player.name)<br /><span class="is-size-7">@player.score</span></td>
-            </Repeater>
-        </FooterContent>
-    </Table>
+<div class="dialog-box">
+    <div class="dialog-title py-1">
+        <span class="has-text-weight-semibold is-size-4 m-4">Tableau des scores</span>
+    </div>
+
+    <div class="m-4">
+        <Table Items="Challenges"
+               Headers="@(Enumerable.Range(1, Players.Count()).Select(i => new TableHeader(i.Ordinalize(), false, "")).Prepend(new TableHeader("", false, "")))">
+            <RowContent Context="challenge">
+                <th>@challenge.MapName</th>
+                <Repeater Items="Scores.Where(s => s.Key.challengeId == challenge.Id).GroupBy(s => s.Key.playerId).Select(g => (g.Key, Sum:g.Sum(s => s.Value))).OrderByDescending(p => p.Sum)" Context="player">
+                    <td>@(GetPlayerName(player.Key))<br /><span class="is-size-7">@(player.Sum ?? 0)</span></td>
+                </Repeater>
+            </RowContent>
+            <FooterContent>
+                <th>Général</th>
+                <Repeater Items="Scores.GroupBy(c => c.Key.playerId).Select(p => (name: GetPlayerName(p.First().Key.playerId), score: p.Sum(ps => ps.Value))).OrderByDescending(p => p.score)" Context="player">
+                    <td>@(player.name)<br /><span class="is-size-7">@player.score</span></td>
+                </Repeater>
+            </FooterContent>
+        </Table>
+    </div>
+
+    <button class="button is-primary is-radiusless" @onclick="Close" type="button">Fermer</button>
 </div>

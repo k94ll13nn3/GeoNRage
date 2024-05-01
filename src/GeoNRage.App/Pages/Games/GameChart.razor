@@ -1,3 +1,13 @@
 @using Plotly.Blazor
 
-<PlotlyChart Config="Config" Layout="Layout" Data="Data" />
+<div class="dialog-box">
+    <div class="dialog-title py-1">
+        <span class="has-text-weight-semibold is-size-4 m-4">Graphique</span>
+    </div>
+
+    <div class="m-4">
+        <PlotlyChart Config="Config" Layout="Layout" Data="Data" />
+    </div>
+
+    <button class="button is-primary is-radiusless" @onclick="Close" type="button">Fermer</button>
+</div>

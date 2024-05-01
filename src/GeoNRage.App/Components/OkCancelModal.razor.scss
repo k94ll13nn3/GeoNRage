@@ -1,14 +1,4 @@
 .dialog-box {
-    background-color: var(--bulma-scheme-main);
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--bulma-control-radius);
-    overflow: hidden;
-
-    .dialog-title {
-        box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
-    }
-
     button {
         flex: 0 0 50%;
     }

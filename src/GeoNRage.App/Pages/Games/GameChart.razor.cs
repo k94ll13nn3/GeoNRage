@@ -1,3 +1,4 @@
+using GeoNRage.App.Layouts.Main;
 using Microsoft.AspNetCore.Components;
 using Plotly.Blazor;
 using Plotly.Blazor.Traces;
@@ -5,7 +6,7 @@ using Plotly.Blazor.Traces.ScatterLib;
 
 namespace GeoNRage.App.Pages.Games;
 
-public partial class GameChart
+public partial class GameChart : IModal
 {
     public Config Config { get; set; } = new();
 
@@ -22,6 +23,11 @@ public partial class GameChart
     [Parameter]
     public IReadOnlyDictionary<(int challengeId, string playerId, int round), int?> Scores { get; set; } = null!;
 
+    [CascadingParameter]
+    public ModalRender ModalRender { get; set; } = null!;
+
+    public string Id => nameof(GameChart);
+
     protected override void OnInitialized()
     {
         CreatePlot();
@@ -33,7 +39,6 @@ public partial class GameChart
 
         Layout = new PlotlyConfig().Layout;
         Layout.Height = 600;
-        Layout.Width = 750;
 
         Data.Clear();
 
@@ -78,5 +83,10 @@ public partial class GameChart
         };
 
         Data.Add(dataset);
+    }
+
+    private void Close()
+    {
+        ModalRender.Close();
     }
 }
