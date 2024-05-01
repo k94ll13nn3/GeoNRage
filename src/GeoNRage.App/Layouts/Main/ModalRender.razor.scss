@@ -1,3 +1,13 @@
-.modal-content.small {
-    width: 200px;
+.modal-content {
+    &.small {
+        width: 200px;
+    }
+
+    &.large {
+        width: 1000px;
+    }
+
+    &.extra-large {
+        width: 1400px;
+    }
 }

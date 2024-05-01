@@ -3,7 +3,7 @@
     <CascadingValue Value="this">
         <div class="modal is-active" tabindex="0" @onkeydown="HandleKeyDown">
             <div class="modal-background"></div>
-            <div class="modal-content @(_eventArgs.Options.IsSmall ? "small" : null)">
+            <div class="modal-content @(_sizeClass)">
                 <DynamicComponent Type="@_eventArgs.ComponentType" Parameters="@_eventArgs.Parameters" />
             </div>
 

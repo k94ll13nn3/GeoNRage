@@ -6,6 +6,7 @@ namespace GeoNRage.App.Layouts.Main;
 
 public partial class ModalRender : IDisposable
 {
+    private string? _sizeClass;
     private ModalEventArgs? _eventArgs;
     private bool _isOpen;
     private bool _disposedValue;
@@ -71,6 +72,15 @@ public partial class ModalRender : IDisposable
     {
         _eventArgs = e;
         _isOpen = true;
+
+        _sizeClass = _eventArgs?.Options.Size switch
+        {
+            ModalSize.Small => " small",
+            ModalSize.Large => " large",
+            ModalSize.ExtraLarge => " extra-large",
+            _ => null,
+        };
+
         StateHasChanged();
     }
 

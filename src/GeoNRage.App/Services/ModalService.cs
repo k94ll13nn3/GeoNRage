@@ -51,6 +51,6 @@ public class ModalService
 
     public async Task<ModalResult> DisplayLoaderAsync(Func<Task> action)
     {
-        return await DisplayModalAsync<LoaderModal>(new() { [nameof(LoaderModal.Action)] = action }, ModalOptions.Default with { IsSmall = true });
+        return await DisplayModalAsync<LoaderModal>(new() { [nameof(LoaderModal.Action)] = action }, ModalOptions.Default with { Size = ModalSize.Small });
     }
 }

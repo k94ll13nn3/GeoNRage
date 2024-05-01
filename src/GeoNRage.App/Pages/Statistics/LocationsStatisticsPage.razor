@@ -40,23 +40,13 @@
                 <FooterContent>
                     <th colspan="7" class="has-text-right">
                         <span class="is-italic is-size-7 has-text-weight-light">* Graphique sur les 15 pays les plus visités. Prends quelques secondes à s'afficher.</span>
-                        <button class="button is-primary" @onclick="() => ShowCountryChartAsync(true)">
+                        <button class="button is-small is-primary" @onclick="ShowCountryChartAsync">
                             Voir le graphique
                         </button>
                     </th>
                 </FooterContent>
             </Table>
         </div>
-
-        <Container Condition="ShowCountryChart">
-            <div class="modal is-active">
-                <div class="modal-background"></div>
-                <div class="modal-content">
-                    <PlotlyChart Config="Config" Layout="Layout" Data="Data" @ref="Chart" />
-                </div>
-                <button class="modal-close is-large" @onclick="() => ShowCountryChartAsync(false)"></button>
-            </div>
-        </Container>
     </ChildContent>
     <ElseContent>
         <div class="container is-flex">
