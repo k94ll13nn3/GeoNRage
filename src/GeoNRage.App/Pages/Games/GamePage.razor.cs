@@ -10,11 +10,11 @@ namespace GeoNRage.App.Pages.Games;
 public partial class GamePage : IAsyncDisposable
 {
     private readonly CancellationTokenSource _cancellationToken = new();
-    private HubConnection _hubConnection = null!;
-    private bool _gameFound = true;
-    private GameDetailDto _game = null!;
-    private bool _loaded;
     private readonly Dictionary<(int challengeId, string playerId, int round), int?> _scores = [];
+    private bool _gameFound = true;
+    private bool _loaded;
+    private HubConnection _hubConnection = null!;
+    private GameDetailDto _game = null!;
     private ClaimsPrincipal _user = null!;
 
     [Parameter]

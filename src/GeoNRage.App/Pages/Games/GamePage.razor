@@ -3,10 +3,10 @@
 @using GeoNRage.App.Pages.Games
 
 <Container Condition="_loaded && _gameFound">
-    <PageTitle>_gamee.Name</PageTitle>
+    <PageTitle>@_game.Name</PageTitle>
 </Container>
 
-<Container Condition="_loaded && _gameFound && (_user.PlayerId() is null ||_game.Players.Any(p => p.Id == _user.PlayerId()))">
+<Container Condition="_loaded && _gameFound && (_user.PlayerId() is null || !_game.Players.Any(p => p.Id == _user.PlayerId()))">
     <div class="notification is-warning error-alert">
         Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mises à jour en temps réel.
     </div>
@@ -17,12 +17,12 @@
         <div class="card m-3 game-card">
             <header class="card-header">
                 <div class="card-header-title is-size-3 game-title" style="display: block">
-                    <h1 class="title">_game.Name</h1>
-                    <h2 class="subtitle">_game.Date.ToShortDateString()</h2>
+                    <h1 class="title">@_game.Name</h1>
+                    <h2 class="subtitle">@_game.Date.ToShortDateString()</h2>
                 </div>
                 <div class="card-header-icon">
                     <div class="field has-addons">
-                        <Container Condition="_user.PlayerId() is not null && _game.Players.Any(p => p.Id == _user.PlayerId())">
+                        <Container Condition="_user.PlayerId() is not null && !_game.Players.Any(p => p.Id == _user.PlayerId())">
                             <p class="control">
                                 <button class="button" @onclick="AddPlayerAsync">
                                     <span class="is-hidden-touch"></span>
