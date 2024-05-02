@@ -11,6 +11,11 @@ public partial class GamePage : IAsyncDisposable
 {
     private readonly CancellationTokenSource _cancellationToken = new();
     private HubConnection _hubConnection = null!;
+    private bool _gameFound = true;
+    private GameDetailDto _game = null!;
+    private bool _loaded;
+    private readonly Dictionary<(int challengeId, string playerId, int round), int?> _scores = [];
+    private ClaimsPrincipal _user = null!;
 
     [Parameter]
     public int Id { get; set; }
@@ -37,16 +42,6 @@ public partial class GamePage : IAsyncDisposable
     [Inject]
     public ModalService ModalService { get; set; } = null!;
 
-    public bool GameFound { get; set; } = true;
-
-    public GameDetailDto Game { get; set; } = null!;
-
-    public bool Loaded { get; set; }
-
-    public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = [];
-
-    public ClaimsPrincipal User { get; set; } = null!;
-
     public async ValueTask DisposeAsync()
     {
         await _cancellationToken.CancelAsync();
@@ -60,28 +55,34 @@ public partial class GamePage : IAsyncDisposable
 
     public async Task ReloadPageAsync()
     {
-        Loaded = false;
+        _loaded = false;
         await OnInitializedAsync();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        User = (await AuthenticationState).User;
+        _user = (await AuthenticationState).User;
 
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/apphub"))
             .WithAutomaticReconnect()
             .Build();
 
-        _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValue);
-        _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
-        _hubConnection.On<string, string>("Taunted", (imageId, user) => ToastService.DisplayToast(ImageFragment(TauntImages.Images.GetValueOrDefault(imageId, "img/noob.webp")), null, ToastType.Error, "toast-taunt", title: $"@{user}"));
+        _hubConnection.On<int, string, int, int>(
+            "ReceiveValue",
+            HandleReceiveValue);
+        _hubConnection.On(
+            "NewPlayerAdded",
+            () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
+        _hubConnection.On<string, string>(
+            "Taunted",
+            (imageId, user) => ToastService.DisplayToast(ImageFragment(TauntImages.Images.GetValueOrDefault(imageId, "img/noob.webp")), null, ToastType.Error, "toast-taunt", title: $"@{user}"));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
         _hubConnection.Reconnected += OnHubConnectionReconnected;
 
-        if (User.PlayerId() is not null)
+        if (_user.PlayerId() is not null)
         {
             await _hubConnection.StartAsync(_cancellationToken.Token);
         }
@@ -89,33 +90,32 @@ public partial class GamePage : IAsyncDisposable
         ApiResponse<GameDetailDto> response = await GamesApi.GetAsync(Id);
         if (!response.IsSuccessStatusCode || response.Content is null)
         {
-            GameFound = false;
+            _gameFound = false;
+            return;
         }
-        else
+
+        _loaded = true;
+        _gameFound = true;
+        _game = response.Content;
+        foreach (GameChallengeDto challenge in _game.Challenges)
         {
-            Loaded = true;
-            GameFound = true;
-            Game = response.Content;
-            foreach (GameChallengeDto challenge in Game.Challenges)
+            foreach (string playerId in _game.Players.Select(p => p.Id))
             {
-                foreach (string playerId in Game.Players.Select(p => p.Id))
-                {
-                    GameChallengePlayerScoreDto? playerScore = challenge.PlayerScores.FirstOrDefault(p => p.PlayerId == playerId);
-                    Scores[(challenge.Id, playerId, 1)] = playerScore?.Round1;
-                    Scores[(challenge.Id, playerId, 2)] = playerScore?.Round2;
-                    Scores[(challenge.Id, playerId, 3)] = playerScore?.Round3;
-                    Scores[(challenge.Id, playerId, 4)] = playerScore?.Round4;
-                    Scores[(challenge.Id, playerId, 5)] = playerScore?.Round5;
-                }
+                GameChallengePlayerScoreDto? playerScore = challenge.PlayerScores.FirstOrDefault(p => p.PlayerId == playerId);
+                _scores[(challenge.Id, playerId, 1)] = playerScore?.Round1;
+                _scores[(challenge.Id, playerId, 2)] = playerScore?.Round2;
+                _scores[(challenge.Id, playerId, 3)] = playerScore?.Round3;
+                _scores[(challenge.Id, playerId, 4)] = playerScore?.Round4;
+                _scores[(challenge.Id, playerId, 5)] = playerScore?.Round5;
             }
-
-            if (User.PlayerId() is not null)
-            {
-                await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
-            }
-
-            StateHasChanged();
         }
+
+        if (_user.PlayerId() is not null)
+        {
+            await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
+        }
+
+        StateHasChanged();
     }
 
     private Task OnHubConnectionReconnected(string? arg)
@@ -153,13 +153,13 @@ public partial class GamePage : IAsyncDisposable
 
     private void HandleReceiveValue(int challengeId, string playerId, int round, int score)
     {
-        Scores[(challengeId, playerId, round)] = score;
+        _scores[(challengeId, playerId, round)] = score;
         StateHasChanged();
     }
 
     private async Task SendAsync(int challengeId, int round, int? score)
     {
-        if (User.PlayerId() is not string playerId)
+        if (_user.PlayerId() is not string playerId)
         {
             return;
         }
@@ -168,7 +168,7 @@ public partial class GamePage : IAsyncDisposable
         HandleReceiveValue(challengeId, playerId, round, clampedValue);
         if (clampedValue == 5000)
         {
-            int numberOfPerfectBefore = Scores
+            int numberOfPerfectBefore = _scores
                 .Where(p => p.Key.playerId == playerId)
                 .TakeWhile(p => !(p.Key.challengeId == challengeId && p.Key.round == round))
                 .Reverse()
@@ -191,14 +191,14 @@ public partial class GamePage : IAsyncDisposable
             ToastService.DisplayToast(ImageFragment("img/so-close.webp"), TimeSpan.FromMilliseconds(2500), ToastType.Warning, "toast-4999");
         }
 
-        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, User.PlayerId(), round, clampedValue);
+        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, _user.PlayerId(), round, clampedValue);
     }
 
     private async Task AddPlayerAsync()
     {
-        if (Game is not null && User.PlayerId() is string playerId && !Game.Players.Any(p => p.Id == User.PlayerId()))
+        if (_game is not null && _user.PlayerId() is string playerId && !_game.Players.Any(p => p.Id == _user.PlayerId()))
         {
-            await GamesApi.AddPlayerAsync(Game.Id, playerId);
+            await GamesApi.AddPlayerAsync(_game.Id, playerId);
             await _hubConnection.InvokeAsync("NotifyNewPlayer", Id);
             await ReloadPageAsync();
         }
@@ -214,9 +214,9 @@ public partial class GamePage : IAsyncDisposable
     {
         await ModalService.DisplayModalAsync<GameRankings>(new()
         {
-            [nameof(GameRankings.Scores)] = Scores,
-            [nameof(GameRankings.Challenges)] = Game.Challenges,
-            [nameof(GameRankings.Players)] = Game.Players,
+            [nameof(GameRankings.Scores)] = _scores,
+            [nameof(GameRankings.Challenges)] = _game.Challenges,
+            [nameof(GameRankings.Players)] = _game.Players,
         },
         ModalOptions.Default);
     }
@@ -225,9 +225,9 @@ public partial class GamePage : IAsyncDisposable
     {
         await ModalService.DisplayModalAsync<GameChart>(new()
         {
-            [nameof(GameChart.Scores)] = Scores,
-            [nameof(GameChart.Challenges)] = Game.Challenges,
-            [nameof(GameChart.Players)] = Game.Players,
+            [nameof(GameChart.Scores)] = _scores,
+            [nameof(GameChart.Challenges)] = _game.Challenges,
+            [nameof(GameChart.Players)] = _game.Players,
         },
         ModalOptions.Default with { Size = ModalSize.Large });
     }
@@ -237,7 +237,7 @@ public partial class GamePage : IAsyncDisposable
         await ModalService.DisplayModalAsync<GameTaunt>(new()
         {
             [nameof(GameTaunt.OnTaunt)] = EventCallback.Factory.Create<(string, string)>(this, TauntAsync),
-            [nameof(GameTaunt.Players)] = Game.Players.Where(p => p.Id != User.PlayerId()),
+            [nameof(GameTaunt.Players)] = _game.Players.Where(p => p.Id != _user.PlayerId()),
         },
        ModalOptions.Default);
     }

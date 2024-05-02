@@ -2,27 +2,27 @@
 
 @using GeoNRage.App.Pages.Games
 
-<Container Condition="Loaded && GameFound">
-    <PageTitle>@Game.Name</PageTitle>
+<Container Condition="_loaded && _gameFound">
+    <PageTitle>_gamee.Name</PageTitle>
 </Container>
 
-<Container Condition="Loaded && GameFound && (User.PlayerId() is null || !Game.Players.Any(p => p.Id == User.PlayerId()))">
+<Container Condition="_loaded && _gameFound && (_user.PlayerId() is null ||_game.Players.Any(p => p.Id == _user.PlayerId()))">
     <div class="notification is-warning error-alert">
         Vous n'êtes pas connecté ou n'êtes pas joueur de la partie, vous ne verrez pas les mises à jour en temps réel.
     </div>
 </Container>
 
-<Container Condition="Loaded && GameFound">
+<Container Condition="_loaded && _gameFound">
     <div class="container is-fluid is-flex is-align-items-center is-align-self-center is-justify-content-center">
         <div class="card m-3 game-card">
             <header class="card-header">
                 <div class="card-header-title is-size-3 game-title" style="display: block">
-                    <h1 class="title">@Game.Name</h1>
-                    <h2 class="subtitle">@Game.Date.ToShortDateString()</h2>
+                    <h1 class="title">_game.Name</h1>
+                    <h2 class="subtitle">_game.Date.ToShortDateString()</h2>
                 </div>
                 <div class="card-header-icon">
                     <div class="field has-addons">
-                        <Container Condition="User.PlayerId() is not null && !Game.Players.Any(p => p.Id == User.PlayerId())">
+                        <Container Condition="_user.PlayerId() is not null && _game.Players.Any(p => p.Id == _user.PlayerId())">
                             <p class="control">
                                 <button class="button" @onclick="AddPlayerAsync">
                                     <span class="is-hidden-touch"></span>
@@ -33,7 +33,7 @@
                                 </button>
                             </p>
                         </Container>
-                        <Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId())">
+                        <Container Condition="_user.PlayerId() is not null && _game.Players.Any(p => p.Id == _user.PlayerId())">
                             <p class="control">
                                 <button class="button" @onclick="ShowTauntAsync">
                                     <span class="icon is-small">
@@ -64,7 +64,7 @@
             <div class="card-content">
                 <div class="table-container">
                     <table>
-                        <Repeater Items="Game.Challenges" Context="challenge">
+                        <Repeater Items="_game.Challenges" Context="challenge">
                             <tr>
                                 <th>
                                     @challenge.MapName
@@ -93,12 +93,12 @@
                                             var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
                                         }
                                         <td>
-                                            <Container Condition="User.PlayerId() == playerScore.PlayerId">
+                                            <Container Condition="_user.PlayerId() == playerScore.PlayerId">
                                                 <ChildContent>
                                                     <NumericInput @key="@key"
-                                                                  InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
+                                                                  InitialValue="@_scores[(challenge.Id, playerScore.PlayerId, round)]"
                                                                   ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
-                                                                  Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(User.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
+                                                                  Class="@($"{(_scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(_scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(_user.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
                                                                   TabIndex="@(i + j)"></NumericInput>
                                                 </ChildContent>
                                                 <ElseContent>
@@ -111,8 +111,8 @@
                                                         </ChildContent>
                                                         <ElseContent>
                                                             <NumericInput @key="@key"
-                                                                          InitialValue="@Scores[(challenge.Id, playerScore.PlayerId, round)]"
-                                                                          Class="@($"{(Scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(Scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(User.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
+                                                                          InitialValue="@_scores[(challenge.Id, playerScore.PlayerId, round)]"
+                                                                          Class="@($"{(_scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(_scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(_user.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
                                                                           Disabled="true"></NumericInput>
                                                         </ElseContent>
                                                     </Container>
@@ -132,16 +132,16 @@
                             <tr>
                                 <th>Total</th>
                                 <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                    <th>@(Scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
+                                    <th>@(_scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
                                 </Repeater>
                             </tr>
                         </Repeater>
 
-                        <Container Condition="Game.Challenges.Any()">
+                        <Container Condition="_game.Challenges.Any()">
                             <tr class="bordered">
                                 <th>Total global</th>
-                                <Repeater Items="Game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
-                                    <th>@(Scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
+                                <Repeater Items="_game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
+                                    <th>@(_scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
                                 </Repeater>
                             </tr>
                         </Container>
@@ -152,13 +152,13 @@
     </div>
 </Container>
 
-<Container Condition="!Loaded">
+<Container Condition="!_loaded && _gameFound">
     <LoadingAnimation>
         Chargement de la partie @(Id)...
     </LoadingAnimation>
 </Container>
 
-<Container Condition="!GameFound">
+<Container Condition="!_gameFound">
     <PageNotFound />
 </Container>
 
