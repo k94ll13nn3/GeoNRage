@@ -1,0 +1,37 @@
+<div class="dialog-box">
+    <div class="dialog-title py-1">
+        <span class="has-text-weight-semibold is-size-4 m-4">Taunt</span>
+    </div>
+
+    <div class="m-4">
+        <div class="columns">
+            <div class="column is-two-fifths">
+                <div class="select w-100">
+                    <select @bind="@_selectedPlayerId" class="w-100">
+                        <option value="@((string?)null)">—</option>
+                        @foreach (var player in Players)
+                        {
+                            <option value="@player.Id">@player.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="column is-two-fifths">
+                <div class="select w-100">
+                    <select @bind="@_selectedImageId" class="w-100">
+                        <option value="@((string?)null)">—</option>
+                        @foreach (var image in TauntImages.Images)
+                        {
+                            <option value="@image.Key">@image.Key</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="column is-one-fifth">
+                <button @onclick="TauntAsync" class="button is-primary w-100" disabled="@(_selectedPlayerId is null || _selectedImageId is null)">Go !</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="button is-primary is-radiusless" @onclick="Close" type="button">Fermer</button>
+</div>

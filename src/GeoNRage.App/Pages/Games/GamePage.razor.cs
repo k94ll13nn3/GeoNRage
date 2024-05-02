@@ -43,17 +43,9 @@ public partial class GamePage : IAsyncDisposable
 
     public bool Loaded { get; set; }
 
-    public bool ShowTaunt { get; set; }
-
     public Dictionary<(int challengeId, string playerId, int round), int?> Scores { get; } = [];
 
     public ClaimsPrincipal User { get; set; } = null!;
-
-    public string? SelectedPlayerId { get; set; }
-
-    public string? SelectedImageId { get; set; }
-
-    public Dictionary<string, string> Images { get; } = [];
 
     public async ValueTask DisposeAsync()
     {
@@ -83,7 +75,7 @@ public partial class GamePage : IAsyncDisposable
 
         _hubConnection.On<int, string, int, int>("ReceiveValue", HandleReceiveValue);
         _hubConnection.On("NewPlayerAdded", () => ToastService.DisplayToast("Un nouveau joueur a été ajouté à la partie. Veuillez rafraichir la page pour voir ses scores.", null, ToastType.Information, "toast-new-player"));
-        _hubConnection.On<string, string>("Taunted", (imageId, user) => ToastService.DisplayToast(ImageFragment(Images.GetValueOrDefault(imageId, "img/noob.webp")), null, ToastType.Error, "toast-taunt", title: $"@{user}"));
+        _hubConnection.On<string, string>("Taunted", (imageId, user) => ToastService.DisplayToast(ImageFragment(TauntImages.Images.GetValueOrDefault(imageId, "img/noob.webp")), null, ToastType.Error, "toast-taunt", title: $"@{user}"));
 
         _hubConnection.Closed += OnHubConnectionClosed;
         _hubConnection.Reconnecting += OnHubConnectionReconnecting;
@@ -121,13 +113,6 @@ public partial class GamePage : IAsyncDisposable
             {
                 await _hubConnection.InvokeAsync("JoinGroup", Id, _cancellationToken.Token);
             }
-
-            Images["Noob"] = "img/noob.webp";
-            Images["Nlm"] = "img/finger.webp";
-            Images["Tech Genus"] = "img/shut-up.webp";
-            Images["Pignouf"] = "img/pignouf.webp";
-            Images["Baltringue"] = "img/baltringue.jpg";
-            Images["Super"] = "img/super.gif";
 
             StateHasChanged();
         }
@@ -219,13 +204,10 @@ public partial class GamePage : IAsyncDisposable
         }
     }
 
-    private async Task TauntAsync()
+    private async Task TauntAsync((string player, string image) data)
     {
-        if (SelectedPlayerId is not null)
-        {
-            await _hubConnection.InvokeAsync("TauntPlayer", Id, SelectedPlayerId, SelectedImageId);
-            ToastService.DisplayToast("Envoyé !", TimeSpan.FromMilliseconds(1500), ToastType.Success, "toast-sent");
-        }
+        await _hubConnection.InvokeAsync("TauntPlayer", Id, data.player, data.image);
+        ToastService.DisplayToast("Envoyé !", TimeSpan.FromMilliseconds(1500), ToastType.Success, "toast-sent");
     }
 
     private async Task ShowRankingsAsync()
@@ -248,5 +230,15 @@ public partial class GamePage : IAsyncDisposable
             [nameof(GameChart.Players)] = Game.Players,
         },
         ModalOptions.Default with { Size = ModalSize.Large });
+    }
+
+    private async Task ShowTauntAsync()
+    {
+        await ModalService.DisplayModalAsync<GameTaunt>(new()
+        {
+            [nameof(GameTaunt.OnTaunt)] = EventCallback.Factory.Create<(string, string)>(this, TauntAsync),
+            [nameof(GameTaunt.Players)] = Game.Players.Where(p => p.Id != User.PlayerId()),
+        },
+       ModalOptions.Default);
     }
 }

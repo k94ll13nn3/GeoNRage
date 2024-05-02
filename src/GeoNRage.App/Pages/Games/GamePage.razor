@@ -35,7 +35,7 @@
                         </Container>
                         <Container Condition="User.PlayerId() is not null && Game.Players.Any(p => p.Id == User.PlayerId())">
                             <p class="control">
-                                <button class="button" @onclick="() => ShowTaunt = true">
+                                <button class="button" @onclick="ShowTauntAsync">
                                     <span class="icon is-small">
                                         <i class="fas fa-angry"></i>
                                     </span>
@@ -150,47 +150,6 @@
             </div>
         </div>
     </div>
-
-    <Container Condition="ShowTaunt">
-        <div class="modal is-active">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">Taunt</p>
-                    <button class="delete" aria-label="close" @onclick="() => ShowTaunt = false"></button>
-                </header>
-                <section class="modal-card-body">
-                    <div class="columns">
-                        <div class="column is-two-fifths">
-                            <div class="select w-100">
-                                <select @bind="@SelectedPlayerId" class="w-100">
-                                    <option value="@((string?)null)">—</option>
-                                    @foreach (var player in Game.Players.Where(p => p.Id != User.PlayerId()))
-                                    {
-                                        <option value="@player.Id">@player.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="column is-two-fifths">
-                            <div class="select w-100">
-                                <select @bind="@SelectedImageId" class="w-100">
-                                    <option value="@((string?)null)">—</option>
-                                    @foreach (var image in Images)
-                                    {
-                                        <option value="@image.Key">@image.Key</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="column is-one-fifth">
-                            <button @onclick="TauntAsync" class="button is-primary w-100" disabled="@(SelectedPlayerId is null || SelectedImageId is null)">Go !</button>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </Container>
 </Container>
 
 <Container Condition="!Loaded">
