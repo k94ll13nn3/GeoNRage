@@ -39,5 +39,5 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker pull ghcr.io/k94ll13nn3/geonrage:latest
-            cd /apps/geonrage
-            docker-compose up -d --force-recreate --remove-orphan
+            cd ~/apps/geonrage
+            docker compose up -d --force-recreate --remove-orphans
