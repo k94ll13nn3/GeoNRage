@@ -55,7 +55,7 @@ public partial class BotCommands : CommandGroup
             Title: game.Name,
             Type: EmbedType.Rich,
             Url: new Uri(_options.GeoNRageUrl, $"/games/{game.Id}").ToString(),
-            Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
+            Colour: System.Drawing.Color.FromArgb(66, 88, 255),
             Footer: new EmbedFooter("Rageux/20"),
             Fields: fields);
 
@@ -104,7 +104,7 @@ public partial class BotCommands : CommandGroup
             Type: EmbedType.Rich,
             Description: playerFull.Title,
             Url: new Uri(_options.GeoNRageUrl, $"/players/{playerFull.Id}").ToString(),
-            Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
+            Colour: System.Drawing.Color.FromArgb(66, 88, 255),
             Footer: new EmbedFooter("Rageux/20"),
             Thumbnail: new EmbedThumbnail(iconUrl),
             Fields: fields);
@@ -161,7 +161,7 @@ public partial class BotCommands : CommandGroup
         var embed = new Embed(
             Title: statistics.Name,
             Type: EmbedType.Rich,
-            Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
+            Colour: System.Drawing.Color.FromArgb(66, 88, 255),
             Footer: new EmbedFooter("Rageux/20"),
             Fields: fields);
 

@@ -43,7 +43,7 @@ public partial class ChallengeImportModal : InteractionGroup
                 Title: challenge.MapName,
                 Type: EmbedType.Rich,
                 Url: new Uri(_options.GeoNRageUrl, $"/challenges/{id}").ToString(),
-                Colour: System.Drawing.Color.FromArgb(0x37, 0x5a, 0x7f),
+                Colour: System.Drawing.Color.FromArgb(66, 88, 255),
                 Footer: new EmbedFooter("Rageux/20"),
                 Fields: fields);
 
