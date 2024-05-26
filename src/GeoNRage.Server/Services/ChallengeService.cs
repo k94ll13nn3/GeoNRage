@@ -128,7 +128,7 @@ public partial class ChallengeService
         for (int i = 0; i < results[0].Game.Rounds.Count; i++)
         {
             GeoGuessrRound round = results[0].Game.Rounds[i];
-            string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}";
+            string query = $"geocode/json?latlng={round.Lat.ToString(CultureInfo.InvariantCulture)},{round.Lng.ToString(CultureInfo.InvariantCulture)}&key={_options.GoogleApiKey}&language=fr";
             GoogleGeocode? geocode = await googleClient.GetFromJsonAsync<GoogleGeocode>(query);
             if (geocode?.Results?.Count > 0)
             {
