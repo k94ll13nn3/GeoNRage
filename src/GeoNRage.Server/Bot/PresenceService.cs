@@ -47,6 +47,6 @@ public partial class PresenceService : BackgroundService
             UserStatus.Online,
             false,
             null,
-            new[] { new Activity(name, type) }));
+            [new Activity(name, type)]));
     }
 }

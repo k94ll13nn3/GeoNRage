@@ -186,12 +186,10 @@ public partial class BotCommands : CommandGroup
                 (
                     Remora.Discord.Interactivity.CustomIDHelpers.CreateModalID("import-challenge"),
                     "Importer un challenge",
-                    new[]
-                    {
+                    [
                         new ActionRowComponent
                         (
-                           new[]
-                            {
+                           [
                                 new TextInputComponent
                                 (
                                     "challengeGeoguessrId",
@@ -203,9 +201,9 @@ public partial class BotCommands : CommandGroup
                                     default,
                                     "Id GeoGuessr"
                                 )
-                            }
+                            ]
                         )
-                    }
+                    ]
                 )
             )
         );

@@ -258,7 +258,7 @@ public partial class ChallengeService
         }
         else
         {
-            EntityEntry<Challenge>? newChallengeEntity = _context.Challenges.Add(newChallenge);
+            EntityEntry<Challenge>? newChallengeEntity = await _context.Challenges.AddAsync(newChallenge);
             await _context.SaveChangesAsync();
             challengeId = newChallengeEntity.Entity.Id;
         }
