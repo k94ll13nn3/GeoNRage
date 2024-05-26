@@ -5,7 +5,7 @@ table {
 
     td {
         text-align: center !important;
-        border: 1px solid black;
+        border: 1px solid var(--bulma-border);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -13,7 +13,7 @@ table {
 
     th {
         text-align: center !important;
-        border: 1px solid black;
+        border: 1px solid var(--bulma-border);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
