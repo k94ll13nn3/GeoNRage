@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using GeoNRage.Server.Services;
 using Microsoft.Extensions.Options;
 using Remora.Commands.Attributes;
@@ -8,7 +9,9 @@ using Remora.Discord.API.Abstractions.Rest;
 using Remora.Discord.API.Objects;
 using Remora.Discord.Commands.Attributes;
 using Remora.Discord.Commands.Contexts;
+using Remora.Discord.Commands.Extensions;
 using Remora.Discord.Commands.Feedback.Services;
+using Remora.Rest.Core;
 using Remora.Results;
 using IRemoraResult = Remora.Results.IResult;
 
@@ -19,6 +22,7 @@ public partial class BotCommands : CommandGroup
 {
     private readonly IDiscordRestInteractionAPI _interactionApi;
     private readonly IInteractionContext _interactionContext;
+    private readonly IDiscordRestChannelAPI _channelAPI;
     private readonly GameService _gameService;
     private readonly PlayerService _playerService;
     private readonly MapService _mapService;
@@ -35,14 +39,14 @@ public partial class BotCommands : CommandGroup
         Result<IApplication> bot = await _oauth2API.GetCurrentBotApplicationInformationAsync();
         if (!bot.IsSuccess || bot.Entity.Icon is null)
         {
-            return await ReplyAsync("Erreur inconnue");
+            return await _feedbackService.SendContextualAsync("Erreur inconnue");
         }
 
         IEnumerable<GameDto> games = await _gameService.GetAllAsync();
         GameDetailDto? game = await _gameService.GetAsync(games.OrderByDescending(g => g.Date).First().Id);
         if (game is null)
         {
-            return await ReplyAsync("Erreur inconnue");
+            return await _feedbackService.SendContextualAsync("Erreur inconnue");
         }
 
         var fields = new List<EmbedField>()
@@ -59,11 +63,44 @@ public partial class BotCommands : CommandGroup
             Footer: new EmbedFooter("Rageux/20"),
             Fields: fields);
 
-        Result<IMessage> reply = await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
+        return await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
+    }
 
-        return !reply.IsSuccess
-            ? Result.FromError(reply)
-            : Result.FromSuccess();
+    [Command("guess")]
+    [Description("C'est quand qu'on guess ?")]
+    [Ephemeral]
+    public async Task<IRemoraResult> StartNextGamePollAsync()
+    {
+        if (!_interactionContext.TryGetChannelID(out Snowflake channelID))
+        {
+            return await _feedbackService.SendContextualAsync("Erreur inconnue");
+        }
+
+        var date = DateOnly.FromDateTime(DateTime.Now);
+        if (date.DayOfWeek is DayOfWeek.Sunday or DayOfWeek.Saturday)
+        {
+            return await _feedbackService.SendContextualAsync("Impossible de lancer un sondage le week-end");
+        }
+
+        List<PollAnswer> answers = [];
+        for (int i = (int)date.DayOfWeek; i <= (int)DayOfWeek.Friday; i++)
+        {
+            DateOnly newDate = date.AddDays(i - (int)date.DayOfWeek);
+            answers.Add(new PollAnswer(
+                new PollMedia(newDate.ToString("dddd dd MMMM", new CultureInfo("fr-fr")),
+                new PartialEmoji(Name: "📅")), i));
+        }
+
+        var poll = new PollCreateRequest(
+            new PollMedia("C'est quand qu'on guess ?"),
+            answers,
+            24,
+            true);
+
+        // TODO : replace with _feedbackService or _interactionApi when the poll object will be added to those.
+        await _channelAPI.CreateMessageAsync(channelID, poll: poll, ct: CancellationToken);
+
+        return await _feedbackService.SendContextualAsync("Sondage envoyé");
     }
 
     [Command("player")]
@@ -78,7 +115,7 @@ public partial class BotCommands : CommandGroup
         PlayerFullDto? playerFull = await _playerService.GetFullAsync(playerId, allMaps);
         if (playerFull is null)
         {
-            return await ReplyAsync("Joueur inconnu");
+            return await _feedbackService.SendContextualAsync("Joueur inconnu");
         }
 
         var fields = new List<EmbedField>
@@ -109,11 +146,7 @@ public partial class BotCommands : CommandGroup
             Thumbnail: new EmbedThumbnail(iconUrl),
             Fields: fields);
 
-        Result<IMessage> reply = await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
-
-        return !reply.IsSuccess
-            ? Result.FromError(reply)
-            : Result.FromSuccess();
+        return await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
     }
 
     [Command("map")]
@@ -128,7 +161,7 @@ public partial class BotCommands : CommandGroup
         MapStatisticsDto? statistics = await _mapService.GetMapStatisticsAsync(mapId, allMaps);
         if (statistics is null)
         {
-            return await ReplyAsync("Carte inconnue");
+            return await _feedbackService.SendContextualAsync("Carte inconnue");
         }
 
         List<string> rankings = statistics
@@ -140,12 +173,12 @@ public partial class BotCommands : CommandGroup
 
         if (rankings.Count == 0 && !allMaps)
         {
-            return await ReplyAsync($"Veuillez utiliser le paramètre '{nameof(allMaps)}' pour cette carte");
+            return await _feedbackService.SendContextualAsync($"Veuillez utiliser le paramètre '{nameof(allMaps)}' pour cette carte");
         }
 
         if (rankings.Count == 0)
         {
-            return await ReplyAsync("Erreur inconnue");
+            return await _feedbackService.SendContextualAsync("Erreur inconnue");
         }
 
         var fields = new List<EmbedField>
@@ -165,11 +198,7 @@ public partial class BotCommands : CommandGroup
             Footer: new EmbedFooter("Rageux/20"),
             Fields: fields);
 
-        Result<IMessage> reply = await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
-
-        return !reply.IsSuccess
-            ? Result.FromError(reply)
-            : Result.FromSuccess();
+        return await _feedbackService.SendContextualEmbedAsync(embed, ct: CancellationToken);
     }
 
     [Command("import-challenge")]
@@ -215,16 +244,5 @@ public partial class BotCommands : CommandGroup
             response,
             ct: CancellationToken
         );
-    }
-
-    private async Task<Result> ReplyAsync(string message)
-    {
-        Result<IMessage> reply = await _interactionApi.CreateFollowupMessageAsync(
-            _interactionContext.Interaction.ApplicationID,
-            _interactionContext.Interaction.Token,
-            message
-        );
-
-        return !reply.IsSuccess ? Result.FromError(reply) : Result.FromSuccess();
     }
 }

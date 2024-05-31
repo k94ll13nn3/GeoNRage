@@ -1,20 +1,16 @@
 using GeoNRage.Server.Services;
 using Microsoft.Extensions.Options;
 using Remora.Discord.API.Abstractions.Objects;
-using Remora.Discord.API.Abstractions.Rest;
 using Remora.Discord.API.Objects;
-using Remora.Discord.Commands.Contexts;
 using Remora.Discord.Commands.Feedback.Services;
 using Remora.Discord.Interactivity;
-using Remora.Results;
+using IRemoraResult = Remora.Results.IResult;
 
 namespace GeoNRage.Server.Bot;
 
 [AutoConstructor]
 public partial class ChallengeImportModal : InteractionGroup
 {
-    private readonly IDiscordRestInteractionAPI _interactionApi;
-    private readonly IInteractionContext _interactionContext;
     private readonly ChallengeService _challengeService;
     private readonly FeedbackService _feedbackService;
 
@@ -22,7 +18,7 @@ public partial class ChallengeImportModal : InteractionGroup
     private readonly ApplicationOptions _options;
 
     [Modal("import-challenge")]
-    public async Task<Result> OnModalSubmitAsync(string challengeGeoguessrId)
+    public async Task<IRemoraResult> OnModalSubmitAsync(string challengeGeoguessrId)
     {
         try
         {
@@ -47,11 +43,7 @@ public partial class ChallengeImportModal : InteractionGroup
                 Footer: new EmbedFooter("Rageux/20"),
                 Fields: fields);
 
-            Result<IMessage> reply = await _feedbackService.SendContextualEmbedAsync(embed, options: new() { MessageFlags = MessageFlags.Ephemeral }, ct: CancellationToken);
-
-            return !reply.IsSuccess
-                ? Result.FromError(reply)
-                : Result.FromSuccess();
+            return await _feedbackService.SendContextualEmbedAsync(embed, options: new() { MessageFlags = MessageFlags.Ephemeral }, ct: CancellationToken);
         }
         catch (InvalidOperationException e)
         {
@@ -59,15 +51,10 @@ public partial class ChallengeImportModal : InteractionGroup
         }
     }
 
-    private async Task<Result> ReplyEphemeralAsync(string message)
+    private async Task<IRemoraResult> ReplyEphemeralAsync(string message)
     {
-        Result<IMessage> reply = await _interactionApi.CreateFollowupMessageAsync(
-            _interactionContext.Interaction.ApplicationID,
-            _interactionContext.Interaction.Token,
+        return await _feedbackService.SendContextualAsync(
             message,
-            flags: MessageFlags.Ephemeral
-        );
-
-        return !reply.IsSuccess ? Result.FromError(reply) : Result.FromSuccess();
+            options: new(MessageFlags: MessageFlags.Ephemeral));
     }
 }

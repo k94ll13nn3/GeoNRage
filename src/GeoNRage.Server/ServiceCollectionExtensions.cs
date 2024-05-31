@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Remora.Commands.Extensions;
+using Remora.Discord.API.Abstractions.Gateway.Commands;
 using Remora.Discord.Commands.Extensions;
+using Remora.Discord.Gateway;
 using Remora.Discord.Gateway.Extensions;
 using Remora.Discord.Interactivity.Extensions;
 
@@ -33,7 +35,8 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<DiscordService>();
         services.AddHostedService<PresenceService>();
 
-        services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]!);
+        services.AddDiscordGateway(_ => configuration[$"{nameof(ApplicationOptions)}:{nameof(ApplicationOptions.DiscordBotToken)}"]!)
+            .Configure<DiscordGatewayClientOptions>(o => o.Intents |= GatewayIntents.GuildMessagePolls);
         services.AddDiscordCommands(true);
         services.AddCommandTree().WithCommandGroup<BotCommands>();
         services.AddAutocompleteProvider<PlayerNameAutocompleteProvider>();
