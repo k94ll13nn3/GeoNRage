@@ -28,7 +28,7 @@
                         }
                     </td>
                     <td class="min">
-                        <a class="has-text-info" @onclick="(() => EditMap(map.Id))">
+                        <a class="has-text-info" @onclick="(() => EditMapAsync(map))">
                             <span class="icon">
                                 <i class="fas fa-edit"></i>
                             </span>
@@ -52,47 +52,3 @@
         </LoadingAnimation>
     </ElseContent>
 </Container>
-
-<div class="modal @(ShowEditForm ? "is-active" : "")">
-    <EditForm Model="Map" OnValidSubmit="UpdateMapAsync" @ref="Form">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Edition de carte</p>
-                <button class="delete" aria-label="close" @onclick="() => ShowEditForm = false" type="button"></button>
-            </header>
-            <section class="modal-card-body">
-                <DataAnnotationsValidator />
-
-                <Container Condition="!string.IsNullOrWhiteSpace(Error)">
-                    <div class="notification is-danger">
-                        @Error
-                    </div>
-                </Container>
-
-                <div class="field">
-                    <label class="label">Nom</label>
-                    <div class="control">
-                        <InputText @bind-Value="Map.Name" placeholder="Nom" class="input" />
-                        <p class="help is-danger">
-                            <ValidationMessage For="@(() => Map.Name)"></ValidationMessage>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="checkbox">
-                        <InputCheckbox @bind-Value="Map.IsMapForGame" class="checkbox" />
-                        Carte pour partie
-                    </label>
-                </div>
-            </section>
-            <footer class="modal-card-foot">
-                <div class="buttons">
-                    <button class="button is-primary" type="submit">Valider</button>
-                    <button class="button is-danger" @onclick="() => ShowEditForm = false" type="button">Fermer</button>
-                </div>
-            </footer>
-        </div>
-    </EditForm>
-</div>

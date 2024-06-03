@@ -14,7 +14,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddSignalR();
 builder.Services.AddRazorPages();
 builder.Services.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(["application/octet-stream"]));
-builder.Services.AddMemoryCache(); // SizeLimit cannot be specified because Remora uses the same cache without specifing an entity size :(.
+builder.Services.AddMemoryCache(); // SizeLimit cannot be specified because Remora uses the same cache without specifying an entity size :(.
 builder.Services.AddDatabaseAndIdentity(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpClients();

@@ -1,7 +1,6 @@
 using GeoNRage.App.Apis;
 using GeoNRage.App.Components;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Refit;
 
 namespace GeoNRage.App.Pages.Admin;
@@ -19,24 +18,20 @@ public partial class MapsAdmin
 
     public IEnumerable<MapDto> Maps { get; set; } = null!;
 
-    public bool ShowEditForm { get; set; }
-
-    public MapEditDto Map { get; set; } = new();
-
-    public string? SelectedMapId { get; set; }
-
-    public EditForm Form { get; set; } = null!;
-
-    public string? Error { get; set; }
-
     public Table<MapDto> MapsTable { get; set; } = null!;
 
-    public void EditMap(string mapId)
+    public async Task EditMapAsync(MapDto map)
     {
-        Error = null;
-        ShowEditForm = true;
-        Map = new MapEditDto { Name = Maps.First(m => m.Id == mapId).Name, IsMapForGame = Maps.First(m => m.Id == mapId).IsMapForGame };
-        SelectedMapId = mapId;
+        ModalResult result = await ModalService.DisplayModalAsync<MapAdminEdit>(new()
+        {
+            [nameof(MapAdminEdit.Map)] = map,
+        }, ModalOptions.Default);
+
+        if (!result.Cancelled)
+        {
+            Maps = await MapsApi.GetAllAsync();
+            MapsTable.SetItems(Maps);
+        }
     }
 
     public async Task DeleteMapAsync(string mapId)
@@ -58,35 +53,8 @@ public partial class MapsAdmin
         }
     }
 
-    public async Task UpdateMapAsync()
-    {
-        try
-        {
-            Error = null;
-            if (SelectedMapId is not null)
-            {
-                await MapsApi.UpdateAsync(SelectedMapId, Map);
-            }
-
-            ShowEditForm = false;
-            SelectedMapId = null;
-            Maps = await MapsApi.GetAllAsync();
-            MapsTable.SetItems(Maps);
-            StateHasChanged();
-        }
-        catch (ApiException e)
-        {
-            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
         Maps = await MapsApi.GetAllAsync();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        Form?.EditContext?.UpdateCssClassProvider();
     }
 }
