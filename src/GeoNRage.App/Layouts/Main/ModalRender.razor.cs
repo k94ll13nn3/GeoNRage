@@ -26,7 +26,7 @@ public partial class ModalRender : IDisposable
     {
         _isOpen = false;
         StateHasChanged();
-        _eventArgs?.Result.SetResult(result);
+        _eventArgs?.Result.TrySetResult(result);
     }
 
     public void Dispose()

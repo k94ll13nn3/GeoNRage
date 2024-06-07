@@ -16,7 +16,6 @@ public partial class PlayerService
         return await _context
             .Players
             .OrderBy(p => p.Name)
-            .AsNoTracking()
             .Select(p => new PlayerStatisticDto
             (
                 p.Id,
@@ -73,7 +72,6 @@ public partial class PlayerService
             List<PlayerDto> players = await _context
                 .Players
                 .OrderBy(p => p.Name)
-                .AsNoTracking()
                 .Select(p => new PlayerDto
                 (
                     p.Id,
@@ -92,7 +90,6 @@ public partial class PlayerService
         return await _context
             .Players
             .OrderBy(p => p.Name)
-            .AsNoTracking()
             .Select(p => new PlayerAdminViewDto
             (
                 p.Id,
@@ -110,14 +107,21 @@ public partial class PlayerService
         List<PlayerMapDto> mapsSummary = await _context
             .Maps
             .WhereIf(!takeAllMaps, m => m.IsMapForGame || m.Challenges.Any(c => c.GameId != -1))
-            .AsNoTracking()
+            .OrderBy(m => m.Name)
+            .Select(m => new
+            {
+                m.Name,
+                Challenges = m.Challenges
+                    .Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300))
+                    .SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id))
+            })
             .Select(m => new PlayerMapDto
              (
                  m.Name,
-                 m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).OrderByDescending(s => s).First(),
-                 m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).SelectMany(ps => ps.PlayerGuesses).Average(g => g.Score),
-                 m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).SelectMany(ps => ps.PlayerGuesses).Average(g => g.Distance),
-                 m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))).SelectMany(c => c.PlayerScores.Where(ps => ps.PlayerId == id)).SelectMany(ps => ps.PlayerGuesses).Average(g => g.Time)
+                 m.Challenges.Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).OrderByDescending(s => s).First(),
+                 m.Challenges.SelectMany(ps => ps.PlayerGuesses).Average(g => g.Score),
+                 m.Challenges.SelectMany(ps => ps.PlayerGuesses).Average(g => g.Distance),
+                 m.Challenges.SelectMany(ps => ps.PlayerGuesses).Average(g => g.Time)
              ))
             .ToListAsync();
 
@@ -125,7 +129,6 @@ public partial class PlayerService
             .Challenges
             .WhereIf(!takeAllMaps, c => (c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))
             .Where(c => !c.PlayerScores.Any(ps => ps.PlayerId == id && ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null) && ps.ChallengeId == c.Id))
-            .AsNoTracking()
             .Select(c => new PlayerChallengeDto
             (
                 c.Id,
@@ -150,7 +153,6 @@ public partial class PlayerService
             .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
             .Where(ps => ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null))
             .OrderBy(c => c.ChallengeId)
-            .AsNoTracking()
             .Select(ps => new PlayerChallengeDto
             (
                 ps.ChallengeId,
@@ -217,7 +219,6 @@ public partial class PlayerService
             .Challenges
             .WhereIf(!takeAllMaps, c => (c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || c.Map.IsMapForGame))
             .Where(c => !c.PlayerScores.Any(ps => ps.PlayerId == id && ps.PlayerGuesses.Count == 5 && ps.PlayerGuesses.All(g => g.Score != null) && ps.ChallengeId == c.Id))
-            .AsNoTracking()
             .Count();
     }
 
@@ -225,7 +226,6 @@ public partial class PlayerService
     {
         return await _context
             .Players
-            .AsNoTracking()
             .Where(p => p.Id == id)
             .Select(p => new PlayerDto
             (
@@ -240,7 +240,6 @@ public partial class PlayerService
         return ExperienceEngine.GetLevel(await _context
             .Players
             .OrderBy(p => p.Name)
-            .AsNoTracking()
             .Where(p => p.Id == id)
             .Select(p =>
                 p
@@ -345,7 +344,6 @@ public partial class PlayerService
                             NumberOf5000 = scores.Sum(ps => ps.PlayerGuesses.Count(g => g.Score == 5000)),
                         })
                 })
-                .AsNoTracking()
                 .ToListAsync();
 
             var games = new Dictionary<string, ICollection<PlayerGameDto>>();
