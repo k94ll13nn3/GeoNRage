@@ -12,6 +12,7 @@
                           {
                               new("Id", false, string.Empty),
                               new("Nom", false, string.Empty),
+                              new("Nom GeoGuessr", false, string.Empty),
                               new("", false, string.Empty),
                               new("", false, string.Empty),
                           })"
@@ -27,6 +28,7 @@
                             <span class="tag is-link tag-map-for-game">Carte pour partie</span>
                         }
                     </td>
+                    <td>@map.GeoGuessrName</td>
                     <td class="min">
                         <a class="has-text-info" @onclick="(() => EditMapAsync(map))">
                             <span class="icon">

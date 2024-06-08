@@ -48,8 +48,10 @@ public class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : Id
         builder.Entity<Player>().Property(g => g.IconUrl).HasDefaultValue(Constants.BaseAvatarUrl);
         builder.Entity<Player>().HasOne(p => p.AssociatedPlayer).WithOne().HasForeignKey<Player>(p => p.AssociatedPlayerId).IsRequired(false);
         builder.Entity<Player>().Property(g => g.Title).IsRequired().HasDefaultValue("Newbie");
+        builder.Entity<Player>().Property(p => p.GeoGuessrName).HasDefaultValue("N/A");
 
         builder.Entity<Map>().HasKey(m => m.Id);
+        builder.Entity<Map>().Property(m => m.GeoGuessrName).HasDefaultValue("N/A");
 
         builder.Entity<Challenge>().HasKey(m => m.Id);
         builder.Entity<Challenge>().HasIndex(g => g.GeoGuessrId).IsUnique();

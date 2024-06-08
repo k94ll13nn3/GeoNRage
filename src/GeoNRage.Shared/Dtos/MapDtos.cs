@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GeoNRage.Shared.Dtos.Maps;
 
-public record MapDto(string Id, string Name, bool IsMapForGame);
+public record MapDto(string Id, string Name, string GeoGuessrName, bool IsMapForGame);
 
 public record MapScoreDto(string PlayerName, int Sum, int Time);
 

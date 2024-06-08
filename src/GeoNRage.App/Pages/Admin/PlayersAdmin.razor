@@ -14,6 +14,7 @@
                           {
                               new("Id", false, string.Empty),
                               new("Nom", false, string.Empty),
+                              new("Nom GeoGuessr", false, string.Empty),
                               new("Joueur lié", false, string.Empty),
                               new("Titre", false, string.Empty),
                               new("Dernière mise à jour du profil GeoGuessr", false, string.Empty),
@@ -27,9 +28,10 @@
                 <RowContent Context="player">
                     <td>@player.Id</td>
                     <td>@player.Name</td>
+                    <td>@player.GeoGuessrName</td>
                     <td>@player.AssociatedPlayerName.FormatNullWithDash()</td>
                     <td>@player.Title</td>
-                    <td>@(player.LastUpdate is null ? "—" : player.LastUpdate.Value.ToLocalTime().Humanize())</td>
+                    <td>@(player.LastGeoGuessrUpdate is null ? "—" : player.LastGeoGuessrUpdate.Value.ToLocalTime().Humanize())</td>
                     <td class="min">
                         <a class="has-text-info" @onclick="(() => EditPlayer(player.Id))">
                             <span class="icon">

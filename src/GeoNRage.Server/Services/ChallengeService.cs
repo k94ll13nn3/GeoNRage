@@ -175,6 +175,9 @@ public partial class ChallengeService
                 player.IconUrl = Constants.BaseAvatarUrl;
             }
 
+            // Update new player or existing player name from GeoGuessr
+            player.GeoGuessrName = geoChallengeGamePlayer.Nick;
+
             var playerScore = new PlayerScore
             {
                 PlayerId = player.Id,
@@ -206,6 +209,9 @@ public partial class ChallengeService
             Id = challenge.Map.Id,
             Name = challenge.Map.Name,
         };
+
+        // Update new map or existing map name from GeoGuessr
+        map.GeoGuessrName = challenge.Map.Name;
 
         Player? creator = await _context.Players.FindAsync(challenge.Creator.Id);
         if (creator is null)

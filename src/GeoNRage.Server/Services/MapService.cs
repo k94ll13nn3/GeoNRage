@@ -24,6 +24,7 @@ public partial class MapService
                 (
                     m.Id,
                     m.Name,
+                    m.GeoGuessrName,
                     m.IsMapForGame
                 ))
                 .ToListAsync();
@@ -96,6 +97,7 @@ public partial class MapService
             (
                 m.Id,
                 m.Name,
+                m.GeoGuessrName,
                 m.IsMapForGame
             ))
             .FirstOrDefaultAsync();

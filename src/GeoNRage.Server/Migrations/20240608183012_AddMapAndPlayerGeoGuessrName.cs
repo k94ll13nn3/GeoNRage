@@ -1,0 +1,109 @@
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace GeoNRage.Server.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddMapAndPlayerGeoGuessrName : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RenameColumn(
+                name: "UpdatedAt",
+                table: "Players",
+                newName: "LastGeoGuessrUpdate");
+
+            migrationBuilder.AddColumn<string>(
+                name: "GeoGuessrName",
+                table: "Players",
+                type: "longtext",
+                nullable: false,
+                defaultValue: "N/A",
+                collation: "utf8mb4_general_ci")
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.AddColumn<string>(
+                name: "GeoGuessrName",
+                table: "Maps",
+                type: "longtext",
+                nullable: false,
+                defaultValue: "N/A",
+                collation: "utf8mb4_general_ci")
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "DataProtectionKeys",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int")
+                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "AspNetUserClaims",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int")
+                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "AspNetRoleClaims",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int")
+                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "GeoGuessrName",
+                table: "Players");
+
+            migrationBuilder.DropColumn(
+                name: "GeoGuessrName",
+                table: "Maps");
+
+            migrationBuilder.RenameColumn(
+                name: "LastGeoGuessrUpdate",
+                table: "Players",
+                newName: "UpdatedAt");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "DataProtectionKeys",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int")
+                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "AspNetUserClaims",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int")
+                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "AspNetRoleClaims",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int")
+                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+        }
+    }
+}

@@ -6,6 +6,8 @@ public class Player
 
     public string Name { get; set; } = null!;
 
+    public string GeoGuessrName { get; set; } = null!;
+
     public Uri IconUrl { get; set; } = null!;
 
     public string? AssociatedPlayerId { get; set; }
@@ -14,7 +16,7 @@ public class Player
 
     public string Title { get; set; } = null!;
 
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime? LastGeoGuessrUpdate { get; set; }
 
     public ICollection<PlayerScore> PlayerScores { get; set; } = [];
 }

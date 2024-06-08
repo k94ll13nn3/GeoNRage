@@ -12,7 +12,14 @@ public class PlayerEditDto
 
 public record PlayerDto(string Id, string Name);
 
-public record PlayerAdminViewDto(string Id, string Name, string? AssociatedPlayerId, string? AssociatedPlayerName, string Title, DateTime? LastUpdate);
+public record PlayerAdminViewDto(
+    string Id,
+    string Name,
+    string? AssociatedPlayerId,
+    string? AssociatedPlayerName,
+    string Title,
+    DateTime? LastGeoGuessrUpdate,
+    string GeoGuessrName);
 
 public record PlayerChallengeDto(int ChallengeId, int? GameId, string MapName, int? Sum, int? Time);
 
