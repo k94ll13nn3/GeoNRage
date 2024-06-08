@@ -13,7 +13,6 @@ public static class PlayersEndpointsBuilder
         group.MapGet("/admin-view", GetAllAsAdminViewAsync).RequireRole(Roles.Admin);
         group.MapGet("/statistics", GetAllStatisticsAsync);
         group.MapGet("/{id}/full", GetFullAsync);
-        group.MapGet("/{id}/experience", GetExperienceAsync);
 
         group.MapPut("/{id}", UpdateAsync).RequireRole(Roles.Admin);
 
@@ -48,17 +47,6 @@ public static class PlayersEndpointsBuilder
         }
 
         return TypedResults.Ok(player);
-    }
-
-    private static async Task<Results<Ok<PlayerExperienceDto>, NotFound>> GetExperienceAsync(string id, PlayerService playerService, HttpContext httpContext)
-    {
-        PlayerExperienceDto? experience = await playerService.GetExperienceAsync(id, httpContext.Request.Headers[Constants.MapStatusHeaderName] == "True");
-        if (experience is null)
-        {
-            return TypedResults.NotFound();
-        }
-
-        return TypedResults.Ok(experience);
     }
 
     private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> UpdateAsync(string id, PlayerEditDto dto, PlayerService playerService)

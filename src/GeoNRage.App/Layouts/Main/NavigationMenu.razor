@@ -42,8 +42,6 @@
                 <Authorized>
                     <div class="navbar-item">
                         <div class="buttons">
-                            <LevelBadge Id="@User.PlayerId()" />
-
                             <NavLink Match="NavLinkMatch.Prefix" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/profile")">
                                 <figure class="image is-32x32 profil-notification">
                                     <img class="is-rounded" src="@User.ProfilePicture()">
