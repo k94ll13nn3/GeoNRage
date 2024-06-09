@@ -3,10 +3,10 @@
 @inherits UserSettingsAwareComponent
 
 <Container Condition="Players?.Any() == true">
-	<ChildContent>
-		<div class="container">
-			<Table Items="Players"
-				   Headers="@(new TableHeader[]
+    <ChildContent>
+        <div class="container">
+            <Table Items="Players"
+                   Headers="@(new TableHeader[]
 								{
 									new("Joueur", true, nameof(PlayerStatisticDto.Name)),
 									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf5000), true, nameof(PlayerStatisticDto.NumberOf5000)),
@@ -16,46 +16,53 @@
 									new(LabelStore.Get<PlayerStatisticDto, int?>(ps => ps.BestGameSum), true, nameof(PlayerStatisticDto.BestGameSum)),
 									new(string.Empty, false, string.Empty)
 								})"
-				   SortFunction="Sort">
-				<RowContent Context="player">
-					<th><a href="@NavigationManager.ToAbsoluteUri($"/players/{player.Id}")">@player.Name</a></th>
-					<td>@player.NumberOf5000</td>
-					<td>@player.NumberOf4999</td>
-					<td>@player.ChallengesCompleted</td>
-					<td>@(player.RoundAverage?.ToString("F1") ?? "—")</td>
-					<td>
-						<Container Condition="player.BestGameSum is not null && player.BestGameId is not null">
-							<ChildContent>
-								@player.BestGameSum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
-							</ChildContent>
-							<ElseContent>
-								—
-							</ElseContent>
-						</Container>
-					</td>
-					<td>
-						<input type="checkbox"
-							   checked=@SelectedPlayerIds.Contains(player.Id)
-							   @onchange="eventArgs => { PlayerChecked(player.Id, eventArgs.Value); }"
-							   disabled="@(!SelectedPlayerIds.Contains(player.Id) && CanCompare())" />
-					</td>
-				</RowContent>
-				<FooterContent>
-					<th colspan="7" class="has-text-right">
-						<button class="button is-primary" @onclick="@CompareAsync" disabled="@(!CanCompare())">
-							<span class="icon">
-								<i class="fas fa-random"></i>
-							</span>
-							<span>Comparer</span>
-						</button>
-					</th>
-				</FooterContent>
-			</Table>
-		</div>
-	</ChildContent>
-	<ElseContent>
-		<LoadingAnimation>
-			Chargement...
-		</LoadingAnimation>
-	</ElseContent>
+                   SortFunction="Sort">
+                <RowContent Context="player">
+                    <th>
+                        <div class="is-flex is-flex-direction-row is-align-items-center">
+                            <figure class="image is-32x32">
+                                <img class="is-rounded" src="@player.IconUrl">
+                            </figure>
+                            <a class="ml-1" href="@NavigationManager.ToAbsoluteUri($"/players/{player.Id}")">@player.Name</a>
+                        </div>
+                    </th>
+                    <td>@player.NumberOf5000</td>
+                    <td>@player.NumberOf4999</td>
+                    <td>@player.ChallengesCompleted</td>
+                    <td>@(player.RoundAverage?.ToString("F1") ?? "—")</td>
+                    <td>
+                        <Container Condition="player.BestGameSum is not null && player.BestGameId is not null">
+                            <ChildContent>
+                                @player.BestGameSum (<a href="@NavigationManager.ToAbsoluteUri($"/games/{player.BestGameId}")">#@player.BestGameId</a>)
+                            </ChildContent>
+                            <ElseContent>
+                                —
+                            </ElseContent>
+                        </Container>
+                    </td>
+                    <td>
+                        <input type="checkbox"
+                               checked=@SelectedPlayerIds.Contains(player.Id)
+                               @onchange="eventArgs => { PlayerChecked(player.Id, eventArgs.Value); }"
+                               disabled="@(!SelectedPlayerIds.Contains(player.Id) && CanCompare())" />
+                    </td>
+                </RowContent>
+                <FooterContent>
+                    <th colspan="7" class="has-text-right">
+                        <button class="button is-primary" @onclick="@CompareAsync" disabled="@(!CanCompare())">
+                            <span class="icon">
+                                <i class="fas fa-random"></i>
+                            </span>
+                            <span>Comparer</span>
+                        </button>
+                    </th>
+                </FooterContent>
+            </Table>
+        </div>
+    </ChildContent>
+    <ElseContent>
+        <LoadingAnimation>
+            Chargement...
+        </LoadingAnimation>
+    </ElseContent>
 </Container>

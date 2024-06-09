@@ -20,6 +20,7 @@ public partial class PlayerService
             (
                 p.Id,
                 p.Name,
+                p.IconUrl,
                 p
                     .PlayerScores
                     .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))

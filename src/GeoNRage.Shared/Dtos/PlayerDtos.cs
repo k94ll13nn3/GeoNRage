@@ -66,6 +66,7 @@ public record PlayerFullDto(
 public record PlayerStatisticDto(
     string Id,
     string Name,
+    Uri IconUrl,
     int NumberOf5000,
     int NumberOf4999,
     int ChallengesCompleted,
