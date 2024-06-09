@@ -75,7 +75,14 @@
                                     </a>
                                 </th>
                                 <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                    <th>@playerScore.PlayerName</th>
+                                    <th>
+                                        <div class="is-flex is-flex-direction-row is-align-items-center">
+                                            <figure class="my-1 image is-32x32">
+                                                <img class="is-rounded" src="@playerScore.IconUrl">
+                                            </figure>
+                                            <span class="ml-1">@playerScore.PlayerName</span>
+                                        </div>
+                                    </th>
                                 </Repeater>
                             </tr>
 

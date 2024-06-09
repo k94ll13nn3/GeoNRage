@@ -69,6 +69,7 @@ public partial class GameService
                     (
                         p.PlayerId,
                         p.Player.Name,
+                        p.Player.IconUrl,
                         p.PlayerGuesses.Any(g => g.RoundNumber == 1) ? p.PlayerGuesses.First(g => g.RoundNumber == 1).Score : null,
                         p.PlayerGuesses.Any(g => g.RoundNumber == 2) ? p.PlayerGuesses.First(g => g.RoundNumber == 2).Score : null,
                         p.PlayerGuesses.Any(g => g.RoundNumber == 3) ? p.PlayerGuesses.First(g => g.RoundNumber == 3).Score : null,
