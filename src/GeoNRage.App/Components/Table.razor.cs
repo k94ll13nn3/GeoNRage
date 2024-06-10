@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
+using System.Timers;
+using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Components;
 
-public partial class Table<T>
+public sealed partial class Table<T> : IDisposable
 {
     private IEnumerable<T> _items = null!;
     private string _filter = string.Empty;
     private string _sortColumn = string.Empty;
     private bool _sortAscending = true;
+    private System.Timers.Timer _searchTimer = default!;
 
     [Parameter]
     public IEnumerable<T> Items { get; set; } = null!;
@@ -34,6 +36,9 @@ public partial class Table<T>
     public int PageSize { get; set; } = 10;
 
     [Parameter]
+    public int DebounceTimer { get; set; } = 250;
+
+    [Parameter]
     public bool CanSearch { get; set; }
 
     [Parameter]
@@ -57,9 +62,18 @@ public partial class Table<T>
         RefreshItems();
     }
 
+    public void Dispose()
+    {
+        _searchTimer.Dispose();
+    }
+
     protected override void OnInitialized()
     {
         RefreshItems();
+
+        _searchTimer = new System.Timers.Timer(DebounceTimer);
+        _searchTimer.Elapsed += OnSearchTimerElapsed;
+        _searchTimer.AutoReset = false;
     }
 
     private void ChangePage(int newPage)
@@ -82,7 +96,6 @@ public partial class Table<T>
     {
         _sortColumn = column;
         _sortAscending = ascending;
-        RefreshItems();
     }
 
     private bool IsColumnSorted(string column, bool ascending)
@@ -93,6 +106,12 @@ public partial class Table<T>
     private void OnFilter(ChangeEventArgs args)
     {
         _filter = args?.Value as string ?? string.Empty;
+        _searchTimer.Stop();
+        _searchTimer.Start();
+    }
+
+    private void OnSearchTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
         RefreshItems();
     }
 
