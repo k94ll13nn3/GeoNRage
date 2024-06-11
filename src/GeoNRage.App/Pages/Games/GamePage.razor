@@ -64,94 +64,96 @@
             <div class="card-content">
                 <div class="table-container">
                     <table>
-                        <Repeater Items="_game.Challenges" Context="challenge">
-                            <tr>
-                                <th>
-                                    @challenge.MapName
-                                    <a href="https://www.geoguessr.com/challenge/@challenge.GeoGuessrId" target="_blank" class="action-button">
-                                        <span class="icon">
-                                            <i class="fas fa-link" aria-hidden="true"></i>
-                                        </span>
-                                    </a>
-                                </th>
-                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                    <th>
-                                        <div class="is-flex is-flex-direction-row is-align-items-center">
-                                            <figure class="my-1 image is-32x32">
-                                                <img class="is-rounded" src="@playerScore.IconUrl">
-                                            </figure>
-                                            <span class="ml-1">@playerScore.PlayerName</span>
-                                        </div>
-                                    </th>
-                                </Repeater>
-                            </tr>
-
-                            @{
-                                var i = 1;
-                            }
-                            <Repeater Items="Enumerable.Range(1, 5)" Context="round">
+                        <tbody>
+                            <Repeater Items="_game.Challenges" Context="challenge">
                                 <tr>
-                                    <th>Round @round</th>
-                                    @{
-                                        var j = 1;
-                                    }
+                                    <th>
+                                        @challenge.MapName
+                                        <a href="https://www.geoguessr.com/challenge/@challenge.GeoGuessrId" target="_blank" class="action-button">
+                                            <span class="icon">
+                                                <i class="fas fa-link" aria-hidden="true"></i>
+                                            </span>
+                                        </a>
+                                    </th>
                                     <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                        @{
-                                            var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
-                                        }
-                                        <td>
-                                            <Container Condition="_user.PlayerId() == playerScore.PlayerId">
-                                                <ChildContent>
-                                                    <NumericInput @key="@key"
-                                                                  InitialValue="@_scores[(challenge.Id, playerScore.PlayerId, round)]"
-                                                                  ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
-                                                                  Class="@($"{(_scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(_scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(_user.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
-                                                                  TabIndex="@(i + j)"></NumericInput>
-                                                </ChildContent>
-                                                <ElseContent>
-                                                    <Container Condition="HideScores">
-                                                        <ChildContent>
-                                                            <NumericInput @key="@key"
-                                                                          InitialValue="0"
-                                                                          Class="has-background-info has-text-info-invert"
-                                                                          Disabled="true"></NumericInput>
-                                                        </ChildContent>
-                                                        <ElseContent>
-                                                            <NumericInput @key="@key"
-                                                                          InitialValue="@_scores[(challenge.Id, playerScore.PlayerId, round)]"
-                                                                          Class="@($"{(_scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(_scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(_user.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
-                                                                          Disabled="true"></NumericInput>
-                                                        </ElseContent>
-                                                    </Container>
-                                                </ElseContent>
-                                            </Container>
-                                        </td>
-                                        @{
-                                            j++;
-                                        }
+                                        <th>
+                                            <div class="is-flex is-flex-direction-row is-align-items-center">
+                                                <figure class="my-1 image is-32x32">
+                                                    <img class="is-rounded" src="@playerScore.IconUrl">
+                                                </figure>
+                                                <span class="ml-1">@playerScore.PlayerName</span>
+                                            </div>
+                                        </th>
                                     </Repeater>
-                                    @{
-                                        i += 100;
-                                    }
+                                </tr>
+
+                                @{
+                                    var i = 1;
+                                }
+                                <Repeater Items="Enumerable.Range(1, 5)" Context="round">
+                                    <tr>
+                                        <th>Round @round</th>
+                                        @{
+                                            var j = 1;
+                                        }
+                                        <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                            @{
+                                                var key = $"{challenge.Id}_{playerScore.PlayerId}_{round}";
+                                            }
+                                            <td>
+                                                <Container Condition="_user.PlayerId() == playerScore.PlayerId">
+                                                    <ChildContent>
+                                                        <NumericInput @key="@key"
+                                                                      InitialValue="@_scores[(challenge.Id, playerScore.PlayerId, round)]"
+                                                                      ValueChanged="@(async (e) => { await SendAsync(challenge.Id, round, e);})"
+                                                                      Class="@($"{(_scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(_scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(_user.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
+                                                                      TabIndex="@(i + j)"></NumericInput>
+                                                    </ChildContent>
+                                                    <ElseContent>
+                                                        <Container Condition="HideScores">
+                                                            <ChildContent>
+                                                                <NumericInput @key="@key"
+                                                                              InitialValue="0"
+                                                                              Class="has-background-info has-text-info-invert"
+                                                                              Disabled="true"></NumericInput>
+                                                            </ChildContent>
+                                                            <ElseContent>
+                                                                <NumericInput @key="@key"
+                                                                              InitialValue="@_scores[(challenge.Id, playerScore.PlayerId, round)]"
+                                                                              Class="@($"{(_scores[(challenge.Id, playerScore.PlayerId, round)] == 5000 ? "has-background-success has-text-success-invert" : "")} {(_scores[(challenge.Id, playerScore.PlayerId, round)] == 4999 ? "has-background-warning has-text-warning-invert" : "")} {(_user.PlayerId() != playerScore.PlayerId ? "has-background-info has-text-info-invert" : "")}")"
+                                                                              Disabled="true"></NumericInput>
+                                                            </ElseContent>
+                                                        </Container>
+                                                    </ElseContent>
+                                                </Container>
+                                            </td>
+                                            @{
+                                                j++;
+                                            }
+                                        </Repeater>
+                                        @{
+                                            i += 100;
+                                        }
+                                    </tr>
+                                </Repeater>
+
+                                <tr>
+                                    <th>Total</th>
+                                    <Repeater Items="challenge.PlayerScores" Context="playerScore">
+                                        <th>@(_scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
+                                    </Repeater>
                                 </tr>
                             </Repeater>
 
-                            <tr>
-                                <th>Total</th>
-                                <Repeater Items="challenge.PlayerScores" Context="playerScore">
-                                    <th>@(_scores.Where(s => s.Key.challengeId == challenge.Id && s.Key.playerId == playerScore.PlayerId).Sum(s => s.Value) ?? 0)</th>
-                                </Repeater>
-                            </tr>
-                        </Repeater>
-
-                        <Container Condition="_game.Challenges.Any()">
-                            <tr class="bordered">
-                                <th>Total global</th>
-                                <Repeater Items="_game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
-                                    <th>@(_scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
-                                </Repeater>
-                            </tr>
-                        </Container>
+                            <Container Condition="_game.Challenges.Any()">
+                                <tr class="bordered">
+                                    <th>Total global</th>
+                                    <Repeater Items="_game.Challenges.SelectMany(c => c.PlayerScores).GroupBy(p => p.PlayerId)" Context="playerScores">
+                                        <th>@(_scores.Where(s => s.Key.playerId == playerScores.Key).Sum(s => s.Value) ?? 0)</th>
+                                    </Repeater>
+                                </tr>
+                            </Container>
+                        </tbody>
                     </table>
                 </div>
             </div>

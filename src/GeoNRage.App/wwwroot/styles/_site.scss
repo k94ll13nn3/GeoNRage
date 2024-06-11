@@ -27,4 +27,5 @@ html {
     --link: #{var(--bulma-link)};
     --text: #{var(--bulma-text)};
     --bulma-family-primary: "Alata", sans-serif;
+    --geonrage-shadow: 0 4px 4px 0 hsla(var(--bulma-shadow-h),var(--bulma-shadow-s),var(--bulma-shadow-l),0.1),0 0px 0 1px hsla(var(--bulma-shadow-h),var(--bulma-shadow-s),var(--bulma-shadow-l),0.02)
 }
