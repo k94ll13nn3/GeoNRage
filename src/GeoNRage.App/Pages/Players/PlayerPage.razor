@@ -278,7 +278,7 @@
                                         </Container>
                                     </button>
                                 </header>
-                                <div class="card-content">
+                                <div class="card-content no-challenges">
                                     <PlotlyChart Config="Config" Layout="Layout"
                                                  Data="Data" @ref="Chart" style="" ClickAction="NavigateToGame"
                                                  AfterRender="async () => await Chart!.SubscribeClickEvent()" />

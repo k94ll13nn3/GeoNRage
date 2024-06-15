@@ -1,0 +1,27 @@
+@if (_loaded && _player is not null)
+{
+    <div class="card has-text-weight-normal has-text-left" style="white-space: initial">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <figure class="image is-48x48">
+                        <img class="is-rounded" src="@_player.IconUrl" />
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class="title is-4">@_player.Name</p>
+                    <p class="subtitle is-6">@@@_player.GeoGuessrName</p>
+                </div>
+            </div>
+
+            <div class="content">
+                A obtenu <span class="has-text-weight-bold has-text-primary">@_player.NumberOf5000</span> 5000
+                sur <span class="has-text-weight-bold has-text-primary">@_player.ChallengesCompleted</span> challenges,
+                sa meilleure partie est de <span class="has-text-weight-bold has-text-primary">@_player.BestGameSum</span>
+                sur <span class="has-text-weight-bold has-text-primary">@_player.NumberOfGamesPlayed</span> parties jouées.
+                <br />
+                <time datetime="2016-1-1"><span class="is-italic">@_player.Title</span></time>
+            </div>
+        </div>
+    </div>
+}

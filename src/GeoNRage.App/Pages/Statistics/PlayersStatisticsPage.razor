@@ -19,12 +19,7 @@
                    SortFunction="Sort">
                 <RowContent Context="player">
                     <th>
-                        <div class="is-flex is-flex-direction-row is-align-items-center">
-                            <figure class="image is-32x32">
-                                <img class="is-rounded" src="@player.IconUrl">
-                            </figure>
-                            <a class="ml-1" href="@NavigationManager.ToAbsoluteUri($"/players/{player.Id}")">@player.Name</a>
-                        </div>
+                        <PlayerDisplay Id="@player.Id" Name="@player.Name" IconUrl="@player.IconUrl" WithLink />
                     </th>
                     <td>@player.NumberOf5000</td>
                     <td>@player.NumberOf4999</td>

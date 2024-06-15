@@ -1,18 +1,20 @@
-.card-table {
-    max-height: 250px;
-    height: 250px;
-    overflow-y: auto;
-}
+.card {
+    overflow: hidden;
 
-.no-challenges {
-    max-height: 250px;
-    height: 250px;
-}
+    .card-table {
+        margin-top: 5px;
+        max-height: 250px;
+        height: 250px;
+        overflow-y: auto;
+    }
 
-.help-tooltip {
-    cursor: help;
-}
+    .card-content {
+        margin-top: 5px;
+        padding: 0;
+    }
 
-.card-content {
-    padding: 0;
+    .no-challenges {
+        max-height: 250px;
+        height: 250px;
+    }
 }

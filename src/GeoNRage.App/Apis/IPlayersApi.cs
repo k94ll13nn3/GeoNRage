@@ -18,6 +18,10 @@ public interface IPlayersApi
     [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<ApiResponse<PlayerFullDto>> GetFullAsync(string id);
 
+    [Get("/api/players/{id}/resume")]
+    [Headers($"{Constants.MapStatusHeaderName}:")]
+    Task<ApiResponse<PlayerResumeDto>> GetResumeAsync(string id);
+
     [Put("/api/players/{id}")]
     Task UpdateAsync(string id, [Body] PlayerEditDto dto);
 

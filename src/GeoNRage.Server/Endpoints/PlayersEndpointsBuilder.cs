@@ -12,6 +12,7 @@ public static class PlayersEndpointsBuilder
         group.MapGet("/", GetAllAsync);
         group.MapGet("/admin-view", GetAllAsAdminViewAsync).RequireRole(Roles.Admin);
         group.MapGet("/statistics", GetAllStatisticsAsync);
+        group.MapGet("/{id}/resume", GetResumeAsync);
         group.MapGet("/{id}/full", GetFullAsync);
 
         group.MapPut("/{id}", UpdateAsync).RequireRole(Roles.Admin);
@@ -41,6 +42,17 @@ public static class PlayersEndpointsBuilder
     private static async Task<Results<Ok<PlayerFullDto>, NotFound>> GetFullAsync(string id, PlayerService playerService, HttpContext httpContext)
     {
         PlayerFullDto? player = await playerService.GetFullAsync(id, httpContext.Request.Headers[Constants.MapStatusHeaderName] == "True");
+        if (player is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(player);
+    }
+
+    private static async Task<Results<Ok<PlayerResumeDto>, NotFound>> GetResumeAsync(string id, PlayerService playerService, HttpContext httpContext)
+    {
+        PlayerResumeDto? player = await playerService.GetResumeAsync(id, httpContext.Request.Headers[Constants.MapStatusHeaderName] == "True");
         if (player is null)
         {
             return TypedResults.NotFound();

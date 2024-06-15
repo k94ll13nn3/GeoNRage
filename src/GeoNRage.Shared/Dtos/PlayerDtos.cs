@@ -63,6 +63,17 @@ public record PlayerFullDto(
     IEnumerable<PlayerMapDto> MapsSummary,
     IEnumerable<PlayerGameDto> GameHistory);
 
+public record PlayerResumeDto(
+    string Id,
+    string Name,
+    string Title,
+    Uri IconUrl,
+    string GeoGuessrName,
+    int NumberOf5000,
+    int ChallengesCompleted,
+    int? BestGameSum,
+    int NumberOfGamesPlayed);
+
 public record PlayerStatisticDto(
     string Id,
     string Name,

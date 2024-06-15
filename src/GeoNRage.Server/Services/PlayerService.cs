@@ -224,6 +224,46 @@ public partial class PlayerService
             .Count();
     }
 
+    public async Task<PlayerResumeDto?> GetResumeAsync(string id, bool takeAllMaps)
+    {
+        return await _context
+            .Players
+            .Where(p => p.Id == id)
+            .Select(p => new PlayerResumeDto
+            (
+                p.Id,
+                p.Name,
+                p.Title,
+                p.IconUrl,
+                p.GeoGuessrName,
+                p
+                    .PlayerScores
+                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                    .SelectMany(p => p.PlayerGuesses)
+                    .Count(g => g.Score == 5000),
+                p
+                    .PlayerScores
+                    .Where(p => takeAllMaps || ((p.Challenge.TimeLimit ?? 300) == 300 && (p.Challenge.GameId != -1 || p.Challenge.Map.IsMapForGame)))
+                    .Count(p => p.PlayerGuesses.Count == 5 && p.PlayerGuesses.All(g => g.Score != null)),
+                p
+                    .PlayerScores
+                    .Where(ps => ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
+                    .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                    .GroupBy(p => p.GameId)
+                    .Where(g => g.Count() == 3)
+                    .Select(g => new { Id = g.Key, Sum = g.Sum(p => p.Sum) })
+                    .OrderByDescending(g => g.Sum)
+                    .First()
+                    .Sum,
+                p
+                    .PlayerScores
+                    .Where(ps => ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
+                    .GroupBy(ps => ps.Challenge.GameId)
+                    .Count(g => g.Count() == 3)
+            ))
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<PlayerDto?> GetAsync(string id)
     {
         return await _context
