@@ -7,7 +7,7 @@ public class ModalService
 {
     public event EventHandler<ModalEventArgs>? OnModalRequested;
 
-    public async Task<ModalResult<TOutputData>> DisplayModalAsync<TModal, TOutputData>(Dictionary<string, object> parameters, ModalOptions options)
+    public async Task<ModalResult<TOutputData>> DisplayModalAsync<TModal, TOutputData>(Dictionary<string, object?> parameters, ModalOptions options)
         where TModal : ComponentBase, IModal
     {
         TaskCompletionSource<object?> tcs = new();
@@ -23,7 +23,7 @@ public class ModalService
         };
     }
 
-    public async Task<ModalResult> DisplayModalAsync<TModal>(Dictionary<string, object> parameters, ModalOptions options)
+    public async Task<ModalResult> DisplayModalAsync<TModal>(Dictionary<string, object?> parameters, ModalOptions options)
         where TModal : ComponentBase, IModal
     {
         TaskCompletionSource<object?> tcs = new();
@@ -40,7 +40,7 @@ public class ModalService
 
     public async Task<ModalResult> DisplayOkCancelPopupAsync(string title, string message)
     {
-        Dictionary<string, object> parameters = new()
+        Dictionary<string, object?> parameters = new()
         {
             [nameof(OkCancelModal.Message)] = message,
             [nameof(OkCancelModal.Title)] = title
