@@ -151,6 +151,34 @@
                         </tbody>
                     </table>
                 </div>
+                @if (_game.PreviousGameId is not null || _game.NextGameId is not null)
+                {
+                    <div class="is-flex is-justify-content-space-between">
+                        @if (_game.PreviousGameId is not null)
+                        {
+                            <a class="button is-primary is-small" href="@NavigationManager.ToAbsoluteUri($"/games/{_game.PreviousGameId}")">
+                                <span class="icon">
+                                    <i class="fa-solid fa-angles-left"></i>
+                                </span>
+                                <span>Partie précédente</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <span />
+                        }
+
+                        @if (_game.NextGameId is not null)
+                        {
+                            <a class="button is-primary is-small" href="@NavigationManager.ToAbsoluteUri($"/games/{_game.NextGameId}")">
+                                <span>Partie suivante</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-angles-right"></i>
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>

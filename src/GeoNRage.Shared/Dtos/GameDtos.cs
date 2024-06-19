@@ -39,4 +39,11 @@ public record GameChallengeDto(int Id, string MapId, string GeoGuessrId, string 
 
 public record GamePlayerDto(string Id, string Name);
 
-public record GameDetailDto(int Id, string Name, DateTime Date, IEnumerable<GameChallengeDto> Challenges, IEnumerable<GamePlayerDto> Players);
+public record GameDetailDto(
+    int Id,
+    string Name,
+    DateTime Date,
+    IEnumerable<GameChallengeDto> Challenges,
+    IEnumerable<GamePlayerDto> Players,
+    int? NextGameId,
+    int? PreviousGameId);

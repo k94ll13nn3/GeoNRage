@@ -50,7 +50,7 @@ public partial class GameService
 
     public async Task<GameDetailDto?> GetAsync(int id)
     {
-        return await _context
+        GameDetailDto? game = await _context
             .Games
             .AsNoTracking()
             .Where(g => g.Id == id)
@@ -82,9 +82,30 @@ public partial class GameService
                 (
                     p.PlayerId,
                     p.Player.Name
-                )).Distinct()
+                )).Distinct(),
+                null,
+                null
             ))
             .FirstOrDefaultAsync();
+
+        if (game is not null)
+        {
+            var previousGame = await _context.Games
+                .Where(g => g.Date < game.Date && g.Id != -1)
+                .OrderByDescending(g => g.Date)
+                .Select(g => new { g.Id })
+                .FirstOrDefaultAsync();
+
+            var nextGame = await _context.Games
+                .Where(g => g.Date > game.Date && g.Id != -1)
+                .OrderBy(g => g.Date)
+                .Select(g => new { g.Id })
+                .FirstOrDefaultAsync();
+
+            game = game with { PreviousGameId = previousGame?.Id, NextGameId = nextGame?.Id };
+        }
+
+        return game;
     }
 
     public bool Exists(int gameId)

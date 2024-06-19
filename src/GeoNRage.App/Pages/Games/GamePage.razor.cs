@@ -9,7 +9,8 @@ namespace GeoNRage.App.Pages.Games;
 
 public partial class GamePage : IAsyncDisposable
 {
-    private readonly CancellationTokenSource _cancellationToken = new();
+    private int? _oldGameId;
+    private CancellationTokenSource _cancellationToken = new();
     private readonly Dictionary<(int challengeId, string playerId, int round), int?> _scores = [];
     private bool _gameFound = true;
     private bool _loaded;
@@ -44,23 +45,25 @@ public partial class GamePage : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await _cancellationToken.CancelAsync();
-        _cancellationToken.Dispose();
-        _hubConnection.Closed -= OnHubConnectionClosed;
-        _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
-        _hubConnection.Reconnected -= OnHubConnectionReconnected;
-        await _hubConnection.DisposeAsync();
+        await DisposeHubAsync();
         GC.SuppressFinalize(this);
     }
 
-    public async Task ReloadPageAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        _loaded = false;
-        await OnInitializedAsync();
+        if (_oldGameId != Id)
+        {
+            _loaded = false;
+            await DisposeHubAsync();
+            await ReloadPageAsync();
+        }
+
+        _oldGameId = Id;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected async Task ReloadPageAsync()
     {
+        _loaded = false;
         _user = (await AuthenticationState).User;
 
         _hubConnection = new HubConnectionBuilder()
@@ -240,5 +243,20 @@ public partial class GamePage : IAsyncDisposable
             [nameof(GameTaunt.Players)] = _game.Players.Where(p => p.Id != _user.PlayerId()),
         },
        ModalOptions.Default);
+    }
+
+    private async Task DisposeHubAsync()
+    {
+        await _cancellationToken.CancelAsync();
+        _cancellationToken.Dispose();
+        _cancellationToken = new();
+
+        if (_hubConnection is not null)
+        {
+            _hubConnection.Closed -= OnHubConnectionClosed;
+            _hubConnection.Reconnecting -= OnHubConnectionReconnecting;
+            _hubConnection.Reconnected -= OnHubConnectionReconnected;
+            await _hubConnection.DisposeAsync();
+        }
     }
 }
