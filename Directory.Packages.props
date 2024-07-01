@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <GlobalPackageReference Include="AutoConstructor" Version="5.4.0" />
+    <GlobalPackageReference Include="AutoConstructor" Version="5.5.0" />
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="4.12.3" />
     <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.28.0.94264" />
     <GlobalPackageReference Include="MinVer" Version="5.0.0" />
