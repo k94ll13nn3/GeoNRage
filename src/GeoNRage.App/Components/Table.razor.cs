@@ -96,6 +96,7 @@ public sealed partial class Table<T> : IDisposable
     {
         _sortColumn = column;
         _sortAscending = ascending;
+        RefreshItems();
     }
 
     private bool IsColumnSorted(string column, bool ascending)
