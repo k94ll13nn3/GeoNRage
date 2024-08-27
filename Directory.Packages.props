@@ -6,29 +6,29 @@
   <ItemGroup>
     <GlobalPackageReference Include="AutoConstructor" Version="5.5.0" />
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="4.12.4" />
-    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.30.0.95878" />
+    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
     <GlobalPackageReference Include="MinVer" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="AspNetCore.SassCompiler" Version="1.77.8" />
     <PackageVersion Include="Humanizer.Core.fr" Version="2.14.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="8.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="8.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageVersion Include="Plotly.Blazor" Version="5.1.1" />
     <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="7.1.2" />
     <PackageVersion Include="Remora.Discord" Version="2024.2.0" />
     <PackageVersion Include="Seq.Extensions.Logging" Version="8.0.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.7.3" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>
 </Project>
