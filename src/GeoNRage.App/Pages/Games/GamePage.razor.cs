@@ -100,6 +100,7 @@ public partial class GamePage : IAsyncDisposable
         _loaded = true;
         _gameFound = true;
         _game = response.Content;
+        _scores.Clear();
         foreach (GameChallengeDto challenge in _game.Challenges)
         {
             foreach (string playerId in _game.Players.Select(p => p.Id))
