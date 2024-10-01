@@ -7,7 +7,7 @@
     <GlobalPackageReference Include="AutoConstructor" Version="5.5.0" />
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="4.12.6" />
     <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
-    <GlobalPackageReference Include="MinVer" Version="5.0.0" />
+    <GlobalPackageReference Include="MinVer" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="AspNetCore.SassCompiler" Version="1.79.3" />
