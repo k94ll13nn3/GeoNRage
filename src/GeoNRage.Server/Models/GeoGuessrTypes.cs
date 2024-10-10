@@ -14,7 +14,7 @@ public record GeoGuessrChallengeGame(string Token);
 
 public record GeoGuessrGameGuess(string Token, decimal Lat, decimal Lng, bool TimedOut);
 
-public record GeoGuessrGuess(int RoundScoreInPoints, bool TimedOut, bool TimedOutWithGuess, int Time, double DistanceInMeters);
+public record GeoGuessrGuess(int RoundScoreInPoints, bool TimedOut, bool TimedOutWithGuess, int Time, double DistanceInMeters, int? StepsCount);
 
 public record GeoGuessrPin(Uri Url);
 

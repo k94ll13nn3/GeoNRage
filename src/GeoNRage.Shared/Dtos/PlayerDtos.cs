@@ -35,6 +35,8 @@ public record PlayerFullStatisticDto(
     int NumberOf0,
     double? TimeByRoundAverage,
     double? DistanceAverage,
+    double? StepsAverage,
+    int? NumberOf0Steps,
     int NumberOfTimeOut,
     int NumberOfTimeOutWithGuess,
     int? TotalTime,

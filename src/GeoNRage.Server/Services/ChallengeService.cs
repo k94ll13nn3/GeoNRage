@@ -190,6 +190,7 @@ public partial class ChallengeService
                     TimedOut = p.TimedOut,
                     TimedOutWithGuess = p.TimedOutWithGuess,
                     Distance = p.DistanceInMeters,
+                    Steps = p.StepsCount
                 }).ToList(),
             };
 

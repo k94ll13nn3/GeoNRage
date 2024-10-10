@@ -41,6 +41,8 @@ public partial class ComparisonTable : IModal
         AddElement(p => p.Statistics.NumberOf0, (i, j) => j.CompareTo(i));
         AddElement(p => p.Statistics.NumberOfTimeOut, (i, j) => j.CompareTo(i));
         AddElement(p => p.Statistics.NumberOfTimeOutWithGuess, (i, j) => j.CompareTo(i));
+        AddElement(p => p.Statistics.StepsAverage, NullableComparer);
+        AddElement(p => p.Statistics.NumberOf0Steps, NullableComparer);
         AddElement(p => p.Statistics.Best5000Time, (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
         AddElement(p => p.Statistics.Best25000Time, (i, j) => NullableComparer(i, j, true), x => x.ToTimeString());
 
