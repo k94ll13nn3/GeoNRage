@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Server.Entities;
+namespace GeoNRage.Server.Entities;
 
 public class PlayerGuess
 {
@@ -19,4 +19,6 @@ public class PlayerGuess
     public int? Time { get; set; }
 
     public double? Distance { get; set; }
+
+    public int? Steps { get; set; }
 }

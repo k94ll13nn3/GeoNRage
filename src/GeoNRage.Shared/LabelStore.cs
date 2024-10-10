@@ -17,6 +17,8 @@ public static class LabelStore
             [nameof(PlayerFullStatisticDto.NumberOf0)] = "Nombre de 0",
             [nameof(PlayerFullStatisticDto.NumberOfTimeOut)] = "Nombre de time out (sans guess)",
             [nameof(PlayerFullStatisticDto.NumberOfTimeOutWithGuess)] = "Nombre de time out (avec guess)",
+            [nameof(PlayerFullStatisticDto.StepsAverage)] = "Nombre de pas moyen",
+            [nameof(PlayerFullStatisticDto.NumberOf0Steps)] = "Nombre de no move",
             [nameof(PlayerFullStatisticDto.Best5000Time)] = "5000 le plus rapide",
             [nameof(PlayerFullStatisticDto.Best25000Time)] = "25000 le plus rapide",
             [nameof(PlayerFullStatisticDto.TimeByRoundAverage)] = "Temps moyen",

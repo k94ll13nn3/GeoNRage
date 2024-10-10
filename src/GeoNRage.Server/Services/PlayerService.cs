@@ -195,6 +195,8 @@ public partial class PlayerService
                     NumberOf0: playerGuesses.Count(g => g.Score == 0),
                     TimeByRoundAverage: playerGuesses.Average(g => g.Time),
                     DistanceAverage: playerGuesses.Average(g => g.Distance),
+                    StepsAverage: playerGuesses.Average(g => g.Steps),
+                    NumberOf0Steps: playerGuesses.Count(g => g.Steps == 0),
                     NumberOfTimeOut: playerGuesses.Count(g => g.TimedOut),
                     NumberOfTimeOutWithGuess: playerGuesses.Count(g => g.TimedOutWithGuess),
                     TotalTime: playerGuesses.Count > 0 ? playerGuesses.Sum(g => g.Time) : null,

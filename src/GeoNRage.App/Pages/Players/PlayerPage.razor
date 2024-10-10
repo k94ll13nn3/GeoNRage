@@ -192,6 +192,33 @@
                 </div>
             </nav>
 
+            <nav class="level mx-3 my-5">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOfTimeOut)</p>
+                        <p class="title">@Player.Statistics.NumberOfTimeOut</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOfTimeOutWithGuess)</p>
+                        <p class="title">@Player.Statistics.NumberOfTimeOutWithGuess</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.StepsAverage)</p>
+                        <p class="title">@(Player.Statistics.StepsAverage?.ToString("F1") ?? "—")</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">@LabelStore.Get(() => Player.Statistics.NumberOf0Steps)</p>
+                        <p class="title">@(Player.Statistics.NumberOf0Steps?.ToString() ?? "—")</p>
+                    </div>
+                </div>
+            </nav>
+
             <div class="columns m-3">
                 <div class="column">
                     <Container Condition="Player.ChallengesNotDone?.Any() == true">
