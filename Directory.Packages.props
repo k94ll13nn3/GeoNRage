@@ -29,6 +29,6 @@
     <PackageVersion Include="Remora.Discord" Version="2024.3.0" />
     <PackageVersion Include="Seq.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.8.1" />
-    <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
+    <PackageVersion Include="System.Net.Http.Json" Version="8.0.1" />
   </ItemGroup>
 </Project>
