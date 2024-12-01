@@ -6,7 +6,7 @@
   <ItemGroup>
     <GlobalPackageReference Include="AutoConstructor" Version="5.6.0" />
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="4.12.9" />
-    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
+    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="10.3.0.106239" />
     <GlobalPackageReference Include="MinVer" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
