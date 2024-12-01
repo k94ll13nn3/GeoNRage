@@ -1,6 +1,6 @@
 namespace GeoNRage.Server;
 
-public class ApplicationOptions
+internal sealed class ApplicationOptions
 {
     public string GeoGuessrEmail { get; set; } = string.Empty;
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 namespace GeoNRage.Server.Services;
 
 [AutoConstructor]
-public partial class GeoGuessrService
+internal sealed partial class GeoGuessrService
 {
     private readonly IHttpClientFactory _clientFactory;
 

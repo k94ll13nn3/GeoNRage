@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace GeoNRage.Server.Entities;
 
-public class User : IdentityUser
+internal sealed class User : IdentityUser
 {
     public string? PlayerId { get; set; }
 

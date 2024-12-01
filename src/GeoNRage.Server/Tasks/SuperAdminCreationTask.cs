@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 namespace GeoNRage.Server.Tasks;
 
 [AutoConstructor]
-public partial class SuperAdminCreationTask : IStartupTask
+internal sealed partial class SuperAdminCreationTask : IStartupTask
 {
     private readonly IServiceProvider _serviceProvider;
 

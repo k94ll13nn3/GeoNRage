@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Identity;
 
-public class GeoNRageUserStore(GeoNRageDbContext context, IdentityErrorDescriber describer = null!) : UserStore<
+internal sealed class GeoNRageUserStore(GeoNRageDbContext context, IdentityErrorDescriber describer = null!) : UserStore<
         User,
         IdentityRole,
         GeoNRageDbContext,

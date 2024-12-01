@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Layouts.Main;

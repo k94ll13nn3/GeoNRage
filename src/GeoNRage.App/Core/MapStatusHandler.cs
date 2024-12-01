@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.App.Core;
+namespace GeoNRage.App.Core;
 
 [AutoConstructor]
 public partial class MapStatusHandler : DelegatingHandler

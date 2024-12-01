@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace GeoNRage.Server.Tasks;
 
 [AutoConstructor]
-public partial class DatabaseMigrationTask : IStartupTask
+internal sealed partial class DatabaseMigrationTask : IStartupTask
 {
     private readonly IServiceProvider _serviceProvider;
 

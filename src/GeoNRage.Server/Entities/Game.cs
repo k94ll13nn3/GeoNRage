@@ -1,6 +1,6 @@
 namespace GeoNRage.Server.Entities;
 
-public class Game
+internal sealed class Game
 {
     public int Id { get; set; }
 

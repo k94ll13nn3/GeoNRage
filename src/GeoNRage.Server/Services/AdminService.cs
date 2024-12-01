@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GeoNRage.Server.Services;
 
 [AutoConstructor]
-public partial class AdminService
+internal sealed partial class AdminService
 {
     private readonly GeoNRageDbContext _context;
 

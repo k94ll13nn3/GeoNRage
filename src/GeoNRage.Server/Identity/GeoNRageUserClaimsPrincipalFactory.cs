@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace GeoNRage.Server.Identity;
 
-public class GeoNRageUserClaimsPrincipalFactory(
+internal sealed class GeoNRageUserClaimsPrincipalFactory(
     UserManager<User> userManager,
     RoleManager<IdentityRole> roleManager,
     IOptions<IdentityOptions> optionsAccessor)

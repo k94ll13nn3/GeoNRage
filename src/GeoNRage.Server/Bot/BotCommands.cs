@@ -18,7 +18,7 @@ using IRemoraResult = Remora.Results.IResult;
 namespace GeoNRage.Server.Bot;
 
 [AutoConstructor]
-public partial class BotCommands : CommandGroup
+internal sealed partial class BotCommands : CommandGroup
 {
     private readonly IDiscordRestInteractionAPI _interactionApi;
     private readonly IInteractionContext _interactionContext;

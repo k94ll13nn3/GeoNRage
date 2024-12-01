@@ -7,7 +7,7 @@ namespace GeoNRage.Server.Hubs;
 
 [Authorize]
 [AutoConstructor]
-public partial class AppHub : Hub<IAppHub>
+internal sealed partial class AppHub : Hub<IAppHub>
 {
     private readonly GameService _gameService;
 

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Endpoints;
 
-public static class GamesEndpointsBuilder
+internal static class GamesEndpointsBuilder
 {
     public static RouteGroupBuilder MapGamesEndpoints(this IEndpointRouteBuilder builder)
     {

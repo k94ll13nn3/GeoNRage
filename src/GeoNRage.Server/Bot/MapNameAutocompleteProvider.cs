@@ -6,7 +6,7 @@ using Remora.Discord.Commands.Autocomplete;
 namespace GeoNRage.Server.Bot;
 
 [AutoConstructor]
-public partial class MapNameAutocompleteProvider : IAutocompleteProvider
+internal sealed partial class MapNameAutocompleteProvider : IAutocompleteProvider
 {
     private readonly MapService _mapService;
 

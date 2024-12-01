@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace GeoNRage.Server.Entities;
 
-public class UserRole : IdentityUserRole<string>
+internal sealed class UserRole : IdentityUserRole<string>
 {
     public User User { get; set; } = null!;
 

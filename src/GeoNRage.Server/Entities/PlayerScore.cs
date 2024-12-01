@@ -1,6 +1,6 @@
-﻿namespace GeoNRage.Server.Entities;
+namespace GeoNRage.Server.Entities;
 
-public class PlayerScore
+internal sealed class PlayerScore
 {
     public int ChallengeId { get; set; }
 

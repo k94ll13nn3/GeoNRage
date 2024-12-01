@@ -1,6 +1,6 @@
 namespace GeoNRage.Server.Entities;
 
-public class Map
+internal sealed class Map
 {
     public string Id { get; set; } = null!;
 

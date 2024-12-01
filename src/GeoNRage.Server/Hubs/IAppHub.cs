@@ -1,6 +1,6 @@
 namespace GeoNRage.Server.Hubs;
 
-public interface IAppHub
+internal interface IAppHub
 {
     Task NewPlayerAdded();
 

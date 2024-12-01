@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace GeoNRage.Server.Services;
 
 [AutoConstructor]
-public partial class MapService
+internal sealed partial class MapService
 {
     private readonly GeoNRageDbContext _context;
     private readonly IMemoryCache _cache;

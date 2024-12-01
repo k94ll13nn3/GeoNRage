@@ -9,7 +9,7 @@ using IRemoraResult = Remora.Results.IResult;
 namespace GeoNRage.Server.Bot;
 
 [AutoConstructor]
-public partial class ChallengeImportModal : InteractionGroup
+internal sealed partial class ChallengeImportModal : InteractionGroup
 {
     private readonly ChallengeService _challengeService;
     private readonly FeedbackService _feedbackService;

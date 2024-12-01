@@ -8,7 +8,7 @@ using Remora.Discord.Gateway;
 namespace GeoNRage.Server.Bot;
 
 [AutoConstructor]
-public partial class PresenceService : BackgroundService
+internal sealed partial class PresenceService : BackgroundService
 {
     private readonly DiscordGatewayClient _gatewayClient;
     private readonly IServiceProvider _serviceProvider;

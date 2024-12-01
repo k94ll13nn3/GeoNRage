@@ -176,6 +176,8 @@ csharp_space_between_square_brackets = false
 # Custom diagnostic severities #
 ################################
 
+dotnet_diagnostic.CA1812.severity = none
+
 # CA2227: Collection properties should be read only
 [**/Dtos/**.cs]
 dotnet_diagnostic.CA2227.severity = none
@@ -189,6 +191,8 @@ dotnet_diagnostic.CA2227.severity = none
 [**/GeoNRage.Shared/**.cs]
 dotnet_diagnostic.IDE0130.severity = none
 
+[**/GeoNRage.App/**.cs]
+dotnet_diagnostic.CA1515.severity = none
+
 [Program.cs]
-dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1852.severity = none

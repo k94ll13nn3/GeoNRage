@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace GeoNRage.Server.Services;
 
 [AutoConstructor]
-public partial class GameService
+internal sealed partial class GameService
 {
     private readonly GeoNRageDbContext _context;
     private readonly ChallengeService _challengeService;

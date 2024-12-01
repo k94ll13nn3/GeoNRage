@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace GeoNRage.Server.Tasks;
 
 [AutoConstructor]
-public partial class RoleCreationTask : IStartupTask
+internal sealed partial class RoleCreationTask : IStartupTask
 {
     private readonly IServiceProvider _serviceProvider;
 

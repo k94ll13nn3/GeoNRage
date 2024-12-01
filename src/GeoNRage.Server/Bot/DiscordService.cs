@@ -8,7 +8,7 @@ using Remora.Results;
 namespace GeoNRage.Server.Bot;
 
 [AutoConstructor]
-public partial class DiscordService : BackgroundService
+internal sealed partial class DiscordService : BackgroundService
 {
     private readonly ILogger<DiscordService> _logger;
     private readonly DiscordGatewayClient _gatewayClient;

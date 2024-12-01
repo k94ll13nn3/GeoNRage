@@ -1,4 +1,4 @@
-﻿namespace GeoNRage.Shared.Dtos.Locations;
+namespace GeoNRage.Shared.Dtos.Locations;
 
 public record LocationDto(
     string? DisplayName,

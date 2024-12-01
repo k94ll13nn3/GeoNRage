@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoNRage.Server.Endpoints;
 
-public static class ChallengesEndpointsBuilder
+internal static class ChallengesEndpointsBuilder
 {
     public static RouteGroupBuilder MapChallengesEndpoints(this IEndpointRouteBuilder builder)
     {

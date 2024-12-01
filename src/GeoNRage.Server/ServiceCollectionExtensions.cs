@@ -19,7 +19,7 @@ using Remora.Discord.Interactivity.Extensions;
 
 namespace GeoNRage.Server;
 
-public static class ServiceCollectionExtensions
+internal static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddStartupTasks(this IServiceCollection services)
     {

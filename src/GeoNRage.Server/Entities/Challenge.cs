@@ -1,6 +1,6 @@
 namespace GeoNRage.Server.Entities;
 
-public class Challenge
+internal sealed class Challenge
 {
     public int Id { get; set; }
 

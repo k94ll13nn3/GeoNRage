@@ -7,7 +7,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace GeoNRage.Server;
 
-public class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : IdentityDbContext<
+internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> options) : IdentityDbContext<
         User,
         IdentityRole,
         string,

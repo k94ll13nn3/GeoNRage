@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GeoNRage.Server.Endpoints;
 
-public static class LogsEndpointsBuilder
+internal static class LogsEndpointsBuilder
 {
     public static RouteGroupBuilder MapLogsEndpoints(this IEndpointRouteBuilder builder)
     {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GeoNRage.Server.Endpoints;
 
-public static class PlayersEndpointsBuilder
+internal static class PlayersEndpointsBuilder
 {
     public static RouteGroupBuilder MapPlayersEndpoints(this IEndpointRouteBuilder builder)
     {

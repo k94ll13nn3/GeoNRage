@@ -6,6 +6,9 @@ using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+// TODO: MapStaticAssets
+// TODO: Pomelo
+
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<GeoNRageStateProvider>();

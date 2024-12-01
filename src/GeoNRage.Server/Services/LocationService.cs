@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GeoNRage.Server.Services;
 
 [AutoConstructor]
-public partial class LocationService
+internal sealed partial class LocationService
 {
     private readonly GeoNRageDbContext _context;
 

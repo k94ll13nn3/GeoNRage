@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace GeoNRage.Server.Services;
 
 [AutoConstructor]
-public partial class ChallengeService
+internal sealed partial class ChallengeService
 {
     private readonly GeoNRageDbContext _context;
     private readonly IHttpClientFactory _clientFactory;

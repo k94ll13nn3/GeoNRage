@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GeoNRage.Server.Endpoints;
 
-public static class AuthEndpointsBuilder
+internal static class AuthEndpointsBuilder
 {
     public static RouteGroupBuilder MapAuthEndpoints(this IEndpointRouteBuilder builder)
     {
