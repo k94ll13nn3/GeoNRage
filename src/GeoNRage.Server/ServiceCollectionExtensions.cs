@@ -93,7 +93,7 @@ internal static class ServiceCollectionExtensions
         string connectionString = configuration.GetConnectionString("GeoNRageConnection")!;
         services.AddDbContextPool<GeoNRageDbContext>(options =>
             options
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), o => o.TranslateParameterizedCollectionsToConstants())
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning)));
 
         services.AddIdentity<User, IdentityRole>()

@@ -1,6 +1,7 @@
 namespace GeoNRage.Server.Hubs;
 
-internal interface IAppHub
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1515:Consider making public types internal", Justification = "Needs to be public for SignalR")]
+public interface IAppHub
 {
     Task NewPlayerAdded();
 
