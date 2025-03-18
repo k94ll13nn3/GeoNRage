@@ -60,7 +60,7 @@ internal sealed partial class GeoGuessrService
         {
             challengeResults = (await client.GetFromJsonAsync<GeoGuessrChallengeHighscore>($"results/highscores/{geoGuessrId}?limit=26", options))?.Items;
         }
-        catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.Unauthorized)
+        catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
         {
             HttpResponseMessage response = await client.PostAsync(new Uri($"challenges/{geoGuessrId}", UriKind.Relative), null);
             string? gameId = (await response.Content.ReadFromJsonAsync<GeoGuessrChallengeGame>())?.Token;
