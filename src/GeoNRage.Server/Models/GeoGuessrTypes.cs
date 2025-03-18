@@ -1,6 +1,6 @@
 namespace GeoNRage.Server.Models;
 
-internal sealed record GeoGuessrLogin(string Email, string Password);
+internal sealed record GeoGuessrLogin(string Email, string Password, string CaptchaToken);
 
 internal sealed record GeoGuessrProfile(string Id);
 

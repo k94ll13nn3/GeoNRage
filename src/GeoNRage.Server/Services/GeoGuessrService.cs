@@ -21,10 +21,7 @@ internal sealed partial class GeoGuessrService
         _ = geoGuessrId ?? throw new ArgumentNullException(nameof(geoGuessrId));
         HttpClient client = _clientFactory.CreateClient("geoguessr");
 
-        if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
-        {
-            await client.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin(_options.GeoGuessrEmail, _options.GeoGuessrPassword));
-        }
+        EnsureCookieIsSet();
 
         var options = new JsonSerializerOptions
         {
@@ -107,12 +104,7 @@ internal sealed partial class GeoGuessrService
 
     public async Task<GeoGuessrPlayerStatistics?> GetPlayerStatisticsAsync(string playerId)
     {
-        HttpClient clientV3 = _clientFactory.CreateClient("geoguessr");
-
-        if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(new Uri("https://www.geoguessr.com")).FirstOrDefault()?.Expired == true)
-        {
-            await clientV3.PostAsJsonAsync("accounts/signin", new GeoGuessrLogin(_options.GeoGuessrEmail, _options.GeoGuessrPassword));
-        }
+        EnsureCookieIsSet();
 
         HttpClient clientV4 = _clientFactory.CreateClient("geoguessrV4");
         var options = new JsonSerializerOptions
@@ -123,5 +115,21 @@ internal sealed partial class GeoGuessrService
         };
 
         return await clientV4.GetFromJsonAsync<GeoGuessrPlayerStatistics>($"stats/users/{playerId}", options);
+    }
+
+    private void EnsureCookieIsSet()
+    {
+        Uri geoguessrUri = new("https://www.geoguessr.com");
+        if (_cookieContainer.Count == 0 || _cookieContainer.GetCookies(geoguessrUri).FirstOrDefault()?.Expired == true)
+        {
+            Cookie secureCookie = new("_ncfa", _options.GeoGuessrCookie)
+            {
+                Domain = geoguessrUri.Host,
+                Path = "/",
+                Secure = true,
+                HttpOnly = true
+            };
+            _cookieContainer.Add(geoguessrUri, secureCookie);
+        }
     }
 }
