@@ -28,7 +28,7 @@
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageVersion Include="Remora.Discord" Version="2025.1.0" />
     <PackageVersion Include="Seq.Extensions.Logging" Version="8.0.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.0.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.1.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="9.0.3" />
   </ItemGroup>
 </Project>
