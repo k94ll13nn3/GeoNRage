@@ -6,9 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
@@ -16,12 +18,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Remora.Discord" />
+    <PackageReference Include="Scalar.AspNetCore" />
     <PackageReference Include="Seq.Extensions.Logging" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GeoNRage.App\GeoNRage.App.csproj" />
+    <ProjectReference Include="..\GeoNRage.ServiceDefaults\GeoNRage.ServiceDefaults.csproj" />
     <ProjectReference Include="..\GeoNRage.Shared\GeoNRage.Shared.csproj" />
   </ItemGroup>
 

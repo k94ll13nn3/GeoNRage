@@ -1,0 +1,24 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/workflows/build-app.yml" />
+    <File Path=".github/workflows/deploy-app.yml" />
+    <File Path=".globalconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Dockerfile" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/GeoNRage.App/GeoNRage.App.csproj" />
+    <Project Path="src/GeoNRage.AppHost/GeoNRage.AppHost.csproj" />
+    <Project Path="src/GeoNRage.Server/GeoNRage.Server.csproj" />
+    <Project Path="src/GeoNRage.ServiceDefaults/GeoNRage.ServiceDefaults.csproj" />
+    <Project Path="src/GeoNRage.Shared/GeoNRage.Shared.csproj" />
+  </Folder>
+</Solution>

@@ -2,11 +2,22 @@ using GeoNRage.Server;
 using GeoNRage.Server.Endpoints;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Tasks;
+using GeoNRage.ServiceDefaults;
 using Microsoft.AspNetCore.ResponseCompression;
+using Scalar.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSeq(builder.Configuration.GetSection("Seq")));
+builder.AddServiceDefaults();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddLogging();
+}
+else
+{
+    builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSeq(builder.Configuration.GetSection("Seq")));
+}
 
 builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection(nameof(ApplicationOptions)));
 
@@ -21,11 +32,18 @@ builder.Services.AddHttpClients();
 builder.Services.AddDiscordBot(builder.Configuration);
 builder.Services.AddStartupTasks();
 
+builder.EnrichMySqlDbContext<GeoNRageDbContext>(
+    configureSettings: settings =>
+    {
+        settings.DisableRetry = false;
+        settings.CommandTimeout = 30;
+    });
+
 builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddOpenApi();
     builder.Services.AddEndpointsApiExplorer();
 }
 
@@ -34,12 +52,8 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo N'Rage API");
-        c.DisplayRequestDuration();
-    });
+    app.MapOpenApi();
+    app.MapScalarApiReference();
     app.UseHttpsRedirection();
 }
 else
@@ -56,9 +70,11 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapApplicationEndpoints();
+app.MapDefaultEndpoints();
 
 app.MapHub<AppHub>("/apphub");
 
+app.MapStaticAssets();
 app.MapRazorComponents<Application>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(GeoNRage.App._Imports).Assembly);
