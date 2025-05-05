@@ -118,7 +118,7 @@ public sealed partial class Table<T> : IDisposable
 
     private void RefreshItems()
     {
-        IEnumerable<T> items = Items.ToList();
+        IEnumerable<T> items = [.. Items];
         if (SortFunction is not null && !string.IsNullOrWhiteSpace(_sortColumn))
         {
             items = SortFunction(items, _sortColumn, _sortAscending);

@@ -164,12 +164,11 @@ internal sealed partial class BotCommands : CommandGroup
             return await _feedbackService.SendContextualAsync("Carte inconnue");
         }
 
-        List<string> rankings = statistics
+        List<string> rankings = [.. statistics
             .Scores
             .OrderByDescending(s => s.Sum)
             .ThenBy(s => s.Time)
-            .Select(s => $"{s.PlayerName} : {s.Sum} ({s.Time.ToTimeString()})")
-            .ToList();
+            .Select(s => $"{s.PlayerName} : {s.Sum} ({s.Time.ToTimeString()})")];
 
         if (rankings.Count == 0 && !allMaps)
         {

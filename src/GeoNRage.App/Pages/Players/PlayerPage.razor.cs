@@ -96,9 +96,9 @@ public partial class PlayerPage
         Data.Clear();
         Data.Add(new Bar
         {
-            X = GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object).ToList(),
-            Y = GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object).ToList(),
-            TextArray = GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate.ToShortDateString()} - {g.NumberOf5000} fois 5000").ToList(),
+            X = [.. GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object)],
+            Y = [.. GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object)],
+            TextArray = [.. GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate.ToShortDateString()} - {g.NumberOf5000} fois 5000")],
             Name = "Historique des parties",
             TextPosition = TextPositionEnum.None
         });
@@ -124,21 +124,21 @@ public partial class PlayerPage
             var challengesDone = new List<PlayerChallengeDto>();
             foreach (string tag in _tags)
             {
-                challengesDone = challengesDone.Union(FilterChallengesDone(tag)).ToList();
+                challengesDone = [.. challengesDone.Union(FilterChallengesDone(tag))];
             }
 
             ChallengesDone = challengesDone;
             if (!ChallengesDone.Any())
             {
                 IsFiltered = false;
-                ChallengesDone = Player.ChallengesDone.ToList();
+                ChallengesDone = [.. Player.ChallengesDone];
                 ToastService.DisplayToast("La recherche n'a pas retournée de résultats", TimeSpan.FromSeconds(3), ToastType.Warning, "challenges-filter-no-results", true);
             }
         }
         else
         {
             IsFiltered = false;
-            ChallengesDone = Player.ChallengesDone.ToList();
+            ChallengesDone = [.. Player.ChallengesDone];
         }
 
         StateHasChanged();
@@ -161,10 +161,10 @@ public partial class PlayerPage
                 _ => challenges,
             };
 
-            return challenges.ToList();
+            return [.. challenges];
         }
 
-        return Player.ChallengesDone.Where(c => $"{c.MapName}{c.Sum}".Contains(filter, StringComparison.OrdinalIgnoreCase)).ToList();
+        return [.. Player.ChallengesDone.Where(c => $"{c.MapName}{c.Sum}".Contains(filter, StringComparison.OrdinalIgnoreCase))];
     }
 
     private async Task SortGameHistoryAsync()

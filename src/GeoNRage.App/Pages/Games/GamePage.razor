@@ -195,7 +195,7 @@
 </Container>
 
 @code {
-    public static RenderFragment<string> ImageFragment = image => __builder =>
+    private static RenderFragment<string> ImageFragment = image => __builder =>
     {
         <figure class="image is-square">
             <img src="@image">

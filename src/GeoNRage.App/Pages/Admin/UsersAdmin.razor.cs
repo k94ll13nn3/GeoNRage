@@ -43,7 +43,7 @@ public partial class UsersAdmin
         Error = null;
         ShowEditForm = true;
         UserAminViewDto user = Users.Single(u => u.UserName == userName);
-        UserEdit = new UserEditAdminDto { UserName = userName, PlayerId = user.PlayerId, Roles = user.Roles.ToList() };
+        UserEdit = new UserEditAdminDto { UserName = userName, PlayerId = user.PlayerId, Roles = [.. user.Roles] };
     }
 
     public async Task EditUserAsync()

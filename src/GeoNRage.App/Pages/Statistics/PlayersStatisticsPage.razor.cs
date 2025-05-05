@@ -20,7 +20,7 @@ public partial class PlayersStatisticsPage
 
     protected override async Task OnInitializedAsync()
     {
-        Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();
+        Players = [.. (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null)];
     }
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
@@ -32,7 +32,7 @@ public partial class PlayersStatisticsPage
 
         Players = [];
         StateHasChanged();
-        Players = (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null).ToList();
+        Players = [.. (await PlayersApi.GetAllStatisticsAsync()).Where(p => p.BestGameSum is not null)];
         StateHasChanged();
     }
 

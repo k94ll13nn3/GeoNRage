@@ -182,7 +182,7 @@ internal sealed partial class ChallengeService
             {
                 PlayerId = player.Id,
                 Player = player,
-                PlayerGuesses = geoChallengeGamePlayer.Guesses.Select((p, i) => new PlayerGuess
+                PlayerGuesses = [.. geoChallengeGamePlayer.Guesses.Select((p, i) => new PlayerGuess
                 {
                     Score = p.RoundScoreInPoints,
                     RoundNumber = i + 1,
@@ -191,7 +191,7 @@ internal sealed partial class ChallengeService
                     TimedOutWithGuess = p.TimedOutWithGuess,
                     Distance = p.DistanceInMeters,
                     Steps = p.StepsCount
-                }).ToList(),
+                })],
             };
 
             if (isMainPlayer && playerScores.Exists(ps => ps.PlayerId == playerScore.PlayerId))

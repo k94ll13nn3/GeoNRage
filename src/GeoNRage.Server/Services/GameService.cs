@@ -147,12 +147,12 @@ internal sealed partial class GameService
         {
             Name = dto.Name,
             Date = dto.Date,
-            Challenges = dto.Challenges.Select(x => new Challenge
+            Challenges = [.. dto.Challenges.Select(x => new Challenge
             {
                 GeoGuessrId = x.GeoGuessrId,
                 MapId = x.MapId,
-                PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
-            }).ToList()
+                PlayerScores = [.. dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p })]
+            })]
         });
         await _context.SaveChangesAsync();
 
@@ -197,14 +197,18 @@ internal sealed partial class GameService
         game.Date = dto.Date;
 
         IEnumerable<int> challengeIds = dto.Challenges.Select(x => x.Id).Where(id => id != 0);
-        game.Challenges = game.Challenges
-            .Where(c => challengeIds.Contains(c.Id))
-            .Concat(dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
-            {
-                GeoGuessrId = x.GeoGuessrId,
-                MapId = x.MapId,
-                PlayerScores = dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p }).ToList()
-            })).ToList();
+        game.Challenges =
+        [
+            .. game.Challenges
+                        .Where(c => challengeIds.Contains(c.Id))
+,
+            .. dto.Challenges.Where(c => c.Id == 0).Select(x => new Challenge
+                {
+                    GeoGuessrId = x.GeoGuessrId,
+                    MapId = x.MapId,
+                    PlayerScores = [.. dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p })]
+                }),
+        ];
 
         foreach (Challenge challenge in game.Challenges)
         {
@@ -215,7 +219,7 @@ internal sealed partial class GameService
                 challenge.GeoGuessrId = modifiedChallenge.GeoGuessrId;
             }
 
-            challenge.PlayerScores = challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId)).ToList();
+            challenge.PlayerScores = [.. challenge.PlayerScores.Where(ps => dto.PlayerIds.Contains(ps.PlayerId))];
             challenge.PlayerScores =
             [
                 .. challenge.PlayerScores,
@@ -293,13 +297,13 @@ internal sealed partial class GameService
         {
             Name = gameForDto.Name,
             Date = gameForDto.Date,
-            PlayerIds = gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct().ToList(),
-            Challenges = gameForDto.Challenges.Select(c => new GameChallengeCreateOrEditDto
+            PlayerIds = [.. gameForDto.Challenges.SelectMany(c => c.PlayerScores).Select(p => p.PlayerId).Distinct()],
+            Challenges = [.. gameForDto.Challenges.Select(c => new GameChallengeCreateOrEditDto
             {
                 Id = c.Id,
                 MapId = c.MapId,
                 GeoGuessrId = c.GeoGuessrId
-            }).ToList()
+            })]
         };
 
         await UpdateAsync(id, editDto);

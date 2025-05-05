@@ -15,7 +15,7 @@ namespace GeoNRage.ServiceDefaults;
 /// This project should be referenced by each service project in your solution.
 /// To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
 /// </summary>
-public static class Extensions
+public static class ServiceDefaultsExtensions
 {
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";

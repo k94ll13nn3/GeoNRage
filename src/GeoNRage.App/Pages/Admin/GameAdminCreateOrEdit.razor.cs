@@ -39,8 +39,8 @@ public partial class GameAdminCreateOrEdit : IModal
             {
                 Name = Game.Name,
                 Date = Game.Date,
-                Challenges = Game.Challenges.Select(c => new GameChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId }).ToList(),
-                PlayerIds = Game.PlayerIds.ToList()
+                Challenges = [.. Game.Challenges.Select(c => new GameChallengeCreateOrEditDto { Id = c.Id, GeoGuessrId = c.GeoGuessrId, MapId = c.MapId })],
+                PlayerIds = [.. Game.PlayerIds]
             };
         }
         else

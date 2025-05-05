@@ -1,9 +1,9 @@
-﻿@typeparam T
+@typeparam T
 
 @if (Items?.Any() == true && ChildContent is not null)
 {
     foreach (var item in Items)
     {
-        @ChildContent(item);
+        @ChildContent(item)
     }
 }
