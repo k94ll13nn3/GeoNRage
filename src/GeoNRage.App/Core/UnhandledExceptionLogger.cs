@@ -23,7 +23,7 @@ public partial class UnhandledExceptionLogger : ILogger
         {
             await _serviceProvider
                 .GetRequiredService<ILogApi>()
-                .PostLogAsync(new ErrorLog(exception?.Message ?? "An unexpected error occured", exception?.Source, exception?.StackTrace));
+                .PostLogAsync(new ErrorLog(exception?.Message ?? "An unexpected error occurred", exception?.Source, exception?.StackTrace));
         }
     }
 
