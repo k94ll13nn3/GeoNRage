@@ -7,37 +7,27 @@ using Refit;
 
 namespace GeoNRage.App.Pages.Challenges;
 
-public partial class ChallengesPage
+[AutoConstructor]
+public sealed partial class ChallengesPage
 {
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
+    private readonly NavigationManager _navigationManager;
+    private readonly IChallengesApi _challengesApi;
+    private readonly ModalService _modalService;
+    private readonly ToastService _toastService;
 
-    [Inject]
-    public IChallengesApi ChallengesApi { get; set; } = null!;
+    private IEnumerable<ChallengeDto> _challenges = null!;
+    private string _geoGuessrId = null!;
+    private Table<ChallengeDto> _challengesTable = null!;
+    private bool _displayAll;
+    private ClaimsPrincipal _user = null!;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
-    [Inject]
-    public ModalService ModalService { get; set; } = null!;
-
-    [Inject]
-    public ToastService ToastService { get; set; } = null!;
-
-    public IEnumerable<ChallengeDto> Challenges { get; set; } = null!;
-
-    public string GeoGuessrId { get; set; } = null!;
-
-    public Table<ChallengeDto> ChallengesTable { get; set; } = null!;
-
-    public bool DisplayAll { get; set; }
-
-    public ClaimsPrincipal User { get; set; } = null!;
-
     protected override async Task OnInitializedAsync()
     {
-        User = (await AuthenticationState).User;
-        await FilterChallengesAsync(DisplayAll);
+        _user = (await AuthenticationState).User;
+        await FilterChallengesAsync(_displayAll);
     }
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
@@ -47,7 +37,13 @@ public partial class ChallengesPage
             return;
         }
 
-        await FilterChallengesAsync(DisplayAll);
+        await FilterChallengesAsync(_displayAll);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _challengesTable?.Dispose();
+        base.Dispose(disposing);
     }
 
     private static IEnumerable<ChallengeDto> Sort(IEnumerable<ChallengeDto> challenges, string column, bool ascending)
@@ -64,51 +60,53 @@ public partial class ChallengesPage
 
     private async Task ImportAsync()
     {
-        ModalResult result = await ModalService.DisplayOkCancelPopupAsync("Importation", "Valider l'importation du challenge ?");
-        if (!result.Cancelled)
+        ModalResult result = await _modalService.DisplayOkCancelPopupAsync("Importation", "Valider l'importation du challenge ?");
+        if (result.Cancelled)
         {
-            if (string.IsNullOrEmpty(GeoGuessrId))
-            {
-                ToastService.DisplayToast("Veuillez remplir l'id", TimeSpan.FromSeconds(3), ToastType.Error);
-                return;
-            }
-
-            await ModalService.DisplayLoaderAsync(async () =>
-            {
-                try
-                {
-                    await ChallengesApi.ImportChallengeAsync(new() { GeoGuessrId = GeoGuessrId, OverrideData = true });
-                    await FilterChallengesAsync(DisplayAll);
-                    GeoGuessrId = string.Empty;
-                    ToastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
-                }
-                catch (ValidationApiException e)
-                {
-                    string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
-                    ToastService.DisplayToast(error, null, ToastType.Error);
-                }
-                catch (ApiException e)
-                {
-                    await ToastService.DisplayErrorToastAsync(e, "challenge-import");
-                }
-                finally
-                {
-                    StateHasChanged();
-                }
-            });
+            return;
         }
+
+        if (string.IsNullOrEmpty(_geoGuessrId))
+        {
+            _toastService.DisplayToast("Veuillez remplir l'id", TimeSpan.FromSeconds(3), ToastType.Error);
+            return;
+        }
+
+        await _modalService.DisplayLoaderAsync(async () =>
+        {
+            try
+            {
+                await _challengesApi.ImportChallengeAsync(new() { GeoGuessrId = _geoGuessrId, OverrideData = true });
+                await FilterChallengesAsync(_displayAll);
+                _geoGuessrId = string.Empty;
+                _toastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
+            }
+            catch (ValidationApiException e)
+            {
+                string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
+                _toastService.DisplayToast(error, null, ToastType.Error);
+            }
+            catch (ApiException e)
+            {
+                await _toastService.DisplayErrorToastAsync(e, "challenge-import");
+            }
+            finally
+            {
+                StateHasChanged();
+            }
+        });
     }
 
     private async Task FilterChallengesAsync(bool displayAll)
     {
-        DisplayAll = displayAll;
+        _displayAll = displayAll;
         string[] playersToHide = [];
-        if (!DisplayAll && User.PlayerId() is string playerId)
+        if (!_displayAll && _user.PlayerId() is string playerId)
         {
             playersToHide = [playerId];
         }
 
-        Challenges = await ChallengesApi.GetAllAsync(true, playersToHide);
-        ChallengesTable?.SetItems(Challenges);
+        _challenges = await _challengesApi.GetAllAsync(true, playersToHide);
+        _challengesTable?.SetItems(_challenges);
     }
 }
