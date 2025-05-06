@@ -20,7 +20,7 @@ internal sealed record GeoGuessrPin(Uri Url);
 
 internal sealed record GeoGuessrPlayer(string Id, string Nick, IList<GeoGuessrGuess> Guesses, GeoGuessrPin Pin);
 
-internal sealed record GeoGuessrRound(decimal Lat, decimal Lng);
+internal sealed record GeoGuessrRound(decimal Lat, decimal Lng, DateTimeOffset StartTime);
 
 internal sealed record GeoGuessrGame(GeoGuessrPlayer Player, IList<GeoGuessrRound> Rounds);
 

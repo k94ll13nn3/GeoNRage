@@ -27,6 +27,7 @@
                                   {
                                       new("Nom de la carte", true, nameof(ChallengeDto.MapName)),
                                       new("Créateur", false, string.Empty),
+                                      new("Date", true, nameof(ChallengeDto.CreatedAt)),
                                       new("Meilleur score", true, nameof(ChallengeDto.MaxScore)),
                                       new("Mon score", true, nameof(ChallengeDto.PlayerScore)),
                                       new("", false, string.Empty),
@@ -39,6 +40,7 @@
                 <RowContent Context="challenge">
                     <td>@challenge.MapName</td>
                     <td>@(challenge.CreatorName ?? "—")</td>
+                    <td>@challenge.CreatedAt.FormatNullWithDash()</td>
                     <td>@challenge.MaxScore</td>
                     <td>@challenge.PlayerScore.FormatNullWithDash()</td>
                     <td class="min">

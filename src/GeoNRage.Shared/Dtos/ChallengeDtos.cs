@@ -21,4 +21,4 @@ public record ChallengePlayerScoreDto(string PlayerId, string PlayerName, IEnume
 
 public record ChallengePlayerGuessDto(int RoundNumber, int? Score, int? Time, double? Distance);
 
-public record ChallengeDto(int Id, string MapId, string MapName, string GeoGuessrId, int? GameId, string? CreatorName, int MaxScore, int? PlayerScore);
+public record ChallengeDto(int Id, string MapId, string MapName, string GeoGuessrId, int? GameId, string CreatorName, int MaxScore, int? PlayerScore, DateOnly? CreatedAt);

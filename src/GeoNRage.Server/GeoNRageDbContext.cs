@@ -46,8 +46,8 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
 
         builder.Entity<Player>().HasKey(p => p.Id);
         builder.Entity<Player>().Property(g => g.IconUrl).HasDefaultValue(Constants.BaseAvatarUrl);
-        builder.Entity<Player>().HasOne(p => p.AssociatedPlayer).WithOne().HasForeignKey<Player>(p => p.AssociatedPlayerId).IsRequired(false);
-        builder.Entity<Player>().Property(g => g.Title).IsRequired().HasDefaultValue("Newbie");
+        builder.Entity<Player>().HasOne(p => p.AssociatedPlayer).WithOne().HasForeignKey<Player>(p => p.AssociatedPlayerId);
+        builder.Entity<Player>().Property(g => g.Title).HasDefaultValue("Newbie");
         builder.Entity<Player>().Property(p => p.GeoGuessrName).HasDefaultValue("N/A");
 
         builder.Entity<Map>().HasKey(m => m.Id);
@@ -56,16 +56,16 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
         builder.Entity<Challenge>().HasKey(m => m.Id);
         builder.Entity<Challenge>().HasIndex(g => g.GeoGuessrId).IsUnique();
         builder.Entity<Challenge>().Property(g => g.Id).UseMySqlIdentityColumn();
-        builder.Entity<Challenge>().HasOne(c => c.Map).WithMany(m => m.Challenges).HasForeignKey(c => c.MapId).IsRequired();
+        builder.Entity<Challenge>().HasOne(c => c.Map).WithMany(m => m.Challenges).HasForeignKey(c => c.MapId);
         builder.Entity<Challenge>().HasMany(c => c.PlayerScores).WithOne(p => p.Challenge).HasForeignKey(p => p.ChallengeId);
         builder.Entity<Challenge>().HasOne(c => c.Creator).WithMany().HasForeignKey(c => c.CreatorId);
 
         builder.Entity<PlayerScore>().HasKey(p => new { p.ChallengeId, p.PlayerId });
-        builder.Entity<PlayerScore>().HasOne(p => p.Player).WithMany(p => p.PlayerScores).HasForeignKey(p => p.PlayerId).IsRequired();
+        builder.Entity<PlayerScore>().HasOne(p => p.Player).WithMany(p => p.PlayerScores).HasForeignKey(p => p.PlayerId);
         builder.Entity<PlayerScore>().HasMany(c => c.PlayerGuesses).WithOne(p => p.PlayerScore).HasForeignKey(p => new { p.ChallengeId, p.PlayerId });
 
         builder.Entity<Location>().HasKey(l => new { l.ChallengeId, l.RoundNumber });
-        builder.Entity<Location>().HasOne(l => l.Challenge).WithMany(c => c.Locations).HasForeignKey(l => l.ChallengeId).IsRequired();
+        builder.Entity<Location>().HasOne(l => l.Challenge).WithMany(c => c.Locations).HasForeignKey(l => l.ChallengeId);
 
         builder.Entity<PlayerGuess>().HasKey(p => new { p.ChallengeId, p.PlayerId, p.RoundNumber });
 
@@ -73,7 +73,7 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
 
         base.OnModelCreating(builder);
 
-        builder.Entity<User>().HasOne(u => u.Player).WithOne().HasForeignKey<User>(u => u.PlayerId).IsRequired(false);
+        builder.Entity<User>().HasOne(u => u.Player).WithOne().HasForeignKey<User>(u => u.PlayerId);
 
         builder.Entity<UserRole>().HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleId);
         builder.Entity<UserRole>().HasOne(ur => ur.User).WithMany(r => r.UserRoles).HasForeignKey(ur => ur.UserId);

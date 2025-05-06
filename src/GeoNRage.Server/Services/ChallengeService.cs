@@ -45,9 +45,10 @@ internal sealed partial class ChallengeService
                 c.Map.Name,
                 c.GeoGuessrId,
                 c.GameId == -1 ? null : c.GameId,
-                c.Creator == null ? null : c.Creator.Name,
+                c.Creator.Name,
                 c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
-                c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault()
+                c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault(),
+                c.CreatedAt
             ))
             .ToListAsync();
     }
@@ -67,9 +68,8 @@ internal sealed partial class ChallengeService
                 c.Game.Name,
                 c.UpdatedAt,
                 c.Locations.Count == 5
-                    && c.CreatorId != null
                     && c.TimeLimit != null
-                    && c.UpdatedAt != null
+                    && c.CreatedAt != null
                     && c.PlayerScores.All(p => p.PlayerGuesses.All(g => g.Score != null && g.Distance != null && g.Time != null)),
                 c.PlayerScores.Count(p => p.PlayerGuesses.Count == 5)
             ))
@@ -125,6 +125,8 @@ internal sealed partial class ChallengeService
         (GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results) = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
         var locations = new List<Location>();
         HttpClient googleClient = _clientFactory.CreateClient("google");
+
+        DateOnly creationDate = DateOnly.FromDateTime(results[0].Game.Rounds[0].StartTime.DateTime);
         for (int i = 0; i < results[0].Game.Rounds.Count; i++)
         {
             GeoGuessrRound round = results[0].Game.Rounds[i];
@@ -231,6 +233,7 @@ internal sealed partial class ChallengeService
             Locations = locations,
             CreatorId = creator.Id,
             UpdatedAt = DateTime.UtcNow,
+            CreatedAt = creationDate,
         };
 
         Challenge? existingChallenge = await _context
@@ -259,6 +262,7 @@ internal sealed partial class ChallengeService
             existingChallenge.Locations = newChallenge.Locations;
             existingChallenge.CreatorId = newChallenge.CreatorId;
             existingChallenge.UpdatedAt = newChallenge.UpdatedAt;
+            existingChallenge.CreatedAt = newChallenge.CreatedAt;
 
             challengeId = existingChallenge.Id;
             await _context.SaveChangesAsync();
