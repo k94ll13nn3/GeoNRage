@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" />
+    <PackageReference Include="Gridify.EntityFramework" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />

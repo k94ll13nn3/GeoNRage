@@ -10,20 +10,18 @@ internal sealed partial class GameService
     private readonly GeoNRageDbContext _context;
     private readonly ChallengeService _challengeService;
 
-    public async Task<IEnumerable<GameDto>> GetAllAsync()
+    public IQueryable<GameDto> GetAll()
     {
-        return await _context
+        return _context
             .Games
             .OrderByDescending(g => g.Date)
             .Where(g => g.Id != -1)
-            .AsNoTracking()
             .Select(g => new GameDto
-            (
-                g.Id,
-                g.Name,
-                g.Date
-            ))
-            .ToListAsync();
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Date = g.Date
+            });
     }
 
     public async Task<IEnumerable<GameAdminViewDto>> GetAllAsAdminViewAsync()

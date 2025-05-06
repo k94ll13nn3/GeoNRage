@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using GeoNRage.Server.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Remora.Commands.Attributes;
 using Remora.Commands.Groups;
@@ -42,7 +43,7 @@ internal sealed partial class BotCommands : CommandGroup
             return await _feedbackService.SendContextualAsync("Erreur inconnue");
         }
 
-        IEnumerable<GameDto> games = await _gameService.GetAllAsync();
+        IList<GameDto> games = await _gameService.GetAll().ToListAsync();
         GameDetailDto? game = await _gameService.GetAsync(games.OrderByDescending(g => g.Date).First().Id);
         if (game is null)
         {

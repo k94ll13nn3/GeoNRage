@@ -27,7 +27,12 @@ public class GameCreateOrEditDto
     public ICollection<GameChallengeCreateOrEditDto> Challenges { get; set; } = [];
 }
 
-public record GameDto(int Id, string Name, DateTime Date);
+public record GameDto
+{
+    public required int Id { get; init; }
+    public required string Name { get; init; }
+    public required DateTime Date { get; init; }
+}
 
 public record GameChallengeInfoDto(int Id, string MapId, string GeoGuessrId);
 

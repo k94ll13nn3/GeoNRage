@@ -3,18 +3,16 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Pages.Games;
 
-public partial class GamesPage
+[AutoConstructor]
+public sealed partial class GamesPage
 {
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
+    private readonly NavigationManager _navigationManager;
+    private readonly IGamesApi _gamesApi;
 
-    [Inject]
-    public IGamesApi GamesApi { get; set; } = null!;
-
-    public IEnumerable<GameDto> Games { get; set; } = null!;
+    private IEnumerable<GameDto> _games = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        Games = await GamesApi.GetAllAsync();
+        _games = (await _gamesApi.GetAllAsync(new PaginationQuery { PageSize = int.MaxValue })).Data;
     }
 }

@@ -8,7 +8,7 @@ public interface IGamesApi
     Task<GameAdminViewDto[]> GetAllAsAdminViewAsync();
 
     [Get("/api/games")]
-    Task<GameDto[]> GetAllAsync();
+    Task<PaginationResult<GameDto>> GetAllAsync(IPaginationQuery paginationQuery);
 
     [Get("/api/games/{id}")]
     Task<ApiResponse<GameDetailDto>> GetAsync(int id);
