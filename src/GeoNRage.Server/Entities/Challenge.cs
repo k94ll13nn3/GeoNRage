@@ -20,11 +20,11 @@ internal sealed class Challenge
 
     public ICollection<Location> Locations { get; set; } = [];
 
-    public string CreatorId { get; set; } = null!;
+    public string? CreatorId { get; set; }
 
-    public Player Creator { get; set; } = null!;
+    public Player? Creator { get; set; }
 
     public DateOnly? CreatedAt { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

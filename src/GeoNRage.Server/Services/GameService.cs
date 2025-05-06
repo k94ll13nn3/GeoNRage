@@ -150,8 +150,6 @@ internal sealed partial class GameService
                 GeoGuessrId = x.GeoGuessrId,
                 MapId = x.MapId,
                 PlayerScores = [.. dto.PlayerIds.Select(p => new PlayerScore { PlayerId = p })],
-                CreatorId = "5f3eaae78332560001d53d92",
-                UpdatedAt = DateTime.Now,
             })]
         });
         await _context.SaveChangesAsync();

@@ -45,7 +45,7 @@ internal sealed partial class ChallengeService
                 c.Map.Name,
                 c.GeoGuessrId,
                 c.GameId == -1 ? null : c.GameId,
-                c.Creator.Name,
+                c.Creator == null ? null : c.Creator.Name,
                 c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
                 c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault(),
                 c.CreatedAt
@@ -69,7 +69,9 @@ internal sealed partial class ChallengeService
                 c.UpdatedAt,
                 c.Locations.Count == 5
                     && c.TimeLimit != null
+                    && c.CreatorId != null
                     && c.CreatedAt != null
+                    && c.UpdatedAt != null
                     && c.PlayerScores.All(p => p.PlayerGuesses.All(g => g.Score != null && g.Distance != null && g.Time != null)),
                 c.PlayerScores.Count(p => p.PlayerGuesses.Count == 5)
             ))
