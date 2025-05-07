@@ -22,7 +22,7 @@
                         <th>
                             <div class="is-flex">
                                 <span>@header.Title</span>
-                                @if (header.CanSort)
+                                @if (header.Property is not null)
                                 {
                                     <span class="delimiter"></span>
                                     <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : "")" @onclick="() => Sort(header.Property, true)">

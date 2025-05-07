@@ -1,38 +1,29 @@
 @page "/games"
 
-@if (_games is null)
-{
-    <div class="container is-flex">
-        <TableSkeleton Paginate />
-    </div>
-    return;
-}
-
-<div class="container">
-    <Table Items="_games"
-           Headers="@(new TableHeader[]
-                                  {
-                                      new("Nom", false, string.Empty),
-                                      new("Date", false, string.Empty),
-                                      new("", false, string.Empty),
-                                      new("", false, string.Empty),
-                                  })"
-           Paginate="true"
-           PageSize="15"
-           IsNarrow="false">
-        <RowContent Context="game">
-            <td>@game.Name</td>
-            <td>@game.Date.ToShortDateString()</td>
-            <td class="min">
-                <ActionIcon Link="@_navigationManager.ToAbsoluteUri($"/games/{game.Id}")"
-                            Icon="fa-external-link-alt"
-                            Tooltip="Ouvrir" />
-            </td>
-            <td class="min">
-                <ActionIcon Link="@_navigationManager.ToAbsoluteUri($"/games/{game.Id}?hideScores=true")"
-                            Icon="fa-eye-slash"
-                            Tooltip="Ouvrir sans afficher les scores" />
-            </td>
-        </RowContent>
-    </Table>
-</div>
+<PaginatedTable Headers="@(
+                [
+                    new("Nom", nameof(GameDto.Name)),
+                    new("Date", nameof(GameDto.Date), true),
+                    new(string.Empty),
+                    new(string.Empty),
+                ])"
+                DataFunction=_gamesApi.GetAllAsync
+                PageSize=15
+                IsNarrow=false
+                SearchFields=[nameof(GameDto.Name)]
+                SortAscending=false>
+    <RowContent Context="game">
+        <td>@game.Name</td>
+        <td>@game.Date.ToShortDateString()</td>
+        <td class="min">
+            <ActionIcon Link="@_navigationManager.ToAbsoluteUri($"/games/{game.Id}")"
+                        Icon="fa-external-link-alt"
+                        Tooltip="Ouvrir" />
+        </td>
+        <td class="min">
+            <ActionIcon Link="@_navigationManager.ToAbsoluteUri($"/games/{game.Id}?hideScores=true")"
+                        Icon="fa-eye-slash"
+                        Tooltip="Ouvrir sans afficher les scores" />
+        </td>
+    </RowContent>
+</PaginatedTable>

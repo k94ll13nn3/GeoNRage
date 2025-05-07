@@ -28,7 +28,7 @@ internal static class GamesEndpointsBuilder
         return group;
     }
 
-    private static async Task<Results<Ok<PaginationResult<GameDto>>, ProblemHttpResult>> GetAllAsync(
+    private static async Task<Results<Ok<PaginationResult<GameDto>>, BadRequest<ApiError>>> GetAllAsync(
         [AsParameters] PaginationQuery paginationQuery,
         GameService gameService,
         CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ internal static class GamesEndpointsBuilder
 
         if (!paginationQuery.IsValid(mapper))
         {
-            return TypedResults.Problem();
+            return TypedResults.BadRequest(new ApiError("Requête invalide"));
         }
 
         IQueryable<GameDto> query = gameService.GetAll();

@@ -14,7 +14,6 @@ internal sealed partial class GameService
     {
         return _context
             .Games
-            .OrderByDescending(g => g.Date)
             .Where(g => g.Id != -1)
             .Select(g => new GameDto
             {

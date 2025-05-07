@@ -1,0 +1,42 @@
+.icon-hand {
+    cursor: pointer;
+}
+
+.delimiter {
+    margin-left: auto;
+}
+
+::deep td.min {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.table-container {
+    box-shadow: var(--geonrage-shadow);
+}
+
+.pagination {
+    a {
+        &.hidden-600-plus {
+            display: none;
+        }
+
+        &.hidden-600-less {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 600px) {
+            &.hidden-600-plus {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            &.hidden-600-less {
+                display: none;
+            }
+        }
+    }
+}

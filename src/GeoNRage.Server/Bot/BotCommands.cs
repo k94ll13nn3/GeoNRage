@@ -43,8 +43,8 @@ internal sealed partial class BotCommands : CommandGroup
             return await _feedbackService.SendContextualAsync("Erreur inconnue");
         }
 
-        IList<GameDto> games = await _gameService.GetAll().ToListAsync();
-        GameDetailDto? game = await _gameService.GetAsync(games.OrderByDescending(g => g.Date).First().Id);
+        var gameId = await _gameService.GetAll().OrderByDescending(g => g.Date).Select(g => g.Id).FirstAsync();
+        GameDetailDto? game = await _gameService.GetAsync(gameId);
         if (game is null)
         {
             return await _feedbackService.SendContextualAsync("Erreur inconnue");
