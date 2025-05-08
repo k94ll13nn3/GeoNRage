@@ -28,7 +28,7 @@
                         <th>
                             <div class="is-flex">
                                 <span>@header.Title</span>
-                                @if (header.Property is not null)
+                                @if (!string.IsNullOrWhiteSpace(header.Property))
                                 {
                                     <span class="delimiter"></span>
                                     <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : "")" @onclick="() => SortAsync(header.Property, true)">
