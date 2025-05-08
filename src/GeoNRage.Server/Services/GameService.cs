@@ -276,6 +276,8 @@ internal sealed partial class GameService
                 playerScore.PlayerGuesses.Add(new() { Score = newScore, RoundNumber = round });
             }
 
+            playerScore.Sum = playerScore.PlayerGuesses.Sum(pg => pg.Score) ?? 0;
+
             await _context.SaveChangesAsync();
         }
     }

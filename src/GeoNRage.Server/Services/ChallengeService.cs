@@ -183,6 +183,7 @@ internal sealed partial class ChallengeService
                     Distance = p.DistanceInMeters,
                     Steps = p.StepsCount
                 })],
+                Sum = geoChallengeGamePlayer.Guesses.Sum(p => p.RoundScoreInPoints)
             };
 
             if (isMainPlayer && playerScores.Exists(ps => ps.PlayerId == playerScore.PlayerId))
@@ -211,7 +212,7 @@ internal sealed partial class ChallengeService
             throw new InvalidOperationException($"Cannot import challenges created by {challenge.Creator.Nick}.");
         }
 
-        var newChallenge = new Challenge()
+        var newChallenge = new Challenge
         {
             GameId = gameId,
             MapId = map.Id,
@@ -223,6 +224,7 @@ internal sealed partial class ChallengeService
             CreatorId = creator.Id,
             UpdatedAt = DateTime.UtcNow,
             CreatedAt = creationDate,
+            MaxScore = playerScores.Max(ps => ps.Sum),
         };
 
         Challenge? existingChallenge = await _context
@@ -252,6 +254,7 @@ internal sealed partial class ChallengeService
             existingChallenge.CreatorId = newChallenge.CreatorId;
             existingChallenge.UpdatedAt = newChallenge.UpdatedAt;
             existingChallenge.CreatedAt = newChallenge.CreatedAt;
+            existingChallenge.MaxScore = newChallenge.MaxScore;
 
             challengeId = existingChallenge.Id;
             await _context.SaveChangesAsync();
