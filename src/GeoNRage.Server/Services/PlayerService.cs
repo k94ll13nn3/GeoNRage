@@ -38,7 +38,7 @@ internal sealed partial class PlayerService
                 p
                     .PlayerScores
                     .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                    .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                    .Select(ps => new { ps.Challenge.GameId, ps.Sum })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
                     .Select(g => new { Id = g.Key, Sum = g.Sum(p => p.Sum) })
@@ -48,7 +48,7 @@ internal sealed partial class PlayerService
                 p
                     .PlayerScores
                     .Where(ps => ps.PlayerId == p.Id && ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                    .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                    .Select(ps => new { ps.Challenge.GameId, ps.Sum })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
                     .Select(g => new { Id = g.Key, Sum = g.Sum(p => p.Sum) })
@@ -120,7 +120,7 @@ internal sealed partial class PlayerService
             .Select(m => new PlayerMapDto
              (
                  m.Name,
-                 m.Challenges.Select(ps => ps.PlayerGuesses.Sum(g => g.Score)).OrderByDescending(s => s).First(),
+                 m.Challenges.Select(ps => ps.Sum).OrderByDescending(s => s).First(),
                  m.Challenges.SelectMany(ps => ps.PlayerGuesses).Average(g => g.Score),
                  m.Challenges.SelectMany(ps => ps.PlayerGuesses).Average(g => g.Distance),
                  m.Challenges.SelectMany(ps => ps.PlayerGuesses).Average(g => g.Time)
@@ -160,7 +160,7 @@ internal sealed partial class PlayerService
                 ps.ChallengeId,
                 ps.Challenge.GameId == -1 ? null : ps.Challenge.GameId,
                 ps.Challenge.Map.Name,
-                ps.PlayerGuesses.Sum(g => g.Score),
+                ps.Sum,
                 ps.PlayerGuesses.Sum(g => g.Time)
             ))
             .ToListAsync();
@@ -250,7 +250,7 @@ internal sealed partial class PlayerService
                 p
                     .PlayerScores
                     .Where(ps => ps.Challenge.GameId != -1 && (takeAllMaps || (ps.Challenge.TimeLimit ?? 300) == 300))
-                    .Select(ps => new { ps.Challenge.GameId, Sum = ps.PlayerGuesses.Sum(g => g.Score) })
+                    .Select(ps => new { ps.Challenge.GameId, ps.Sum })
                     .GroupBy(p => p.GameId)
                     .Where(g => g.Count() == 3)
                     .Select(g => new { Id = g.Key, Sum = g.Sum(p => p.Sum) })
@@ -354,7 +354,7 @@ internal sealed partial class PlayerService
                         .Select(scores => new
                         {
                             PlayerId = scores.Key,
-                            Sum = scores.Sum(ps => ps.PlayerGuesses.Sum(pg => pg.Score)),
+                            Sum = scores.Sum(ps => ps.Sum),
                             NumberOf5000 = scores.Sum(ps => ps.PlayerGuesses.Count(g => g.Score == 5000)),
                         })
                 })
@@ -374,7 +374,7 @@ internal sealed partial class PlayerService
 
                     value.Add(new PlayerGameDto(
                         game.Id,
-                        playerScoreForGame.Sum ?? 0,
+                        playerScoreForGame.Sum,
                         game.Date,
                         game.Name,
                         playerScoreForGame.NumberOf5000,

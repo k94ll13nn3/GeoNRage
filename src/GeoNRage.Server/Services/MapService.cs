@@ -48,7 +48,7 @@ internal sealed partial class MapService
                 m.Challenges.Where(c => takeAllMaps || ((c.TimeLimit ?? 300) == 300 && (c.GameId != -1 || m.IsMapForGame))).SelectMany(c => c
                     .PlayerScores
                     .Where(ps => ps.PlayerGuesses.Count == 5)
-                    .Select(ps => new MapScoreDto(ps.Player.Name, ps.PlayerGuesses.Sum(pg => pg.Score) ?? 0, ps.PlayerGuesses.Sum(pg => pg.Time) ?? 0)))
+                    .Select(ps => new MapScoreDto(ps.Player.Name, ps.Sum, ps.PlayerGuesses.Sum(pg => pg.Time) ?? 0)))
             ))
             .FirstOrDefaultAsync();
     }

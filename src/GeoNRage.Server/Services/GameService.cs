@@ -72,7 +72,7 @@ internal sealed partial class GameService
                         p.PlayerGuesses.Any(g => g.RoundNumber == 3) ? p.PlayerGuesses.First(g => g.RoundNumber == 3).Score : null,
                         p.PlayerGuesses.Any(g => g.RoundNumber == 4) ? p.PlayerGuesses.First(g => g.RoundNumber == 4).Score : null,
                         p.PlayerGuesses.Any(g => g.RoundNumber == 5) ? p.PlayerGuesses.First(g => g.RoundNumber == 5).Score : null,
-                        p.PlayerGuesses.Sum(g => g.Score)
+                        p.Sum
                     ))
                 )),
                 g.Challenges.SelectMany(c => c.PlayerScores).Select(p => new GamePlayerDto
