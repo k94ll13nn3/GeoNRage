@@ -2,147 +2,143 @@
 
 @if (_items is null)
 {
-    <div class="container is-flex">
-        <TableSkeleton Paginate />
-    </div>
+    <TableSkeleton Paginate />
     return;
 }
 
-<div class="container">
-    <div class="m-3">
-        @if (SearchFields.Count > 0)
-        {
-            <div class="field">
-                <p class="control has-icons-right">
-                    <input class="input" type="text" placeholder="Rechercher" @oninput="OnFilter">
-                    <span class="icon is-small is-right">
-                        <i class="fas fa-search"></i>
-                    </span>
-                </p>
-            </div>
-        }
-
-        <div class="table-container">
-            <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : "") @(IsFullWidth ? "is-fullwidth" : "")">
-                <thead>
-                    <tr>
-                        @foreach (var header in Headers)
-                        {
-                            <th>
-                                <div class="is-flex">
-                                    <span>@header.Title</span>
-                                    @if (header.Property is not null)
-                                    {
-                                        <span class="delimiter"></span>
-                                        <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : "")" @onclick="() => SortAsync(header.Property, true)">
-                                            <i class="fas fa-sort-amount-up-alt"></i>
-                                        </span>
-                                        <span class="icon icon-hand @(IsColumnSorted(header.Property, false) ? "has-text-link" : "")" @onclick="() => SortAsync(header.Property, false)">
-                                            <i class="fas fa-sort-amount-down"></i>
-                                        </span>
-                                    }
-                                </div>
-                            </th>
-                        }
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var item in _items)
-                    {
-                        <tr>
-                            @RowContent(item)
-                        </tr>
-                    }
-                </tbody>
-
-                @if (FooterContent is not null)
-                {
-                    <tfoot>
-                        <tr>
-                            @FooterContent
-                        </tr>
-                    </tfoot>
-                }
-                else if (ShowRowCount)
-                {
-                    <tfoot>
-                        <tr>
-                            <td style="text-align: right;" colspan="@Headers.Count()">@_items.Count élément(s)</td>
-                        </tr>
-                    </tfoot>
-                }
-            </table>
+<div class="m-3 is-flex-grow-1">
+    @if (SearchFields.Count > 0)
+    {
+        <div class="field">
+            <p class="control has-icons-right">
+                <input class="input" type="text" placeholder="Rechercher" @oninput="OnFilter">
+                <span class="icon is-small is-right">
+                    <i class="fas fa-search"></i>
+                </span>
+            </p>
         </div>
+    }
 
-        @if (_pageCount > 1)
-        {
-            <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                <a class="pagination-previous hidden-600-less" @onclick="() => ChangePageAsync(_currentPage - 1)" disabled="@(_currentPage == 1)">Précédent</a>
-                <a class="pagination-previous hidden-600-plus" @onclick="() => ChangePageAsync(_currentPage - 1)" disabled="@(_currentPage == 1)">
-                    <span class="icon is-medium" title="Précédent">
-                        <i class="fa-solid fa-angles-left"></i>
-                    </span>
-                </a>
-                <a class="pagination-next hidden-600-less" @onclick="() => ChangePageAsync(_currentPage + 1)" disabled="@(_currentPage == _pageCount)">Suivant</a>
-                <a class="pagination-next hidden-600-plus" @onclick="() => ChangePageAsync(_currentPage + 1)" disabled="@(_currentPage == _pageCount)">
-                    <span class="icon is-medium" title="Suivant">
-                        <i class="fa-solid fa-angles-right"></i>
-                    </span>
-                </a>
-                <ul class="pagination-list">
-                    @if (_pageCount <= 5)
+    <div class="table-container">
+        <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : "") @(IsFullWidth ? "is-fullwidth" : "")">
+            <thead>
+                <tr>
+                    @foreach (var header in Headers)
                     {
-                        @foreach (var pageNumber in Enumerable.Range(1, _pageCount))
-                        {
-                            <li>
-                                <a class="pagination-link @(pageNumber == _currentPage ? "is-current" : "")" @onclick="() => ChangePageAsync(pageNumber)">@pageNumber</a>
-                            </li>
-                        }
+                        <th>
+                            <div class="is-flex">
+                                <span>@header.Title</span>
+                                @if (header.Property is not null)
+                                {
+                                    <span class="delimiter"></span>
+                                    <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : "")" @onclick="() => SortAsync(header.Property, true)">
+                                        <i class="fas fa-sort-amount-up-alt"></i>
+                                    </span>
+                                    <span class="icon icon-hand @(IsColumnSorted(header.Property, false) ? "has-text-link" : "")" @onclick="() => SortAsync(header.Property, false)">
+                                        <i class="fas fa-sort-amount-down"></i>
+                                    </span>
+                                }
+                            </div>
+                        </th>
                     }
-                    else
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in _items)
+                {
+                    <tr>
+                        @RowContent(item)
+                    </tr>
+                }
+            </tbody>
+
+            @if (FooterContent is not null)
+            {
+                <tfoot>
+                    <tr>
+                        @FooterContent
+                    </tr>
+                </tfoot>
+            }
+            else if (ShowRowCount)
+            {
+                <tfoot>
+                    <tr>
+                        <td style="text-align: right;" colspan="@Headers.Count()">@_items.Count élément(s)</td>
+                    </tr>
+                </tfoot>
+            }
+        </table>
+    </div>
+
+    @if (_pageCount > 1)
+    {
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <a class="pagination-previous hidden-600-less" @onclick="() => ChangePageAsync(_currentPage - 1)" disabled="@(_currentPage == 1)">Précédent</a>
+            <a class="pagination-previous hidden-600-plus" @onclick="() => ChangePageAsync(_currentPage - 1)" disabled="@(_currentPage == 1)">
+                <span class="icon is-medium" title="Précédent">
+                    <i class="fa-solid fa-angles-left"></i>
+                </span>
+            </a>
+            <a class="pagination-next hidden-600-less" @onclick="() => ChangePageAsync(_currentPage + 1)" disabled="@(_currentPage == _pageCount)">Suivant</a>
+            <a class="pagination-next hidden-600-plus" @onclick="() => ChangePageAsync(_currentPage + 1)" disabled="@(_currentPage == _pageCount)">
+                <span class="icon is-medium" title="Suivant">
+                    <i class="fa-solid fa-angles-right"></i>
+                </span>
+            </a>
+            <ul class="pagination-list">
+                @if (_pageCount <= 5)
+                {
+                    @foreach (var pageNumber in Enumerable.Range(1, _pageCount))
                     {
-                        @if (_currentPage > 1)
-                        {
-                            <li>
-                                <a class="pagination-link" @onclick="() => ChangePageAsync(1)">1</a>
-                            </li>
-                        }
-
-                        @if (_currentPage > 2)
-                        {
-                            <li>
-                                <span class="pagination-ellipsis">&hellip;</span>
-                            </li>
-
-                            <li>
-                                <a class="pagination-link" @onclick="() => ChangePageAsync(_currentPage - 1)">@(_currentPage - 1)</a>
-                            </li>
-                        }
-
                         <li>
-                            <a class="pagination-link is-current" @onclick="() => ChangePageAsync(_currentPage)">@_currentPage</a>
+                            <a class="pagination-link @(pageNumber == _currentPage ? "is-current" : "")" @onclick="() => ChangePageAsync(pageNumber)">@pageNumber</a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    @if (_currentPage > 1)
+                    {
+                        <li>
+                            <a class="pagination-link" @onclick="() => ChangePageAsync(1)">1</a>
+                        </li>
+                    }
+
+                    @if (_currentPage > 2)
+                    {
+                        <li>
+                            <span class="pagination-ellipsis">&hellip;</span>
                         </li>
 
-                        @if (_currentPage < _pageCount - 1)
-                        {
-                            <li>
-                                <a class="pagination-link" @onclick="() => ChangePageAsync(_currentPage + 1)">@(_currentPage + 1)</a>
-                            </li>
-                            <li>
-                                <span class="pagination-ellipsis">&hellip;</span>
-                            </li>
-                        }
-
-                        @if (_currentPage < _pageCount)
-                        {
-                            <li>
-                                <a class="pagination-link" @onclick="() => ChangePageAsync(_pageCount)">@_pageCount</a>
-                            </li>
-                        }
+                        <li>
+                            <a class="pagination-link" @onclick="() => ChangePageAsync(_currentPage - 1)">@(_currentPage - 1)</a>
+                        </li>
                     }
-                </ul>
-            </nav>
-        }
-    </div>
+
+                    <li>
+                        <a class="pagination-link is-current" @onclick="() => ChangePageAsync(_currentPage)">@_currentPage</a>
+                    </li>
+
+                    @if (_currentPage < _pageCount - 1)
+                    {
+                        <li>
+                            <a class="pagination-link" @onclick="() => ChangePageAsync(_currentPage + 1)">@(_currentPage + 1)</a>
+                        </li>
+                        <li>
+                            <span class="pagination-ellipsis">&hellip;</span>
+                        </li>
+                    }
+
+                    @if (_currentPage < _pageCount)
+                    {
+                        <li>
+                            <a class="pagination-link" @onclick="() => ChangePageAsync(_pageCount)">@_pageCount</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+    }
 </div>
