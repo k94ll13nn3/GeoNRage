@@ -21,4 +21,15 @@ public record ChallengePlayerScoreDto(string PlayerId, string PlayerName, IEnume
 
 public record ChallengePlayerGuessDto(int RoundNumber, int? Score, int? Time, double? Distance);
 
-public record ChallengeDto(int Id, string MapId, string MapName, string GeoGuessrId, int? GameId, string? CreatorName, int MaxScore, int? PlayerScore, DateOnly? CreatedAt);
+public record ChallengeDto
+{
+    public required int Id { get; init; }
+    public required string MapId { get; init; }
+    public required string MapName { get; init; }
+    public required string GeoGuessrId { get; init; }
+    public required int? GameId { get; init; }
+    public required string? CreatorName { get; init; }
+    public required int MaxScore { get; init; }
+    public required int? PlayerScore { get; init; }
+    public required DateOnly? CreatedAt { get; init; }
+}

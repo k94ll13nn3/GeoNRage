@@ -33,8 +33,7 @@ internal static class GamesEndpointsBuilder
         GameService gameService,
         CancellationToken cancellationToken)
     {
-        IGridifyMapper<GameDto> mapper = new GridifyMapper<GameDto>()
-            .GenerateMappings(1);
+        IGridifyMapper<GameDto> mapper = new GridifyMapper<GameDto>(true);
 
         if (!paginationQuery.IsValid(mapper))
         {

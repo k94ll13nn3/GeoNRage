@@ -4,14 +4,6 @@
 
 @inherits UserSettingsAwareComponent
 
-@if (_challenges is null)
-{
-    <LoadingAnimation Animated="true">
-        Chargement des challenges...
-    </LoadingAnimation>
-    return;
-}
-
 <div class="container is-flex is-flex-direction-column">
     <div class="field m-3 is-grouped">
         <p class="control is-expanded">
@@ -27,22 +19,20 @@
         </div>
     </article>
 
-    <Table @ref="_challengesTable"
-           Items="_challenges"
-           Headers="@(new TableHeader[]
-                {
-                    new("Nom de la carte", true, nameof(ChallengeDto.MapName)),
-                    new("Créateur", false, string.Empty),
-                    new("Date", true, nameof(ChallengeDto.CreatedAt)),
-                    new("Meilleur score", true, nameof(ChallengeDto.MaxScore)),
-                    new("Mon score", true, nameof(ChallengeDto.PlayerScore)),
-                    new("", false, string.Empty),
-                    new("", false, string.Empty),
-                })"
-           Paginate="true"
-           PageSize="15"
-           IsNarrow="false"
-           SortFunction="Sort">
+    <PaginatedTable @ref=_challengesTable
+                    Headers="@(new TableHeader[]
+                    {
+                        new("Nom de la carte", nameof(ChallengeDto.MapName)),
+                        new("Créateur"),
+                        new("Date", nameof(ChallengeDto.CreatedAt), true),
+                        new("Meilleur score", nameof(ChallengeDto.MaxScore)),
+                        new("Mon score", nameof(ChallengeDto.PlayerScore)),
+                        new(string.Empty),
+                        new(string.Empty),
+                    })"
+                    DataFunction=GetAllChallengesAsync
+                    PageSize=10
+                    IsNarrow=false>
         <RowContent Context="challenge">
             <td>@challenge.MapName</td>
             <td>@(challenge.CreatorName ?? "—")</td>
@@ -63,10 +53,7 @@
         </RowContent>
         <FooterContent>
             <Container Condition="_user.PlayerId() is not null">
-                <th colspan="6" class="has-text-right">
-                    <Container Condition="_challenges?.Any() != true">
-                        <p>Toutes les cartes disponibles ont été jouées !</p>
-                    </Container>
+                <th colspan="999" class="has-text-right">
                     <Container Condition="_displayAll">
                         <ChildContent>
                             <button class="button is-primary" @onclick="() => FilterChallengesAsync(false)">
@@ -82,5 +69,5 @@
                 </th>
             </Container>
         </FooterContent>
-    </Table>
+    </PaginatedTable>
 </div>

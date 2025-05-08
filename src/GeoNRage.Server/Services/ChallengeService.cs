@@ -19,38 +19,26 @@ internal sealed partial class ChallengeService
     [AutoConstructorInject("options?.Value", "options", typeof(IOptions<ApplicationOptions>))]
     private readonly ApplicationOptions _options;
 
-    public async Task<IEnumerable<ChallengeDto>> GetAllAsync(bool onlyWithoutGame, bool onlyMapForGame, string[]? playersToExclude, string? currentPlayerId)
+    public IQueryable<ChallengeDto> GetAll(bool onlyMapForGame, string[]? playersToExclude, string? currentPlayerId)
     {
-        IQueryable<Challenge> query = _context.Challenges.AsNoTracking();
-        if (onlyWithoutGame)
-        {
-            query = query.Where(c => c.GameId == -1);
-        }
+        IQueryable<Challenge> query = _context.Challenges
+            .Where(c => c.GameId == -1)
+            .WhereIf(onlyMapForGame, c => c.Map.IsMapForGame && (c.TimeLimit ?? 300) == 300)
+            .WhereIf(playersToExclude?.Length > 0, c => c.PlayerScores.All(p => !playersToExclude!.Contains(p.PlayerId)));
 
-        if (onlyMapForGame)
-        {
-            query = query.Where(c => c.Map.IsMapForGame && (c.TimeLimit ?? 300) == 300);
-        }
-
-        if (playersToExclude?.Length > 0)
-        {
-            query = query.Where(c => c.PlayerScores.All(p => !playersToExclude.Contains(p.PlayerId)));
-        }
-
-        return await query
+        return query
             .Select(c => new ChallengeDto
-            (
-                c.Id,
-                c.Map.Id,
-                c.Map.Name,
-                c.GeoGuessrId,
-                c.GameId == -1 ? null : c.GameId,
-                c.Creator == null ? null : c.Creator.Name,
-                c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
-                c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault(),
-                c.CreatedAt
-            ))
-            .ToListAsync();
+            {
+                Id = c.Id,
+                MapId = c.Map.Id,
+                MapName = c.Map.Name,
+                GeoGuessrId = c.GeoGuessrId,
+                GameId = c.GameId == -1 ? null : c.GameId,
+                CreatorName = c.Creator == null ? null : c.Creator.Name,
+                MaxScore = c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
+                PlayerScore = c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault(),
+                CreatedAt = c.CreatedAt
+            });
     }
 
     public async Task<IEnumerable<ChallengeAdminViewDto>> GetAllAsAdminViewAsync()

@@ -15,19 +15,22 @@ public sealed partial class ChallengesPage
     private readonly ModalService _modalService;
     private readonly ToastService _toastService;
 
-    private IEnumerable<ChallengeDto> _challenges = null!;
     private string _geoGuessrId = null!;
-    private Table<ChallengeDto> _challengesTable = null!;
     private bool _displayAll;
     private ClaimsPrincipal _user = null!;
+    private PaginatedTable<ChallengeDto> _challengesTable = null!;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+    protected override void Dispose(bool disposing)
+    {
+        _challengesTable?.Dispose();
+        base.Dispose(disposing);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         _user = (await AuthenticationState).User;
-        await FilterChallengesAsync(_displayAll);
     }
 
     internal override async void OnSettingsChanged(object? sender, UserSettingsEventArgs e)
@@ -38,24 +41,6 @@ public sealed partial class ChallengesPage
         }
 
         await FilterChallengesAsync(_displayAll);
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        _challengesTable?.Dispose();
-        base.Dispose(disposing);
-    }
-
-    private static IEnumerable<ChallengeDto> Sort(IEnumerable<ChallengeDto> challenges, string column, bool ascending)
-    {
-        return column switch
-        {
-            nameof(ChallengeDto.MapName) => ascending ? challenges.OrderBy(c => c.MapName) : challenges.OrderByDescending(c => c.MapName),
-            nameof(ChallengeDto.MaxScore) => ascending ? challenges.OrderBy(c => c.MaxScore) : challenges.OrderByDescending(c => c.MaxScore),
-            nameof(ChallengeDto.PlayerScore) => ascending ? challenges.OrderBy(c => c.PlayerScore) : challenges.OrderByDescending(c => c.PlayerScore),
-            nameof(ChallengeDto.CreatedAt) => ascending ? challenges.OrderBy(c => c.CreatedAt) : challenges.OrderByDescending(c => c.CreatedAt),
-            _ => throw new ArgumentOutOfRangeException(nameof(column), "Invalid column name"),
-        };
     }
 
     private async Task ImportAsync()
@@ -95,13 +80,17 @@ public sealed partial class ChallengesPage
     private async Task FilterChallengesAsync(bool displayAll)
     {
         _displayAll = displayAll;
+        await _challengesTable.ReloadDataAsync();
+    }
+
+    private async Task<PaginationResult<ChallengeDto>> GetAllChallengesAsync(IPaginationQuery paginationQuery)
+    {
         string[] playersToHide = [];
         if (!_displayAll && _user.PlayerId() is string playerId)
         {
             playersToHide = [playerId];
         }
 
-        _challenges = await _challengesApi.GetAllAsync(true, playersToHide);
-        _challengesTable?.SetItems(_challenges);
+        return await _challengesApi.GetAllAsync(paginationQuery, playersToHide);
     }
 }

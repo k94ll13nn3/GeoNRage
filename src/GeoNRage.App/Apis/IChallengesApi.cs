@@ -6,7 +6,9 @@ public interface IChallengesApi
 {
     [Get("/api/challenges")]
     [Headers($"{Constants.MapStatusHeaderName}:")]
-    Task<ChallengeDto[]> GetAllAsync(bool onlyWithoutGame = false, [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
+    Task<PaginationResult<ChallengeDto>> GetAllAsync(
+        IPaginationQuery paginationQuery,
+        [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
 
     [Get("/api/challenges/admin-view")]
     Task<ChallengeAdminViewDto[]> GetAllAsAdminViewAsync();

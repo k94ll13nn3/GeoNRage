@@ -55,6 +55,11 @@ public sealed partial class PaginatedTable<T> : IDisposable
         _searchTimer.Dispose();
     }
 
+    public async Task ReloadDataAsync()
+    {
+        await RefreshItemsAsync();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         if (Headers.FirstOrDefault(h => h.DefaultSort) is TableHeader tableHeader)

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using GeoNRage.Server.Models;
 using GeoNRage.Server.Services;
+using Gridify;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,18 +24,27 @@ internal static class ChallengesEndpointsBuilder
         return group;
     }
 
-    private static async Task<Ok<IEnumerable<ChallengeDto>>> GetAllAsync(
+    private static async Task<Results<Ok<PaginationResult<ChallengeDto>>, ProblemHttpResult>> GetAllAsync(
+        [AsParameters] PaginationQuery paginationQuery,
         ChallengeService challengeService,
         ClaimsPrincipal user,
         HttpContext httpContext,
-        bool onlyWithoutGame = false,
+        CancellationToken cancellationToken,
         [FromQuery] string[]? playersToExclude = null)
     {
-        return TypedResults.Ok(await challengeService.GetAllAsync(
-            onlyWithoutGame,
+        IGridifyMapper<ChallengeDto> mapper = new GridifyMapper<ChallengeDto>(true);
+
+        if (!paginationQuery.IsValid(mapper))
+        {
+            return CustomTypedResults.Problem("Requête invalide");
+        }
+
+        IQueryable<ChallengeDto> query = challengeService.GetAll(
             httpContext.Request.Headers[Constants.MapStatusHeaderName] != "True",
             playersToExclude,
-            user?.FindFirstValue("PlayerId")));
+            user?.FindFirstValue("PlayerId"));
+
+        return TypedResults.Ok(await query.PaginateAsync(paginationQuery, mapper, cancellationToken));
     }
 
     private static async Task<Ok<IEnumerable<ChallengeAdminViewDto>>> GetAllAsAdminViewAsync(ChallengeService challengeService)
