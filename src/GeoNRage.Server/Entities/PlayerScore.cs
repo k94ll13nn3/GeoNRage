@@ -11,4 +11,6 @@ internal sealed class PlayerScore
     public Player Player { get; set; } = null!;
 
     public ICollection<PlayerGuess> PlayerGuesses { get; set; } = [];
+
+    public int Sum { get; set; }
 }

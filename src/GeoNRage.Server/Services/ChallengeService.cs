@@ -33,10 +33,9 @@ internal sealed partial class ChallengeService
                 MapId = c.Map.Id,
                 MapName = c.Map.Name,
                 GeoGuessrId = c.GeoGuessrId,
-                GameId = c.GameId == -1 ? null : c.GameId,
                 CreatorName = c.Creator == null ? null : c.Creator.Name,
-                MaxScore = c.PlayerScores.Max(p => p.PlayerGuesses.Sum(g => g.Score)) ?? 0,
-                PlayerScore = c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => p.PlayerGuesses.Sum(g => g.Score)).FirstOrDefault(),
+                MaxScore = c.MaxScore,
+                PlayerScore = c.PlayerScores.Where(p => p.PlayerId == currentPlayerId).Select(p => new { p.Sum }).FirstOrDefault()!.Sum,
                 CreatedAt = c.CreatedAt
             });
     }

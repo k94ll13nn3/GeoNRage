@@ -27,7 +27,6 @@ public record ChallengeDto
     public required string MapId { get; init; }
     public required string MapName { get; init; }
     public required string GeoGuessrId { get; init; }
-    public required int? GameId { get; init; }
     public required string? CreatorName { get; init; }
     public required int MaxScore { get; init; }
     public required int? PlayerScore { get; init; }
