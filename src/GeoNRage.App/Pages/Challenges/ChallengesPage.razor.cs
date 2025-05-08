@@ -81,11 +81,6 @@ public sealed partial class ChallengesPage
                 _geoGuessrId = string.Empty;
                 _toastService.DisplayToast("Import réussi !", TimeSpan.FromSeconds(3), ToastType.Success);
             }
-            catch (ValidationApiException e)
-            {
-                string error = string.Join(",", e.Content?.Errors.Select(x => string.Join(",", x.Value)) ?? []);
-                _toastService.DisplayToast(error, null, ToastType.Error);
-            }
             catch (ApiException e)
             {
                 await _toastService.DisplayErrorToastAsync(e, "challenge-import");

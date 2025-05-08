@@ -1,3 +1,4 @@
+using GeoNRage.Server.Models;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -23,7 +24,7 @@ internal static class MapsEndpointsBuilder
         return TypedResults.Ok(await mapService.GetAllAsync());
     }
 
-    private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> UpdateAsync(MapService mapService, string id, MapEditDto dto)
+    private static async Task<Results<NoContent, NotFound, ProblemHttpResult>> UpdateAsync(MapService mapService, string id, MapEditDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
         try
@@ -35,11 +36,11 @@ internal static class MapsEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
-    private static async Task<Results<NoContent, BadRequest<ApiError>>> DeleteAsync(MapService mapService, string id)
+    private static async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(MapService mapService, string id)
     {
         try
         {
@@ -48,7 +49,7 @@ internal static class MapsEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 }

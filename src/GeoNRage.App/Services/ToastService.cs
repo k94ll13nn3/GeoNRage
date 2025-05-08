@@ -33,8 +33,8 @@ public class ToastService
     {
         ArgumentNullException.ThrowIfNull(exception);
 
-        ApiError? error = await exception.GetContentAsAsync<ApiError>();
-        string message = error?.Message ?? "Une erreur est survenue";
+        ProblemDetails? error = await exception.GetContentAsAsync<ProblemDetails>();
+        string message = error?.Detail ?? "Une erreur est survenue";
         DisplayToast(message, null, ToastType.Error, id, true);
     }
 }

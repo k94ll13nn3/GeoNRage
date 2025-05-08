@@ -55,7 +55,7 @@ internal sealed partial class MapService
 
     public async Task<MapDto?> UpdateAsync(string id, MapEditDto dto)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         Map? map = await _context.Maps.FindAsync(id);
         if (map is not null)

@@ -51,7 +51,7 @@ public partial class ChallengesAdmin
                 }
                 catch (ApiException e)
                 {
-                    Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+                    Error = $"Error: {(await e.GetContentAsAsync<ProblemDetails>())?.Detail}";
                 }
                 finally
                 {

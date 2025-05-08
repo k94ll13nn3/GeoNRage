@@ -36,7 +36,7 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+        ArgumentNullException.ThrowIfNull(builder);
 
         builder.HasCharSet(CharSet.Utf8Mb4, true).UseCollation("utf8mb4_general_ci");
 

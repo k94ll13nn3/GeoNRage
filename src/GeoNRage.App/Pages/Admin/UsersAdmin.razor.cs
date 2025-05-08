@@ -63,7 +63,7 @@ public partial class UsersAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+            Error = $"Error: {(await e.GetContentAsAsync<ProblemDetails>())?.Detail}";
         }
     }
 
@@ -79,7 +79,7 @@ public partial class UsersAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+            Error = $"Error: {(await e.GetContentAsAsync<ProblemDetails>())?.Detail}";
         }
     }
 

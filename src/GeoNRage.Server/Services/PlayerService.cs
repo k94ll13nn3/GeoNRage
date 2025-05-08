@@ -281,7 +281,7 @@ internal sealed partial class PlayerService
 
     public async Task<PlayerDto?> UpdateAsync(string id, PlayerEditDto dto)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         Player? player = await _context.Players.FindAsync(id);
         if (player is not null)

@@ -47,7 +47,7 @@ public partial class MapAdminEdit : IModal
         }
         catch (ApiException e)
         {
-            _error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+            _error = $"Error: {(await e.GetContentAsAsync<ProblemDetails>())?.Detail}";
         }
     }
 }

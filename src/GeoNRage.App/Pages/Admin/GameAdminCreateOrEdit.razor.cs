@@ -76,13 +76,9 @@ public partial class GameAdminCreateOrEdit : IModal
             }
             ModalRender.Close();
         }
-        catch (ValidationApiException e)
-        {
-            _error = $"Error: {string.Join(",", e.Content?.Errors.Select(x => string.Join(Environment.NewLine, x.Value)) ?? [])}";
-        }
         catch (ApiException e)
         {
-            _error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+            _error = $"Error: {(await e.GetContentAsAsync<ProblemDetails>())?.Detail}";
         }
     }
 }

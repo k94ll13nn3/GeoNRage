@@ -1,3 +1,4 @@
+using GeoNRage.Server.Models;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -61,9 +62,9 @@ internal static class PlayersEndpointsBuilder
         return TypedResults.Ok(player);
     }
 
-    private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> UpdateAsync(string id, PlayerEditDto dto, PlayerService playerService)
+    private static async Task<Results<NoContent, NotFound, ProblemHttpResult>> UpdateAsync(string id, PlayerEditDto dto, PlayerService playerService)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
         try
         {
             PlayerDto? updatedPlayer = await playerService.UpdateAsync(id, dto);
@@ -76,11 +77,11 @@ internal static class PlayersEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
-    private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> UpdateGeoGuessrProfileAsync(string id, PlayerService playerService)
+    private static async Task<Results<NoContent, NotFound, ProblemHttpResult>> UpdateGeoGuessrProfileAsync(string id, PlayerService playerService)
     {
         try
         {
@@ -94,11 +95,11 @@ internal static class PlayersEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
-    private static async Task<Results<NoContent, BadRequest<ApiError>>> DeleteAsync(string id, PlayerService playerService)
+    private static async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(string id, PlayerService playerService)
     {
         try
         {
@@ -107,7 +108,7 @@ internal static class PlayersEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 }

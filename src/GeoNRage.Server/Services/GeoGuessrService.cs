@@ -18,7 +18,8 @@ internal sealed partial class GeoGuessrService
 
     public async Task<(GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results)> ImportChallengeAsync(string geoGuessrId)
     {
-        _ = geoGuessrId ?? throw new ArgumentNullException(nameof(geoGuessrId));
+        ArgumentNullException.ThrowIfNull(geoGuessrId);
+
         HttpClient client = _clientFactory.CreateClient("geoguessr");
 
         EnsureCookieIsSet();

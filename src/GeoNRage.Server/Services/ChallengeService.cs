@@ -122,7 +122,7 @@ internal sealed partial class ChallengeService
 
     public async Task<int> ImportChallengeAsync(ChallengeImportDto dto, int gameId)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         (GeoGuessrChallenge challenge, IList<GeoGuessrChallengeResult> results) = await _geoGuessrService.ImportChallengeAsync(dto.GeoGuessrId);
         var locations = new List<Location>();

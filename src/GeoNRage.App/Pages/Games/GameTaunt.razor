@@ -20,9 +20,9 @@
                 <div class="select w-100">
                     <select @bind="@_selectedImageId" class="w-100">
                         <option value="@((string?)null)">—</option>
-                        @foreach (var image in TauntImages.Images)
+                        @foreach (var imageKey in TauntImages.Images.Keys)
                         {
-                            <option value="@image.Key">@image.Key</option>
+                            <option value="@imageKey">@imageKey</option>
                         }
                     </select>
                 </div>

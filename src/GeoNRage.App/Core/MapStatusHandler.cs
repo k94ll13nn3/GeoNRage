@@ -7,7 +7,7 @@ public partial class MapStatusHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        _ = request ?? throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
         if (request.Headers.Contains(Constants.MapStatusHeaderName))
         {

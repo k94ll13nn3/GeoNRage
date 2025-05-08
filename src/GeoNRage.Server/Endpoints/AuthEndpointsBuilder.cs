@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using GeoNRage.Server.Entities;
+using GeoNRage.Server.Models;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -25,20 +26,20 @@ internal static class AuthEndpointsBuilder
         return group;
     }
 
-    private static async Task<Results<Ok, BadRequest<ApiError>>> LoginAsync(LoginDto request, UserManager<User> userManager, SignInManager<User> signInManager)
+    private static async Task<Results<Ok, ProblemHttpResult>> LoginAsync(LoginDto request, UserManager<User> userManager, SignInManager<User> signInManager)
     {
-        _ = request ?? throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
         User? user = await userManager.FindByNameAsync(request.UserName);
         if (user is null)
         {
-            return TypedResults.BadRequest(new ApiError("Utilisateur ou mot de passe invalide."));
+            return CustomTypedResults.Problem("Utilisateur ou mot de passe invalide.");
         }
 
         SignInResult singInResult = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!singInResult.Succeeded)
         {
-            return TypedResults.BadRequest(new ApiError("Utilisateur ou mot de passe invalide."));
+            return CustomTypedResults.Problem("Utilisateur ou mot de passe invalide.");
         }
 
         await signInManager.SignInAsync(user, request.RememberMe);
@@ -52,9 +53,9 @@ internal static class AuthEndpointsBuilder
         return TypedResults.NoContent();
     }
 
-    private static async Task<Results<Ok, BadRequest<ApiError>>> RegisterAsync(RegisterDto parameters, UserManager<User> userManager)
+    private static async Task<Results<Ok, ProblemHttpResult>> RegisterAsync(RegisterDto parameters, UserManager<User> userManager)
     {
-        _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
+        ArgumentNullException.ThrowIfNull(parameters);
 
         var user = new User
         {
@@ -64,23 +65,23 @@ internal static class AuthEndpointsBuilder
         IdentityResult result = await userManager.CreateAsync(user, parameters.Password);
         if (!result.Succeeded)
         {
-            return TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+            return CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
         }
 
         result = await userManager.AddToRolesAsync(user, [Roles.Member]);
         return result.Succeeded
             ? TypedResults.Ok()
-            : TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+            : CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
     }
 
-    private static async Task<Results<Ok, BadRequest<ApiError>>> EditAsync(UserEditDto parameters, UserManager<User> userManager, SignInManager<User> signInManager, ClaimsPrincipal userPrincipal)
+    private static async Task<Results<Ok, ProblemHttpResult>> EditAsync(UserEditDto parameters, UserManager<User> userManager, SignInManager<User> signInManager, ClaimsPrincipal userPrincipal)
     {
-        _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
+        ArgumentNullException.ThrowIfNull(parameters);
 
         User? user = await userManager.FindByNameAsync(userPrincipal.Identity?.Name!);
         if (user is null)
         {
-            return TypedResults.BadRequest(new ApiError("Utilisateur invalide."));
+            return CustomTypedResults.Problem("Utilisateur invalide.");
         }
 
         IdentityResult result;
@@ -90,7 +91,7 @@ internal static class AuthEndpointsBuilder
             result = await userManager.ResetPasswordAsync(user, token, parameters.Password);
             if (!result.Succeeded)
             {
-                return TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+                return CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
             }
         }
 
@@ -99,26 +100,26 @@ internal static class AuthEndpointsBuilder
         result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
         {
-            return TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+            return CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
         }
 
         await signInManager.SignInAsync(user, true);
         return TypedResults.Ok();
     }
 
-    private static async Task<Results<Ok, BadRequest<ApiError>>> EditByAdminAsync(UserEditAdminDto parameters, UserManager<User> userManager, PlayerService playerService)
+    private static async Task<Results<Ok, ProblemHttpResult>> EditByAdminAsync(UserEditAdminDto parameters, UserManager<User> userManager, PlayerService playerService)
     {
-        _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
+        ArgumentNullException.ThrowIfNull(parameters);
 
         User? user = await userManager.FindByNameAsync(parameters.UserName);
         if (user is null)
         {
-            return TypedResults.BadRequest(new ApiError("Utilisateur invalide."));
+            return CustomTypedResults.Problem("Utilisateur invalide.");
         }
 
         if (parameters.PlayerId is not null && await playerService.GetAsync(parameters.PlayerId) is null)
         {
-            return TypedResults.BadRequest(new ApiError("L'id de joueur est invalide."));
+            return CustomTypedResults.Problem("L'id de joueur est invalide.");
         }
 
         IdentityResult result;
@@ -128,19 +129,19 @@ internal static class AuthEndpointsBuilder
         result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
         {
-            return TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+            return CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
         }
 
         result = await userManager.RemoveFromRolesAsync(user, await userManager.GetRolesAsync(user));
         if (!result.Succeeded)
         {
-            return TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+            return CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
         }
 
         result = await userManager.AddToRolesAsync(user, parameters.Roles);
         return result.Succeeded
             ? TypedResults.Ok()
-            : TypedResults.BadRequest(new ApiError(result.Errors.FirstOrDefault()?.Description ?? string.Empty));
+            : CustomTypedResults.Problem(result.Errors.FirstOrDefault()?.Description ?? string.Empty);
     }
 
     private static Ok<UserDto> CurrentUserInfo(ClaimsPrincipal userPrincipal, HttpContext httpContext, PlayerService playerService)

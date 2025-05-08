@@ -95,7 +95,7 @@ public partial class PlayersAdmin
         }
         catch (ApiException e)
         {
-            Error = $"Error: {(await e.GetContentAsAsync<ApiError>())?.Message}";
+            Error = $"Error: {(await e.GetContentAsAsync<ProblemDetails>())?.Detail}";
         }
     }
 

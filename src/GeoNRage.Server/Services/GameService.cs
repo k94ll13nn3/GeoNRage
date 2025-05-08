@@ -115,7 +115,7 @@ internal sealed partial class GameService
 
     public async Task<int> CreateAsync(GameCreateOrEditDto dto)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         IEnumerable<string> geoGuessrIds = dto.Challenges.Select(c => c.GeoGuessrId);
         if (_context.Challenges.Select(c => c.GeoGuessrId).AsEnumerable().Intersect(geoGuessrIds).Any())
@@ -158,7 +158,7 @@ internal sealed partial class GameService
 
     public async Task<Game?> UpdateAsync(int id, GameCreateOrEditDto dto)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         if (!Exists(id))
         {

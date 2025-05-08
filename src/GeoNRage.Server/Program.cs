@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using GeoNRage.Server;
 using GeoNRage.Server.Endpoints;
 using GeoNRage.Server.Hubs;
 using GeoNRage.Server.Tasks;
 using GeoNRage.ServiceDefaults;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using Scalar.AspNetCore;
 
@@ -29,6 +31,18 @@ builder.Services.AddApplicationServices();
 builder.Services.AddHttpClients();
 builder.Services.AddDiscordBot(builder.Configuration);
 builder.Services.AddStartupTasks();
+
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+        context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+
+        Activity? activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+        context.ProblemDetails.Extensions.TryAdd("traceId", activity?.Id);
+    };
+});
 
 builder.EnrichMySqlDbContext<GeoNRageDbContext>(
     configureSettings: settings =>
@@ -60,6 +74,9 @@ else
     app.UseResponseCompression();
     app.UseHsts();
 }
+
+app.UseStatusCodePages();
+app.UseExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();

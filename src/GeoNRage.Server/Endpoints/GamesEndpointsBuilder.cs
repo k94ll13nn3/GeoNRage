@@ -28,7 +28,7 @@ internal static class GamesEndpointsBuilder
         return group;
     }
 
-    private static async Task<Results<Ok<PaginationResult<GameDto>>, BadRequest<ApiError>>> GetAllAsync(
+    private static async Task<Results<Ok<PaginationResult<GameDto>>, ProblemHttpResult>> GetAllAsync(
         [AsParameters] PaginationQuery paginationQuery,
         GameService gameService,
         CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ internal static class GamesEndpointsBuilder
 
         if (!paginationQuery.IsValid(mapper))
         {
-            return TypedResults.BadRequest(new ApiError("Requête invalide"));
+            return CustomTypedResults.Problem("Requête invalide");
         }
 
         IQueryable<GameDto> query = gameService.GetAll();
@@ -57,9 +57,9 @@ internal static class GamesEndpointsBuilder
         return game is not null ? TypedResults.Ok(game) : TypedResults.NotFound();
     }
 
-    private static async Task<Results<CreatedAtRoute, BadRequest<ApiError>>> CreateAsync(GameCreateOrEditDto dto, GameService gameService)
+    private static async Task<Results<CreatedAtRoute, ProblemHttpResult>> CreateAsync(GameCreateOrEditDto dto, GameService gameService)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
         try
         {
             int gameId = await gameService.CreateAsync(dto);
@@ -67,13 +67,13 @@ internal static class GamesEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
-    private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> UpdateAsync(int id, GameCreateOrEditDto dto, GameService gameService)
+    private static async Task<Results<NoContent, NotFound, ProblemHttpResult>> UpdateAsync(int id, GameCreateOrEditDto dto, GameService gameService)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
         try
         {
             Game? updatedGame = await gameService.UpdateAsync(id, dto);
@@ -86,11 +86,11 @@ internal static class GamesEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
-    private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> AddPlayerAsync(int id, [FromBody] string playerId, GameService gameService)
+    private static async Task<Results<NoContent, NotFound, ProblemHttpResult>> AddPlayerAsync(int id, [FromBody] string playerId, GameService gameService)
     {
         try
         {
@@ -105,7 +105,7 @@ internal static class GamesEndpointsBuilder
         }
         catch (InvalidOperationException e)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
@@ -115,7 +115,7 @@ internal static class GamesEndpointsBuilder
         return TypedResults.NoContent();
     }
 
-    private static async Task<Results<NoContent, NotFound, BadRequest<ApiError>>> UpdateChallengesAsync(int id, GameService gameService)
+    private static async Task<Results<NoContent, NotFound, ProblemHttpResult>> UpdateChallengesAsync(int id, GameService gameService)
     {
         try
         {
@@ -128,13 +128,9 @@ internal static class GamesEndpointsBuilder
 
             return TypedResults.NoContent();
         }
-        catch (InvalidOperationException e)
+        catch (Exception e) when (e is InvalidOperationException or HttpRequestException)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
-        }
-        catch (HttpRequestException e)
-        {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 }

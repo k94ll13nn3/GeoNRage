@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using GeoNRage.Server.Models;
 using GeoNRage.Server.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -51,21 +52,17 @@ internal static class ChallengesEndpointsBuilder
         return TypedResults.NotFound();
     }
 
-    private static async Task<Results<Ok<int>, BadRequest<ApiError>>> ImportChallengeAsync(ChallengeImportDto dto, ChallengeService challengeService)
+    private static async Task<Results<Ok<int>, ProblemHttpResult>> ImportChallengeAsync(ChallengeImportDto dto, ChallengeService challengeService)
     {
-        _ = dto ?? throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         try
         {
             return TypedResults.Ok(await challengeService.ImportChallengeAsync(dto));
         }
-        catch (HttpRequestException e)
+        catch (Exception e) when (e is InvalidOperationException or HttpRequestException)
         {
-            return TypedResults.BadRequest(new ApiError(e.Message));
-        }
-        catch (InvalidOperationException e)
-        {
-            return TypedResults.BadRequest(new ApiError(e.Message));
+            return CustomTypedResults.Problem(e.Message);
         }
     }
 
