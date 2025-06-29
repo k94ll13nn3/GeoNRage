@@ -3,13 +3,13 @@
 <nav class="navbar is-radiusless" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item page-header" href="@NavigationManager.ToAbsoluteUri("/")"><span>Geo<span class="has-text-link">'N</span> Rage</span></a>
-        <span class="navbar-burger @(ShowMenu ? "is-active" : "")" data-target="navbarMenu" @onclick="ToggleMenu">
+        <span class="navbar-burger @(ShowMenu ? "is-active" : string.Empty)" data-target="navbarMenu" @onclick="ToggleMenu">
             <span></span>
             <span></span>
             <span></span>
         </span>
     </div>
-    <div id="navbarMenu" class="navbar-menu @(ShowMenu ? "is-active" : "")">
+    <div id="navbarMenu" class="navbar-menu @(ShowMenu ? "is-active" : string.Empty)">
         <div class="navbar-start">
             <NavLink Match="NavLinkMatch.Prefix" class="navbar-item" ActiveClass="is-active" href="@NavigationManager.ToAbsoluteUri("/games")">Parties</NavLink>
             <AuthorizeView Roles="@Roles.Member">

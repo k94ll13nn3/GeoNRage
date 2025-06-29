@@ -307,7 +307,7 @@
                                 </header>
                                 <div class="card-content no-challenges">
                                     <PlotlyChart Config="Config" Layout="Layout"
-                                                 Data="Data" @ref="Chart" style="" ClickAction="NavigateToGame"
+                                                 Data="Data" @ref="Chart" style=string.Empty ClickAction="NavigateToGame"
                                                  AfterRender="async () => await Chart!.SubscribeClickEvent()" />
                                 </div>
                             </div>
@@ -338,7 +338,7 @@
                                         Cartes jouées
                                     </p>
                                     <button class="card-header-icon" @onclick="ShowFilterPanelAsync">
-                                        <span class="icon @(IsFiltered ? "has-text-primary" : "")">
+                                        <span class="icon @(IsFiltered ? "has-text-primary" : string.Empty)">
                                             <i class="fas fa-filter"></i>
                                         </span>
                                     </button>

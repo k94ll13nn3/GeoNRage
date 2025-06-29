@@ -14,7 +14,7 @@ public static class EditContextExtensions
         public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
         {
             bool isValid = !editContext.GetValidationMessages(fieldIdentifier).Any();
-            return isValid ? "" : "is-danger";
+            return isValid ? string.Empty : "is-danger";
         }
     }
 }

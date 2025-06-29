@@ -61,7 +61,7 @@
     </Container>
 </div>
 
-<div class="modal @(ShowCreateForm ? "is-active" : "")">
+<div class="modal @(ShowCreateForm ? "is-active" : string.Empty)">
     <EditForm Model="UserRegister" OnValidSubmit="CreateUserAsync" @ref="Form">
         <div class="modal-background"></div>
         <div class="modal-card">
@@ -118,7 +118,7 @@
     </EditForm>
 </div>
 
-<div class="modal @(ShowEditForm ? "is-active" : "")">
+<div class="modal @(ShowEditForm ? "is-active" : string.Empty)">
     <EditForm Model="UserEdit" OnValidSubmit="EditUserAsync" @ref="Form">
         <div class="modal-background"></div>
         <div class="modal-card">
@@ -140,7 +140,7 @@
                     <div class="control">
                         <div class="select">
                             <InputSelect @bind-Value="UserEdit.PlayerId">
-                                <option value="">—</option>
+                                <option value=string.Empty>—</option>
                                 <Repeater Items="@Players" Context="player">
                                     <option value="@player.Id">@player.Name</option>
                                 </Repeater>

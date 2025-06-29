@@ -12,15 +12,15 @@
             <Table Items="Players"
                    Headers="@(new TableHeader[]
                           {
-                              new("Id", false, string.Empty),
-                              new("Nom", false, string.Empty),
-                              new("Nom GeoGuessr", false, string.Empty),
-                              new("Joueur lié", false, string.Empty),
-                              new("Titre", false, string.Empty),
-                              new("Dernière mise à jour du profil GeoGuessr", false, string.Empty),
-                              new("", false, string.Empty),
-                              new("", false, string.Empty),
-                              new("", false, string.Empty),
+                              new("Id"),
+                              new("Nom"),
+                              new("Nom GeoGuessr"),
+                              new("Joueur lié"),
+                              new("Titre"),
+                              new("Dernière mise à jour du profil GeoGuessr"),
+                              new(string.Empty),
+                              new(string.Empty),
+                              new(string.Empty),
                           })"
                    PageSize="15"
                    Paginate="true"
@@ -65,7 +65,7 @@
     </ElseContent>
 </Container>
 
-<div class="modal @(ShowEditForm ? "is-active" : "")">
+<div class="modal @(ShowEditForm ? "is-active" : string.Empty)">
     <EditForm Model="Player" OnValidSubmit="UpdatePlayerAsync" @ref="Form">
         <div class="modal-background"></div>
         <div class="modal-card">

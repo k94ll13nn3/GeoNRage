@@ -29,8 +29,8 @@ public partial class MostVisitedLocationsChart : IModal
     private void ComputeChartData()
     {
         var labels = new List<object> { "Tout" };
-        var values = new List<object> { "" };
-        var parents = new List<object> { "" };
+        var values = new List<object> { string.Empty };
+        var parents = new List<object> { string.Empty };
         int sum = 0;
         foreach (IGrouping<string, LocationDto> country in Locations.GroupBy(l => l.Country ?? "-").OrderByDescending(g => g.Count()).Take(15))
         {

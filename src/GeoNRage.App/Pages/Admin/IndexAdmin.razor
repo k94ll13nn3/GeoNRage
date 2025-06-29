@@ -13,8 +13,8 @@
             <Table Items="Tables"
                    Headers="@(new TableHeader[]
                                   {
-                                      new("Nom", false, string.Empty),
-                                      new("Lignes", false, string.Empty)
+                                      new("Nom"),
+                                      new("Lignes")
                                   })">
                 <RowContent Context="table">
                     <td>@table.Name</td>

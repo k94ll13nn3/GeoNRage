@@ -14,7 +14,7 @@
     }
 
     <div class="table-container">
-        <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : "") @(IsFullWidth ? "is-fullwidth" : "")">
+        <table class="table is-bordered is-striped is-hoverable @(IsNarrow ? "is-narrow" : string.Empty) @(IsFullWidth ? "is-fullwidth" : string.Empty)">
             <thead>
                 <tr>
                     @foreach (var header in Headers)
@@ -25,10 +25,10 @@
                                 @if (!string.IsNullOrWhiteSpace(header.Property))
                                 {
                                     <span class="delimiter"></span>
-                                    <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : "")" @onclick="() => Sort(header.Property, true)">
+                                    <span class="icon ml-3 icon-hand @(IsColumnSorted(header.Property, true) ? "has-text-link" : string.Empty)" @onclick="() => Sort(header.Property, true)">
                                         <i class="fas fa-sort-amount-up-alt"></i>
                                     </span>
-                                    <span class="icon icon-hand @(IsColumnSorted(header.Property, false) ? "has-text-link" : "")" @onclick="() => Sort(header.Property, false)">
+                                    <span class="icon icon-hand @(IsColumnSorted(header.Property, false) ? "has-text-link" : string.Empty)" @onclick="() => Sort(header.Property, false)">
                                         <i class="fas fa-sort-amount-down"></i>
                                     </span>
                                 }
@@ -87,7 +87,7 @@
                     @foreach (var pageNumber in Enumerable.Range(1, PageCount))
                     {
                         <li>
-                            <a class="pagination-link @(pageNumber == CurrentPage ? "is-current" : "")" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
+                            <a class="pagination-link @(pageNumber == CurrentPage ? "is-current" : string.Empty)" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
                         </li>
                     }
                 }

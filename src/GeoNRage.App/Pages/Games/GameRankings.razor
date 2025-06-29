@@ -7,7 +7,7 @@
 
     <div class="m-4">
         <Table Items="Challenges"
-               Headers="@(Enumerable.Range(1, Players.Count()).Select(i => new TableHeader(i.Ordinalize(), false, "")).Prepend(new TableHeader("", false, "")))">
+               Headers="@(Enumerable.Range(1, Players.Count()).Select(i => new TableHeader(i.Ordinalize())).Prepend(new TableHeader(string.Empty)))">
             <RowContent Context="challenge">
                 <th>@challenge.MapName</th>
                 <Repeater Items="Scores.Where(s => s.Key.challengeId == challenge.Id).GroupBy(s => s.Key.playerId).Select(g => (g.Key, Sum:g.Sum(s => s.Value))).OrderByDescending(p => p.Sum)" Context="player">

@@ -48,7 +48,7 @@ public partial class TagsList
             if (ValidateTag(Value))
             {
                 await AddTagAsync(Value);
-                Value = "";
+                Value = string.Empty;
             }
         }
         else if (args.Key == "Backspace" && string.IsNullOrWhiteSpace(Value) && _tags.Count > 1)

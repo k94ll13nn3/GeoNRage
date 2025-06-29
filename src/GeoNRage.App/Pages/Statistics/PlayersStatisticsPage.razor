@@ -8,13 +8,13 @@
             <Table Items="Players"
                    Headers="@(new TableHeader[]
 								{
-									new("Joueur", true, nameof(PlayerStatisticDto.Name)),
-									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf5000), true, nameof(PlayerStatisticDto.NumberOf5000)),
-									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf4999), true, nameof(PlayerStatisticDto.NumberOf4999)),
-									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.ChallengesCompleted), true, nameof(PlayerStatisticDto.ChallengesCompleted)),
-									new(LabelStore.Get<PlayerStatisticDto, double?>(ps => ps.RoundAverage), true, nameof(PlayerStatisticDto.RoundAverage)),
-									new(LabelStore.Get<PlayerStatisticDto, int?>(ps => ps.BestGameSum), true, nameof(PlayerStatisticDto.BestGameSum)),
-									new(string.Empty, false, string.Empty)
+									new("Joueur", nameof(PlayerStatisticDto.Name)),
+									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf5000), nameof(PlayerStatisticDto.NumberOf5000)),
+									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.NumberOf4999), nameof(PlayerStatisticDto.NumberOf4999)),
+									new(LabelStore.Get<PlayerStatisticDto, int>(ps => ps.ChallengesCompleted), nameof(PlayerStatisticDto.ChallengesCompleted)),
+									new(LabelStore.Get<PlayerStatisticDto, double?>(ps => ps.RoundAverage), nameof(PlayerStatisticDto.RoundAverage)),
+									new(LabelStore.Get<PlayerStatisticDto, int?>(ps => ps.BestGameSum), nameof(PlayerStatisticDto.BestGameSum)),
+									new(string.Empty)
 								})"
                    SortFunction="Sort">
                 <RowContent Context="player">
