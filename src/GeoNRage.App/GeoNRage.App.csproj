@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" />
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.js" />
   </ItemGroup>
 
