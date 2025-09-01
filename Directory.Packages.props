@@ -41,6 +41,6 @@
     <PackageVersion Include="Remora.Discord" Version="2025.2.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.5.3" />
     <PackageVersion Include="Seq.Extensions.Logging" Version="8.0.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="9.0.6" />
+    <PackageVersion Include="System.Net.Http.Json" Version="9.0.8" />
   </ItemGroup>
 </Project>
