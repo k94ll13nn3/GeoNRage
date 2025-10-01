@@ -98,7 +98,7 @@ public partial class PlayerPage
         {
             X = [.. GameHistory.Where(g => g.Sum > 0).Select(g => $"G{g.GameId}" as object)],
             Y = [.. GameHistory.Where(g => g.Sum > 0).Select(g => g.Sum as object)],
-            TextArray = [.. GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate.ToShortDateString()} - {g.NumberOf5000} fois 5000")],
+            TextArray = [.. GameHistory.Where(g => g.Sum > 0).Select(g => $"{g.GameName} - {g.GameDate:d} - {g.NumberOf5000} fois 5000")],
             Name = "Historique des parties",
             TextPosition = TextPositionEnum.None
         });

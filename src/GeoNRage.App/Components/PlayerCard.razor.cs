@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Refit;
 
 namespace GeoNRage.App.Components;
+
 public partial class PlayerCard
 {
     private PlayerResumeDto? _player;

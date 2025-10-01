@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 
 namespace GeoNRage.App.Layouts.Main;
+
 public partial class SeasonalStyleSwitcher
 {
     private bool _seasonalStyle;

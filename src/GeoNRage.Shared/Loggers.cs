@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 
 namespace GeoNRage.Shared;
+
 public static class Loggers
 {
     public static readonly Action<ILogger, string, Exception> LogUnhandledException =
