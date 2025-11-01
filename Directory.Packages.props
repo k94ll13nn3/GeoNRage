@@ -39,7 +39,7 @@
     <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageVersion Include="Remora.Discord" Version="2025.2.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.8.8" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.9.0" />
     <PackageVersion Include="Seq.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="9.0.9" />
   </ItemGroup>
