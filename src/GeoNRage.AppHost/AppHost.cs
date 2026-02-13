@@ -1,18 +1,23 @@
+
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-#pragma warning disable ASPIREPROXYENDPOINTS001
-IResourceBuilder<MySqlServerResource> mysql = builder
-    .AddMySql("geonrage-mysql", port: 26990)
+IResourceBuilder<PostgresServerResource> databaseProvider = builder
+    .AddPostgres("postgres", port: 26991)
     .WithLifetime(ContainerLifetime.Persistent)
     .WithEndpointProxySupport(false)
-    .WithDataVolume();
-#pragma warning restore ASPIREPROXYENDPOINTS001
+    .WithDataVolume("geonrage-pgsql")
+    .WithPgWeb(pgWeb => pgWeb
+        .WithHostPort(5050)
+        .WithLifetime(ContainerLifetime.Persistent)
+        .WithEndpointProxySupport(false)
+    );
 
-IResourceBuilder<MySqlDatabaseResource> mysqldb = mysql.AddDatabase("geonrage-db", "GeoNRage");
+IResourceBuilder<PostgresDatabaseResource> database = databaseProvider
+    .AddDatabase("geonrage-db-pg", "GeoNRage");
 
 builder.AddProject<Projects.GeoNRage_Server>("app")
-    .WithReference(mysqldb)
-    .WaitFor(mysqldb)
+    .WithReference(database)
+    .WaitFor(database)
     .WithUrlForEndpoint("https", url => url.DisplayText = "Application")
     .WithUrlForEndpoint("http", url =>
     {

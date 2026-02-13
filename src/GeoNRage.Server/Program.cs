@@ -44,7 +44,7 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 
-builder.EnrichMySqlDbContext<GeoNRageDbContext>(
+builder.EnrichNpgsqlDbContext<GeoNRageDbContext>(
     configureSettings: settings =>
     {
         settings.DisableRetry = false;

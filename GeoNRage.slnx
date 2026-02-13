@@ -6,6 +6,7 @@
   </Configurations>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path=".github/dependabot.yml" />
     <File Path=".github/workflows/build-app.yml" />
     <File Path=".github/workflows/deploy-app.yml" />
     <File Path=".globalconfig" />

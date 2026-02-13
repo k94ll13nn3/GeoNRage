@@ -49,24 +49,6 @@ internal sealed partial class DiscordService : BackgroundService
         }
     }
 
-    [LoggerMessage(0, LogLevel.Error, "The registered commands of the bot don't support slash commands: {Reason}")]
-    partial void LogSlashCommandsNotSupported(string reason);
-
-    [LoggerMessage(1, LogLevel.Error, "Failed to get application: {Reason}")]
-    partial void LogApplicationFetchError(string reason);
-
-    [LoggerMessage(2, LogLevel.Warning, "Failed to get global commands: {Reason}")]
-    partial void LogGlobalCommandsGetError(string reason);
-
-    [LoggerMessage(3, LogLevel.Warning, "Failed to delete global commands: {Reason}")]
-    partial void LogGlobalCommandsDeleteError(string reason);
-
-    [LoggerMessage(4, LogLevel.Warning, "Failed to get guild commands: {Reason}")]
-    partial void LogGuildCommandsGetError(string reason);
-
-    [LoggerMessage(5, LogLevel.Warning, "Failed to delete guild commands: {Reason}")]
-    partial void LogGuildCommandsDeleteError(string reason);
-
     [LoggerMessage(6, LogLevel.Error, "Failed to update slash commands: {Reason}")]
     partial void LogSlashCommandsUpdateError(string reason);
 

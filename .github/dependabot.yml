@@ -7,12 +7,24 @@ updates:
     time: "04:00"
   open-pull-requests-limit: 10
   groups:
+    global:
+      patterns:
+        - "AutoConstructor"
+        - "Roslynator.Analyzers"
+        - "SonarAnalyzer.CSharp"
+        - "MinVer"
     aspire:
       patterns:
         - "Aspire.*"
+    entityFramework:
+      patterns:
+        - "*EntityFramework*"
     aspNetCore:
       patterns:
         - "Microsoft.AspNetCore.*"
     extensions:
       patterns:
         - "Microsoft.Extensions.*"
+    openTelemetry:
+      patterns:
+        - "OpenTelemetry.*"

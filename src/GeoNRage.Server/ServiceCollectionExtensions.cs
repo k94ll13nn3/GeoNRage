@@ -90,10 +90,10 @@ internal static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDatabaseAndIdentity(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("geonrage-db")!;
+        string connectionString = configuration.GetConnectionString("geonrage-db-pg")!;
         services.AddDbContextPool<GeoNRageDbContext>(options =>
             options
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), o => o.TranslateParameterizedCollectionsToConstants())
+                .UseNpgsql(connectionString/*, o => o.UseParameterizedCollectionMode(parameterizedCollectionMode: ParameterTranslationMode.Parameter)*/)
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning)));
 
         services.AddIdentity<User, IdentityRole>()

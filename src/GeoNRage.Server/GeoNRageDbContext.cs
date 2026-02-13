@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace GeoNRage.Server;
 
@@ -38,10 +37,10 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.HasCharSet(CharSet.Utf8Mb4, true).UseCollation("utf8mb4_general_ci");
+        builder.HasCollation("my_collation", locale: "und-u-ks-level2", provider: "icu", deterministic: false);
 
         builder.Entity<Game>().HasKey(g => g.Id);
-        builder.Entity<Game>().Property(g => g.Id).UseMySqlIdentityColumn();
+        builder.Entity<Game>().Property(g => g.Id).UseIdentityColumn();
         builder.Entity<Game>().HasMany(g => g.Challenges).WithOne(c => c.Game).HasForeignKey(c => c.GameId);
 
         builder.Entity<Player>().HasKey(p => p.Id);
@@ -55,7 +54,7 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
 
         builder.Entity<Challenge>().HasKey(m => m.Id);
         builder.Entity<Challenge>().HasIndex(g => g.GeoGuessrId).IsUnique();
-        builder.Entity<Challenge>().Property(g => g.Id).UseMySqlIdentityColumn();
+        builder.Entity<Challenge>().Property(g => g.Id).UseIdentityColumn();
         builder.Entity<Challenge>().HasOne(c => c.Map).WithMany(m => m.Challenges).HasForeignKey(c => c.MapId);
         builder.Entity<Challenge>().HasMany(c => c.PlayerScores).WithOne(p => p.Challenge).HasForeignKey(p => p.ChallengeId);
         builder.Entity<Challenge>().HasOne(c => c.Creator).WithMany().HasForeignKey(c => c.CreatorId);
@@ -66,6 +65,8 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
 
         builder.Entity<Location>().HasKey(l => new { l.ChallengeId, l.RoundNumber });
         builder.Entity<Location>().HasOne(l => l.Challenge).WithMany(c => c.Locations).HasForeignKey(l => l.ChallengeId);
+        builder.Entity<Location>().Property(l => l.Latitude).HasPrecision(18, 15);
+        builder.Entity<Location>().Property(l => l.Longitude).HasPrecision(18, 15);
 
         builder.Entity<PlayerGuess>().HasKey(p => new { p.ChallengeId, p.PlayerId, p.RoundNumber });
 
