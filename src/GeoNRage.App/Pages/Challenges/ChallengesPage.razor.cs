@@ -15,13 +15,14 @@ public sealed partial class ChallengesPage
     private readonly ModalService _modalService;
     private readonly ToastService _toastService;
 
-    private string _geoGuessrId = null!;
+    private string _geoGuessrId;
     private bool _displayAll;
-    private ClaimsPrincipal _user = null!;
-    private PaginatedTable<ChallengeDto> _challengesTable = null!;
+    private ClaimsPrincipal _user;
+    private PaginatedTable<ChallengeDto> _challengesTable;
 
     [CascadingParameter]
-    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
     protected override void Dispose(bool disposing)
     {
         _challengesTable?.Dispose();

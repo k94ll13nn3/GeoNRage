@@ -6,10 +6,12 @@ IResourceBuilder<PostgresServerResource> databaseProvider = builder
     .WithLifetime(ContainerLifetime.Persistent)
     .WithEndpointProxySupport(false)
     .WithDataVolume("geonrage-pgsql")
+    .WithContainerRuntimeArgs("--label", "com.docker.compose.project=GeoNRage")
     .WithPgWeb(pgWeb => pgWeb
         .WithHostPort(5050)
         .WithLifetime(ContainerLifetime.Persistent)
         .WithEndpointProxySupport(false)
+        .WithContainerRuntimeArgs("--label", "com.docker.compose.project=GeoNRage")
     );
 
 IResourceBuilder<PostgresDatabaseResource> database = databaseProvider

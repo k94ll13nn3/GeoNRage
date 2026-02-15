@@ -65,7 +65,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(o => o.DisableAgent());
     app.UseHttpsRedirection();
 }
 else

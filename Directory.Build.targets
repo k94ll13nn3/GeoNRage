@@ -1,0 +1,37 @@
+<!-- Directory.Build.targets -->
+<Project>
+
+  <!-- TODO: https://github.com/dotnet/aspnetcore/issues/64378 -->
+  <Target Name="RemoveXmlDocsFromAutoConstructorAnnotations"
+    AfterTargets="CoreCompile"
+    BeforeTargets="CoreBuild"
+    Condition="'$(GenerateDocumentationFile)' == 'true' AND Exists('$(OutputPath)$(AssemblyName).xml')">
+
+    <PropertyGroup>
+      <_XslContent>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:template match="@*|node()">
+            <xsl:copy>
+              <xsl:apply-templates select="@*|node()" />
+            </xsl:copy>
+          </xsl:template>
+          <xsl:template match="member[starts-with(@name, 'F:AutoConstructor')]" />
+          <xsl:template match="member[starts-with(@name, 'M:AutoConstructor')]" />
+          <xsl:template match="member[starts-with(@name, 'P:AutoConstructor')]" />
+          <xsl:template match="member[starts-with(@name, 'T:AutoConstructor')]" />
+        </xsl:stylesheet>
+      </_XslContent>
+    </PropertyGroup>
+
+    <XslTransformation
+      OutputPaths="$(OutputPath)$(AssemblyName).xml.tmp"
+      XmlInputPaths="$(OutputPath)$(AssemblyName).xml"
+      XslContent="$(_XslContent)" />
+
+    <Move
+      DestinationFiles="$(OutputPath)$(AssemblyName).xml"
+      SourceFiles="$(OutputPath)$(AssemblyName).xml.tmp" />
+
+  </Target>
+
+</Project>
