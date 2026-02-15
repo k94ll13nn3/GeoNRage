@@ -68,4 +68,24 @@ public partial class ChallengePage
             });
         }
     }
+
+    private static string GetGuessClass(ChallengePlayerGuessDto guess)
+    {
+        return guess.Score switch
+        {
+            5000 => "has-background-success has-text-success-invert",
+            4999 => "has-background-warning has-text-warning-invert",
+            _ => string.Empty,
+        };
+    }
+
+    private static string GetSumClass(int? sum)
+    {
+        return sum switch
+        {
+            25000 => "has-background-success has-text-success-invert",
+            24999 => "has-background-warning has-text-warning-invert",
+            _ => string.Empty,
+        };
+    }
 }

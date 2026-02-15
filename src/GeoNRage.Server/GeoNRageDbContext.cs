@@ -70,7 +70,7 @@ internal sealed class GeoNRageDbContext(DbContextOptions<GeoNRageDbContext> opti
 
         builder.Entity<PlayerGuess>().HasKey(p => new { p.ChallengeId, p.PlayerId, p.RoundNumber });
 
-        builder.Entity<Game>().HasData(new Game { Id = -1, Date = DateTime.MinValue, Name = "Default Game - do not use!" });
+        builder.Entity<Game>().HasData(new Game { Id = -1, Date = new DateOnly(1, 1, 1), Name = "Default Game - do not use!" });
 
         base.OnModelCreating(builder);
 

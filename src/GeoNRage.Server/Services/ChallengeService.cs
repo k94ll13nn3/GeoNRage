@@ -222,7 +222,7 @@ internal sealed partial class ChallengeService
             TimeLimit = challenge.Challenge.TimeLimit,
             Locations = locations,
             CreatorId = creator.Id,
-            UpdatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTimeOffset.UtcNow,
             CreatedAt = creationDate,
             MaxScore = playerScores.Max(ps => ps.Sum),
         };

@@ -2,7 +2,7 @@ namespace GeoNRage.App.Components;
 
 public partial class Snowflakes
 {
-    private readonly bool _enabled = DateTime.Now.Month is 12;
+    private readonly bool _enabled = DateTimeOffset.Now.Month is 12;
     private bool _seasonalStyle;
 
     protected override async Task OnInitializedAsync()

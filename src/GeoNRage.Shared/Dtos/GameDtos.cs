@@ -18,7 +18,7 @@ public class GameCreateOrEditDto
     [Required]
     public string Name { get; set; } = string.Empty;
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     [Required]
     public ICollection<string> PlayerIds { get; set; } = [];
@@ -31,12 +31,12 @@ public record GameDto
 {
     public required int Id { get; init; }
     public required string Name { get; init; }
-    public required DateTime Date { get; init; }
+    public required DateOnly Date { get; init; }
 }
 
 public record GameChallengeInfoDto(int Id, string MapId, string GeoGuessrId);
 
-public record GameAdminViewDto(int Id, string Name, DateTime Date, IEnumerable<GameChallengeInfoDto> Challenges, IEnumerable<string> PlayerIds);
+public record GameAdminViewDto(int Id, string Name, DateOnly Date, IEnumerable<GameChallengeInfoDto> Challenges, IEnumerable<string> PlayerIds);
 
 public record GameChallengePlayerScoreDto(string PlayerId, string PlayerName, Uri IconUrl, int? Round1, int? Round2, int? Round3, int? Round4, int? Round5, int? Sum);
 
@@ -47,7 +47,7 @@ public record GamePlayerDto(string Id, string Name);
 public record GameDetailDto(
     int Id,
     string Name,
-    DateTime Date,
+    DateOnly Date,
     IEnumerable<GameChallengeDto> Challenges,
     IEnumerable<GamePlayerDto> Players,
     int? NextGameId,

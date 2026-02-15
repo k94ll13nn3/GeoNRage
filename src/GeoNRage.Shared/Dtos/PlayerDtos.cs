@@ -18,7 +18,7 @@ public record PlayerAdminViewDto(
     string? AssociatedPlayerId,
     string? AssociatedPlayerName,
     string Title,
-    DateTime? LastGeoGuessrUpdate,
+    DateTimeOffset? LastGeoGuessrUpdate,
     string GeoGuessrName);
 
 public record PlayerChallengeDto(int ChallengeId, int? GameId, string MapName, int? Sum, int? Time);
@@ -52,7 +52,7 @@ public record PlayerFullStatisticDto(
 
 public record PlayerMapDto(string MapName, int? Best, double? RoundAverage, double? DistanceAverage, double? TimeAverage);
 
-public record PlayerGameDto(int GameId, int Sum, DateTime GameDate, string GameName, int NumberOf5000, int Position);
+public record PlayerGameDto(int GameId, int Sum, DateOnly GameDate, string GameName, int NumberOf5000, int Position);
 
 public record PlayerFullDto(
     string Id,

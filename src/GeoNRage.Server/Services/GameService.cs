@@ -249,14 +249,17 @@ internal sealed partial class GameService
                 throw new InvalidOperationException($"No player with id '{playerId}' exists");
             }
 
-            foreach (ICollection<PlayerScore> playerScores in game.Challenges.Select(c => c.PlayerScores))
+            IEnumerable<ICollection<PlayerScore>> scoresToUpdate = game.Challenges
+                .Select(c => c.PlayerScores)
+                .Where(playerScores => !playerScores
+                    .Select(p => p.PlayerId)
+                    .Contains(playerId));
+            foreach (ICollection<PlayerScore> playerScores in scoresToUpdate)
             {
-                if (!playerScores.Select(p => p.PlayerId).Contains(playerId))
-                {
-                    playerScores.Add(new PlayerScore { PlayerId = playerId });
-                    await _context.SaveChangesAsync();
-                }
+                playerScores.Add(new PlayerScore { PlayerId = playerId });
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 

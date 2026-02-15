@@ -98,7 +98,7 @@ internal sealed partial class BotCommands : CommandGroup
             24,
             true);
 
-        // TODO : replace with _feedbackService or _interactionApi when the poll object will be added to those.
+        // Can be replaced with _feedbackService or _interactionApi when the poll object will be added to those, one day.
         await _channelAPI.CreateMessageAsync(channelID, poll: poll, ct: CancellationToken);
 
         return await _feedbackService.SendContextualAsync("Sondage envoyé");

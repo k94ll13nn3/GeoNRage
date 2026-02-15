@@ -45,7 +45,7 @@ public partial class GameAdminCreateOrEdit : IModal
         }
         else
         {
-            _game = new GameCreateOrEditDto { Date = DateTime.Now };
+            _game = new GameCreateOrEditDto { Date = DateOnly.FromDateTime(DateTimeOffset.Now.DateTime) };
         }
 
         _maps = [.. (await MapsApi.GetAllAsync()).OrderByDescending(m => m.IsMapForGame)];

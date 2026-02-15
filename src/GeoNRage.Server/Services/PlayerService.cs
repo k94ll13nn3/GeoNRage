@@ -307,7 +307,7 @@ internal sealed partial class PlayerService
             if (statistics is not null)
             {
                 player.Title = statistics.LifeTimeXpProgression.CurrentTitle.Name;
-                player.LastGeoGuessrUpdate = DateTime.UtcNow;
+                player.LastGeoGuessrUpdate = DateTimeOffset.UtcNow;
 
                 _context.Players.Update(player);
                 await _context.SaveChangesAsync();

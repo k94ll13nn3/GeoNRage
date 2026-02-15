@@ -26,7 +26,7 @@ internal sealed class Challenge
 
     public DateOnly? CreatedAt { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
 
     public int MaxScore { get; set; }
 }

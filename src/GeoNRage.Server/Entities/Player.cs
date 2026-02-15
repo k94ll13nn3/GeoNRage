@@ -16,7 +16,7 @@ internal sealed class Player
 
     public string Title { get; set; } = null!;
 
-    public DateTime? LastGeoGuessrUpdate { get; set; }
+    public DateTimeOffset? LastGeoGuessrUpdate { get; set; }
 
     public ICollection<PlayerScore> PlayerScores { get; set; } = [];
 }
