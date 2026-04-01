@@ -10,7 +10,7 @@
     <GlobalPackageReference Include="MinVer" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.2.1" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.2.1" />
     <PackageVersion Include="AspNetCore.SassCompiler" Version="1.97.1" />
     <PackageVersion Include="Gridify.EntityFramework" Version="2.19.0" />
