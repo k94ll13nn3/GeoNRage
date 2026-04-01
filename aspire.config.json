@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "src/GeoNRage.AppHost/GeoNRage.AppHost.csproj"
+  }
+}
