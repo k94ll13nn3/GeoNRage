@@ -34,7 +34,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
-    <PackageVersion Include="Plotly.Blazor" Version="7.0.0" />
+    <PackageVersion Include="Plotly.Blazor" Version="7.1.0" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="10.1.6" />
     <PackageVersion Include="Remora.Discord" Version="2025.2.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.14.9" />
