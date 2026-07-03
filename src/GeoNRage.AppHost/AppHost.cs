@@ -3,6 +3,7 @@ IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(ar
 
 IResourceBuilder<PostgresServerResource> databaseProvider = builder
     .AddPostgres("postgres", port: 26991)
+    .WithImageTag("17.6")
     .WithLifetime(ContainerLifetime.Persistent)
     .WithEndpointProxySupport(false)
     .WithDataVolume("geonrage-pgsql")
