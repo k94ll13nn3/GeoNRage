@@ -12,6 +12,9 @@ dotnet_diagnostic.RCS1090.severity = none
 # S1075: Refactor your code not to use hardcoded absolute paths or URIs
 dotnet_diagnostic.S1075.severity = none
 
+# S3241
+dotnet_diagnostic.S3241.severity = none
+
 # CA1716: Identifiers should not match keywords
 dotnet_diagnostic.CA1716.severity = none
 

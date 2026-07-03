@@ -17,6 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.OpenApi" />
     <PackageReference Include="Remora.Discord" />
     <PackageReference Include="Scalar.AspNetCore" />
     <PackageReference Include="Seq.Extensions.Logging" />
