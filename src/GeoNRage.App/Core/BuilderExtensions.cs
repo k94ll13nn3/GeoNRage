@@ -9,7 +9,7 @@ internal static class BuilderExtensions
     {
         builder
             .Services
-            .AddRefitClient<T>()
+            .AddRefitGeneratedClient<T>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
             .AddHttpMessageHandler<MapStatusHandler>();
     }
