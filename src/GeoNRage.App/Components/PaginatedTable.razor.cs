@@ -27,7 +27,7 @@ public sealed partial class PaginatedTable<T> : IDisposable
 
     [Parameter]
     [EditorRequired]
-    public Func<IPaginationQuery, Task<PaginationResult<T>>> DataFunction { get; set; } = null!;
+    public Func<PaginationQuery, Task<PaginationResult<T>>> DataFunction { get; set; } = null!;
 
     [Parameter]
     public int PageSize { get; set; } = 10;

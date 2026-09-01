@@ -7,7 +7,7 @@ public interface IChallengesApi
     [Get("/api/challenges")]
     [Headers($"{Constants.MapStatusHeaderName}:")]
     Task<PaginationResult<ChallengeDto>> GetAllAsync(
-        IPaginationQuery paginationQuery,
+        PaginationQuery paginationQuery,
         [Query(CollectionFormat.Multi)] string[]? playersToExclude = null);
 
     [Get("/api/challenges/admin-view")]

@@ -40,7 +40,7 @@
                 <Table @ref="ChallengeTable"
                        Items="Challenge.PlayerScores.OrderByDescending(p => p.PlayerGuesses.Sum(g => g.Score))"
                        Headers="@(new TableHeader[]
-                                  {
+                                    {
                                       new(string.Empty),
                                       new("Round 1"),
                                       new("Round 2"),
@@ -48,7 +48,7 @@
                                       new("Round 4"),
                                       new("Round 5"),
                                       new("Total"),
-                                  })"
+                                    })"
                        IsNarrow="false">
                     <RowContent Context="playerScore">
                         <td>@playerScore.PlayerName</td>
@@ -56,17 +56,17 @@
                             @{
                                 var guess = Challenge.PlayerScores.FirstOrDefault(x => x.PlayerId == playerScore.PlayerId)?.PlayerGuesses.FirstOrDefault(g => g.RoundNumber == round);
                             }
-                            <Container Condition="guess is not null">
-                                <ChildContent>
-                                    <td class="@(GetGuessClass(guess!))">
-                                        @guess!.Score <br />
-                                        <small>@($"{guess.Distance.ToDistanceString()}") / @($"{guess.Time.ToTimeString()}")</small>
-                                    </td>
-                                </ChildContent>
-                                <ElseContent>
-                                    <td>—</td>
-                                </ElseContent>
-                            </Container>
+                            @if (guess is not null)
+                            {
+                                <td class="@(GetGuessClass(guess))">
+                                    @guess.Score <br />
+                                    <small>@($"{guess.Distance.ToDistanceString()}") / @($"{guess.Time.ToTimeString()}")</small>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>—</td>
+                            }
                         </Repeater>
 
                         @{

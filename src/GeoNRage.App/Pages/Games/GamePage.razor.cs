@@ -195,7 +195,7 @@ public partial class GamePage : IAsyncDisposable
             ToastService.DisplayToast(ImageFragment("img/so-close.webp"), TimeSpan.FromMilliseconds(2500), ToastType.Warning, "toast-4999");
         }
 
-        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, _user.PlayerId(), round, clampedValue);
+        await _hubConnection.InvokeAsync("UpdateValue", Id, challengeId, _user.PlayerId(), round, clampedValue, cancellationToken: _cancellationToken.Token);
     }
 
     private async Task AddPlayerAsync()
@@ -203,14 +203,14 @@ public partial class GamePage : IAsyncDisposable
         if (_game is not null && _user.PlayerId() is string playerId && !_game.Players.Any(p => p.Id == _user.PlayerId()))
         {
             await GamesApi.AddPlayerAsync(_game.Id, playerId);
-            await _hubConnection.InvokeAsync("NotifyNewPlayer", Id);
+            await _hubConnection.InvokeAsync("NotifyNewPlayer", Id, cancellationToken: _cancellationToken.Token);
             await ReloadPageAsync();
         }
     }
 
     private async Task TauntAsync((string player, string image) data)
     {
-        await _hubConnection.InvokeAsync("TauntPlayer", Id, data.player, data.image);
+        await _hubConnection.InvokeAsync("TauntPlayer", Id, data.player, data.image, cancellationToken: _cancellationToken.Token);
         ToastService.DisplayToast("Envoyé !", TimeSpan.FromMilliseconds(1500), ToastType.Success, "toast-sent");
     }
 

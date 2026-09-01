@@ -84,7 +84,7 @@ public sealed partial class ChallengesPage
         await _challengesTable.ReloadDataAsync();
     }
 
-    private async Task<PaginationResult<ChallengeDto>> GetAllChallengesAsync(IPaginationQuery paginationQuery)
+    private async Task<PaginationResult<ChallengeDto>> GetAllChallengesAsync(PaginationQuery paginationQuery)
     {
         string[] playersToHide = [];
         if (!_displayAll && _user.PlayerId() is string playerId)
